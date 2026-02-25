@@ -184,15 +184,7 @@ var Store = (function() {
         setAll('role_permissions', rolePerms);
 
         var users = [
-            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u2', name: 'Maria Santos', username: 'headlib', password: 'lib123', email: 'maria.santos@feati.edu.ph', role_id: 'r2', faculty_subtype: null, rfid_id: 'RFID-LIB-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u9', name: 'Rosa Dela Cruz', username: 'libstaff', password: 'staff123', email: 'rosa.delacruz@feati.edu.ph', role_id: 'r3', faculty_subtype: null, rfid_id: 'RFID-LIB-002', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u3', name: 'Prof. Juan Cruz', username: 'faculty1', password: 'fac123', email: 'juan.cruz@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Teaching', rfid_id: '1980-0315', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u4', name: 'Ana Reyes', username: 'faculty2', password: 'fac123', email: 'ana.reyes@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Non-Teaching', rfid_id: '1985-0722', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u5', name: 'Dr. Pedro Lim', username: 'deptchair', password: 'chair123', email: 'pedro.lim@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Department Chair', rfid_id: '1975-1105', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u6', name: 'Dr. Elena Ramos', username: 'depthead', password: 'head123', email: 'elena.ramos@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Department Head', rfid_id: '1978-0418', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u7', name: 'Carlo Mendoza', username: 'student1', password: 'stud123', email: 'carlo.mendoza@feati.edu.ph', role_id: 'r5', faculty_subtype: null, rfid_id: '2024-0001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u8', name: 'Pia Garcia', username: 'assistant1', password: 'asst123', email: 'pia.garcia@feati.edu.ph', role_id: 'r6', faculty_subtype: null, rfid_id: '2024-0002', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
         setAll('users', users);
 
