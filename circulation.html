@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circulation - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header"><h1><i class="fas fa-exchange-alt me-2"></i>Circulation</h1></div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="issue">Issue Book</button>
+            <button class="nav-tab" data-tab="return">Return Book</button>
+            <button class="nav-tab" data-tab="history">Borrowing History</button>
+        </div>
+        <div class="tab-pane active" id="tab-issue">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-hand-holding me-2"></i>Issue a Book</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6"><div class="form-group"><label>Student</label><select class="form-select" id="issue-student"></select></div></div>
+                        <div class="col-md-6"><div class="form-group"><label>Book</label><select class="form-select" id="issue-book"></select></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6"><div class="form-group"><label>Date Issued</label><input class="form-control" id="issue-date" type="date"></div></div>
+                        <div class="col-md-6"><div class="form-group"><label>Due Date</label><input class="form-control" id="issue-due" type="date"></div></div>
+                    </div>
+                    <button class="btn btn-success" id="btn-issue"><i class="fas fa-check me-1"></i> Issue Book</button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab-return">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-undo me-2"></i>Return a Book</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead><tr><th>Student</th><th>Book</th><th>Issued</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="return-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab-history">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-history me-2"></i>Borrowing History</div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Student</th><th>Book</th><th>Issued</th><th>Due</th><th>Returned</th><th>Status</th></tr></thead>
+                        <tbody id="history-table"></tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+    </main>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+        document.querySelectorAll('.nav-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+                document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                if (this.dataset.tab === 'return') loadReturns();
+                if (this.dataset.tab === 'history') loadHistory();
+            });
+        });
+        var students = Store.getAll('students'), books = Store.getAll('books');
+        var ssel = document.getElementById('issue-student'), bsel = document.getElementById('issue-book');
+        students.forEach(function(s) { ssel.innerHTML += '<option value="' + s.id + '">' + s.student_id + ' — ' + s.name + '</option>'; });
+        books.filter(function(b) { return b.available > 0; }).forEach(function(b) { bsel.innerHTML += '<option value="' + b.id + '">' + b.title + ' (' + b.available + ' avail.)</option>'; });
+        var today = new Date().toISOString().split('T')[0];
+        var due = new Date(); due.setDate(due.getDate() + 14);
+        document.getElementById('issue-date').value = today;
+        document.getElementById('issue-due').value = due.toISOString().split('T')[0];
+
+        document.getElementById('btn-issue').addEventListener('click', function() {
+            var studentId = document.getElementById('issue-student').value;
+            var bookId = document.getElementById('issue-book').value;
+            var dateIssued = document.getElementById('issue-date').value;
+            var dateDue = document.getElementById('issue-due').value;
+            if (!studentId || !bookId || !dateIssued || !dateDue) { App.showAlert('danger', 'Fill all fields.'); return; }
+            var book = Store.getById('books', bookId);
+            if (!book || book.available <= 0) { App.showAlert('danger', 'Book not available.'); return; }
+            Store.create('transactions', { student_id: studentId, book_id: bookId, type: 'borrow', date_issued: dateIssued, date_due: dateDue, date_returned: null, status: 'borrowed' });
+            Store.update('books', bookId, { available: book.available - 1 });
+            App.showAlert('success', 'Book issued successfully!');
+            Swal.fire({ icon: 'success', title: 'Book Issued!', text: book.title + ' issued to ' + App.getStudentName(studentId), timer: 2000, showConfirmButton: false });
+        });
+
+        function loadReturns() {
+            var txns = Store.getAll('transactions').filter(function(t) { return t.status === 'borrowed'; });
+            var tbody = document.getElementById('return-table');
+            if (!txns.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No outstanding borrowings.</td></tr>'; return; }
+            tbody.innerHTML = txns.map(function(t) {
+                var isOverdue = new Date(t.date_due) < new Date();
+                return '<tr><td>' + App.getStudentName(t.student_id) + '</td><td>' + App.getBookTitle(t.book_id) + '</td><td>' + App.formatDate(t.date_issued) + '</td><td>' + App.formatDate(t.date_due) + '</td><td><span class="badge ' + (isOverdue ? 'bg-danger' : 'bg-warning') + '">' + (isOverdue ? 'Overdue' : 'Borrowed') + '</span></td><td><button class="btn btn-sm btn-success btn-return" data-id="' + t.id + '" data-book="' + t.book_id + '"><i class="fas fa-undo me-1"></i> Return</button></td></tr>';
+            }).join('');
+            document.querySelectorAll('.btn-return').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var txnId = this.dataset.id, bookId = this.dataset.book;
+                    Store.update('transactions', txnId, { status: 'returned', date_returned: new Date().toISOString().split('T')[0] });
+                    var book = Store.getById('books', bookId);
+                    if (book) Store.update('books', bookId, { available: book.available + 1 });
+                    App.showAlert('success', 'Book returned.');
+                    loadReturns();
+                });
+            });
+        }
+
+        function loadHistory() {
+            var txns = Store.getAll('transactions');
+            var tbody = document.getElementById('history-table');
+            if (!txns.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No history.</td></tr>'; return; }
+            tbody.innerHTML = txns.map(function(t, i) {
+                var statusClass = t.status === 'returned' ? 'bg-success' : (new Date(t.date_due) < new Date() ? 'bg-danger' : 'bg-warning');
+                var statusLabel = t.status === 'returned' ? 'Returned' : (new Date(t.date_due) < new Date() ? 'Overdue' : 'Borrowed');
+                return '<tr><td>' + (i+1) + '</td><td>' + App.getStudentName(t.student_id) + '</td><td>' + App.getBookTitle(t.book_id) + '</td><td>' + App.formatDate(t.date_issued) + '</td><td>' + App.formatDate(t.date_due) + '</td><td>' + App.formatDate(t.date_returned) + '</td><td><span class="badge ' + statusClass + '">' + statusLabel + '</span></td></tr>';
+            }).join('');
+        }
+    </script>
+</body>
+</html>

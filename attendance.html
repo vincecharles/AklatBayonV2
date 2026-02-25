@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - AklatBayon</title>
+    <meta name="description" content="View daily RFID attendance records, visitor statistics, and peak hours at FEATI University Library.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        .peak-hour-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            color: #fff; padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; font-weight: 700;
+        }
+        .chart-card { min-height: 320px; }
+        .chart-card canvas { max-height: 260px; }
+        .visit-time {
+            font-weight: 600; color: var(--primary-navy);
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-card .stat-trend {
+            font-size: 11px; margin-top: 4px; font-weight: 600;
+        }
+        .stat-card .stat-trend.up { color: var(--success); }
+        .stat-card .stat-trend.neutral { color: var(--gray); }
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary-navy), var(--primary-blue));
+            color: #fff; border: none; padding: 8px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .export-btn:hover { opacity: 0.85; }
+        .role-dot {
+            display: inline-block; width: 8px; height: 8px;
+            border-radius: 50%; margin-right: 6px;
+        }
+        .role-admin-dot { background: #e94560; }
+        .role-librarian-dot { background: #28a745; }
+        .role-faculty-dot { background: #17a2b8; }
+        .role-student-dot { background: #ffc107; }
+        .role-assistant-dot { background: #6f42c1; }
+        .role-guest-dot { background: #6c757d; }
+    </style>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header">
+            <div>
+                <h1><i class="fas fa-clipboard-user me-2" style="color:var(--primary-red)"></i>Attendance</h1>
+                <p class="text-muted">RFID tap-in visit records</p>
+            </div>
+            <div class="d-flex align-items-center" style="gap:10px">
+                <button class="export-btn" id="btn-export"><i class="fas fa-download"></i> Export CSV</button>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:linear-gradient(135deg,#0f3460,#1a5276)"><i class="fas fa-door-open"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-total">0</div>
+                            <div class="stat-label">Total Visits</div>
+                            <div class="stat-trend neutral" id="trend-total"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:linear-gradient(135deg,#28a745,#20c997)"><i class="fas fa-users"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-unique">0</div>
+                            <div class="stat-label">Unique Visitors</div>
+                            <div class="stat-trend neutral" id="trend-unique"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:linear-gradient(135deg,#e94560,#ff6b6b)"><i class="fas fa-fire"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-peak">—</div>
+                            <div class="stat-label">Peak Hour</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:linear-gradient(135deg,#6f42c1,#a855f7)"><i class="fas fa-chart-line"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-avg">0</div>
+                            <div class="stat-label">Avg. Visits / Hour</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="d-flex align-items-center" style="gap:8px">
+                <i class="fas fa-calendar-alt" style="color:var(--gray)"></i>
+                <label style="font-weight:600;font-size:13px;color:var(--primary-navy);white-space:nowrap">Filter Date</label>
+            </div>
+            <input type="date" class="form-control" id="filter-date" style="max-width:200px">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search name or RFID...">
+            </div>
+            <div class="ms-auto d-flex align-items-center" style="gap:12px">
+                <span class="text-muted small" id="result-count"></span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Visits Table -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <span><i class="fas fa-list me-2"></i>Visit Log</span>
+                        <span class="badge bg-primary" id="table-count-badge">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table" id="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Time</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>RFID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendance-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hourly Chart -->
+            <div class="col-md-4">
+                <div class="card chart-card">
+                    <div class="card-header"><i class="fas fa-chart-bar me-2"></i>Hourly Distribution</div>
+                    <div class="card-body">
+                        <canvas id="chart-hourly" height="240"></canvas>
+                    </div>
+                </div>
+                <!-- Role Breakdown -->
+                <div class="card mt-3">
+                    <div class="card-header"><i class="fas fa-pie-chart me-2"></i>Visitors by Role</div>
+                    <div class="card-body">
+                        <canvas id="chart-roles" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+
+        var hourlyChart = null;
+        var rolesChart = null;
+
+        // Default date to today
+        var dateInput = document.getElementById('filter-date');
+        var today = new Date();
+        dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+        function getRecordsForDate(dateStr) {
+            var all = Store.getAll('attendance');
+            return all.filter(function(r) {
+                var d = new Date(r.tap_time || r.created_at);
+                var rDate = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                return rDate === dateStr;
+            });
+        }
+
+        function formatTime(isoStr) {
+            var d = new Date(isoStr);
+            var h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+            var s = String(d.getSeconds()).padStart(2,'0');
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return h + ':' + m + ':' + s + ' ' + ampm;
+        }
+
+        function getRoleDotClass(role) {
+            var map = {
+                'System Administrator': 'role-admin-dot',
+                'Librarian': 'role-librarian-dot',
+                'Faculty': 'role-faculty-dot',
+                'Student': 'role-student-dot',
+                'Student Assistant': 'role-assistant-dot',
+                'Guest': 'role-guest-dot'
+            };
+            return map[role] || 'role-guest-dot';
+        }
+
+        function getRoleBadgeClass(role) {
+            var map = {
+                'System Administrator': 'bg-danger',
+                'Librarian': 'bg-success',
+                'Faculty': 'bg-info',
+                'Student': 'bg-warning',
+                'Student Assistant': 'bg-dark',
+                'Guest': 'bg-secondary'
+            };
+            return map[role] || 'bg-secondary';
+        }
+
+        function renderAttendance() {
+            var dateStr = dateInput.value;
+            var records = getRecordsForDate(dateStr);
+            var searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+
+            // Apply search filter
+            if (searchTerm) {
+                records = records.filter(function(r) {
+                    return (r.user_name && r.user_name.toLowerCase().indexOf(searchTerm) !== -1) ||
+                           (r.rfid_id && r.rfid_id.toLowerCase().indexOf(searchTerm) !== -1);
+                });
+            }
+
+            // Sort by time descending (most recent first)
+            records.sort(function(a, b) {
+                return new Date(b.tap_time || b.created_at) - new Date(a.tap_time || a.created_at);
+            });
+
+            // --- Stats ---
+            var allForDate = getRecordsForDate(dateStr); // unfiltered for stats
+            var totalVisits = allForDate.length;
+            var uniqueIds = {};
+            allForDate.forEach(function(r) { uniqueIds[r.user_id] = true; });
+            var uniqueVisitors = Object.keys(uniqueIds).length;
+
+            // Peak hour
+            var hourCounts = {};
+            allForDate.forEach(function(r) {
+                var h = new Date(r.tap_time || r.created_at).getHours();
+                hourCounts[h] = (hourCounts[h] || 0) + 1;
+            });
+            var peakHour = null, peakCount = 0;
+            for (var h in hourCounts) {
+                if (hourCounts[h] > peakCount) { peakCount = hourCounts[h]; peakHour = parseInt(h); }
+            }
+            var peakLabel = '—';
+            if (peakHour !== null) {
+                var ph = peakHour % 12 || 12;
+                var pampm = peakHour >= 12 ? 'PM' : 'AM';
+                peakLabel = ph + ':00 ' + pampm;
+            }
+
+            // Avg visits per active hour
+            var activeHours = Object.keys(hourCounts).length;
+            var avgVisits = activeHours > 0 ? (totalVisits / activeHours).toFixed(1) : '0';
+
+            document.getElementById('stat-total').textContent = totalVisits;
+            document.getElementById('stat-unique').textContent = uniqueVisitors;
+            document.getElementById('stat-peak').textContent = peakLabel;
+            document.getElementById('stat-avg').textContent = avgVisits;
+            document.getElementById('table-count-badge').textContent = records.length;
+            document.getElementById('result-count').textContent = records.length + ' record' + (records.length !== 1 ? 's' : '') + ' found';
+
+            // Trend indicators
+            var trendTotal = document.getElementById('trend-total');
+            var trendUnique = document.getElementById('trend-unique');
+            if (totalVisits > 0) {
+                trendTotal.textContent = '● Active';
+                trendTotal.className = 'stat-trend up';
+            } else {
+                trendTotal.textContent = 'No visits yet';
+                trendTotal.className = 'stat-trend neutral';
+            }
+            if (uniqueVisitors > 0) {
+                trendUnique.textContent = uniqueVisitors + ' individual' + (uniqueVisitors !== 1 ? 's' : '');
+                trendUnique.className = 'stat-trend up';
+            } else {
+                trendUnique.textContent = '—';
+                trendUnique.className = 'stat-trend neutral';
+            }
+
+            // --- Table ---
+            var tbody = document.getElementById('attendance-tbody');
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">' +
+                    '<i class="fas fa-inbox" style="font-size:32px;display:block;margin-bottom:8px;opacity:0.3"></i>' +
+                    (searchTerm ? 'No results matching "' + searchTerm + '"' : 'No attendance records for this date.') +
+                    '</td></tr>';
+            } else {
+                var html = '';
+                records.forEach(function(r, idx) {
+                    html += '<tr>' +
+                        '<td>' + (idx + 1) + '</td>' +
+                        '<td><span class="visit-time">' + formatTime(r.tap_time || r.created_at) + '</span></td>' +
+                        '<td><strong>' + (r.user_name || 'Unknown') + '</strong></td>' +
+                        '<td><span class="' + getRoleDotClass(r.role_name) + ' role-dot"></span><span class="badge ' + getRoleBadgeClass(r.role_name) + '">' + (r.role_name || 'N/A') + '</span></td>' +
+                        '<td><code style="font-size:12px;background:#f0f0f0;padding:2px 8px;border-radius:4px;color:#333">' + (r.rfid_id || '—') + '</code></td>' +
+                        '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            // --- Hourly Chart ---
+            var hourLabels = [];
+            var hourData = [];
+            for (var i = 7; i <= 21; i++) {
+                var lh = i % 12 || 12;
+                var la = i >= 12 ? 'PM' : 'AM';
+                hourLabels.push(lh + ' ' + la);
+                hourData.push(hourCounts[i] || 0);
+            }
+
+            if (hourlyChart) hourlyChart.destroy();
+            hourlyChart = new Chart(document.getElementById('chart-hourly'), {
+                type: 'bar',
+                data: {
+                    labels: hourLabels,
+                    datasets: [{
+                        label: 'Visits',
+                        data: hourData,
+                        backgroundColor: hourData.map(function(v, idx) {
+                            return (idx + 7) === peakHour
+                                ? 'rgba(233, 69, 96, 0.85)'
+                                : 'rgba(15, 52, 96, 0.65)';
+                        }),
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(ctx) { return ctx[0].label; },
+                                label: function(ctx) { return ctx.raw + ' visit' + (ctx.raw !== 1 ? 's' : ''); }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, font: { size: 11 } },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 }, maxRotation: 45 },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // --- Roles Pie Chart ---
+            var roleCounts = {};
+            allForDate.forEach(function(r) {
+                var rn = r.role_name || 'Unknown';
+                roleCounts[rn] = (roleCounts[rn] || 0) + 1;
+            });
+            var roleLabels = Object.keys(roleCounts);
+            var roleData = roleLabels.map(function(k) { return roleCounts[k]; });
+            var roleColors = {
+                'System Administrator': '#e94560',
+                'Librarian': '#28a745',
+                'Faculty': '#17a2b8',
+                'Student': '#ffc107',
+                'Student Assistant': '#6f42c1',
+                'Guest': '#6c757d'
+            };
+            var bgColors = roleLabels.map(function(r) { return roleColors[r] || '#999'; });
+
+            if (rolesChart) rolesChart.destroy();
+            rolesChart = new Chart(document.getElementById('chart-roles'), {
+                type: 'doughnut',
+                data: {
+                    labels: roleLabels,
+                    datasets: [{ data: roleData, backgroundColor: bgColors }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } }
+                    }
+                }
+            });
+        }
+
+        // Bind events
+        dateInput.addEventListener('change', renderAttendance);
+        document.getElementById('search-input').addEventListener('input', renderAttendance);
+
+        // Export CSV
+        document.getElementById('btn-export').addEventListener('click', function() {
+            var dateStr = dateInput.value;
+            var records = getRecordsForDate(dateStr);
+            if (records.length === 0) {
+                App.showAlert('info', 'No records to export for this date.');
+                return;
+            }
+            records.sort(function(a, b) {
+                return new Date(a.tap_time || a.created_at) - new Date(b.tap_time || b.created_at);
+            });
+            var csv = 'No.,Time,Name,Role,RFID\n';
+            records.forEach(function(r, idx) {
+                csv += (idx+1) + ',' +
+                    '"' + formatTime(r.tap_time || r.created_at) + '",' +
+                    '"' + (r.user_name || '') + '",' +
+                    '"' + (r.role_name || '') + '",' +
+                    '"' + (r.rfid_id || '') + '"\n';
+            });
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'attendance-' + dateStr + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            App.showAlert('success', 'CSV exported for ' + dateStr);
+        });
+
+        // Initial render
+        renderAttendance();
+    </script>
+</body>
+</html>

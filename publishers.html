@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publishers - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header">
+            <h1><i class="fas fa-building me-2"></i>Publishers</h1>
+            <button class="btn btn-primary" id="btn-add"><i class="fas fa-plus me-1"></i> Add Publisher</button>
+        </div>
+        <div class="filter-bar"><div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="search-input" placeholder="Search publishers..."></div></div>
+        <div class="card"><div class="card-body p-0"><div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>#</th><th>Name</th><th>Address</th><th>Contact</th><th>Books</th><th>Actions</th></tr></thead>
+                <tbody id="data-table"></tbody>
+            </table>
+        </div></div></div>
+    </main>
+    <div class="modal-overlay" id="modal-form">
+        <div class="modal-box">
+            <div class="modal-header"><h3 id="modal-title">Add Publisher</h3><button class="modal-close">&times;</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="form-group"><label>Name</label><input class="form-control" id="f-name"></div>
+                <div class="form-group"><label>Address</label><input class="form-control" id="f-address"></div>
+                <div class="form-group"><label>Contact</label><input class="form-control" id="f-contact"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary modal-close">Cancel</button><button class="btn btn-success" id="btn-save"><i class="fas fa-save me-1"></i> Save</button></div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init(); App.bindModalCloses();
+        function load() {
+            var items = Store.getAll('publishers'), books = Store.getAll('books');
+            var s = document.getElementById('search-input').value.toLowerCase();
+            if (s) items = items.filter(function(i) { return i.name.toLowerCase().indexOf(s) !== -1; });
+            var tbody = document.getElementById('data-table');
+            if (!items.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No publishers found.</td></tr>'; return; }
+            tbody.innerHTML = items.map(function(p, i) {
+                var cnt = books.filter(function(b) { return b.publisher_id === p.id; }).length;
+                return '<tr><td>' + (i+1) + '</td><td class="fw-semibold">' + p.name + '</td><td>' + (p.address||'—') + '</td><td>' + (p.contact||'—') + '</td><td><span class="badge bg-info">' + cnt + '</span></td><td><button class="btn btn-sm btn-outline-primary btn-edit" data-id="' + p.id + '"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger btn-del" data-id="' + p.id + '" data-name="' + p.name + '"><i class="fas fa-trash"></i></button></td></tr>';
+            }).join('');
+            bind();
+        }
+        function bind() {
+            document.querySelectorAll('.btn-edit').forEach(function(b) { b.addEventListener('click', function() {
+                var p = Store.getById('publishers', this.dataset.id); if (!p) return;
+                document.getElementById('modal-title').textContent = 'Edit Publisher'; document.getElementById('edit-id').value = p.id;
+                document.getElementById('f-name').value = p.name; document.getElementById('f-address').value = p.address || '';
+                document.getElementById('f-contact').value = p.contact || ''; App.openModal('modal-form');
+            }); });
+            document.querySelectorAll('.btn-del').forEach(function(b) { b.addEventListener('click', function() {
+                var id = this.dataset.id, name = this.dataset.name;
+                App.confirmDelete(name).then(function(r) { if (r.isConfirmed) { Store.remove('publishers', id); App.showAlert('success', 'Publisher deleted.'); load(); } });
+            }); });
+        }
+        document.getElementById('btn-add').addEventListener('click', function() {
+            document.getElementById('modal-title').textContent = 'Add Publisher'; document.getElementById('edit-id').value = '';
+            ['f-name', 'f-address', 'f-contact'].forEach(function(id) { document.getElementById(id).value = ''; });
+            App.openModal('modal-form');
+        });
+        document.getElementById('btn-save').addEventListener('click', function() {
+            var name = document.getElementById('f-name').value.trim();
+            if (!name) { App.showAlert('danger', 'Name required.'); return; }
+            var data = { name: name, address: document.getElementById('f-address').value.trim(), contact: document.getElementById('f-contact').value.trim() };
+            var eid = document.getElementById('edit-id').value;
+            if (eid) { Store.update('publishers', eid, data); App.showAlert('success', 'Publisher updated.'); }
+            else { Store.create('publishers', data); App.showAlert('success', 'Publisher added.'); }
+            App.closeModal('modal-form'); load();
+        });
+        document.getElementById('search-input').addEventListener('input', load);
+        load();
+    </script>
+</body>
+</html>

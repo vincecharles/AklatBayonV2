@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header">
+            <h1><i class="fas fa-user-graduate me-2"></i>Student Management</h1>
+            <button class="btn btn-primary" id="btn-add"><i class="fas fa-plus me-1"></i> Add Student</button>
+        </div>
+        <div class="filter-bar">
+            <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="search-input" placeholder="Search students..."></div>
+            <select class="form-select" id="filter-status" style="max-width:160px">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="card"><div class="card-body p-0"><div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>#</th><th>Student ID</th><th>Name</th><th>Email</th><th>Grade Level</th><th>Section</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="data-table"></tbody>
+            </table>
+        </div></div></div>
+    </main>
+    <div class="modal-overlay" id="modal-form">
+        <div class="modal-box">
+            <div class="modal-header"><h3 id="modal-title">Add Student</h3><button class="modal-close">&times;</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="form-group"><label>Student ID</label><input class="form-control" id="f-student-id" placeholder="e.g. 2024-0001"></div>
+                <div class="form-group"><label>Full Name</label><input class="form-control" id="f-name"></div>
+                <div class="form-group"><label>Email</label><input class="form-control" id="f-email" type="email"></div>
+                <div class="form-group"><label>Grade Level</label>
+                    <select class="form-select" id="f-grade"><option value="College">College</option><option value="Senior High">Senior High</option><option value="Junior High">Junior High</option></select>
+                </div>
+                <div class="form-group"><label>Section</label><input class="form-control" id="f-section" placeholder="e.g. BSIT-3A"></div>
+                <div class="form-group"><label>Contact</label><input class="form-control" id="f-contact" placeholder="09XXXXXXXXX"></div>
+                <div class="form-group"><label>Status</label>
+                    <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary modal-close">Cancel</button><button class="btn btn-success" id="btn-save"><i class="fas fa-save me-1"></i> Save</button></div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init(); App.bindModalCloses();
+        function load() {
+            var items = Store.getAll('students');
+            var s = document.getElementById('search-input').value.toLowerCase();
+            var sf = document.getElementById('filter-status').value;
+            if (s) items = items.filter(function(i) { return i.name.toLowerCase().indexOf(s)!==-1 || i.student_id.toLowerCase().indexOf(s)!==-1; });
+            if (sf) items = items.filter(function(i) { return i.status === sf; });
+            var tbody = document.getElementById('data-table');
+            if (!items.length) { tbody.innerHTML='<tr><td colspan="9" class="text-center text-muted py-4">No students found.</td></tr>'; return; }
+            tbody.innerHTML = items.map(function(i,idx) {
+                return '<tr><td>'+(idx+1)+'</td><td class="fw-semibold">'+i.student_id+'</td><td>'+i.name+'</td><td>'+i.email+'</td><td>'+i.grade_level+'</td><td>'+i.section+'</td><td>'+i.contact+'</td><td><span class="badge '+(i.status==='active'?'badge-active':'badge-inactive')+'">'+i.status+'</span></td><td><button class="btn btn-sm btn-outline-primary btn-edit" data-id="'+i.id+'"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger btn-del" data-id="'+i.id+'" data-name="'+i.name+'"><i class="fas fa-trash"></i></button></td></tr>';
+            }).join('');
+            bindActions();
+        }
+        function bindActions() {
+            document.querySelectorAll('.btn-edit').forEach(function(b) { b.addEventListener('click', function() {
+                var i = Store.getById('students', this.dataset.id); if(!i) return;
+                document.getElementById('modal-title').textContent='Edit Student'; document.getElementById('edit-id').value=i.id;
+                document.getElementById('f-student-id').value=i.student_id; document.getElementById('f-name').value=i.name;
+                document.getElementById('f-email').value=i.email; document.getElementById('f-grade').value=i.grade_level;
+                document.getElementById('f-section').value=i.section; document.getElementById('f-contact').value=i.contact;
+                document.getElementById('f-status').value=i.status; App.openModal('modal-form');
+            }); });
+            document.querySelectorAll('.btn-del').forEach(function(b) { b.addEventListener('click', function() {
+                var id=this.dataset.id, name=this.dataset.name;
+                App.confirmDelete(name).then(function(r) { if(r.isConfirmed){Store.remove('students',id);App.showAlert('success','Student deleted.');load();} });
+            }); });
+        }
+        document.getElementById('btn-add').addEventListener('click', function() {
+            document.getElementById('modal-title').textContent='Add Student'; document.getElementById('edit-id').value='';
+            ['f-student-id','f-name','f-email','f-section','f-contact'].forEach(function(id){document.getElementById(id).value='';});
+            document.getElementById('f-grade').value='College'; document.getElementById('f-status').value='active'; App.openModal('modal-form');
+        });
+        document.getElementById('btn-save').addEventListener('click', function() {
+            var sid=document.getElementById('f-student-id').value.trim(), name=document.getElementById('f-name').value.trim(),
+                email=document.getElementById('f-email').value.trim(), grade=document.getElementById('f-grade').value,
+                section=document.getElementById('f-section').value.trim(), contact=document.getElementById('f-contact').value.trim(),
+                status=document.getElementById('f-status').value;
+            if(!sid||!name||!email){App.showAlert('danger','Fill required fields.');return;}
+            var eid=document.getElementById('edit-id').value;
+            var data={student_id:sid,name:name,email:email,grade_level:grade,section:section,contact:contact,status:status};
+            if(eid) { Store.update('students',eid,data); App.showAlert('success','Student updated.'); }
+            else { Store.create('students',data); App.showAlert('success','Student created.'); }
+            App.closeModal('modal-form'); load();
+        });
+        document.getElementById('search-input').addEventListener('input', load);
+        document.getElementById('filter-status').addEventListener('change', load);
+        load();
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header"><h1><i class="fas fa-boxes-stacked me-2"></i>Inventory</h1></div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-3"><div class="stat-card"><div class="d-flex align-items-center"><div class="stat-icon" style="background:#0f3460"><i class="fas fa-book"></i></div><div class="ms-3"><div class="stat-number" id="inv-titles">0</div><div class="stat-label">Total Titles</div></div></div></div></div>
+            <div class="col-md-3"><div class="stat-card"><div class="d-flex align-items-center"><div class="stat-icon" style="background:#28a745"><i class="fas fa-copy"></i></div><div class="ms-3"><div class="stat-number" id="inv-copies">0</div><div class="stat-label">Total Copies</div></div></div></div></div>
+            <div class="col-md-3"><div class="stat-card"><div class="d-flex align-items-center"><div class="stat-icon" style="background:#17a2b8"><i class="fas fa-check-circle"></i></div><div class="ms-3"><div class="stat-number" id="inv-avail">0</div><div class="stat-label">Available</div></div></div></div></div>
+            <div class="col-md-3"><div class="stat-card"><div class="d-flex align-items-center"><div class="stat-icon" style="background:#ffc107"><i class="fas fa-hand-holding"></i></div><div class="ms-3"><div class="stat-number" id="inv-out">0</div><div class="stat-label">Checked Out</div></div></div></div></div>
+        </div>
+        <div class="card"><div class="card-header"><i class="fas fa-list me-2"></i>Book Inventory</div><div class="card-body p-0"><div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Total Copies</th><th>Available</th><th>Checked Out</th><th>Availability</th></tr></thead>
+                <tbody id="data-table"></tbody>
+            </table>
+        </div></div></div>
+    </main>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+        var books = Store.getAll('books');
+        var totalCopies = 0, totalAvail = 0;
+        books.forEach(function(b) { totalCopies += b.copies; totalAvail += b.available; });
+        document.getElementById('inv-titles').textContent = books.length;
+        document.getElementById('inv-copies').textContent = totalCopies;
+        document.getElementById('inv-avail').textContent = totalAvail;
+        document.getElementById('inv-out').textContent = totalCopies - totalAvail;
+        var tbody = document.getElementById('data-table');
+        if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No books in inventory.</td></tr>'; }
+        else {
+            tbody.innerHTML = books.map(function(b) {
+                var out = b.copies - b.available;
+                var pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
+                var color = pct > 50 ? '#28a745' : (pct > 0 ? '#ffc107' : '#dc3545');
+                return '<tr><td class="fw-semibold">' + b.title + '</td><td>' + App.getAuthorName(b.author_id) + '</td><td><span class="badge bg-info">' + App.getCategoryName(b.category_id) + '</span></td><td>' + b.copies + '</td><td>' + b.available + '</td><td>' + out + '</td><td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#e9ecef;border-radius:4px;overflow:hidden"><div style="width:' + pct + '%;height:100%;background:' + color + ';border-radius:4px"></div></div><span class="small" style="color:' + color + '">' + pct + '%</span></div></td></tr>';
+            }).join('');
+        }
+    </script>
+</body>
+</html>

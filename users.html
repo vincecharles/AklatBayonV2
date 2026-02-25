@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header">
+            <h1><i class="fas fa-users me-2"></i>User Management</h1>
+            <button class="btn btn-primary" id="btn-add"><i class="fas fa-plus me-1"></i> Add User</button>
+        </div>
+        <div class="filter-bar">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search users...">
+            </div>
+            <select class="form-select" id="filter-role" style="max-width:200px">
+                <option value="">All Roles</option>
+            </select>
+        </div>
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Subtype</th><th>RFID</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="user-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="modal-overlay" id="modal-user">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title">Add User</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="form-group"><label>Full Name</label><input class="form-control" id="f-name" required></div>
+                <div class="form-group"><label>Username</label><input class="form-control" id="f-username" required></div>
+                <div class="form-group"><label>Email</label><input class="form-control" id="f-email" type="email" required></div>
+                <div class="form-group"><label>Password</label><input class="form-control" id="f-password" type="password" placeholder="Leave blank to keep current"></div>
+                <div class="form-group"><label>Role</label>
+                    <select class="form-select" id="f-role"></select>
+                </div>
+                <div class="form-group" id="f-subtype-group" style="display:none">
+                    <label>Faculty Subtype</label>
+                    <select class="form-select" id="f-subtype">
+                        <option value="Teaching">Teaching</option>
+                        <option value="Non-Teaching">Non-Teaching</option>
+                        <option value="Department Chair">Department Chair</option>
+                        <option value="Department Head">Department Head</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>RFID ID</label><input class="form-control" id="f-rfid" placeholder="e.g. RFID-STU-001"></div>
+                <div class="form-group"><label>Status</label>
+                    <select class="form-select" id="f-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Cancel</button>
+                <button class="btn btn-success" id="btn-save"><i class="fas fa-save me-1"></i> Save</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+        App.bindModalCloses();
+
+        var roles = Store.getAll('roles');
+        var roleSelect = document.getElementById('f-role');
+        var filterRole = document.getElementById('filter-role');
+        roles.forEach(function(r) {
+            roleSelect.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
+            filterRole.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
+        });
+
+        document.getElementById('f-role').addEventListener('change', function() {
+            document.getElementById('f-subtype-group').style.display = this.value === 'r3' ? 'block' : 'none';
+        });
+
+        function loadUsers() {
+            var users = Store.getAll('users');
+            var search = document.getElementById('search-input').value.toLowerCase();
+            var roleFilter = document.getElementById('filter-role').value;
+            if (search) users = users.filter(function(u) { return u.name.toLowerCase().indexOf(search) !== -1 || u.username.toLowerCase().indexOf(search) !== -1 || u.email.toLowerCase().indexOf(search) !== -1; });
+            if (roleFilter) users = users.filter(function(u) { return u.role_id === roleFilter; });
+            var tbody = document.getElementById('user-table');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No users found.</td></tr>'; return; }
+            tbody.innerHTML = users.map(function(u, i) {
+                var roleName = App.getRoleName(u.role_id);
+                return '<tr><td>'+(i+1)+'</td><td class="fw-semibold">'+u.name+'</td><td>'+u.username+'</td><td>'+u.email+'</td><td><span class="badge bg-primary">'+roleName+'</span></td><td>'+(u.faculty_subtype || '—')+'</td><td><code>'+(u.rfid_id || '—')+'</code></td><td><span class="badge '+(u.status==='active'?'badge-active':'badge-inactive')+'">'+u.status+'</span></td><td><button class="btn btn-sm btn-outline-primary btn-edit" data-id="'+u.id+'"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger btn-del" data-id="'+u.id+'" data-name="'+u.name+'"><i class="fas fa-trash"></i></button></td></tr>';
+            }).join('');
+            bindActions();
+        }
+
+        function bindActions() {
+            document.querySelectorAll('.btn-edit').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var u = Store.getById('users', this.dataset.id);
+                    if (!u) return;
+                    document.getElementById('modal-title').textContent = 'Edit User';
+                    document.getElementById('edit-id').value = u.id;
+                    document.getElementById('f-name').value = u.name;
+                    document.getElementById('f-username').value = u.username;
+                    document.getElementById('f-email').value = u.email;
+                    document.getElementById('f-password').value = '';
+                    document.getElementById('f-role').value = u.role_id;
+                    document.getElementById('f-subtype').value = u.faculty_subtype || 'Teaching';
+                    document.getElementById('f-subtype-group').style.display = u.role_id === 'r3' ? 'block' : 'none';
+                    document.getElementById('f-rfid').value = u.rfid_id || '';
+                    document.getElementById('f-status').value = u.status;
+                    App.openModal('modal-user');
+                });
+            });
+            document.querySelectorAll('.btn-del').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var id = this.dataset.id, name = this.dataset.name;
+                    App.confirmDelete(name).then(function(result) {
+                        if (result.isConfirmed) { Store.remove('users', id); App.showAlert('success', 'User deleted.'); loadUsers(); }
+                    });
+                });
+            });
+        }
+
+        document.getElementById('btn-add').addEventListener('click', function() {
+            document.getElementById('modal-title').textContent = 'Add User';
+            document.getElementById('edit-id').value = '';
+            document.getElementById('f-name').value = '';
+            document.getElementById('f-username').value = '';
+            document.getElementById('f-email').value = '';
+            document.getElementById('f-password').value = '';
+            document.getElementById('f-role').value = roles[0] ? roles[0].id : '';
+            document.getElementById('f-subtype-group').style.display = 'none';
+            document.getElementById('f-rfid').value = '';
+            document.getElementById('f-status').value = 'active';
+            App.openModal('modal-user');
+        });
+
+        document.getElementById('btn-save').addEventListener('click', function() {
+            var name = document.getElementById('f-name').value.trim();
+            var username = document.getElementById('f-username').value.trim();
+            var email = document.getElementById('f-email').value.trim();
+            var password = document.getElementById('f-password').value;
+            var roleId = document.getElementById('f-role').value;
+            var rfid = document.getElementById('f-rfid').value.trim();
+            var status = document.getElementById('f-status').value;
+            var facultySub = roleId === 'r3' ? document.getElementById('f-subtype').value : null;
+            if (!name || !username || !email || !roleId) { App.showAlert('danger', 'Please fill required fields.'); return; }
+            var editId = document.getElementById('edit-id').value;
+            if (editId) {
+                var data = { name:name, username:username, email:email, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status };
+                if (password) data.password = password;
+                Store.update('users', editId, data);
+                App.showAlert('success', 'User updated.');
+            } else {
+                if (!password) { App.showAlert('danger', 'Password is required.'); return; }
+                Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status });
+                App.showAlert('success', 'User created.');
+            }
+            App.closeModal('modal-user');
+            loadUsers();
+        });
+
+        document.getElementById('search-input').addEventListener('input', loadUsers);
+        document.getElementById('filter-role').addEventListener('change', loadUsers);
+        loadUsers();
+    </script>
+</body>
+</html>

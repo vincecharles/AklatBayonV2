@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Catalog - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .catalog-header { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); color: #fff; padding: 40px 32px; border-radius: 0 0 16px 16px; margin: -24px -24px 24px; text-align: center; }
+        .catalog-header h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+        .catalog-header p { color: rgba(255,255,255,0.6); font-size: 14px; }
+        .catalog-search { max-width: 500px; margin: 20px auto 0; position: relative; }
+        .catalog-search input { width: 100%; padding: 14px 20px 14px 48px; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.1); color: #fff; font-size: 16px; backdrop-filter: blur(8px); }
+        .catalog-search input::placeholder { color: rgba(255,255,255,0.4); }
+        .catalog-search input:focus { outline: none; border-color: rgba(255,255,255,0.5); }
+        .catalog-search i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .book-card { background: #fff; border-radius: 12px; border: 1px solid #e9ecef; padding: 24px; transition: all 0.2s; }
+        .book-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .book-card .book-title { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+        .book-card .book-meta { font-size: 13px; color: #6c757d; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .book-card .book-avail { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .catalog-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .catalog-nav a { color: #0f3460; font-weight: 600; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .catalog-nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <main class="main-content" style="margin-left:0;background:#f4f6f9">
+        <div class="catalog-header">
+            <h1><i class="fas fa-book-open" style="margin-right:12px"></i>AklatBayon Catalog</h1>
+            <p>FEATI University Library — Browse our collection</p>
+            <div class="catalog-search"><i class="fas fa-search"></i><input type="text" id="search-input" placeholder="Search books by title, author, or ISBN..."></div>
+        </div>
+        <div class="catalog-nav">
+            <div>
+                <select class="form-select" id="filter-cat" style="max-width:200px"><option value="">All Categories</option></select>
+            </div>
+            <div>
+                <a href="index.html"><i class="fas fa-id-card"></i> RFID Tap</a>
+                &nbsp;&nbsp;
+                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </div>
+        </div>
+        <div class="book-grid" id="book-grid"></div>
+    </main>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        var categories = Store.getAll('categories');
+        var fcat = document.getElementById('filter-cat');
+        categories.forEach(function(c) { fcat.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>'; });
+        function load() {
+            var books = Store.getAll('books'), s = document.getElementById('search-input').value.toLowerCase(), cf = document.getElementById('filter-cat').value;
+            if (s) books = books.filter(function(b) { return b.title.toLowerCase().indexOf(s) !== -1 || b.isbn.toLowerCase().indexOf(s) !== -1 || App.getAuthorName(b.author_id).toLowerCase().indexOf(s) !== -1; });
+            if (cf) books = books.filter(function(b) { return b.category_id === cf; });
+            var grid = document.getElementById('book-grid');
+            if (!books.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-search"></i><p>No books found.</p></div>'; return; }
+            grid.innerHTML = books.map(function(b) {
+                var availColor = b.available > 0 ? '#28a745' : '#dc3545';
+                var availText = b.available > 0 ? b.available + ' available' : 'Unavailable';
+                return '<div class="book-card"><div class="book-title">' + b.title + '</div><div class="book-meta"><i class="fas fa-pen-fancy"></i> ' + App.getAuthorName(b.author_id) + '</div><div class="book-meta"><i class="fas fa-building"></i> ' + App.getPublisherName(b.publisher_id) + '</div><div class="book-meta"><i class="fas fa-tag"></i> ' + App.getCategoryName(b.category_id) + '</div><div class="book-meta"><i class="fas fa-barcode"></i> ' + b.isbn + '</div><div class="book-meta"><i class="fas fa-calendar"></i> ' + b.year + '</div><div class="book-avail"><span class="badge" style="background:' + availColor + '">' + availText + '</span><span class="small text-muted">' + b.copies + ' total copies</span></div></div>';
+            }).join('');
+        }
+        document.getElementById('search-input').addEventListener('input', load);
+        document.getElementById('filter-cat').addEventListener('change', load);
+        load();
+    </script>
+</body>
+</html>
