@@ -1,6 +1,43 @@
 var Store = (function() {
     function _key(name) { return 'aklatbayon_' + name; }
 
+    // ── Profanity / Bad‑word filter ───────────────────────────────
+    var _blocklist = [
+        // English profanity & slurs
+        'fuck','shit','bitch','ass','asshole','bastard','damn','dick','cunt',
+        'piss','cock','whore','slut','fag','faggot','nigger','nigga','retard',
+        'motherfucker','bullshit','jackass','douche','douchebag','crap',
+        'wtf','stfu','lmfao','pussy','bollocks','wanker','twat','prick',
+        // Tagalog bad words
+        'gago','gaga','tanga','bobo','boba','tangina','putangina','puta',
+        'putang','tarantado','tarantada','ulol','ungas','leche','lechugas',
+        'hayop','hinayupak','punyeta','pesteng','kupal','bwisit','siraulo',
+        'pakyu','pakshet','pakshit','kingina','kinginamo','inamo','inamu',
+        'tang ina','pota','potangina','gunggong','hampas lupa','salot',
+        'lintik','hudas','demonyo','engot','pokpok','malandi','bastos'
+    ];
+    var _blockPatterns = _blocklist.map(function(w) {
+        var escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp('(?:^|\\s|[^a-z])' + escaped + '(?:$|\\s|[^a-z])', 'i');
+    });
+
+    function _checkProfanity(obj) {
+        var fields = Object.keys(obj);
+        for (var i = 0; i < fields.length; i++) {
+            var val = obj[fields[i]];
+            if (typeof val !== 'string') continue;
+            // skip system fields
+            if (['id','created_at','updated_at','password','rfid_id','status','email'].indexOf(fields[i]) !== -1) continue;
+            for (var j = 0; j < _blockPatterns.length; j++) {
+                if (_blockPatterns[j].test(val)) {
+                    return { found: true, word: _blocklist[j], field: fields[i] };
+                }
+            }
+        }
+        return { found: false };
+    }
+    // ──────────────────────────────────────────────────────────────
+
     function getAll(collection) {
         var data = localStorage.getItem(_key(collection));
         return data ? JSON.parse(data) : [];
@@ -15,6 +52,10 @@ var Store = (function() {
     }
 
     function create(collection, item) {
+        var check = _checkProfanity(item);
+        if (check.found) {
+            return Promise.reject({ message: 'Inappropriate language detected in "' + check.field + '". Please remove offensive words and try again.' });
+        }
         var items = getAll(collection);
         item.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
         item.created_at = new Date().toISOString();
@@ -26,6 +67,10 @@ var Store = (function() {
     }
 
     function update(collection, id, updates) {
+        var check = _checkProfanity(updates);
+        if (check.found) {
+            return Promise.reject({ message: 'Inappropriate language detected in "' + check.field + '". Please remove offensive words and try again.' });
+        }
         var items = getAll(collection);
         var idx = items.findIndex(function(i) { return i.id === id; });
         if (idx === -1) return Promise.reject({ message: 'Not found' });
@@ -77,55 +122,77 @@ var Store = (function() {
         if (isSeeded()) return;
 
         var roles = [
-            { id: 'r1', name: 'System Administrator', description: 'Full system access' },
-            { id: 'r2', name: 'Librarian', description: 'Library operations management' },
-            { id: 'r3', name: 'Faculty', description: 'Teaching and non-teaching staff' },
-            { id: 'r4', name: 'Student', description: 'Enrolled students' },
-            { id: 'r5', name: 'Student Assistant', description: 'Student library helpers' },
-            { id: 'r6', name: 'Guest', description: 'Public catalog browsing only' }
+            { id: 'r1', name: 'System Administrator', description: 'IT staff — manages system configuration, user accounts, and backups' },
+            { id: 'r2', name: 'Head Librarian', description: 'Licensed professional librarian — oversees all library operations, cataloging, reports, and collection development' },
+            { id: 'r3', name: 'Librarian Staff', description: 'Library assistant / circulation clerk — handles front-desk operations under Head Librarian supervision' },
+            { id: 'r4', name: 'Faculty', description: 'Teaching and non-teaching university staff (subtypes: Teaching, Non-Teaching, Department Chair, Department Head)' },
+            { id: 'r5', name: 'Student', description: 'Currently enrolled FEATI students with valid ID' },
+            { id: 'r6', name: 'Student Assistant', description: 'Working student assigned to the library under scholarship program' },
+            { id: 'r7', name: 'Guest', description: 'Walk-in researchers, alumni, inter-library visitors — catalog browsing only' }
         ];
         setAll('roles', roles);
 
         var permissions = [
-            { id: 'p1', name: 'can_manage_users', label: 'Manage Users', group: 'Users', description: 'Create, edit, delete users' },
-            { id: 'p2', name: 'can_manage_roles', label: 'Manage Roles', group: 'Users', description: 'Manage roles and permissions' },
-            { id: 'p3', name: 'can_manage_students', label: 'Manage Students', group: 'Students', description: 'Create, edit, delete students' },
-            { id: 'p4', name: 'can_add_books', label: 'Add Books', group: 'Books', description: 'Add new books to catalog' },
-            { id: 'p5', name: 'can_edit_books', label: 'Edit Books', group: 'Books', description: 'Edit existing books' },
-            { id: 'p6', name: 'can_delete_books', label: 'Delete Books', group: 'Books', description: 'Remove books from catalog' },
-            { id: 'p7', name: 'can_add_categories', label: 'Manage Catalog', group: 'Catalog', description: 'Manage authors, publishers, categories' },
-            { id: 'p8', name: 'can_issue_books', label: 'Issue Books', group: 'Circulation', description: 'Issue books to borrowers' },
+            // Users & Students
+            { id: 'p1', name: 'can_manage_users', label: 'Manage Users', group: 'Users', description: 'Create, edit, deactivate user accounts' },
+            { id: 'p2', name: 'can_manage_roles', label: 'Manage Roles', group: 'Users', description: 'Manage roles and permission assignments' },
+            { id: 'p3', name: 'can_manage_students', label: 'Manage Students', group: 'Students', description: 'Create, edit, delete student records' },
+            // Catalog
+            { id: 'p4', name: 'can_add_books', label: 'Add Books', group: 'Catalog', description: 'Add new books to the catalog' },
+            { id: 'p5', name: 'can_edit_books', label: 'Edit Books', group: 'Catalog', description: 'Edit existing book records' },
+            { id: 'p6', name: 'can_delete_books', label: 'Delete Books', group: 'Catalog', description: 'Remove books from the catalog' },
+            { id: 'p7', name: 'can_add_categories', label: 'Manage Catalog Entities', group: 'Catalog', description: 'Manage authors, publishers, and categories' },
+            { id: 'p15', name: 'can_browse_catalog', label: 'Browse Catalog', group: 'Catalog', description: 'Search and view the book catalog (OPAC)' },
+            // Circulation
+            { id: 'p8', name: 'can_issue_books', label: 'Issue Books', group: 'Circulation', description: 'Check out books to borrowers' },
             { id: 'p9', name: 'can_return_books', label: 'Return Books', group: 'Circulation', description: 'Process book returns' },
-            { id: 'p10', name: 'can_manage_fines', label: 'Manage Fines', group: 'Finance', description: 'Collect or waive fines' },
-            { id: 'p11', name: 'can_view_reports', label: 'View Reports', group: 'Reports', description: 'View system reports' },
-            { id: 'p12', name: 'can_manage_settings', label: 'Manage Settings', group: 'System', description: 'Modify system settings' },
-            { id: 'p13', name: 'can_manage_backups', label: 'Manage Backups', group: 'System', description: 'Create and restore backups' },
-            { id: 'p14', name: 'can_view_audit_logs', label: 'View Audit Logs', group: 'System', description: 'View audit trail' },
-            { id: 'p15', name: 'can_browse_catalog', label: 'Browse Catalog', group: 'Books', description: 'View the book catalog' },
-            { id: 'p16', name: 'can_view_inventory', label: 'View Inventory', group: 'Reports', description: 'View inventory data' }
+            { id: 'p20', name: 'can_reserve_books', label: 'Reserve Books', group: 'Circulation', description: 'Place reservations on books' },
+            { id: 'p21', name: 'can_renew_books', label: 'Renew Books', group: 'Circulation', description: 'Renew own borrowed books' },
+            // Finance
+            { id: 'p10', name: 'can_manage_fines', label: 'Manage Fines', group: 'Finance', description: 'Collect, waive, or manage fines' },
+            // Reports & Administration
+            { id: 'p11', name: 'can_view_reports', label: 'View Reports', group: 'Reports', description: 'View circulation and library reports' },
+            { id: 'p16', name: 'can_view_inventory', label: 'View Inventory', group: 'Reports', description: 'View and manage inventory data' },
+            { id: 'p17', name: 'can_view_attendance', label: 'View Attendance', group: 'Reports', description: 'View RFID attendance reports' },
+            // System
+            { id: 'p12', name: 'can_manage_settings', label: 'Manage Settings', group: 'System', description: 'Modify system settings and configuration' },
+            { id: 'p13', name: 'can_manage_backups', label: 'Manage Backups', group: 'System', description: 'Create and restore data backups' },
+            { id: 'p14', name: 'can_view_audit_logs', label: 'View Audit Logs', group: 'System', description: 'View the system audit trail' },
+            // General & New
+            { id: 'p18', name: 'can_view_dashboard', label: 'View Dashboard', group: 'General', description: 'Access the dashboard overview page' },
+            { id: 'p19', name: 'can_view_own_profile', label: 'View Own Profile', group: 'General', description: 'View own user profile and loan history' },
+            { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' }
         ];
         setAll('permissions', permissions);
 
-        var allPermIds = permissions.map(function(p) { return p.id; });
         var rolePerms = {
-            'r1': allPermIds,
-            'r2': ['p3','p4','p5','p6','p7','p8','p9','p10','p11','p15','p16'],
-            'r3': ['p15'],
-            'r4': ['p15'],
-            'r5': ['p3','p8','p9','p15'],
-            'r6': ['p15']
+            // System Administrator — IT only: users, roles, settings, backups, audit, dashboard, catalog browse
+            'r1': ['p1','p2','p12','p13','p14','p15','p18','p19'],
+            // Head Librarian — Full library operations: catalog CRUD, circulation, fines, reports, inventory, attendance, audit, dashboard
+            'r2': ['p3','p4','p5','p6','p7','p8','p9','p10','p11','p14','p15','p16','p17','p18','p19','p20','p21','p22'],
+            // Librarian Staff — Front-desk: circulation, fines, edit books, inventory, dashboard
+            'r3': ['p5','p8','p9','p10','p15','p16','p18','p19','p20','p21'],
+            // Faculty — Browse catalog, recommend books, reserve/renew, own profile
+            'r4': ['p15','p19','p20','p21','p22'],
+            // Student — Browse catalog, own profile
+            'r5': ['p15','p19'],
+            // Student Assistant — Circulation, student lookup, browse catalog, dashboard
+            'r6': ['p3','p8','p9','p15','p18','p19','p20','p21'],
+            // Guest — Catalog browse only
+            'r7': ['p15']
         };
         setAll('role_permissions', rolePerms);
 
         var users = [
-            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@aklatbayon.edu', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u2', name: 'Maria Santos', username: 'librarian', password: 'lib123', email: 'maria@aklatbayon.edu', role_id: 'r2', faculty_subtype: null, rfid_id: 'RFID-LIB-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u3', name: 'Prof. Juan Cruz', username: 'faculty1', password: 'fac123', email: 'juan@aklatbayon.edu', role_id: 'r3', faculty_subtype: 'Teaching', rfid_id: '1980-0315', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u4', name: 'Ana Reyes', username: 'faculty2', password: 'fac123', email: 'ana@aklatbayon.edu', role_id: 'r3', faculty_subtype: 'Non-Teaching', rfid_id: '1985-0722', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u5', name: 'Dr. Pedro Lim', username: 'deptchair', password: 'chair123', email: 'pedro@aklatbayon.edu', role_id: 'r3', faculty_subtype: 'Department Chair', rfid_id: '1975-1105', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u6', name: 'Dr. Elena Ramos', username: 'depthead', password: 'head123', email: 'elena@aklatbayon.edu', role_id: 'r3', faculty_subtype: 'Department Head', rfid_id: '1978-0418', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u7', name: 'Carlo Mendoza', username: 'student1', password: 'stud123', email: 'carlo@aklatbayon.edu', role_id: 'r4', faculty_subtype: null, rfid_id: '2024-0001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { id: 'u8', name: 'Pia Garcia', username: 'assistant1', password: 'asst123', email: 'pia@aklatbayon.edu', role_id: 'r5', faculty_subtype: null, rfid_id: '2024-0002', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u2', name: 'Maria Santos', username: 'headlib', password: 'lib123', email: 'maria.santos@feati.edu.ph', role_id: 'r2', faculty_subtype: null, rfid_id: 'RFID-LIB-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u9', name: 'Rosa Dela Cruz', username: 'libstaff', password: 'staff123', email: 'rosa.delacruz@feati.edu.ph', role_id: 'r3', faculty_subtype: null, rfid_id: 'RFID-LIB-002', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u3', name: 'Prof. Juan Cruz', username: 'faculty1', password: 'fac123', email: 'juan.cruz@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Teaching', rfid_id: '1980-0315', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u4', name: 'Ana Reyes', username: 'faculty2', password: 'fac123', email: 'ana.reyes@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Non-Teaching', rfid_id: '1985-0722', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u5', name: 'Dr. Pedro Lim', username: 'deptchair', password: 'chair123', email: 'pedro.lim@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Department Chair', rfid_id: '1975-1105', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u6', name: 'Dr. Elena Ramos', username: 'depthead', password: 'head123', email: 'elena.ramos@feati.edu.ph', role_id: 'r4', faculty_subtype: 'Department Head', rfid_id: '1978-0418', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u7', name: 'Carlo Mendoza', username: 'student1', password: 'stud123', email: 'carlo.mendoza@feati.edu.ph', role_id: 'r5', faculty_subtype: null, rfid_id: '2024-0001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+            { id: 'u8', name: 'Pia Garcia', username: 'assistant1', password: 'asst123', email: 'pia.garcia@feati.edu.ph', role_id: 'r6', faculty_subtype: null, rfid_id: '2024-0002', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
         setAll('users', users);
 
@@ -181,9 +248,36 @@ var Store = (function() {
 
         var settings = [
             { id: 'set1', key: 'library_name', value: 'FEATI University Library', label: 'Library Name' },
-            { id: 'set2', key: 'max_borrow_days', value: '14', label: 'Max Borrow Days' },
-            { id: 'set3', key: 'fine_per_day', value: '5', label: 'Fine Per Day (₱)' },
-            { id: 'set4', key: 'max_books_per_student', value: '3', label: 'Max Books Per Student' }
+            { id: 'set2', key: 'fine_per_day', value: '5', label: 'Default Fine Per Day (₱)' },
+            // Per-role borrowing policies
+            { id: 'set10', key: 'borrow_head_librarian_max_books', value: '15', label: 'Head Librarian — Max Books' },
+            { id: 'set11', key: 'borrow_head_librarian_loan_days', value: '60', label: 'Head Librarian — Loan Days' },
+            { id: 'set12', key: 'borrow_head_librarian_max_renewals', value: '3', label: 'Head Librarian — Max Renewals' },
+            { id: 'set13', key: 'borrow_head_librarian_fine_per_day', value: '2', label: 'Head Librarian — Fine/Day (₱)' },
+            { id: 'set20', key: 'borrow_librarian_staff_max_books', value: '10', label: 'Librarian Staff — Max Books' },
+            { id: 'set21', key: 'borrow_librarian_staff_loan_days', value: '30', label: 'Librarian Staff — Loan Days' },
+            { id: 'set22', key: 'borrow_librarian_staff_max_renewals', value: '2', label: 'Librarian Staff — Max Renewals' },
+            { id: 'set23', key: 'borrow_librarian_staff_fine_per_day', value: '3', label: 'Librarian Staff — Fine/Day (₱)' },
+            { id: 'set30', key: 'borrow_faculty_teaching_max_books', value: '10', label: 'Faculty (Teaching) — Max Books' },
+            { id: 'set31', key: 'borrow_faculty_teaching_loan_days', value: '30', label: 'Faculty (Teaching) — Loan Days' },
+            { id: 'set32', key: 'borrow_faculty_teaching_max_renewals', value: '2', label: 'Faculty (Teaching) — Max Renewals' },
+            { id: 'set33', key: 'borrow_faculty_teaching_fine_per_day', value: '5', label: 'Faculty (Teaching) — Fine/Day (₱)' },
+            { id: 'set40', key: 'borrow_faculty_nonteaching_max_books', value: '5', label: 'Faculty (Non-Teaching) — Max Books' },
+            { id: 'set41', key: 'borrow_faculty_nonteaching_loan_days', value: '14', label: 'Faculty (Non-Teaching) — Loan Days' },
+            { id: 'set42', key: 'borrow_faculty_nonteaching_max_renewals', value: '1', label: 'Faculty (Non-Teaching) — Max Renewals' },
+            { id: 'set43', key: 'borrow_faculty_nonteaching_fine_per_day', value: '5', label: 'Faculty (Non-Teaching) — Fine/Day (₱)' },
+            { id: 'set50', key: 'borrow_faculty_deptchair_max_books', value: '10', label: 'Dept Chair/Head — Max Books' },
+            { id: 'set51', key: 'borrow_faculty_deptchair_loan_days', value: '30', label: 'Dept Chair/Head — Loan Days' },
+            { id: 'set52', key: 'borrow_faculty_deptchair_max_renewals', value: '2', label: 'Dept Chair/Head — Max Renewals' },
+            { id: 'set53', key: 'borrow_faculty_deptchair_fine_per_day', value: '5', label: 'Dept Chair/Head — Fine/Day (₱)' },
+            { id: 'set60', key: 'borrow_student_max_books', value: '3', label: 'Student — Max Books' },
+            { id: 'set61', key: 'borrow_student_loan_days', value: '7', label: 'Student — Loan Days' },
+            { id: 'set62', key: 'borrow_student_max_renewals', value: '1', label: 'Student — Max Renewals' },
+            { id: 'set63', key: 'borrow_student_fine_per_day', value: '5', label: 'Student — Fine/Day (₱)' },
+            { id: 'set70', key: 'borrow_student_assistant_max_books', value: '3', label: 'Student Assistant — Max Books' },
+            { id: 'set71', key: 'borrow_student_assistant_loan_days', value: '7', label: 'Student Assistant — Loan Days' },
+            { id: 'set72', key: 'borrow_student_assistant_max_renewals', value: '1', label: 'Student Assistant — Max Renewals' },
+            { id: 'set73', key: 'borrow_student_assistant_fine_per_day', value: '5', label: 'Student Assistant — Fine/Day (₱)' }
         ];
         setAll('settings', settings);
 

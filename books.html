@@ -146,9 +146,13 @@
             if(!title||!isbn){App.showAlert('danger','Title and ISBN required.');return;}
             var data={title:title,isbn:isbn,author_id:authorId,publisher_id:pubId,category_id:catId,call_number:callNum,year:year,copies:copies,available:avail,status:'active'};
             var eid=document.getElementById('edit-id').value;
-            if(eid){Store.update('books',eid,data);App.showAlert('success','Book updated.');}
-            else{Store.create('books',data);App.showAlert('success','Book added.');}
-            App.closeModal('modal-form'); load();
+            var promise = eid ? Store.update('books',eid,data) : Store.create('books',data);
+            promise.then(function(){
+                App.showAlert('success', eid ? 'Book updated.' : 'Book added.');
+                App.closeModal('modal-form'); load();
+            }).catch(function(err){
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save book.',confirmButtonColor:'#e94560'});
+            });
         });
         document.getElementById('search-input').addEventListener('input',load);
         document.getElementById('filter-cat').addEventListener('change',load);

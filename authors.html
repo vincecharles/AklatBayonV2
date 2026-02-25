@@ -78,9 +78,13 @@
             var name = document.getElementById('f-name').value.trim(), bio = document.getElementById('f-bio').value.trim();
             if (!name) { App.showAlert('danger', 'Name required.'); return; }
             var eid = document.getElementById('edit-id').value;
-            if (eid) { Store.update('authors', eid, { name: name, bio: bio }); App.showAlert('success', 'Author updated.'); }
-            else { Store.create('authors', { name: name, bio: bio }); App.showAlert('success', 'Author added.'); }
-            App.closeModal('modal-form'); load();
+            var promise = eid ? Store.update('authors', eid, { name: name, bio: bio }) : Store.create('authors', { name: name, bio: bio });
+            promise.then(function() {
+                App.showAlert('success', eid ? 'Author updated.' : 'Author added.');
+                App.closeModal('modal-form'); load();
+            }).catch(function(err) {
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
+            });
         });
         document.getElementById('search-input').addEventListener('input', load);
         load();

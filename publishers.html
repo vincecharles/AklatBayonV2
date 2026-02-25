@@ -78,9 +78,13 @@
             if (!name) { App.showAlert('danger', 'Name required.'); return; }
             var data = { name: name, address: document.getElementById('f-address').value.trim(), contact: document.getElementById('f-contact').value.trim() };
             var eid = document.getElementById('edit-id').value;
-            if (eid) { Store.update('publishers', eid, data); App.showAlert('success', 'Publisher updated.'); }
-            else { Store.create('publishers', data); App.showAlert('success', 'Publisher added.'); }
-            App.closeModal('modal-form'); load();
+            var promise = eid ? Store.update('publishers', eid, data) : Store.create('publishers', data);
+            promise.then(function() {
+                App.showAlert('success', eid ? 'Publisher updated.' : 'Publisher added.');
+                App.closeModal('modal-form'); load();
+            }).catch(function(err) {
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
+            });
         });
         document.getElementById('search-input').addEventListener('input', load);
         load();

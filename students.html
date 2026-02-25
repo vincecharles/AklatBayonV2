@@ -99,9 +99,13 @@
             if(!sid||!name||!email){App.showAlert('danger','Fill required fields.');return;}
             var eid=document.getElementById('edit-id').value;
             var data={student_id:sid,name:name,email:email,grade_level:grade,section:section,contact:contact,status:status};
-            if(eid) { Store.update('students',eid,data); App.showAlert('success','Student updated.'); }
-            else { Store.create('students',data); App.showAlert('success','Student created.'); }
-            App.closeModal('modal-form'); load();
+            var promise = eid ? Store.update('students',eid,data) : Store.create('students',data);
+            promise.then(function() {
+                App.showAlert('success', eid ? 'Student updated.' : 'Student created.');
+                App.closeModal('modal-form'); load();
+            }).catch(function(err) {
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
+            });
         });
         document.getElementById('search-input').addEventListener('input', load);
         document.getElementById('filter-status').addEventListener('change', load);

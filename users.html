@@ -93,7 +93,7 @@
         });
 
         document.getElementById('f-role').addEventListener('change', function() {
-            document.getElementById('f-subtype-group').style.display = this.value === 'r3' ? 'block' : 'none';
+            document.getElementById('f-subtype-group').style.display = this.value === 'r4' ? 'block' : 'none';
         });
 
         function loadUsers() {
@@ -124,7 +124,7 @@
                     document.getElementById('f-password').value = '';
                     document.getElementById('f-role').value = u.role_id;
                     document.getElementById('f-subtype').value = u.faculty_subtype || 'Teaching';
-                    document.getElementById('f-subtype-group').style.display = u.role_id === 'r3' ? 'block' : 'none';
+                    document.getElementById('f-subtype-group').style.display = u.role_id === 'r4' ? 'block' : 'none';
                     document.getElementById('f-rfid').value = u.rfid_id || '';
                     document.getElementById('f-status').value = u.status;
                     App.openModal('modal-user');
@@ -162,21 +162,24 @@
             var roleId = document.getElementById('f-role').value;
             var rfid = document.getElementById('f-rfid').value.trim();
             var status = document.getElementById('f-status').value;
-            var facultySub = roleId === 'r3' ? document.getElementById('f-subtype').value : null;
+            var facultySub = roleId === 'r4' ? document.getElementById('f-subtype').value : null;
             if (!name || !username || !email || !roleId) { App.showAlert('danger', 'Please fill required fields.'); return; }
             var editId = document.getElementById('edit-id').value;
+            var promise;
             if (editId) {
                 var data = { name:name, username:username, email:email, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status };
                 if (password) data.password = password;
-                Store.update('users', editId, data);
-                App.showAlert('success', 'User updated.');
+                promise = Store.update('users', editId, data);
             } else {
                 if (!password) { App.showAlert('danger', 'Password is required.'); return; }
-                Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status });
-                App.showAlert('success', 'User created.');
+                promise = Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status });
             }
-            App.closeModal('modal-user');
-            loadUsers();
+            promise.then(function() {
+                App.showAlert('success', editId ? 'User updated.' : 'User created.');
+                App.closeModal('modal-user'); loadUsers();
+            }).catch(function(err) {
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
+            });
         });
 
         document.getElementById('search-input').addEventListener('input', loadUsers);

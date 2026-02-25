@@ -65,7 +65,7 @@ var Sidebar = (function() {
             html += '</div></div>';
         }
 
-        if (Auth.hasAnyPermission(['can_view_reports', 'can_manage_settings', 'can_view_inventory'])) {
+        if (Auth.hasAnyPermission(['can_view_reports', 'can_view_inventory', 'can_view_attendance'])) {
             html += '<div class="nav-dropdown">';
             html += dropdownToggle('fa-chart-bar', 'Administration', ['inventory.html','reports.html','attendance.html'], page);
             html += '<div class="nav-dropdown-items' + (isActiveGroup(['inventory.html','reports.html','attendance.html'], page) ? ' show' : '') + '">';
@@ -74,6 +74,8 @@ var Sidebar = (function() {
             }
             if (Auth.hasPermission('can_view_reports')) {
                 html += navLink('reports.html', 'fa-file-alt', 'Reports', page);
+            }
+            if (Auth.hasPermission('can_view_attendance')) {
                 html += navLink('attendance.html', 'fa-clipboard-user', 'Attendance', page);
             }
             html += '</div></div>';

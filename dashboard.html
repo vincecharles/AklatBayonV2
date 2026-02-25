@@ -111,7 +111,15 @@
         document.getElementById('stat-issued').textContent = issued;
         document.getElementById('stat-overdue').textContent = overdue;
 
-        var logs = Store.getAll('audit_logs').slice(0, 10);
+        var allLogs = Store.getAll('audit_logs');
+        // Admin, Head Librarian, Librarian Staff see all activity; others see only their own
+        var privilegedRoles = ['r1', 'r2', 'r3'];
+        var logs;
+        if (privilegedRoles.indexOf(user.role_id) !== -1) {
+            logs = allLogs.slice(0, 10);
+        } else {
+            logs = allLogs.filter(function(l) { return l.user === user.name; }).slice(0, 10);
+        }
         var tbody = document.getElementById('activity-table');
         if (logs.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No recent activity found.</td></tr>';

@@ -83,9 +83,13 @@
             if (!name) { App.showAlert('danger', 'Name required.'); return; }
             var data = { name: name, description: document.getElementById('f-desc').value.trim(), parent_id: document.getElementById('f-parent').value || null };
             var eid = document.getElementById('edit-id').value;
-            if (eid) { Store.update('categories', eid, data); App.showAlert('success', 'Category updated.'); }
-            else { Store.create('categories', data); App.showAlert('success', 'Category added.'); }
-            App.closeModal('modal-form'); load();
+            var promise = eid ? Store.update('categories', eid, data) : Store.create('categories', data);
+            promise.then(function() {
+                App.showAlert('success', eid ? 'Category updated.' : 'Category added.');
+                App.closeModal('modal-form'); load();
+            }).catch(function(err) {
+                Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
+            });
         });
         load();
     </script>

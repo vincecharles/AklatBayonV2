@@ -150,10 +150,10 @@
                     <label>Role</label>
                     <select id="reg-role">
                         <option value="">Select Role</option>
-                        <option value="r4">Student</option>
-                        <option value="r3">Faculty</option>
-                        <option value="r5">Student Assistant</option>
-                        <option value="r6">Guest</option>
+                        <option value="r5">Student</option>
+                        <option value="r4">Faculty</option>
+                        <option value="r6">Student Assistant</option>
+                        <option value="r7">Guest</option>
                     </select>
                 </div>
                 <div class="form-group faculty-sub" id="faculty-sub-group">
@@ -250,7 +250,7 @@
 
         document.getElementById('reg-role').addEventListener('change', function() {
             var group = document.getElementById('faculty-sub-group');
-            if (this.value === 'r3') { group.classList.add('visible'); }
+            if (this.value === 'r4') { group.classList.add('visible'); }
             else { group.classList.remove('visible'); }
         });
 
@@ -262,7 +262,7 @@
             var roleId = document.getElementById('reg-role').value;
             if (!name || !email || !username || !password || !roleId) { alert('Please fill in all fields.'); return; }
             var facultySub = null;
-            if (roleId === 'r3') { facultySub = document.getElementById('reg-faculty-sub').value; }
+            if (roleId === 'r4') { facultySub = document.getElementById('reg-faculty-sub').value; }
             Store.create('users', {
                 name: name, username: username, password: password, email: email,
                 role_id: roleId, faculty_subtype: facultySub,
