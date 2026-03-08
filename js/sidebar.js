@@ -49,11 +49,14 @@ var Sidebar = (function() {
         }
         html += '</div></div>';
 
-        if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books'])) {
+        if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
             html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-exchange-alt', 'Circulation', ['circulation.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['circulation.html'], page) ? ' show' : '') + '">';
+            html += dropdownToggle('fa-exchange-alt', 'Circulation', ['circulation.html','reservations.html'], page);
+            html += '<div class="nav-dropdown-items' + (isActiveGroup(['circulation.html','reservations.html'], page) ? ' show' : '') + '">';
             html += navLink('circulation.html', 'fa-exchange-alt', 'Circulation', page);
+            if (Auth.hasPermission('can_reserve_books')) {
+                html += navLink('reservations.html', 'fa-bookmark', 'Reservations', page);
+            }
             html += '</div></div>';
         }
 

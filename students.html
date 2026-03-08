@@ -68,7 +68,7 @@
             var tbody = document.getElementById('data-table');
             if (!items.length) { tbody.innerHTML='<tr><td colspan="9" class="text-center text-muted py-4">No students found.</td></tr>'; return; }
             tbody.innerHTML = items.map(function(i,idx) {
-                return '<tr><td>'+(idx+1)+'</td><td class="fw-semibold">'+i.student_id+'</td><td>'+i.name+'</td><td>'+i.email+'</td><td>'+i.grade_level+'</td><td>'+i.section+'</td><td>'+i.contact+'</td><td><span class="badge '+(i.status==='active'?'badge-active':'badge-inactive')+'">'+i.status+'</span></td><td><button class="btn btn-sm btn-outline-primary btn-edit" data-id="'+i.id+'"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger btn-del" data-id="'+i.id+'" data-name="'+i.name+'"><i class="fas fa-trash"></i></button></td></tr>';
+                return '<tr><td>'+(idx+1)+'</td><td class="fw-semibold">'+i.student_id+'</td><td>'+i.name+'</td><td>'+i.email+'</td><td>'+i.grade_level+'</td><td>'+i.section+'</td><td>'+i.contact+'</td><td><span class="badge '+(i.status==='active'?'badge-active':'badge-inactive')+'">'+i.status+'</span></td><td><a href="borrower-profile.html?id='+i.id+'" class="btn btn-sm btn-info" title="View Profile"><i class="fas fa-user-circle"></i></a> <button class="btn btn-sm btn-outline-primary btn-edit" data-id="'+i.id+'"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger btn-del" data-id="'+i.id+'" data-name="'+i.name+'"><i class="fas fa-trash"></i></button></td></tr>';
             }).join('');
             bindActions();
         }

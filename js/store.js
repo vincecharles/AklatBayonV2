@@ -99,6 +99,117 @@ var Store = (function() {
         return getAll(collection).length;
     }
 
+    // ── Helper functions ──────────────────────────────────────
+    function getSetting(key) {
+        var settings = getAll('settings');
+        var s = settings.find(function(item) { return item.key === key; });
+        return s ? s.value : null;
+    }
+
+    function getStudentFinesTotal(studentId) {
+        var fines = getAll('fines');
+        return fines.filter(function(f) {
+            return f.student_id === studentId && f.status === 'pending';
+        }).reduce(function(sum, f) { return sum + (parseFloat(f.amount) || 0); }, 0);
+    }
+
+    function getReservationQueue(bookId) {
+        return getAll('reservations').filter(function(r) {
+            return r.book_id === bookId && (r.status === 'active' || r.status === 'available');
+        }).sort(function(a, b) {
+            return new Date(a.created_at) - new Date(b.created_at);
+        });
+    }
+
+    function getActiveReservationCount(studentId) {
+        return getAll('reservations').filter(function(r) {
+            return r.student_id === studentId && (r.status === 'active' || r.status === 'available');
+        }).length;
+    }
+
+    function getBorrowerRoleKey(studentId) {
+        // Find the user linked to this student to determine their role-based settings key
+        var users = getAll('users');
+        var user = users.find(function(u) { return u.student_id === studentId; });
+        if (!user) {
+            // Check if student_id directly maps to a student record (default to student role)
+            return 'student';
+        }
+        var role = getById('roles', user.role_id);
+        if (!role) return 'student';
+        var name = role.name.toLowerCase();
+        if (name.indexOf('head librarian') !== -1) return 'head_librarian';
+        if (name.indexOf('librarian staff') !== -1) return 'librarian_staff';
+        if (name.indexOf('student assistant') !== -1) return 'student_assistant';
+        if (name.indexOf('faculty') !== -1) {
+            var sub = (user.faculty_subtype || 'Teaching').toLowerCase();
+            if (sub.indexOf('non') !== -1) return 'faculty_nonteaching';
+            if (sub.indexOf('chair') !== -1 || sub.indexOf('head') !== -1) return 'faculty_deptchair';
+            return 'faculty_teaching';
+        }
+        if (name.indexOf('student') !== -1) return 'student';
+        return 'student';
+    }
+
+    function processOverdueFines() {
+        var txns = getAll('transactions');
+        var fines = getAll('fines');
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var newFinesCount = 0;
+
+        txns.forEach(function(t) {
+            if (t.status !== 'borrowed') return;
+            var due = new Date(t.date_due);
+            due.setHours(0, 0, 0, 0);
+            if (due >= today) return; // not overdue
+
+            // Check if fine already exists for this transaction
+            var existingFine = fines.find(function(f) { return f.transaction_id === t.id && f.status === 'pending'; });
+            if (existingFine) return;
+
+            var daysOverdue = Math.floor((today - due) / (1000 * 60 * 60 * 24));
+            var roleKey = getBorrowerRoleKey(t.student_id);
+            var finePerDay = parseFloat(getSetting('borrow_' + roleKey + '_fine_per_day')) || parseFloat(getSetting('fine_per_day')) || 5;
+            var amount = daysOverdue * finePerDay;
+
+            if (amount > 0) {
+                var fineItems = getAll('fines');
+                var newFine = {
+                    id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+                    student_id: t.student_id,
+                    transaction_id: t.id,
+                    amount: amount,
+                    reason: 'Overdue: ' + daysOverdue + ' day(s) late',
+                    status: 'pending',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+                fineItems.push(newFine);
+                setAll('fines', fineItems);
+                fines.push(newFine);
+                newFinesCount++;
+            }
+        });
+        return newFinesCount;
+    }
+
+    function expireReservations() {
+        var reservations = getAll('reservations');
+        var now = new Date();
+        var expiredCount = 0;
+        reservations.forEach(function(r) {
+            if (r.status === 'available' && r.expires_at && new Date(r.expires_at) < now) {
+                r.status = 'expired';
+                r.updated_at = now.toISOString();
+                expiredCount++;
+            }
+        });
+        if (expiredCount > 0) setAll('reservations', reservations);
+        return expiredCount;
+    }
+    // ──────────────────────────────────────────────────────────────
+
     function logActivity(action, entity, detail) {
         var logs = getAll('audit_logs');
         var user = JSON.parse(sessionStorage.getItem('aklatbayon_session') || '{}');
@@ -270,9 +381,16 @@ var Store = (function() {
             { id: 'set70', key: 'borrow_student_assistant_max_books', value: '3', label: 'Student Assistant — Max Books' },
             { id: 'set71', key: 'borrow_student_assistant_loan_days', value: '7', label: 'Student Assistant — Loan Days' },
             { id: 'set72', key: 'borrow_student_assistant_max_renewals', value: '1', label: 'Student Assistant — Max Renewals' },
-            { id: 'set73', key: 'borrow_student_assistant_fine_per_day', value: '5', label: 'Student Assistant — Fine/Day (₱)' }
+            { id: 'set73', key: 'borrow_student_assistant_fine_per_day', value: '5', label: 'Student Assistant — Fine/Day (₱)' },
+            // Reservation settings
+            { id: 'set80', key: 'reservation_max_student', value: '2', label: 'Student — Max Active Reservations' },
+            { id: 'set81', key: 'reservation_max_faculty', value: '5', label: 'Faculty — Max Active Reservations' },
+            { id: 'set82', key: 'reservation_expiry_hours', value: '48', label: 'Reservation Claim Window (hours)' },
+            { id: 'set83', key: 'fine_block_threshold', value: '100', label: 'Fine Block Threshold (₱) — Blocks borrowing/renewal' }
         ];
         setAll('settings', settings);
+
+        setAll('reservations', []);
 
         setAll('audit_logs', [
             { id: 'log1', user: 'System', action: 'SEED', entity: 'system', details: 'Initial data seeded', created_at: new Date().toISOString() }
@@ -315,7 +433,14 @@ var Store = (function() {
         search: search,
         count: count,
         seed: seed,
-        logActivity: logActivity
+        logActivity: logActivity,
+        getSetting: getSetting,
+        getStudentFinesTotal: getStudentFinesTotal,
+        getReservationQueue: getReservationQueue,
+        getActiveReservationCount: getActiveReservationCount,
+        getBorrowerRoleKey: getBorrowerRoleKey,
+        processOverdueFines: processOverdueFines,
+        expireReservations: expireReservations
     };
 })();
 
