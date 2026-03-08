@@ -57,11 +57,22 @@ var Sidebar = (function() {
             html += '</div></div>';
         }
 
-        if (Auth.hasPermission('can_manage_fines')) {
+        if (Auth.hasPermission('can_manage_fines') || Auth.hasPermission('can_view_own_fines')) {
             html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-money-bill-wave', 'Finance', ['fines.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['fines.html'], page) ? ' show' : '') + '">';
-            html += navLink('fines.html', 'fa-receipt', 'Fine Manage', page);
+            html += dropdownToggle('fa-money-bill-wave', 'Finance', ['fines.html','my-fines.html'], page);
+            html += '<div class="nav-dropdown-items' + (isActiveGroup(['fines.html','my-fines.html'], page) ? ' show' : '') + '">';
+            if (Auth.hasPermission('can_manage_fines')) {
+                html += navLink('fines.html', 'fa-receipt', 'Fine Manage', page);
+            }
+            if (Auth.hasPermission('can_view_own_fines')) {
+                var myFineCount = 0;
+                var currentUser = Auth.getCurrentUser();
+                if (currentUser && currentUser.student_id) {
+                    var allFines = Store.getAll('fines');
+                    myFineCount = allFines.filter(function(f) { return f.student_id === currentUser.student_id && f.status === 'pending'; }).length;
+                }
+                html += navLink('my-fines.html', 'fa-file-invoice-dollar', 'My Fines' + (myFineCount > 0 ? ' <span class="badge bg-danger" style="font-size:10px;margin-left:4px">' + myFineCount + '</span>' : ''), page);
+            }
             html += '</div></div>';
         }
 

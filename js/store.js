@@ -161,7 +161,8 @@ var Store = (function() {
             // General & New
             { id: 'p18', name: 'can_view_dashboard', label: 'View Dashboard', group: 'General', description: 'Access the dashboard overview page' },
             { id: 'p19', name: 'can_view_own_profile', label: 'View Own Profile', group: 'General', description: 'View own user profile and loan history' },
-            { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' }
+            { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' },
+            { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' }
         ];
         setAll('permissions', permissions);
 
@@ -172,19 +173,19 @@ var Store = (function() {
             'r2': ['p3','p4','p5','p6','p7','p8','p9','p10','p11','p14','p15','p16','p17','p18','p19','p20','p21','p22'],
             // Librarian Staff — Front-desk: circulation, fines, edit books, inventory, dashboard
             'r3': ['p5','p8','p9','p10','p15','p16','p18','p19','p20','p21'],
-            // Faculty — Browse catalog, recommend books, reserve/renew, own profile
-            'r4': ['p15','p19','p20','p21','p22'],
-            // Student — Browse catalog, own profile
-            'r5': ['p15','p19'],
-            // Student Assistant — Circulation, student lookup, browse catalog, dashboard
-            'r6': ['p3','p8','p9','p15','p18','p19','p20','p21'],
+            // Faculty — Browse catalog, recommend books, reserve/renew, own profile, view own fines
+            'r4': ['p15','p19','p20','p21','p22','p23'],
+            // Student — Browse catalog, own profile, view own fines
+            'r5': ['p15','p19','p23'],
+            // Student Assistant — Circulation, fines, student lookup, browse catalog, dashboard, view own fines
+            'r6': ['p3','p8','p9','p10','p15','p18','p19','p20','p21','p23'],
             // Guest — Catalog browse only
             'r7': ['p15']
         };
         setAll('role_permissions', rolePerms);
 
         var users = [
-            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', student_id: null, status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
         setAll('users', users);
 

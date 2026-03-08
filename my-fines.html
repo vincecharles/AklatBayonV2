@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fines - AklatBayon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="top-header" id="top-header"></header>
+    <nav class="sidebar" id="sidebar-nav"></nav>
+    <main class="main-content">
+        <div id="alert-container"></div>
+        <div class="page-header"><h1><i class="fas fa-file-invoice-dollar me-2"></i>My Fines</h1></div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:#dc3545"><i class="fas fa-exclamation-circle"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-pending">0</div>
+                            <div class="stat-label">Pending Fines</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:#ffc107"><i class="fas fa-peso-sign"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-total">&#8369;0</div>
+                            <div class="stat-label">Total Pending Amount</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="background:#28a745"><i class="fas fa-check-circle"></i></div>
+                        <div class="ms-3">
+                            <div class="stat-number" id="stat-resolved">0</div>
+                            <div class="stat-label">Resolved Fines</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="filter-bar">
+            <select class="form-select" id="filter-status" style="max-width:160px">
+                <option value="">All Status</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="waived">Waived</option>
+            </select>
+        </div>
+        <div class="card"><div class="card-body p-0"><div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>#</th><th>Reason</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="data-table"></tbody>
+            </table>
+        </div></div></div>
+    </main>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+        var user = Auth.getCurrentUser();
+        if (!user.student_id) {
+            document.getElementById('data-table').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No linked student record. Contact a librarian if you believe this is an error.</td></tr>';
+        } else {
+            function load() {
+                var allFines = Store.getAll('fines');
+                var myFines = allFines.filter(function(f) { return f.student_id === user.student_id; });
+                var pending = myFines.filter(function(f) { return f.status === 'pending'; });
+                var resolved = myFines.filter(function(f) { return f.status !== 'pending'; });
+                var totalPending = pending.reduce(function(sum, f) { return sum + Number(f.amount); }, 0);
+                document.getElementById('stat-pending').textContent = pending.length;
+                document.getElementById('stat-total').innerHTML = '&#8369;' + totalPending;
+                document.getElementById('stat-resolved').textContent = resolved.length;
+                var sf = document.getElementById('filter-status').value;
+                var items = myFines;
+                if (sf) items = items.filter(function(f) { return f.status === sf; });
+                var tbody = document.getElementById('data-table');
+                if (!items.length) { tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No fines found.</td></tr>'; return; }
+                var statusMap = { pending: 'badge-pending', paid: 'badge-paid', waived: 'badge-waived' };
+                tbody.innerHTML = items.map(function(f, i) {
+                    return '<tr><td>' + (i+1) + '</td><td>' + f.reason + '</td><td class="fw-semibold">&#8369;' + f.amount + '</td><td><span class="badge ' + (statusMap[f.status] || 'bg-secondary') + '">' + f.status + '</span></td><td>' + App.formatDate(f.created_at) + '</td></tr>';
+                }).join('');
+            }
+            document.getElementById('filter-status').addEventListener('change', load);
+            load();
+        }
+    </script>
+</body>
+</html>

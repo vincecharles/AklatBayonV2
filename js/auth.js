@@ -16,7 +16,8 @@ var Auth = (function() {
             role_id: user.role_id,
             role_name: role ? role.name : 'User',
             faculty_subtype: user.faculty_subtype,
-            rfid_id: user.rfid_id
+            rfid_id: user.rfid_id,
+            student_id: user.student_id || null
         };
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
         Store.logActivity('LOGIN', 'auth', user.name);
@@ -38,7 +39,8 @@ var Auth = (function() {
             role_id: user.role_id,
             role_name: role ? role.name : 'User',
             faculty_subtype: user.faculty_subtype,
-            rfid_id: user.rfid_id
+            rfid_id: user.rfid_id,
+            student_id: user.student_id || null
         };
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
         Store.logActivity('RFID_LOGIN', 'auth', user.name);

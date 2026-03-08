@@ -62,6 +62,10 @@
                     </select>
                 </div>
                 <div class="form-group"><label>RFID ID</label><input class="form-control" id="f-rfid" placeholder="e.g. RFID-STU-001"></div>
+                <div class="form-group" id="f-student-group">
+                    <label>Linked Student Record</label>
+                    <select class="form-select" id="f-student"><option value="">— None —</option></select>
+                </div>
                 <div class="form-group"><label>Status</label>
                     <select class="form-select" id="f-status">
                         <option value="active">Active</option>
@@ -90,6 +94,12 @@
         roles.forEach(function(r) {
             roleSelect.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
             filterRole.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
+        });
+
+        var students = Store.getAll('students');
+        var studentSelect = document.getElementById('f-student');
+        students.forEach(function(s) {
+            studentSelect.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+s.student_id+')</option>';
         });
 
         document.getElementById('f-role').addEventListener('change', function() {
@@ -126,6 +136,7 @@
                     document.getElementById('f-subtype').value = u.faculty_subtype || 'Teaching';
                     document.getElementById('f-subtype-group').style.display = u.role_id === 'r4' ? 'block' : 'none';
                     document.getElementById('f-rfid').value = u.rfid_id || '';
+                    document.getElementById('f-student').value = u.student_id || '';
                     document.getElementById('f-status').value = u.status;
                     App.openModal('modal-user');
                 });
@@ -150,6 +161,7 @@
             document.getElementById('f-role').value = roles[0] ? roles[0].id : '';
             document.getElementById('f-subtype-group').style.display = 'none';
             document.getElementById('f-rfid').value = '';
+            document.getElementById('f-student').value = '';
             document.getElementById('f-status').value = 'active';
             App.openModal('modal-user');
         });
@@ -161,18 +173,19 @@
             var password = document.getElementById('f-password').value;
             var roleId = document.getElementById('f-role').value;
             var rfid = document.getElementById('f-rfid').value.trim();
+            var studentId = document.getElementById('f-student').value || null;
             var status = document.getElementById('f-status').value;
             var facultySub = roleId === 'r4' ? document.getElementById('f-subtype').value : null;
             if (!name || !username || !email || !roleId) { App.showAlert('danger', 'Please fill required fields.'); return; }
             var editId = document.getElementById('edit-id').value;
             var promise;
             if (editId) {
-                var data = { name:name, username:username, email:email, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status };
+                var data = { name:name, username:username, email:email, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, student_id:studentId, status:status };
                 if (password) data.password = password;
                 promise = Store.update('users', editId, data);
             } else {
                 if (!password) { App.showAlert('danger', 'Password is required.'); return; }
-                promise = Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, status:status });
+                promise = Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, student_id:studentId, status:status });
             }
             promise.then(function() {
                 App.showAlert('success', editId ? 'User updated.' : 'User created.');
