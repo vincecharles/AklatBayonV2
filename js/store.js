@@ -232,6 +232,16 @@ var Store = (function() {
     function seed() {
         if (isSeeded()) return;
 
+        // Helper: only seed a collection if it's currently empty.
+        // This prevents overwriting user-created data when the
+        // 'aklatbayon_seeded' flag is lost (e.g. browser clears storage).
+        function seedIfEmpty(collection, data) {
+            var raw = localStorage.getItem(_key(collection));
+            if (!raw) {
+                setAll(collection, data);
+            }
+        }
+
         var roles = [
             { id: 'r1', name: 'System Administrator', description: 'IT staff — manages system configuration, user accounts, and backups' },
             { id: 'r2', name: 'Head Librarian', description: 'Licensed professional librarian — oversees all library operations, cataloging, reports, and collection development' },
@@ -241,7 +251,7 @@ var Store = (function() {
             { id: 'r6', name: 'Student Assistant', description: 'Working student assigned to the library under scholarship program' },
             { id: 'r7', name: 'Guest', description: 'Walk-in researchers, alumni, inter-library visitors — catalog browsing only' }
         ];
-        setAll('roles', roles);
+        seedIfEmpty('roles', roles);
 
         var permissions = [
             // Users & Students
@@ -275,7 +285,7 @@ var Store = (function() {
             { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' },
             { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' }
         ];
-        setAll('permissions', permissions);
+        seedIfEmpty('permissions', permissions);
 
         var rolePerms = {
             // System Administrator — IT only: users, roles, settings, backups, audit, dashboard, catalog browse
@@ -293,19 +303,19 @@ var Store = (function() {
             // Guest — Catalog browse only
             'r7': ['p15']
         };
-        setAll('role_permissions', rolePerms);
+        seedIfEmpty('role_permissions', rolePerms);
 
         var users = [
             { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', student_id: null, status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('users', users);
+        seedIfEmpty('users', users);
 
         var students = [
             { id: 's1', student_id: '2024-0001', name: 'Carlo Mendoza', email: 'carlo@aklatbayon.edu', grade_level: 'College', section: 'BSIT-3A', contact: '09171234567', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 's2', student_id: '2024-0002', name: 'Sofia Torres', email: 'sofia@aklatbayon.edu', grade_level: 'College', section: 'BSCS-2B', contact: '09181234567', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 's3', student_id: '2024-0003', name: 'Miguel Bautista', email: 'miguel@aklatbayon.edu', grade_level: 'College', section: 'BSIT-1A', contact: '09191234567', status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('students', students);
+        seedIfEmpty('students', students);
 
         var categories = [
             { id: 'c1', name: 'Fiction', description: 'Fictional literature', parent_id: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
@@ -314,21 +324,21 @@ var Store = (function() {
             { id: 'c4', name: 'Technology', description: 'Information technology', parent_id: 'c2', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'c5', name: 'Literature', description: 'Classic literature', parent_id: 'c1', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('categories', categories);
+        seedIfEmpty('categories', categories);
 
         var authors = [
             { id: 'a1', name: 'Jose Rizal', bio: 'Philippine national hero and author', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'a2', name: 'Nick Joaquin', bio: 'National Artist for Literature', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'a3', name: 'Robert C. Martin', bio: 'Software engineering author', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('authors', authors);
+        seedIfEmpty('authors', authors);
 
         var publishers = [
             { id: 'pub1', name: 'Anvil Publishing', address: 'Quezon City, PH', contact: '(02) 8477-4752', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'pub2', name: 'Pearson Education', address: 'New York, USA', contact: '+1-800-848-9500', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'pub3', name: 'OReilly Media', address: 'Sebastopol, CA', contact: '+1-707-827-7000', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('publishers', publishers);
+        seedIfEmpty('publishers', publishers);
 
         var books = [
             { id: 'b1', title: 'Noli Me Tangere', isbn: '978-971-27-2800-0', author_id: 'a1', publisher_id: 'pub1', category_id: 'c5', call_number: 'PQ8896.R5', copies: 5, available: 4, year: 1887, status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
@@ -337,18 +347,18 @@ var Store = (function() {
             { id: 'b4', title: 'The Woman Who Had Two Navels', isbn: '978-0-14-303035-0', author_id: 'a2', publisher_id: 'pub1', category_id: 'c5', call_number: 'PR9550.9.J6', copies: 2, available: 2, year: 1961, status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 'b5', title: 'Clean Architecture', isbn: '978-0-13-449416-6', author_id: 'a3', publisher_id: 'pub3', category_id: 'c4', call_number: 'QA76.754', copies: 4, available: 3, year: 2017, status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('books', books);
+        seedIfEmpty('books', books);
 
         var transactions = [
             { id: 't1', student_id: 's1', book_id: 'b1', type: 'borrow', date_issued: '2026-02-20', date_due: '2026-03-06', date_returned: null, status: 'borrowed', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { id: 't2', student_id: 's2', book_id: 'b3', type: 'borrow', date_issued: '2026-02-15', date_due: '2026-03-01', date_returned: '2026-02-25', status: 'returned', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('transactions', transactions);
+        seedIfEmpty('transactions', transactions);
 
         var fines = [
             { id: 'f1', student_id: 's1', transaction_id: 't1', amount: 50, reason: 'Overdue return', status: 'pending', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
         ];
-        setAll('fines', fines);
+        seedIfEmpty('fines', fines);
 
         var settings = [
             { id: 'set1', key: 'library_name', value: 'FEATI University Library', label: 'Library Name' },
@@ -388,11 +398,11 @@ var Store = (function() {
             { id: 'set82', key: 'reservation_expiry_hours', value: '48', label: 'Reservation Claim Window (hours)' },
             { id: 'set83', key: 'fine_block_threshold', value: '100', label: 'Fine Block Threshold (₱) — Blocks borrowing/renewal' }
         ];
-        setAll('settings', settings);
+        seedIfEmpty('settings', settings);
 
-        setAll('reservations', []);
+        seedIfEmpty('reservations', []);
 
-        setAll('audit_logs', [
+        seedIfEmpty('audit_logs', [
             { id: 'log1', user: 'System', action: 'SEED', entity: 'system', details: 'Initial data seeded', created_at: new Date().toISOString() }
         ]);
 
@@ -419,7 +429,7 @@ var Store = (function() {
             { id: 'lcc-v', letter: 'V', name: 'Naval Science', icon: 'fa-anchor', subclasses: ['VA - Navies', 'VB - Naval Administration', 'VC - Naval Maintenance', 'VK - Navigation'] },
             { id: 'lcc-z', letter: 'Z', name: 'Bibliography & Library Science', icon: 'fa-bookmark', subclasses: ['ZA - Information Resources', 'Z4 - Books (General)', 'Z657 - Library Science', 'Z695 - Cataloging'] }
         ];
-        setAll('lcc_classes', lccClasses);
+        seedIfEmpty('lcc_classes', lccClasses);
 
         localStorage.setItem('aklatbayon_seeded', 'true');
     }
