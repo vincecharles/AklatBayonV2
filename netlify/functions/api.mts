@@ -112,9 +112,13 @@ export default async (req: Request, context: Context) => {
 
             let query = db.select().from(table);
 
-            // Simple field=value filter
-            if (field && value && table[field]) {
-                query = query.where(eq(table[field], value));
+            // Simple field=value filter (map snake_case → camelCase)
+            if (field && value) {
+                const map = columnMaps[collection] || {};
+                const mappedField = map[field] || field;
+                if (table[mappedField]) {
+                    query = query.where(eq(table[mappedField], value));
+                }
             }
 
             // Status filter
