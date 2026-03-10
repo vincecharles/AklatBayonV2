@@ -1,0 +1,32 @@
+{
+  "name": "aklatbayonv2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vincecharles/AklatBayonV2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vincecharles/AklatBayonV2/issues"
+  },
+  "homepage": "https://github.com/vincecharles/AklatBayonV2#readme",
+  "dependencies": {
+    "@netlify/neon": "^0.1.2",
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.9",
+    "typescript": "^5.9.3"
+  }
+}
