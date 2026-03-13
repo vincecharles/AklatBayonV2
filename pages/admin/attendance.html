@@ -154,34 +154,35 @@
     if (!Auth.requireAuth()) throw '';
     App.init();
 
-    var hourlyChart = null;
-    var rolesChart = null;
+    let hourlyChart = null;
+    let rolesChart = null;
 
     // Default date to today
-    var dateInput = document.getElementById('filter-date');
-    var today = new Date();
-    dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+    const dateInput = document.getElementById('filter-date');
+    const today = new Date();
+    dateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    function getRecordsForDate(dateStr) {
-        var all = Store.getAll('attendance');
-        return all.filter(function(r) {
-            var d = new Date(r.tap_time || r.created_at);
-            var rDate = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    const getRecordsForDate = (dateStr) => {
+        const all = Store.getAll('attendance');
+        return all.filter((r) => {
+            const d = new Date(r.tap_time || r.created_at);
+            const rDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             return rDate === dateStr;
         });
-    }
+    };
 
-    function formatTime(isoStr) {
-        var d = new Date(isoStr);
-        var h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
-        var s = String(d.getSeconds()).padStart(2,'0');
-        var ampm = h >= 12 ? 'PM' : 'AM';
+    const formatTime = (isoStr) => {
+        const d = new Date(isoStr);
+        let h = d.getHours();
+        const m = String(d.getMinutes()).padStart(2,'0');
+        const s = String(d.getSeconds()).padStart(2,'0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
         h = h % 12 || 12;
-        return h + ':' + m + ':' + s + ' ' + ampm;
-    }
+        return `${h}:${m}:${s} ${ampm}`;
+    };
 
-    function getRoleDotColor(role) {
-        var map = {
+    const getRoleDotColor = (role) => {
+        const map = {
             'System Administrator': '#e94560',
             'Librarian': '#28a745',
             'Faculty': '#17a2b8',
@@ -190,10 +191,10 @@
             'Guest': '#6c757d'
         };
         return map[role] || '#6c757d';
-    }
+    };
 
-    function getRoleBadgeClasses(role) {
-        var map = {
+    const getRoleBadgeClasses = (role) => {
+        const map = {
             'System Administrator': 'bg-red-500/10 text-red-600 dark:text-red-400',
             'Librarian': 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
             'Faculty': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
@@ -202,66 +203,64 @@
             'Guest': 'bg-slate-500/10 text-slate-600 dark:text-slate-400'
         };
         return map[role] || 'bg-slate-500/10 text-slate-600 dark:text-slate-400';
-    }
+    };
 
-    function renderAttendance() {
-        var dateStr = dateInput.value;
-        var records = getRecordsForDate(dateStr);
-        var searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+    const renderAttendance = () => {
+        const dateStr = dateInput.value;
+        let records = getRecordsForDate(dateStr);
+        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
 
         // Apply search filter
         if (searchTerm) {
-            records = records.filter(function(r) {
-                return (r.user_name && r.user_name.toLowerCase().indexOf(searchTerm) !== -1) ||
-                       (r.rfid_id && r.rfid_id.toLowerCase().indexOf(searchTerm) !== -1);
+            records = records.filter((r) => {
+                return (r.user_name && r.user_name.toLowerCase().includes(searchTerm)) ||
+                       (r.rfid_id && r.rfid_id.toLowerCase().includes(searchTerm));
             });
         }
 
         // Sort by time descending (most recent first)
-        records.sort(function(a, b) {
-            return new Date(b.tap_time || b.created_at) - new Date(a.tap_time || a.created_at);
-        });
+        records.sort((a, b) => new Date(b.tap_time || b.created_at) - new Date(a.tap_time || a.created_at));
 
         // --- Stats ---
-        var allForDate = getRecordsForDate(dateStr); // unfiltered for stats
-        var totalVisits = allForDate.length;
-        var uniqueIds = {};
-        allForDate.forEach(function(r) { uniqueIds[r.user_id] = true; });
-        var uniqueVisitors = Object.keys(uniqueIds).length;
+        const allForDate = getRecordsForDate(dateStr); // unfiltered for stats
+        const totalVisits = allForDate.length;
+        const uniqueIds = {};
+        allForDate.forEach((r) => { uniqueIds[r.user_id] = true; });
+        const uniqueVisitors = Object.keys(uniqueIds).length;
 
         // Peak hour
-        var hourCounts = {};
-        allForDate.forEach(function(r) {
-            var h = new Date(r.tap_time || r.created_at).getHours();
+        const hourCounts = {};
+        allForDate.forEach((r) => {
+            const h = new Date(r.tap_time || r.created_at).getHours();
             hourCounts[h] = (hourCounts[h] || 0) + 1;
         });
-        var peakHour = null, peakCount = 0;
-        for (var h in hourCounts) {
+        let peakHour = null, peakCount = 0;
+        for (const h in hourCounts) {
             if (hourCounts[h] > peakCount) { peakCount = hourCounts[h]; peakHour = parseInt(h); }
         }
-        var peakLabel = '\u2014';
+        let peakLabel = '\u2014';
         if (peakHour !== null) {
-            var ph = peakHour % 12 || 12;
-            var pampm = peakHour >= 12 ? 'PM' : 'AM';
-            peakLabel = ph + ':00 ' + pampm;
+            const ph = peakHour % 12 || 12;
+            const pampm = peakHour >= 12 ? 'PM' : 'AM';
+            peakLabel = `${ph}:00 ${pampm}`;
         }
 
         // Avg visits per active hour
-        var activeHours = Object.keys(hourCounts).length;
-        var avgVisits = activeHours > 0 ? (totalVisits / activeHours).toFixed(1) : '0';
+        const activeHours = Object.keys(hourCounts).length;
+        const avgVisits = activeHours > 0 ? (totalVisits / activeHours).toFixed(1) : '0';
 
         document.getElementById('stat-total').textContent = totalVisits;
         document.getElementById('stat-unique').textContent = uniqueVisitors;
         document.getElementById('stat-peak').textContent = peakLabel;
         document.getElementById('stat-avg').textContent = avgVisits;
         document.getElementById('table-count-badge').textContent = records.length;
-        document.getElementById('result-count').textContent = records.length + ' record' + (records.length !== 1 ? 's' : '') + ' found';
+        document.getElementById('result-count').textContent = `${records.length} record${records.length !== 1 ? 's' : ''} found`;
 
         // Trend indicators
-        var trendTotal = document.getElementById('trend-total');
-        var trendUnique = document.getElementById('trend-unique');
-        var trendPeak = document.getElementById('trend-peak');
-        var trendAvg = document.getElementById('trend-avg');
+        const trendTotal = document.getElementById('trend-total');
+        const trendUnique = document.getElementById('trend-unique');
+        const trendPeak = document.getElementById('trend-peak');
+        const trendAvg = document.getElementById('trend-avg');
         if (totalVisits > 0) {
             trendTotal.textContent = '\u25CF Active';
             trendTotal.className = 'text-xs font-bold text-emerald-500';
@@ -270,59 +269,50 @@
             trendTotal.className = 'text-xs font-bold text-slate-400';
         }
         if (uniqueVisitors > 0) {
-            trendUnique.textContent = uniqueVisitors + ' individual' + (uniqueVisitors !== 1 ? 's' : '');
+            trendUnique.textContent = `${uniqueVisitors} individual${uniqueVisitors !== 1 ? 's' : ''}`;
             trendUnique.className = 'text-xs font-bold text-emerald-500';
         } else {
             trendUnique.textContent = '\u2014';
             trendUnique.className = 'text-xs font-bold text-slate-400';
         }
         if (peakHour !== null) {
-            trendPeak.textContent = peakCount + ' visits';
+            trendPeak.textContent = `${peakCount} visits`;
             trendPeak.className = 'text-xs font-bold text-accent';
         } else {
             trendPeak.textContent = '';
         }
         if (activeHours > 0) {
-            trendAvg.textContent = activeHours + 'h active';
+            trendAvg.textContent = `${activeHours}h active`;
             trendAvg.className = 'text-xs font-bold text-violet-500';
         } else {
             trendAvg.textContent = '';
         }
 
         // --- Table ---
-        var tbody = document.getElementById('attendance-tbody');
+        const tbody = document.getElementById('attendance-tbody');
         if (records.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 py-10 px-5">' +
-                '<span class="material-symbols-outlined text-4xl block mb-2 opacity-30">inbox</span>' +
-                (searchTerm ? 'No results matching "' + searchTerm + '"' : 'No attendance records for this date.') +
-                '</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-slate-400 py-10 px-5"><span class="material-symbols-outlined text-4xl block mb-2 opacity-30">inbox</span>${searchTerm ? `No results matching "${searchTerm}"` : 'No attendance records for this date.'}</td></tr>`;
         } else {
-            var html = '';
-            records.forEach(function(r, idx) {
-                html += '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">' +
-                    '<td class="px-5 py-3 text-slate-400">' + (idx + 1) + '</td>' +
-                    '<td class="px-5 py-3 font-semibold text-primary dark:text-primary-50 tabular-nums">' + formatTime(r.tap_time || r.created_at) + '</td>' +
-                    '<td class="px-5 py-3 font-semibold">' + (r.user_name || 'Unknown') + '</td>' +
-                    '<td class="px-5 py-3"><span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background:' + getRoleDotColor(r.role_name) + '"></span><span class="text-xs font-semibold px-2.5 py-1 rounded-full ' + getRoleBadgeClasses(r.role_name) + '">' + (r.role_name || 'N/A') + '</span></span></td>' +
-                    '<td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">' + (r.rfid_id || '\u2014') + '</code></td>' +
-                    '</tr>';
+            let html = '';
+            records.forEach((r, idx) => {
+                html += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3 text-slate-400">${idx + 1}</td><td class="px-5 py-3 font-semibold text-primary dark:text-primary-50 tabular-nums">${formatTime(r.tap_time || r.created_at)}</td><td class="px-5 py-3 font-semibold">${r.user_name || 'Unknown'}</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background:${getRoleDotColor(r.role_name)}"></span><span class="text-xs font-semibold px-2.5 py-1 rounded-full ${getRoleBadgeClasses(r.role_name)}">${r.role_name || 'N/A'}</span></span></td><td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">${r.rfid_id || '\u2014'}</code></td></tr>`;
             });
             tbody.innerHTML = html;
         }
 
         // --- Hourly Chart ---
-        var hourLabels = [];
-        var hourData = [];
-        for (var i = 7; i <= 21; i++) {
-            var lh = i % 12 || 12;
-            var la = i >= 12 ? 'PM' : 'AM';
-            hourLabels.push(lh + ' ' + la);
+        const hourLabels = [];
+        const hourData = [];
+        for (let i = 7; i <= 21; i++) {
+            const lh = i % 12 || 12;
+            const la = i >= 12 ? 'PM' : 'AM';
+            hourLabels.push(`${lh} ${la}`);
             hourData.push(hourCounts[i] || 0);
         }
 
-        var isDark = document.documentElement.classList.contains('dark');
-        var gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-        var tickColor = isDark ? '#94a3b8' : '#64748b';
+        const isDark = document.documentElement.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
 
         if (hourlyChart) hourlyChart.destroy();
         hourlyChart = new Chart(document.getElementById('chart-hourly'), {
@@ -332,7 +322,7 @@
                 datasets: [{
                     label: 'Visits',
                     data: hourData,
-                    backgroundColor: hourData.map(function(v, idx) {
+                    backgroundColor: hourData.map((v, idx) => {
                         return (idx + 7) === peakHour
                             ? 'rgba(233, 69, 96, 0.85)'
                             : 'rgba(50, 17, 212, 0.55)';
@@ -348,8 +338,8 @@
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            title: function(ctx) { return ctx[0].label; },
-                            label: function(ctx) { return ctx.raw + ' visit' + (ctx.raw !== 1 ? 's' : ''); }
+                            title: (ctx) => ctx[0].label,
+                            label: (ctx) => `${ctx.raw} visit${ctx.raw !== 1 ? 's' : ''}`
                         }
                     }
                 },
@@ -368,14 +358,14 @@
         });
 
         // --- Roles Doughnut Chart ---
-        var roleCounts = {};
-        allForDate.forEach(function(r) {
-            var rn = r.role_name || 'Unknown';
+        const roleCounts = {};
+        allForDate.forEach((r) => {
+            const rn = r.role_name || 'Unknown';
             roleCounts[rn] = (roleCounts[rn] || 0) + 1;
         });
-        var roleLabels = Object.keys(roleCounts);
-        var roleData = roleLabels.map(function(k) { return roleCounts[k]; });
-        var roleColors = {
+        const roleLabels = Object.keys(roleCounts);
+        const roleData = roleLabels.map((k) => roleCounts[k]);
+        const roleColors = {
             'System Administrator': '#e94560',
             'Librarian': '#28a745',
             'Faculty': '#17a2b8',
@@ -383,7 +373,7 @@
             'Student Assistant': '#6f42c1',
             'Guest': '#6c757d'
         };
-        var bgColors = roleLabels.map(function(r) { return roleColors[r] || '#999'; });
+        const bgColors = roleLabels.map((r) => roleColors[r] || '#999');
 
         if (rolesChart) rolesChart.destroy();
         rolesChart = new Chart(document.getElementById('chart-roles'), {
@@ -406,39 +396,33 @@
                 }
             }
         });
-    }
+    };
 
     // Bind events
     dateInput.addEventListener('change', renderAttendance);
     document.getElementById('search-input').addEventListener('input', renderAttendance);
 
     // Export CSV
-    document.getElementById('btn-export').addEventListener('click', function() {
-        var dateStr = dateInput.value;
-        var records = getRecordsForDate(dateStr);
+    document.getElementById('btn-export').addEventListener('click', () => {
+        const dateStr = dateInput.value;
+        let records = getRecordsForDate(dateStr);
         if (records.length === 0) {
             App.showAlert('info', 'No records to export for this date.');
             return;
         }
-        records.sort(function(a, b) {
-            return new Date(a.tap_time || a.created_at) - new Date(b.tap_time || b.created_at);
+        records.sort((a, b) => new Date(a.tap_time || a.created_at) - new Date(b.tap_time || b.created_at));
+        let csv = 'No.,Time,Name,Role,RFID\n';
+        records.forEach((r, idx) => {
+            csv += `${idx+1},"${formatTime(r.tap_time || r.created_at)}","${r.user_name || ''}","${r.role_name || ''}","${r.rfid_id || ''}"\n`;
         });
-        var csv = 'No.,Time,Name,Role,RFID\n';
-        records.forEach(function(r, idx) {
-            csv += (idx+1) + ',' +
-                '"' + formatTime(r.tap_time || r.created_at) + '",' +
-                '"' + (r.user_name || '') + '",' +
-                '"' + (r.role_name || '') + '",' +
-                '"' + (r.rfid_id || '') + '"\n';
-        });
-        var blob = new Blob([csv], { type: 'text/csv' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
         a.href = url;
-        a.download = 'attendance-' + dateStr + '.csv';
+        a.download = `attendance-${dateStr}.csv`;
         a.click();
         URL.revokeObjectURL(url);
-        App.showAlert('success', 'CSV exported for ' + dateStr);
+        App.showAlert('success', `CSV exported for ${dateStr}`);
     });
 
     // Initial render

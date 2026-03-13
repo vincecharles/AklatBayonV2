@@ -139,43 +139,43 @@
   <script src="/js/auth.js"></script>
   <script>
     // ── Inline helpers (no app.js on this page) ──────────────
-    function getAuthorName(authorId) {
-        var author = Store.getById('authors', authorId);
+    const getAuthorName = (authorId) => {
+        const author = Store.getById('authors', authorId);
         return author ? author.name : 'Unknown';
-    }
-    function getPublisherName(pubId) {
-        var pub = Store.getById('publishers', pubId);
+    };
+    const getPublisherName = (pubId) => {
+        const pub = Store.getById('publishers', pubId);
         return pub ? pub.name : 'Unknown';
-    }
-    function getCategoryName(catId) {
-        var cat = Store.getById('categories', catId);
+    };
+    const getCategoryName = (catId) => {
+        const cat = Store.getById('categories', catId);
         return cat ? cat.name : 'Unknown';
-    }
+    };
 
     // ── Populate filter dropdowns ───────────────────────────────
-    var categories = Store.getAll('categories');
-    var fcat = document.getElementById('filter-cat');
-    categories.forEach(function(c) { fcat.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>'; });
+    const categories = Store.getAll('categories');
+    const fcat = document.getElementById('filter-cat');
+    categories.forEach((c) => { fcat.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
 
-    var authors = Store.getAll('authors');
-    var fauthor = document.getElementById('filter-author');
-    authors.sort(function(a, b) { return a.name.localeCompare(b.name); });
-    authors.forEach(function(a) { fauthor.innerHTML += '<option value="' + a.id + '">' + a.name + '</option>'; });
+    const authors = Store.getAll('authors');
+    const fauthor = document.getElementById('filter-author');
+    authors.sort((a, b) => a.name.localeCompare(b.name));
+    authors.forEach((a) => { fauthor.innerHTML += `<option value="${a.id}">${a.name}</option>`; });
 
-    var publishers = Store.getAll('publishers');
-    var fpub = document.getElementById('filter-publisher');
-    publishers.sort(function(a, b) { return a.name.localeCompare(b.name); });
-    publishers.forEach(function(p) { fpub.innerHTML += '<option value="' + p.id + '">' + p.name + '</option>'; });
+    const publishers = Store.getAll('publishers');
+    const fpub = document.getElementById('filter-publisher');
+    publishers.sort((a, b) => a.name.localeCompare(b.name));
+    publishers.forEach((p) => { fpub.innerHTML += `<option value="${p.id}">${p.name}</option>`; });
 
     // ── Levenshtein distance ────────────────────────────────────
-    function levenshtein(a, b) {
-        var m = a.length, n = b.length;
-        var dp = [];
-        for (var i = 0; i <= m; i++) {
+    const levenshtein = (a, b) => {
+        const m = a.length, n = b.length;
+        const dp = [];
+        for (let i = 0; i <= m; i++) {
             dp[i] = [i];
-            for (var j = 1; j <= n; j++) {
+            for (let j = 1; j <= n; j++) {
                 if (i === 0) { dp[i][j] = j; continue; }
-                var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
                 dp[i][j] = Math.min(
                     dp[i - 1][j] + 1,
                     dp[i][j - 1] + 1,
@@ -184,103 +184,85 @@
             }
         }
         return dp[m][n];
-    }
+    };
 
     // ── Build a single book card ────────────────────────────────
-    function buildBookCard(b) {
-        var availColor = b.available > 0 ? '#16a34a' : '#dc2626';
-        var availText = b.available > 0 ? b.available + ' available' : 'Unavailable';
-        var pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
-        var barColor = pct > 50 ? '#16a34a' : pct > 20 ? '#eab308' : '#dc2626';
-        return '<div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/[0.08] hover:-translate-y-0.5">' +
-            (b.call_number ? '<div class="inline-block text-xs text-[#0f3460] dark:text-blue-400 bg-[#0f3460]/[0.08] dark:bg-blue-400/10 px-2 py-1 rounded-md mb-2 font-semibold font-mono"><span class="material-symbols-outlined text-[10px] align-middle mr-0.5">tag</span>' + b.call_number + '</div>' : '') +
-            '<div class="text-lg font-bold text-[#1a1a2e] dark:text-white mb-2">' + b.title + '</div>' +
-            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">edit</span> ' + getAuthorName(b.author_id) + '</div>' +
-            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">apartment</span> ' + getPublisherName(b.publisher_id) + '</div>' +
-            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">label</span> ' + getCategoryName(b.category_id) + '</div>' +
-            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">barcode</span> ' + b.isbn + '</div>' +
-            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">event</span> ' + b.year + '</div>' +
-            '<div class="mt-3 flex items-center justify-between">' +
-                '<span class="inline-block text-xs font-semibold text-white px-2.5 py-1 rounded-full" style="background:' + availColor + '">' + availText + '</span>' +
-                '<span class="text-xs text-gray-400 dark:text-slate-500">' + b.copies + ' total copies</span>' +
-            '</div>' +
-            '<div class="mt-2">' +
-                '<div class="flex justify-between text-[11px] text-gray-500 dark:text-slate-400"><span>' + b.available + ' of ' + b.copies + '</span><span>' + pct + '%</span></div>' +
-                '<div class="h-1.5 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden mt-1"><div class="h-full rounded-full transition-all duration-300" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
-            '</div>' +
-        '</div>';
-    }
+    const buildBookCard = (b) => {
+        const availColor = b.available > 0 ? '#16a34a' : '#dc2626';
+        const availText = b.available > 0 ? `${b.available} available` : 'Unavailable';
+        const pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
+        const barColor = pct > 50 ? '#16a34a' : pct > 20 ? '#eab308' : '#dc2626';
+        return `<div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/[0.08] hover:-translate-y-0.5">${b.call_number ? `<div class="inline-block text-xs text-[#0f3460] dark:text-blue-400 bg-[#0f3460]/[0.08] dark:bg-blue-400/10 px-2 py-1 rounded-md mb-2 font-semibold font-mono"><span class="material-symbols-outlined text-[10px] align-middle mr-0.5">tag</span>${b.call_number}</div>` : ''}<div class="text-lg font-bold text-[#1a1a2e] dark:text-white mb-2">${b.title}</div><div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">edit</span> ${getAuthorName(b.author_id)}</div><div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">apartment</span> ${getPublisherName(b.publisher_id)}</div><div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">label</span> ${getCategoryName(b.category_id)}</div><div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">barcode</span> ${b.isbn}</div><div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">event</span> ${b.year}</div><div class="mt-3 flex items-center justify-between"><span class="inline-block text-xs font-semibold text-white px-2.5 py-1 rounded-full" style="background:${availColor}">${availText}</span><span class="text-xs text-gray-400 dark:text-slate-500">${b.copies} total copies</span></div><div class="mt-2"><div class="flex justify-between text-[11px] text-gray-500 dark:text-slate-400"><span>${b.available} of ${b.copies}</span><span>${pct}%</span></div><div class="h-1.5 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden mt-1"><div class="h-full rounded-full transition-all duration-300" style="width:${pct}%;background:${barColor}"></div></div></div></div>`;
+    };
 
     // ── New Arrivals (books added in last 30 days) ──────────────
-    function loadNewArrivals() {
-        var allBooks = Store.getAll('books');
-        var now = new Date();
-        var thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        var newBooks = allBooks.filter(function(b) {
-            return b.created_at && new Date(b.created_at) >= thirtyDaysAgo;
-        });
-        var container = document.getElementById('new-arrivals');
-        var grid = document.getElementById('new-arrivals-grid');
+    const loadNewArrivals = () => {
+        const allBooks = Store.getAll('books');
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const newBooks = allBooks.filter((b) => b.created_at && new Date(b.created_at) >= thirtyDaysAgo);
+        const container = document.getElementById('new-arrivals');
+        const grid = document.getElementById('new-arrivals-grid');
         if (newBooks.length === 0) {
             container.classList.add('hidden');
             return;
         }
-        newBooks.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+        newBooks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         container.classList.remove('hidden');
         grid.innerHTML = newBooks.map(buildBookCard).join('');
-    }
+    };
 
     // ── Main load function ──────────────────────────────────────
-    function load() {
-        var books = Store.getAll('books');
-        var s = document.getElementById('search-input').value.toLowerCase();
-        var cf = document.getElementById('filter-cat').value;
-        var af = document.getElementById('filter-author').value;
-        var pf = document.getElementById('filter-publisher').value;
-        var yearMin = document.getElementById('filter-year-min').value;
-        var yearMax = document.getElementById('filter-year-max').value;
-        var sortBy = document.getElementById('filter-sort').value;
-        var onlyAvail = document.getElementById('filter-available').checked;
+    const load = () => {
+        let books = Store.getAll('books');
+        const s = document.getElementById('search-input').value.toLowerCase();
+        const cf = document.getElementById('filter-cat').value;
+        const af = document.getElementById('filter-author').value;
+        const pf = document.getElementById('filter-publisher').value;
+        const yearMin = document.getElementById('filter-year-min').value;
+        const yearMax = document.getElementById('filter-year-max').value;
+        const sortBy = document.getElementById('filter-sort').value;
+        const onlyAvail = document.getElementById('filter-available').checked;
 
         // Text search
-        if (s) books = books.filter(function(b) { return b.title.toLowerCase().indexOf(s) !== -1 || b.isbn.toLowerCase().indexOf(s) !== -1 || getAuthorName(b.author_id).toLowerCase().indexOf(s) !== -1; });
+        if (s) books = books.filter((b) => b.title.toLowerCase().includes(s) || b.isbn.toLowerCase().includes(s) || getAuthorName(b.author_id).toLowerCase().includes(s));
 
         // Category filter
-        if (cf) books = books.filter(function(b) { return b.category_id === cf; });
+        if (cf) books = books.filter((b) => b.category_id === cf);
 
         // Author filter
-        if (af) books = books.filter(function(b) { return b.author_id === af; });
+        if (af) books = books.filter((b) => b.author_id === af);
 
         // Publisher filter
-        if (pf) books = books.filter(function(b) { return b.publisher_id === pf; });
+        if (pf) books = books.filter((b) => b.publisher_id === pf);
 
         // Year range filter
-        if (yearMin) books = books.filter(function(b) { return b.year >= parseInt(yearMin, 10); });
-        if (yearMax) books = books.filter(function(b) { return b.year <= parseInt(yearMax, 10); });
+        if (yearMin) books = books.filter((b) => b.year >= parseInt(yearMin, 10));
+        if (yearMax) books = books.filter((b) => b.year <= parseInt(yearMax, 10));
 
         // Availability filter
-        if (onlyAvail) books = books.filter(function(b) { return b.available > 0; });
+        if (onlyAvail) books = books.filter((b) => b.available > 0);
 
         // Sorting
         if (sortBy === 'title-az') {
-            books.sort(function(a, b) { return a.title.localeCompare(b.title); });
+            books.sort((a, b) => a.title.localeCompare(b.title));
         } else if (sortBy === 'title-za') {
-            books.sort(function(a, b) { return b.title.localeCompare(a.title); });
+            books.sort((a, b) => b.title.localeCompare(a.title));
         } else if (sortBy === 'newest') {
-            books.sort(function(a, b) { return (b.year || 0) - (a.year || 0); });
+            books.sort((a, b) => (b.year || 0) - (a.year || 0));
         } else if (sortBy === 'oldest') {
-            books.sort(function(a, b) { return (a.year || 0) - (b.year || 0); });
+            books.sort((a, b) => (a.year || 0) - (b.year || 0));
         } else if (sortBy === 'most-borrowed') {
-            var txns = Store.getAll('transactions');
-            books.sort(function(a, b) {
-                var aCount = txns.filter(function(t) { return t.book_id === a.id; }).length;
-                var bCount = txns.filter(function(t) { return t.book_id === b.id; }).length;
+            const txns = Store.getAll('transactions');
+            books.sort((a, b) => {
+                const aCount = txns.filter((t) => t.book_id === a.id).length;
+                const bCount = txns.filter((t) => t.book_id === b.id).length;
                 return bCount - aCount;
             });
         }
 
-        var grid = document.getElementById('book-grid');
-        var dymContainer = document.getElementById('did-you-mean');
+        const grid = document.getElementById('book-grid');
+        const dymContainer = document.getElementById('did-you-mean');
         dymContainer.classList.add('hidden');
 
         if (!books.length) {
@@ -288,16 +270,16 @@
 
             // "Did you mean?" suggestions
             if (s) {
-                var allBooks = Store.getAll('books');
-                var bestMatch = null;
-                var bestDist = Infinity;
-                allBooks.forEach(function(b) {
-                    var titleLower = b.title.toLowerCase();
-                    var dist = levenshtein(s, titleLower);
+                const allBooks = Store.getAll('books');
+                let bestMatch = null;
+                let bestDist = Infinity;
+                allBooks.forEach((b) => {
+                    const titleLower = b.title.toLowerCase();
+                    let dist = levenshtein(s, titleLower);
                     // Also check individual words in the title
-                    var words = titleLower.split(/\s+/);
-                    words.forEach(function(w) {
-                        var wDist = levenshtein(s, w);
+                    const words = titleLower.split(/\s+/);
+                    words.forEach((w) => {
+                        const wDist = levenshtein(s, w);
                         if (wDist < dist) dist = wDist;
                     });
                     if (dist < bestDist) {
@@ -306,7 +288,7 @@
                     }
                 });
                 if (bestMatch && bestDist < 4) {
-                    var dymLink = document.getElementById('dym-link');
+                    const dymLink = document.getElementById('dym-link');
                     dymLink.textContent = bestMatch;
                     dymContainer.classList.remove('hidden');
                 }
@@ -315,12 +297,12 @@
         }
 
         grid.innerHTML = books.map(buildBookCard).join('');
-    }
+    };
 
     // ── "Did you mean" click handler ────────────────────────────
-    document.getElementById('dym-link').addEventListener('click', function(e) {
+    document.getElementById('dym-link').addEventListener('click', (e) => {
         e.preventDefault();
-        var suggestion = this.textContent;
+        const suggestion = e.target.textContent;
         document.getElementById('search-input').value = suggestion;
         document.getElementById('did-you-mean').classList.add('hidden');
         load();

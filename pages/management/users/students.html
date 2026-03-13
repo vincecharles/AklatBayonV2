@@ -27,7 +27,7 @@
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6">
         <div>
           <h1 class="text-2xl font-bold flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-3xl">school</span>
@@ -41,86 +41,41 @@
         </button>
       </div>
 
-      <!-- Stats Row -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" id="stats-row"></div>
-
-      <!-- Filter Bar -->
-      <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-5">
-        <div class="relative flex-1 min-w-[200px]">
+      <!-- Search Bar -->
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        <div class="relative flex-1 min-w-[220px]">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-          <input type="text" id="search-input" placeholder="Search by name or student ID..."
+          <input type="text" id="search-input" placeholder="Search by name or ID..."
             class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
-        <select id="filter-program"
-          class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary min-w-[160px]">
-          <option value="">All Programs</option>
-          <optgroup label="Engineering">
-            <option value="BSCE">BSCE</option>
-            <option value="BSME">BSME</option>
-            <option value="BSEE">BSEE</option>
-            <option value="BSEcE">BSEcE</option>
-            <option value="BSMarE">BSMarE</option>
-            <option value="BSNA">BSNA</option>
-          </optgroup>
-          <optgroup label="Computing">
-            <option value="BSIT">BSIT</option>
-            <option value="BSCS">BSCS</option>
-          </optgroup>
-          <optgroup label="Architecture">
-            <option value="BSArch">BSArch</option>
-          </optgroup>
-          <optgroup label="Business & Hospitality">
-            <option value="BSBA">BSBA</option>
-            <option value="BSHRA">BSHRA</option>
-          </optgroup>
-          <optgroup label="Criminal Justice">
-            <option value="BSCrim">BSCrim</option>
-          </optgroup>
-          <optgroup label="Basic Education">
-            <option value="SHS">SHS</option>
-            <option value="JHS">JHS</option>
-          </optgroup>
-        </select>
         <select id="filter-status"
-          class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary min-w-[140px]">
+          class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
         </select>
       </div>
 
-      <!-- Table Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm text-left">
-            <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
-              <tr>
-                <th class="px-5 py-3">#</th>
-                <th class="px-5 py-3">Student</th>
-                <th class="px-5 py-3">Program & Section</th>
-                <th class="px-5 py-3">Contact</th>
-                <th class="px-5 py-3">Status</th>
-                <th class="px-5 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
-          </table>
-        </div>
+      <!-- Program Tabs -->
+      <div class="flex flex-wrap gap-2 mb-5" id="program-tabs">
+        <button class="tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border" data-program="">All</button>
       </div>
+
+      <!-- Student List -->
+      <div id="student-list" class="space-y-4"></div>
+
     </main>
   </div>
 
   <!-- Modal -->
   <div class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center" id="modal-form">
     <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-modal-in border border-slate-200 dark:border-slate-700">
-      <!-- Modal Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
         <h3 id="modal-title" class="text-lg font-semibold">Add Student</h3>
         <button class="modal-close text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <!-- Modal Body -->
       <div class="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
         <input type="hidden" id="edit-id">
         <div class="grid grid-cols-2 gap-4">
@@ -205,14 +160,10 @@
           </div>
         </div>
       </div>
-      <!-- Modal Footer -->
       <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-700">
-        <button class="modal-close inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-5 py-2.5 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-          Cancel
-        </button>
+        <button class="modal-close inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-5 py-2.5 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
         <button id="btn-save" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
-          <span class="material-symbols-outlined text-[20px]">save</span>
-          Save
+          <span class="material-symbols-outlined text-[20px]">save</span> Save
         </button>
       </div>
     </div>
@@ -233,101 +184,123 @@
             App.init();
             App.bindModalCloses();
 
-            const programColors = {
-                'BSIT': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-                'BSCS': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
-                'BSCE': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
-                'BSME': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-                'BSEE': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-                'BSEcE': 'bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-300',
-                'BSMarE': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
-                'BSNA': 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
-                'BSArch': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
-                'BSBA': 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
-                'BSHRA': 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
-                'BSCrim': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
-                'SHS': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
-                'JHS': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-            };
-            const defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+            let activeProgram = '';
 
-            const loadStats = (items) => {
-                const total = items.length;
-                const active = items.filter((i) => i.status === 'active').length;
-                const inactive = items.filter((i) => i.status === 'inactive').length;
-                const programs = [...new Set(items.map((i) => i.program).filter(Boolean))].length;
-                document.getElementById('stats-row').innerHTML = [
-                    { label: 'Total Students', value: total, icon: 'groups', color: 'text-primary' },
-                    { label: 'Active', value: active, icon: 'check_circle', color: 'text-emerald-600' },
-                    { label: 'Inactive', value: inactive, icon: 'cancel', color: 'text-red-500' },
-                    { label: 'Programs', value: programs, icon: 'category', color: 'text-violet-600' }
-                ].map((s) => `
-                    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                            <span class="material-symbols-outlined ${s.color}">${s.icon}</span>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 uppercase tracking-wide">${s.label}</p>
-                            <p class="text-xl font-bold">${s.value}</p>
-                        </div>
-                    </div>
-                `).join('');
+            const programNames = {
+                'BSIT': 'BS Information Technology',
+                'BSCS': 'BS Computer Science',
+                'BSCE': 'BS Civil Engineering',
+                'BSME': 'BS Mechanical Engineering',
+                'BSEE': 'BS Electrical Engineering',
+                'BSEcE': 'BS Electronics Engineering',
+                'BSMarE': 'BS Marine Engineering',
+                'BSNA': 'BS Naval Architecture',
+                'BSArch': 'BS Architecture',
+                'BSBA': 'BS Business Administration',
+                'BSHRA': 'BS Hotel & Restaurant Admin',
+                'BSCrim': 'BS Criminology',
+                'SHS': 'Senior High School',
+                'JHS': 'Junior High School'
+            };
+
+            // Build program tabs from actual student data
+            const buildTabs = (allItems) => {
+                const programs = [...new Set(allItems.map((i) => i.program).filter(Boolean))].sort();
+                const container = document.getElementById('program-tabs');
+                container.innerHTML = `<button class="tab-btn ${activeProgram === '' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-primary hover:text-primary'} px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border" data-program="">All <span class="ml-1 text-[10px] opacity-70">${allItems.length}</span></button>`;
+                programs.forEach((p) => {
+                    const count = allItems.filter((i) => i.program === p).length;
+                    const isActive = activeProgram === p;
+                    container.innerHTML += `<button class="tab-btn ${isActive ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-primary hover:text-primary'} px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border" data-program="${p}">${p} <span class="ml-1 text-[10px] opacity-70">${count}</span></button>`;
+                });
+                container.querySelectorAll('.tab-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        activeProgram = btn.dataset.program;
+                        load();
+                    });
+                });
             };
 
             const load = () => {
-                let items = Store.getAll('students') || [];
-                loadStats(items);
+                let allItems = Store.getAll('students') || [];
+                buildTabs(allItems);
 
                 const s = document.getElementById('search-input').value.toLowerCase();
-                const pf = document.getElementById('filter-program').value;
                 const sf = document.getElementById('filter-status').value;
+                let items = [...allItems];
                 if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s));
-                if (pf) items = items.filter((i) => i.program === pf);
+                if (activeProgram) items = items.filter((i) => i.program === activeProgram);
                 if (sf) items = items.filter((i) => i.status === sf);
 
-                const tbody = document.getElementById('data-table');
+                const container = document.getElementById('student-list');
+
                 if (!items.length) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-slate-400 py-10">No students found.</td></tr>';
+                    container.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-10 text-center text-slate-400">No students found.</div>`;
                     return;
                 }
 
-                tbody.innerHTML = items.map((i, idx) => {
-                    const statusCls = i.status === 'active'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-                    const progCls = programColors[i.program] || defaultBadge;
+                // Group by program
+                const grouped = {};
+                items.forEach((i) => {
+                    const key = i.program || 'Unassigned';
+                    if (!grouped[key]) grouped[key] = [];
+                    grouped[key].push(i);
+                });
 
-                    return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                        <td class="px-5 py-3.5 text-slate-400 text-xs">${idx + 1}</td>
-                        <td class="px-5 py-3.5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                let html = '';
+                let globalIdx = 0;
+
+                Object.keys(grouped).sort().forEach((prog) => {
+                    const students = grouped[prog];
+                    const fullName = programNames[prog] || prog;
+
+                    html += `<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">`;
+                    html += `<div class="px-5 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[20px]">folder</span>
+                            <span class="font-bold text-sm">${prog}</span>
+                            <span class="text-xs text-slate-400">${fullName}</span>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-500 bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full">${students.length}</span>
+                    </div>`;
+
+                    html += `<table class="w-full text-sm"><tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">`;
+
+                    students.forEach((i) => {
+                        globalIdx++;
+                        const statusDot = i.status === 'active'
+                            ? 'bg-emerald-500' : 'bg-red-400';
+
+                        html += `<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="pl-5 pr-2 py-2.5 w-8 text-xs text-slate-400">${globalIdx}</td>
+                            <td class="px-2 py-2.5 w-10">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
                                     ${i.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}
                                 </div>
-                                <div class="min-w-0">
-                                    <p class="font-semibold text-sm leading-tight truncate">${i.name}</p>
-                                    <p class="text-xs text-slate-500 truncate">${i.student_id} &middot; ${i.email}</p>
+                            </td>
+                            <td class="px-2 py-2.5">
+                                <p class="font-semibold text-[13px] leading-tight">${i.name}</p>
+                                <p class="text-[11px] text-slate-400">${i.student_id}</p>
+                            </td>
+                            <td class="px-2 py-2.5 text-xs text-slate-500">${i.section || ''}</td>
+                            <td class="px-2 py-2.5 text-xs text-slate-500 hidden md:table-cell">${i.contact || ''}</td>
+                            <td class="px-2 py-2.5 w-6">
+                                <span class="inline-block w-2 h-2 rounded-full ${statusDot}" title="${i.status}"></span>
+                            </td>
+                            <td class="pr-4 pl-2 py-2.5 text-right">
+                                <div class="inline-flex items-center gap-0.5">
+                                    <a href="/pages/operations/borrower-profile.html?id=${i.id}" class="w-7 h-7 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-colors" title="View"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
+                                    <button class="btn-edit w-7 h-7 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                                    <button class="btn-del w-7 h-7 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="px-5 py-3.5">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold ${progCls}">${i.program || '—'}</span>
-                            <span class="text-xs text-slate-500 ml-1">${i.section ? i.section : ''}</span>
-                            <p class="text-xs text-slate-400 mt-0.5">${i.grade_level}</p>
-                        </td>
-                        <td class="px-5 py-3.5 text-sm text-slate-600 dark:text-slate-400">${i.contact || '—'}</td>
-                        <td class="px-5 py-3.5">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusCls}">${i.status}</span>
-                        </td>
-                        <td class="px-5 py-3.5 text-center">
-                            <div class="inline-flex items-center gap-1">
-                                <a href="/pages/operations/borrower-profile.html?id=${i.id}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors" title="View Profile"><span class="material-symbols-outlined text-[20px]">visibility</span></a>
-                                <button class="btn-edit w-8 h-8 inline-flex items-center justify-center rounded-lg text-primary hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                                <button class="btn-del w-8 h-8 inline-flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[20px]">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>`;
-                }).join('');
+                            </td>
+                        </tr>`;
+                    });
+
+                    html += `</tbody></table></div>`;
+                });
+
+                container.innerHTML = html;
                 bindActions();
             };
 
@@ -384,7 +357,6 @@
             });
 
             document.getElementById('search-input').addEventListener('input', load);
-            document.getElementById('filter-program').addEventListener('change', load);
             document.getElementById('filter-status').addEventListener('change', load);
             load();
         })();

@@ -290,11 +290,15 @@ const Store = (() => {
     };
 
     // ── Seed (localStorage fallback only) ───────────────────────
-    const isSeeded = () => localStorage.getItem('aklatbayon_seeded') === 'true';
+    const SEED_VERSION = 2;
+    const isSeeded = () => localStorage.getItem('aklatbayon_seed_version') === String(SEED_VERSION);
 
     const seed = () => {
         if (_useApi) return;
         if (isSeeded()) return;
+        // Clear old seed data when version changes
+        const keys = Object.keys(localStorage).filter((k) => k.startsWith('aklatbayon_'));
+        keys.forEach((k) => localStorage.removeItem(k));
 
         const now = () => new Date().toISOString();
         const seedIfEmpty = (collection, data) => {
@@ -531,7 +535,7 @@ const Store = (() => {
             { id: 'lcc-z', letter: 'Z', name: 'Bibliography & Library Science', icon: 'fa-bookmark', subclasses: ['ZA - Information Resources', 'Z4 - Books (General)', 'Z657 - Library Science', 'Z695 - Cataloging'] }
         ]);
 
-        localStorage.setItem('aklatbayon_seeded', 'true');
+        localStorage.setItem('aklatbayon_seed_version', String(SEED_VERSION));
     };
 
     return {
