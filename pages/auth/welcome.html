@@ -92,15 +92,15 @@
   <script src="/js/store.js"></script>
   <script src="/js/auth.js"></script>
   <script>
-      var user = Auth.getCurrentUser();
+      const user = Auth.getCurrentUser();
       if (!user) { window.location.href = '/pages/auth/login.html'; }
       else {
           document.getElementById('user-name').textContent = user.name;
-          var roleText = user.role_name;
-          if (user.faculty_subtype) roleText += ' — ' + user.faculty_subtype;
-          var roleEl = document.getElementById('user-role');
+          let roleText = user.role_name;
+          if (user.faculty_subtype) roleText += ` — ${user.faculty_subtype}`;
+          const roleEl = document.getElementById('user-role');
           roleEl.textContent = roleText;
-          var roleClassMap = {
+          const roleClassMap = {
               'System Administrator': 'role-admin',
               'Librarian': 'role-librarian',
               'Faculty': 'role-faculty',
@@ -111,26 +111,26 @@
           roleEl.classList.add(roleClassMap[user.role_name] || 'role-guest');
       }
 
-      var dotCount = 0;
-      setInterval(function() {
+      let dotCount = 0;
+      setInterval(() => {
           dotCount = (dotCount + 1) % 4;
           document.getElementById('dots').textContent = '.'.repeat(dotCount);
       }, 500);
 
-      (function() {
-          var container = document.getElementById('particles');
-          for (var i = 0; i < 20; i++) {
-              var p = document.createElement('div');
+      (() => {
+          const container = document.getElementById('particles');
+          for (let i = 0; i < 20; i++) {
+              const p = document.createElement('div');
               p.className = 'particle';
-              p.style.left = Math.random()*100 + '%';
-              p.style.animationDuration = (8+Math.random()*12) + 's';
-              p.style.animationDelay = Math.random()*10 + 's';
-              p.style.width = p.style.height = (1+Math.random()*3) + 'px';
+              p.style.left = `${Math.random() * 100}%`;
+              p.style.animationDuration = `${8 + Math.random() * 12}s`;
+              p.style.animationDelay = `${Math.random() * 10}s`;
+              p.style.width = p.style.height = `${1 + Math.random() * 3}px`;
               container.appendChild(p);
           }
       })();
 
-      setTimeout(function() { window.location.href = '/pages/general/dashboard.html'; }, 3000);
+      setTimeout(() => { window.location.href = '/pages/general/dashboard.html'; }, 3000);
   </script>
 </body>
 </html>

@@ -101,7 +101,7 @@
     <script src="/js/sidebar.js"></script>
     <script src="/js/app.js"></script>
     <script>
-        if (!Auth.requireAuth()) throw '';
+        if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; return; }
         App.init();
         let editingRoleId = null;
         const groupIcons = { Books: 'menu_book', Catalog: 'sell', Reports: 'bar_chart', Users: 'manage_accounts', System: 'settings', Circulation: 'swap_horiz', Finance: 'payments', Students: 'school' };
@@ -123,7 +123,7 @@
                 return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">${i+1}</td><td class="px-5 py-3.5 font-semibold text-slate-900 dark:text-slate-100">${r.name}${isAdmin ? ' <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 ml-1.5">SUPER</span>' : ''}</td><td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">${r.description}</td><td class="px-5 py-3.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">${uCount}</span></td><td class="px-5 py-3.5">${permBadge}</td><td class="px-5 py-3.5">${actions}</td></tr>`;
             }).join('');
             document.querySelectorAll('.btn-manage-perms').forEach((btn) => {
-                btn.addEventListener('click', function() { showPermissions(this.dataset.id); });
+                btn.addEventListener('click', () => { showPermissions(btn.dataset.id); });
             });
         };
 
@@ -161,11 +161,11 @@
             document.getElementById('perm-section').style.display = 'block';
             updateCounter();
             document.querySelectorAll('.perm-toggle').forEach((t) => {
-                t.addEventListener('change', function() { updateGroupToggle(this.dataset.group); updateCounter(); });
+                t.addEventListener('change', () => { updateGroupToggle(t.dataset.group); updateCounter(); });
             });
             document.querySelectorAll('.toggle-all-group').forEach((t) => {
-                t.addEventListener('change', function() {
-                    const g = this.dataset.group, isChecked = this.checked;
+                t.addEventListener('change', () => {
+                    const g = t.dataset.group, isChecked = t.checked;
                     document.querySelectorAll(`.perm-group-${g}`).forEach((cb) => { cb.checked = isChecked; });
                     updateCounter();
                 });

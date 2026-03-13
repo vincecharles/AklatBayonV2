@@ -47,7 +47,7 @@
             <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" data-tab="history">Borrowing History</button>
         </div>
 
-        <!-- ════════════ ISSUE TAB ════════════ -->
+        <!-- ISSUE TAB -->
         <div class="tab-pane active" id="tab-issue">
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
@@ -94,7 +94,7 @@
             </div>
         </div>
 
-        <!-- ════════════ RETURN TAB ════════════ -->
+        <!-- RETURN TAB -->
         <div class="tab-pane" id="tab-return">
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
@@ -133,7 +133,7 @@
             </div>
         </div>
 
-        <!-- ════════════ HISTORY TAB ════════════ -->
+        <!-- HISTORY TAB -->
         <div class="tab-pane" id="tab-history">
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
@@ -168,63 +168,63 @@
     <script src="/js/sidebar.js"></script>
     <script src="/js/app.js"></script>
     <script>
-        if (!Auth.requireAuth()) throw '';
+        if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; return; }
         App.init();
 
         // ── Tab switching ─────────────────────────────────────────
-        var tabActiveClasses = 'border-primary text-primary';
-        var tabInactiveClasses = 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+        const tabActiveClasses = 'border-primary text-primary';
+        const tabInactiveClasses = 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
 
-        document.querySelectorAll('.nav-tab').forEach(function(tab) {
+        document.querySelectorAll('.nav-tab').forEach((tab) => {
             tab.addEventListener('click', function() {
-                document.querySelectorAll('.nav-tab').forEach(function(t) {
+                document.querySelectorAll('.nav-tab').forEach((t) => {
                     t.classList.remove('active', 'border-primary', 'text-primary');
-                    tabInactiveClasses.split(' ').forEach(function(c) { t.classList.add(c); });
+                    tabInactiveClasses.split(' ').forEach((c) => { t.classList.add(c); });
                 });
-                document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+                document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
                 this.classList.add('active');
-                tabInactiveClasses.split(' ').forEach(function(c) { this.classList.remove(c); }.bind(this));
-                tabActiveClasses.split(' ').forEach(function(c) { this.classList.add(c); }.bind(this));
-                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                tabInactiveClasses.split(' ').forEach((c) => { this.classList.remove(c); });
+                tabActiveClasses.split(' ').forEach((c) => { this.classList.add(c); });
+                document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
                 if (this.dataset.tab === 'return') loadReturns();
                 if (this.dataset.tab === 'history') loadHistory();
             });
         });
 
         // ── Populate dropdowns ────────────────────────────────────
-        var students = Store.getAll('students'), books = Store.getAll('books');
-        var ssel = document.getElementById('issue-student'), bsel = document.getElementById('issue-book');
-        students.forEach(function(s) { ssel.innerHTML += '<option value="' + s.id + '">' + s.student_id + ' — ' + s.name + '</option>'; });
-        function refreshBookDropdown() {
-            var bks = Store.getAll('books');
+        const students = Store.getAll('students'), books = Store.getAll('books');
+        const ssel = document.getElementById('issue-student'), bsel = document.getElementById('issue-book');
+        students.forEach((s) => { ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`; });
+        const refreshBookDropdown = () => {
+            const bks = Store.getAll('books');
             bsel.innerHTML = '';
-            bks.filter(function(b) { return b.available > 0; }).forEach(function(b) {
-                bsel.innerHTML += '<option value="' + b.id + '" data-isbn="' + b.isbn + '">' + b.title + ' (' + b.available + ' avail.)</option>';
+            bks.filter((b) => b.available > 0).forEach((b) => {
+                bsel.innerHTML += `<option value="${b.id}" data-isbn="${b.isbn}">${b.title} (${b.available} avail.)</option>`;
             });
-        }
+        };
         refreshBookDropdown();
 
-        var today = new Date().toISOString().split('T')[0];
-        var due = new Date(); due.setDate(due.getDate() + 14);
+        const today = new Date().toISOString().split('T')[0];
+        const due = new Date(); due.setDate(due.getDate() + 14);
         document.getElementById('issue-date').value = today;
         document.getElementById('issue-due').value = due.toISOString().split('T')[0];
 
         // ── Barcode scanner for Issue tab ─────────────────────────
         document.getElementById('scan-issue-isbn').addEventListener('keydown', function(e) {
             if (e.key !== 'Enter') return;
-            var isbn = this.value.trim().replace(/-/g, '');
+            const isbn = this.value.trim().replace(/-/g, '');
             if (!isbn) return;
-            var allBooks = Store.getAll('books');
-            var found = allBooks.find(function(b) { return b.isbn.replace(/-/g, '') === isbn; });
+            const allBooks = Store.getAll('books');
+            const found = allBooks.find((b) => b.isbn.replace(/-/g, '') === isbn);
             if (found) {
                 bsel.value = found.id;
                 if (!bsel.value) {
-                    App.showAlert('info', 'Book "' + found.title + '" found but has 0 copies available.');
+                    App.showAlert('info', `Book "${found.title}" found but has 0 copies available.`);
                 } else {
-                    App.showAlert('success', 'Book selected: ' + found.title);
+                    App.showAlert('success', `Book selected: ${found.title}`);
                 }
             } else {
-                App.showAlert('danger', 'No book found with ISBN: ' + this.value.trim());
+                App.showAlert('danger', `No book found with ISBN: ${this.value.trim()}`);
             }
             this.value = '';
         });
@@ -232,16 +232,16 @@
         // ── Barcode scanner for Return tab ────────────────────────
         document.getElementById('scan-return-isbn').addEventListener('keydown', function(e) {
             if (e.key !== 'Enter') return;
-            var isbn = this.value.trim().replace(/-/g, '');
+            const isbn = this.value.trim().replace(/-/g, '');
             if (!isbn) return;
-            var allBooks = Store.getAll('books');
-            var found = allBooks.find(function(b) { return b.isbn.replace(/-/g, '') === isbn; });
+            const allBooks = Store.getAll('books');
+            const found = allBooks.find((b) => b.isbn.replace(/-/g, '') === isbn);
             if (found) {
                 // Highlight matching rows
-                var rows = document.querySelectorAll('#return-table tr');
-                var matched = false;
-                rows.forEach(function(row) {
-                    var bookCell = row.cells && row.cells[1];
+                const rows = document.querySelectorAll('#return-table tr');
+                let matched = false;
+                rows.forEach((row) => {
+                    const bookCell = row.cells && row.cells[1];
                     if (bookCell && bookCell.textContent === found.title) {
                         row.style.background = 'rgba(50,17,212,0.08)';
                         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -250,8 +250,8 @@
                         row.style.background = '';
                     }
                 });
-                if (matched) App.showAlert('success', 'Found: ' + found.title);
-                else App.showAlert('info', 'Book "' + found.title + '" is not currently borrowed.');
+                if (matched) App.showAlert('success', `Found: ${found.title}`);
+                else App.showAlert('info', `Book "${found.title}" is not currently borrowed.`);
             } else {
                 App.showAlert('danger', 'No book found with that ISBN.');
             }
@@ -259,41 +259,41 @@
         });
 
         // ── Issue Book ────────────────────────────────────────────
-        document.getElementById('btn-issue').addEventListener('click', function() {
-            var studentId = document.getElementById('issue-student').value;
-            var bookId = document.getElementById('issue-book').value;
-            var dateIssued = document.getElementById('issue-date').value;
-            var dateDue = document.getElementById('issue-due').value;
+        document.getElementById('btn-issue').addEventListener('click', () => {
+            const studentId = document.getElementById('issue-student').value;
+            const bookId = document.getElementById('issue-book').value;
+            const dateIssued = document.getElementById('issue-date').value;
+            const dateDue = document.getElementById('issue-due').value;
             if (!studentId || !bookId || !dateIssued || !dateDue) { App.showAlert('danger', 'Fill all fields.'); return; }
 
             // Check fine block threshold
-            var fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
-            var totalFines = Store.getStudentFinesTotal(studentId);
+            const fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
+            const totalFines = Store.getStudentFinesTotal(studentId);
             if (totalFines >= fineThreshold) {
-                Swal.fire({ icon: 'error', title: 'Borrowing Blocked', text: 'This student has ₱' + totalFines.toFixed(2) + ' in unpaid fines (limit: ₱' + fineThreshold + '). Fines must be settled first.', confirmButtonColor: '#e94560' });
+                Swal.fire({ icon: 'error', title: 'Borrowing Blocked', text: `This student has \u20B1${totalFines.toFixed(2)} in unpaid fines (limit: \u20B1${fineThreshold}). Fines must be settled first.`, confirmButtonColor: '#e94560' });
                 return;
             }
 
-            var book = Store.getById('books', bookId);
+            const book = Store.getById('books', bookId);
             if (!book || book.available <= 0) { App.showAlert('danger', 'Book not available.'); return; }
             Store.create('transactions', { student_id: studentId, book_id: bookId, type: 'borrow', date_issued: dateIssued, date_due: dateDue, date_returned: null, status: 'borrowed', renewal_count: 0 });
             Store.update('books', bookId, { available: book.available - 1 });
             refreshBookDropdown();
             App.showAlert('success', 'Book issued successfully!');
-            Swal.fire({ icon: 'success', title: 'Book Issued!', text: book.title + ' issued to ' + App.getStudentName(studentId), timer: 2000, showConfirmButton: false });
+            Swal.fire({ icon: 'success', title: 'Book Issued!', text: `${book.title} issued to ${App.getStudentName(studentId)}`, timer: 2000, showConfirmButton: false });
         });
 
         // ── Return Tab ────────────────────────────────────────────
-        function loadReturns() {
-            var txns = Store.getAll('transactions').filter(function(t) { return t.status === 'borrowed'; });
-            var tbody = document.getElementById('return-table');
-            var noticeArea = document.getElementById('reservation-notice-area');
+        const loadReturns = () => {
+            const txns = Store.getAll('transactions').filter((t) => t.status === 'borrowed');
+            const tbody = document.getElementById('return-table');
+            const noticeArea = document.getElementById('reservation-notice-area');
             noticeArea.innerHTML = '';
 
             // Check for books with active reservations
-            var reservations = Store.getAll('reservations');
-            var booksWithReservations = {};
-            reservations.forEach(function(r) {
+            const reservations = Store.getAll('reservations');
+            const booksWithReservations = {};
+            reservations.forEach((r) => {
                 if (r.status === 'active') {
                     if (!booksWithReservations[r.book_id]) booksWithReservations[r.book_id] = 0;
                     booksWithReservations[r.book_id]++;
@@ -301,43 +301,42 @@
             });
 
             if (!txns.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-slate-400 py-8">No outstanding borrowings.</td></tr>'; return; }
-            tbody.innerHTML = txns.map(function(t) {
-                var isOverdue = new Date(t.date_due) < new Date();
-                var renewals = t.renewal_count || 0;
-                var hasReservation = booksWithReservations[t.book_id] > 0;
-                var reservationBadge = hasReservation ? ' <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" title="Has pending reservations"><span class="material-symbols-outlined text-[12px]">bookmark</span></span>' : '';
+            tbody.innerHTML = txns.map((t) => {
+                const isOverdue = new Date(t.date_due) < new Date();
+                const renewals = t.renewal_count || 0;
+                const hasReservation = booksWithReservations[t.book_id] > 0;
+                const reservationBadge = hasReservation ? ' <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" title="Has pending reservations"><span class="material-symbols-outlined text-[12px]">bookmark</span></span>' : '';
 
-                var actions = '<button class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold transition btn-return" data-id="' + t.id + '" data-book="' + t.book_id + '"><span class="material-symbols-outlined text-sm">undo</span>Return</button>';
-                actions += ' <button class="inline-flex items-center gap-1 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1.5 text-xs font-semibold transition btn-renew" data-id="' + t.id + '" data-book="' + t.book_id + '" data-student="' + t.student_id + '" data-renewals="' + renewals + '"><span class="material-symbols-outlined text-sm">sync</span>Renew</button>';
+                const actions = `<button class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold transition btn-return" data-id="${t.id}" data-book="${t.book_id}"><span class="material-symbols-outlined text-sm">undo</span>Return</button> <button class="inline-flex items-center gap-1 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1.5 text-xs font-semibold transition btn-renew" data-id="${t.id}" data-book="${t.book_id}" data-student="${t.student_id}" data-renewals="${renewals}"><span class="material-symbols-outlined text-sm">sync</span>Renew</button>`;
 
-                return '<tr><td class="px-4 py-3">' + App.getStudentName(t.student_id) + '</td><td class="px-4 py-3">' + App.getBookTitle(t.book_id) + reservationBadge + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_issued) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_due) + '</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">' + renewals + '</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ' + (isOverdue ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400') + '">' + (isOverdue ? 'Overdue' : 'Borrowed') + '</span></td><td class="px-4 py-3"><div class="flex items-center gap-2">' + actions + '</div></td></tr>';
+                return `<tr><td class="px-4 py-3">${App.getStudentName(t.student_id)}</td><td class="px-4 py-3">${App.getBookTitle(t.book_id)}${reservationBadge}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_issued)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_due)}</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">${renewals}</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${isOverdue ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}">${isOverdue ? 'Overdue' : 'Borrowed'}</span></td><td class="px-4 py-3"><div class="flex items-center gap-2">${actions}</div></td></tr>`;
             }).join('');
 
             // Bind return buttons
-            document.querySelectorAll('.btn-return').forEach(function(btn) {
+            document.querySelectorAll('.btn-return').forEach((btn) => {
                 btn.addEventListener('click', function() {
-                    var txnId = this.dataset.id, bookId = this.dataset.book;
+                    const txnId = this.dataset.id, bookId = this.dataset.book;
                     Store.update('transactions', txnId, { status: 'returned', date_returned: new Date().toISOString().split('T')[0] });
-                    var book = Store.getById('books', bookId);
+                    const book = Store.getById('books', bookId);
                     if (book) Store.update('books', bookId, { available: book.available + 1 });
 
                     // Check reservation queue for this book
-                    var queue = Store.getReservationQueue(bookId);
+                    const queue = Store.getReservationQueue(bookId);
                     if (queue.length > 0) {
-                        var nextReservation = queue[0];
-                        var expiryHours = parseInt(Store.getSetting('reservation_expiry_hours')) || 48;
-                        var expiresAt = new Date();
+                        const nextReservation = queue[0];
+                        const expiryHours = parseInt(Store.getSetting('reservation_expiry_hours')) || 48;
+                        const expiresAt = new Date();
                         expiresAt.setHours(expiresAt.getHours() + expiryHours);
                         Store.update('reservations', nextReservation.id, {
                             status: 'available',
                             notified_at: new Date().toISOString(),
                             expires_at: expiresAt.toISOString()
                         });
-                        var studentName = App.getStudentName(nextReservation.student_id);
+                        const studentName = App.getStudentName(nextReservation.student_id);
                         Swal.fire({
                             icon: 'info',
                             title: 'Reservation Triggered',
-                            html: 'Book returned successfully.<br><br><strong>' + studentName + '</strong> has a reservation for <strong>' + App.getBookTitle(bookId) + '</strong>.<br>They have <strong>' + expiryHours + ' hours</strong> to claim it.',
+                            html: `Book returned successfully.<br><br><strong>${studentName}</strong> has a reservation for <strong>${App.getBookTitle(bookId)}</strong>.<br>They have <strong>${expiryHours} hours</strong> to claim it.`,
                             confirmButtonColor: '#3211d4'
                         });
                     } else {
@@ -349,79 +348,79 @@
             });
 
             // Bind renew buttons
-            document.querySelectorAll('.btn-renew').forEach(function(btn) {
+            document.querySelectorAll('.btn-renew').forEach((btn) => {
                 btn.addEventListener('click', function() {
-                    var txnId = this.dataset.id;
-                    var bookId = this.dataset.book;
-                    var studentId = this.dataset.student;
-                    var currentRenewals = parseInt(this.dataset.renewals) || 0;
+                    const txnId = this.dataset.id;
+                    const bookId = this.dataset.book;
+                    const studentId = this.dataset.student;
+                    const currentRenewals = parseInt(this.dataset.renewals) || 0;
 
                     // Get max renewals for this borrower's role
-                    var roleKey = Store.getBorrowerRoleKey(studentId);
-                    var maxRenewals = parseInt(Store.getSetting('borrow_' + roleKey + '_max_renewals')) || 1;
-                    var loanDays = parseInt(Store.getSetting('borrow_' + roleKey + '_loan_days')) || 7;
+                    const roleKey = Store.getBorrowerRoleKey(studentId);
+                    const maxRenewals = parseInt(Store.getSetting(`borrow_${roleKey}_max_renewals`)) || 1;
+                    const loanDays = parseInt(Store.getSetting(`borrow_${roleKey}_loan_days`)) || 7;
 
                     // Check: max renewals reached?
                     if (currentRenewals >= maxRenewals) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'Maximum renewals (' + maxRenewals + ') reached for this borrower role.', confirmButtonColor: '#e94560' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Maximum renewals (${maxRenewals}) reached for this borrower role.`, confirmButtonColor: '#e94560' });
                         return;
                     }
 
                     // Check: book has active reservations?
-                    var queue = Store.getReservationQueue(bookId);
+                    const queue = Store.getReservationQueue(bookId);
                     if (queue.length > 0) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'This book has ' + queue.length + ' pending reservation(s). Cannot renew.', confirmButtonColor: '#e94560' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `This book has ${queue.length} pending reservation(s). Cannot renew.`, confirmButtonColor: '#e94560' });
                         return;
                     }
 
                     // Check: student has unpaid fines exceeding threshold?
-                    var fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
-                    var totalFines = Store.getStudentFinesTotal(studentId);
+                    const fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
+                    const totalFines = Store.getStudentFinesTotal(studentId);
                     if (totalFines >= fineThreshold) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'Outstanding fines of ₱' + totalFines.toFixed(2) + ' exceed the ₱' + fineThreshold + ' limit.', confirmButtonColor: '#e94560' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Outstanding fines of \u20B1${totalFines.toFixed(2)} exceed the \u20B1${fineThreshold} limit.`, confirmButtonColor: '#e94560' });
                         return;
                     }
 
                     // Do the renewal
-                    var txn = Store.getById('transactions', txnId);
+                    const txn = Store.getById('transactions', txnId);
                     if (!txn) return;
-                    var newDue = new Date(txn.date_due);
+                    const newDue = new Date(txn.date_due);
                     newDue.setDate(newDue.getDate() + loanDays);
 
                     Swal.fire({
                         title: 'Confirm Renewal',
-                        html: 'Renew <strong>' + App.getBookTitle(bookId) + '</strong>?<br>New due date: <strong>' + newDue.toISOString().split('T')[0] + '</strong><br>Renewal ' + (currentRenewals + 1) + ' of ' + maxRenewals,
+                        html: `Renew <strong>${App.getBookTitle(bookId)}</strong>?<br>New due date: <strong>${newDue.toISOString().split('T')[0]}</strong><br>Renewal ${currentRenewals + 1} of ${maxRenewals}`,
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#3211d4',
                         confirmButtonText: 'Renew'
-                    }).then(function(result) {
+                    }).then((result) => {
                         if (result.isConfirmed) {
                             Store.update('transactions', txnId, {
                                 date_due: newDue.toISOString().split('T')[0],
                                 renewal_count: currentRenewals + 1
                             });
-                            Store.logActivity('RENEW', 'transactions', App.getBookTitle(bookId) + ' for ' + App.getStudentName(studentId));
-                            App.showAlert('success', 'Book renewed! New due date: ' + App.formatDate(newDue.toISOString()));
+                            Store.logActivity('RENEW', 'transactions', `${App.getBookTitle(bookId)} for ${App.getStudentName(studentId)}`);
+                            App.showAlert('success', `Book renewed! New due date: ${App.formatDate(newDue.toISOString())}`);
                             loadReturns();
                         }
                     });
                 });
             });
-        }
+        };
 
         // ── History Tab ───────────────────────────────────────────
-        function loadHistory() {
-            var txns = Store.getAll('transactions');
-            var tbody = document.getElementById('history-table');
+        const loadHistory = () => {
+            const txns = Store.getAll('transactions');
+            const tbody = document.getElementById('history-table');
             if (!txns.length) { tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-8">No history.</td></tr>'; return; }
-            tbody.innerHTML = txns.map(function(t, i) {
-                var statusClass = t.status === 'returned' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : (new Date(t.date_due) < new Date() ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400');
-                var statusLabel = t.status === 'returned' ? 'Returned' : (new Date(t.date_due) < new Date() ? 'Overdue' : 'Borrowed');
-                var renewals = t.renewal_count || 0;
-                return '<tr><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + (i+1) + '</td><td class="px-4 py-3">' + App.getStudentName(t.student_id) + '</td><td class="px-4 py-3">' + App.getBookTitle(t.book_id) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_issued) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_due) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_returned) + '</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">' + renewals + '</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ' + statusClass + '">' + statusLabel + '</span></td></tr>';
+            tbody.innerHTML = txns.map((t, i) => {
+                const statusClass = t.status === 'returned' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : (new Date(t.date_due) < new Date() ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400');
+                const statusLabel = t.status === 'returned' ? 'Returned' : (new Date(t.date_due) < new Date() ? 'Overdue' : 'Borrowed');
+                const renewals = t.renewal_count || 0;
+                return `<tr><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${i+1}</td><td class="px-4 py-3">${App.getStudentName(t.student_id)}</td><td class="px-4 py-3">${App.getBookTitle(t.book_id)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_issued)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_due)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_returned)}</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">${renewals}</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusClass}">${statusLabel}</span></td></tr>`;
             }).join('');
-        }
+        };
     </script>
 </body>
 </html>

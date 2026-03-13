@@ -149,62 +149,50 @@
 <script src="/js/sidebar.js"></script>
 <script src="/js/app.js"></script>
 <script>
-    if (!Auth.requireAuth()) throw '';
+    if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; return; }
     App.init();
     App.bindModalCloses();
 
-    var roles = Store.getAll('roles');
-    var roleSelect = document.getElementById('f-role');
-    var filterRole = document.getElementById('filter-role');
-    roles.forEach(function(r) {
-        roleSelect.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
-        filterRole.innerHTML += '<option value="'+r.id+'">'+r.name+'</option>';
+    const roles = Store.getAll('roles');
+    const roleSelect = document.getElementById('f-role');
+    const filterRole = document.getElementById('filter-role');
+    roles.forEach((r) => {
+        roleSelect.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+        filterRole.innerHTML += `<option value="${r.id}">${r.name}</option>`;
     });
 
-    var students = Store.getAll('students');
-    var studentSelect = document.getElementById('f-student');
-    students.forEach(function(s) {
-        studentSelect.innerHTML += '<option value="'+s.id+'">'+s.name+' ('+s.student_id+')</option>';
+    const students = Store.getAll('students');
+    const studentSelect = document.getElementById('f-student');
+    students.forEach((s) => {
+        studentSelect.innerHTML += `<option value="${s.id}">${s.name} (${s.student_id})</option>`;
     });
 
-    document.getElementById('f-role').addEventListener('change', function() {
-        document.getElementById('f-subtype-group').style.display = this.value === 'r4' ? 'block' : 'none';
+    document.getElementById('f-role').addEventListener('change', (e) => {
+        document.getElementById('f-subtype-group').style.display = e.target.value === 'r4' ? 'block' : 'none';
     });
 
-    function loadUsers() {
-        var users = Store.getAll('users');
-        var search = document.getElementById('search-input').value.toLowerCase();
-        var roleFilter = document.getElementById('filter-role').value;
-        if (search) users = users.filter(function(u) { return u.name.toLowerCase().indexOf(search) !== -1 || u.username.toLowerCase().indexOf(search) !== -1 || u.email.toLowerCase().indexOf(search) !== -1; });
-        if (roleFilter) users = users.filter(function(u) { return u.role_id === roleFilter; });
-        var tbody = document.getElementById('user-table');
+    const loadUsers = () => {
+        let users = Store.getAll('users');
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const roleFilter = document.getElementById('filter-role').value;
+        if (search) users = users.filter((u) => u.name.toLowerCase().includes(search) || u.username.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
+        if (roleFilter) users = users.filter((u) => u.role_id === roleFilter);
+        const tbody = document.getElementById('user-table');
         if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-10 text-center text-slate-400 dark:text-slate-500">No users found.</td></tr>'; return; }
-        tbody.innerHTML = users.map(function(u, i) {
-            var roleName = App.getRoleName(u.role_id);
-            var statusCls = u.status === 'active'
+        tbody.innerHTML = users.map((u, i) => {
+            const roleName = App.getRoleName(u.role_id);
+            const statusCls = u.status === 'active'
                 ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                 : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-            return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">' +
-                '<td class="px-5 py-3 text-slate-500">'+(i+1)+'</td>' +
-                '<td class="px-5 py-3 font-semibold">'+u.name+'</td>' +
-                '<td class="px-5 py-3 text-slate-600 dark:text-slate-400">'+u.username+'</td>' +
-                '<td class="px-5 py-3 text-slate-600 dark:text-slate-400">'+u.email+'</td>' +
-                '<td class="px-5 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">'+roleName+'</span></td>' +
-                '<td class="px-5 py-3 text-slate-500">'+(u.faculty_subtype || '—')+'</td>' +
-                '<td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">'+(u.rfid_id || '—')+'</code></td>' +
-                '<td class="px-5 py-3"><span class="'+statusCls+'">'+u.status+'</span></td>' +
-                '<td class="px-5 py-3"><div class="flex items-center gap-1">' +
-                    '<button class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary/10 transition-colors" data-id="'+u.id+'"><span class="material-symbols-outlined text-lg">edit</span></button>' +
-                    '<button class="btn-del w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="'+u.id+'" data-name="'+u.name+'"><span class="material-symbols-outlined text-lg">delete</span></button>' +
-                '</div></td></tr>';
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 text-slate-500">${i+1}</td><td class="px-5 py-3 font-semibold">${u.name}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${u.username}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${u.email}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">${roleName}</span></td><td class="px-5 py-3 text-slate-500">${u.faculty_subtype || '\u2014'}</td><td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${u.rfid_id || '\u2014'}</code></td><td class="px-5 py-3"><span class="${statusCls}">${u.status}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary/10 transition-colors" data-id="${u.id}"><span class="material-symbols-outlined text-lg">edit</span></button><button class="btn-del w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${u.id}" data-name="${u.name}"><span class="material-symbols-outlined text-lg">delete</span></button></div></td></tr>`;
         }).join('');
         bindActions();
-    }
+    };
 
-    function bindActions() {
-        document.querySelectorAll('.btn-edit').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var u = Store.getById('users', this.dataset.id);
+    const bindActions = () => {
+        document.querySelectorAll('.btn-edit').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const u = Store.getById('users', btn.dataset.id);
                 if (!u) return;
                 document.getElementById('modal-title').textContent = 'Edit User';
                 document.getElementById('edit-id').value = u.id;
@@ -221,17 +209,17 @@
                 App.openModal('modal-user');
             });
         });
-        document.querySelectorAll('.btn-del').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var id = this.dataset.id, name = this.dataset.name;
-                App.confirmDelete(name).then(function(result) {
+        document.querySelectorAll('.btn-del').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id, name = btn.dataset.name;
+                App.confirmDelete(name).then((result) => {
                     if (result.isConfirmed) { Store.remove('users', id); App.showAlert('success', 'User deleted.'); loadUsers(); }
                 });
             });
         });
-    }
+    };
 
-    document.getElementById('btn-add').addEventListener('click', function() {
+    document.getElementById('btn-add').addEventListener('click', () => {
         document.getElementById('modal-title').textContent = 'Add User';
         document.getElementById('edit-id').value = '';
         document.getElementById('f-name').value = '';
@@ -246,31 +234,31 @@
         App.openModal('modal-user');
     });
 
-    document.getElementById('btn-save').addEventListener('click', function() {
-        var name = document.getElementById('f-name').value.trim();
-        var username = document.getElementById('f-username').value.trim();
-        var email = document.getElementById('f-email').value.trim();
-        var password = document.getElementById('f-password').value;
-        var roleId = document.getElementById('f-role').value;
-        var rfid = document.getElementById('f-rfid').value.trim();
-        var studentId = document.getElementById('f-student').value || null;
-        var status = document.getElementById('f-status').value;
-        var facultySub = roleId === 'r4' ? document.getElementById('f-subtype').value : null;
+    document.getElementById('btn-save').addEventListener('click', () => {
+        const name = document.getElementById('f-name').value.trim();
+        const username = document.getElementById('f-username').value.trim();
+        const email = document.getElementById('f-email').value.trim();
+        const password = document.getElementById('f-password').value;
+        const roleId = document.getElementById('f-role').value;
+        const rfid = document.getElementById('f-rfid').value.trim();
+        const studentId = document.getElementById('f-student').value || null;
+        const status = document.getElementById('f-status').value;
+        const facultySub = roleId === 'r4' ? document.getElementById('f-subtype').value : null;
         if (!name || !username || !email || !roleId) { App.showAlert('danger', 'Please fill required fields.'); return; }
-        var editId = document.getElementById('edit-id').value;
-        var promise;
+        const editId = document.getElementById('edit-id').value;
+        let promise;
         if (editId) {
-            var data = { name:name, username:username, email:email, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, student_id:studentId, status:status };
+            const data = { name, username, email, role_id: roleId, faculty_subtype: facultySub, rfid_id: rfid, student_id: studentId, status };
             if (password) data.password = password;
             promise = Store.update('users', editId, data);
         } else {
             if (!password) { App.showAlert('danger', 'Password is required.'); return; }
-            promise = Store.create('users', { name:name, username:username, email:email, password:password, role_id:roleId, faculty_subtype:facultySub, rfid_id:rfid, student_id:studentId, status:status });
+            promise = Store.create('users', { name, username, email, password, role_id: roleId, faculty_subtype: facultySub, rfid_id: rfid, student_id: studentId, status });
         }
-        promise.then(function() {
+        promise.then(() => {
             App.showAlert('success', editId ? 'User updated.' : 'User created.');
             App.closeModal('modal-user'); loadUsers();
-        }).catch(function(err) {
+        }).catch((err) => {
             Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
         });
     });

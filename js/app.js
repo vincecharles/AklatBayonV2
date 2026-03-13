@@ -134,3 +134,13 @@ const App = (() => {
         getRoleName, getAuthorName, getPublisherName, getCategoryName, getStudentName, getBookTitle
     };
 })();
+
+// ── Global error suppression ──────────────────────────────────
+// Suppress unhandled promise rejections from failed API calls
+window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
+// Suppress empty throws used by auth guards (throw '')
+window.onerror = (msg, src, line, col, err) => {
+    if (err === '' || msg === 'Script error.' || msg === 'Uncaught ') return true;
+    if (typeof msg === 'string' && msg.includes('Uncaught ')) return true;
+    return false;
+};

@@ -102,7 +102,7 @@
   <script src="/js/sidebar.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    if (!Auth.requireAuth()) throw '';
+    if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; return; }
     App.init();
     const books = Store.getAll('books');
     let totalCopies = 0, totalAvail = 0;

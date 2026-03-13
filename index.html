@@ -243,9 +243,9 @@
             }
         })();
 
-        document.getElementById('rfid-input').addEventListener('keydown', function(e) {
+        document.getElementById('rfid-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                const rfid = this.value.trim();
+                const rfid = e.target.value.trim();
                 if (!rfid) return;
                 const result = Auth.loginByRfid(rfid);
                 if (result.success) {
@@ -266,9 +266,9 @@
             }
         });
 
-        document.getElementById('reg-role').addEventListener('change', function() {
+        document.getElementById('reg-role').addEventListener('change', (e) => {
             const group = document.getElementById('faculty-sub-group');
-            if (this.value === 'r4') { group.classList.add('visible'); }
+            if (e.target.value === 'r4') { group.classList.add('visible'); }
             else { group.classList.remove('visible'); }
         });
 

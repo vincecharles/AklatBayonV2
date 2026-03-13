@@ -41,23 +41,35 @@
         </button>
       </div>
 
-      <!-- Search + Filter -->
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <div class="relative flex-1 min-w-[220px]">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-          <input type="text" id="search-input" placeholder="Search by name or ID..."
-            class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+      <!-- Algolia-style Search -->
+      <div class="relative mb-5">
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+          <input type="text" id="search-input" placeholder="Search students by name, ID, program, or section..."
+            class="h-12 w-full pl-12 pr-20 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+            autocomplete="off">
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <select id="filter-status" class="h-7 px-2 text-[11px] rounded-md border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:outline-none">
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600">/</kbd>
+          </div>
         </div>
-        <select id="filter-status"
-          class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+        <!-- Search dropdown -->
+        <div id="search-dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl max-h-80 overflow-y-auto hidden">
+          <div id="search-results" class="py-1"></div>
+        </div>
       </div>
 
-      <!-- Program Tabs -->
-      <div class="flex flex-wrap gap-1.5 mb-5" id="program-tabs"></div>
+      <!-- Category Tabs -->
+      <div class="mb-5">
+        <!-- Category row -->
+        <div class="flex flex-wrap items-center gap-2" id="category-tabs"></div>
+        <!-- Program sub-tabs (shown when category selected) -->
+        <div class="flex flex-wrap items-center gap-1.5 mt-2" id="program-subtabs"></div>
+      </div>
 
       <!-- Results info -->
       <p class="text-xs text-slate-400 mb-3" id="result-info"></p>
@@ -95,13 +107,11 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Student ID</label>
-            <input id="f-student-id" placeholder="e.g. 2024-0001"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-student-id" placeholder="e.g. 2024-0001" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Status</label>
-            <select id="f-status"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-status" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
@@ -109,26 +119,22 @@
         </div>
         <div>
           <label class="block text-sm font-medium mb-1.5">Full Name</label>
-          <input id="f-name"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          <input id="f-name" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Email</label>
-            <input id="f-email" type="email"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-email" type="email" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Contact</label>
-            <input id="f-contact" placeholder="09XXXXXXXXX"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-contact" placeholder="09XXXXXXXXX" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
           </div>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Grade Level</label>
-            <select id="f-grade"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-grade" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
               <option value="College">College</option>
               <option value="Senior High">Senior High</option>
               <option value="Junior High">Junior High</option>
@@ -136,8 +142,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Program</label>
-            <select id="f-program"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-program" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
               <option value="">-- Select --</option>
               <optgroup label="Engineering"><option value="BSCE">BSCE</option><option value="BSME">BSME</option><option value="BSEE">BSEE</option><option value="BSEcE">BSEcE</option><option value="BSMarE">BSMarE</option><option value="BSNA">BSNA</option></optgroup>
               <optgroup label="Computing"><option value="BSIT">BSIT</option><option value="BSCS">BSCS</option></optgroup>
@@ -149,8 +154,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Section</label>
-            <input id="f-section" placeholder="e.g. 3A"
-              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-section" placeholder="e.g. 3A" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
           </div>
         </div>
       </div>
@@ -169,8 +173,6 @@
   <script src="/js/sidebar.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
-
     if (!Auth.requireAuth()) {
         window.location.href = '/pages/auth/login.html';
     } else {
@@ -178,7 +180,23 @@
             App.init();
             App.bindModalCloses();
 
+            let activeCategory = '';
             let activeProgram = '';
+
+            const categories = {
+                'Engineering': ['BSCE', 'BSME', 'BSEE', 'BSEcE', 'BSMarE', 'BSNA'],
+                'Computing': ['BSIT', 'BSCS'],
+                'Architecture': ['BSArch'],
+                'Business & Hospitality': ['BSBA', 'BSHRA'],
+                'Criminal Justice': ['BSCrim'],
+                'Basic Education': ['SHS', 'JHS']
+            };
+
+            const catIcons = {
+                'Engineering': 'engineering', 'Computing': 'computer',
+                'Architecture': 'domain', 'Business & Hospitality': 'storefront',
+                'Criminal Justice': 'shield', 'Basic Education': 'school'
+            };
 
             const progBadge = {
                 'BSIT': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
@@ -197,31 +215,147 @@
                 'JHS': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
             };
 
-            const buildTabs = (allItems) => {
-                const programs = [...new Set(allItems.map((i) => i.program).filter(Boolean))].sort();
-                const container = document.getElementById('program-tabs');
-                const makeTab = (label, value, count) => {
-                    const active = activeProgram === value;
-                    return `<button class="tab-btn px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-primary/50 hover:text-primary'}" data-program="${value}">${label} <span class="opacity-60">${count}</span></button>`;
+            const highlight = (text, query) => {
+                if (!query) return text;
+                const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800 text-inherit rounded px-0.5">$1</mark>');
+            };
+
+            // Category tabs
+            const buildCategoryTabs = (allItems) => {
+                const container = document.getElementById('category-tabs');
+                const allCount = allItems.length;
+                const makeBtn = (label, value, count, icon) => {
+                    const active = activeCategory === value;
+                    const iconHtml = icon ? `<span class="material-symbols-outlined text-[16px]">${icon}</span>` : '';
+                    return `<button class="cat-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all border ${active ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-primary/50 hover:text-primary'}" data-cat="${value}">${iconHtml}${label} <span class="opacity-50 ml-0.5">${count}</span></button>`;
                 };
-                let html = makeTab('All', '', allItems.length);
-                programs.forEach((p) => {
-                    html += makeTab(p, p, allItems.filter((i) => i.program === p).length);
+                let html = makeBtn('All Programs', '', allCount, 'apps');
+                Object.keys(categories).forEach((cat) => {
+                    const progs = categories[cat];
+                    const count = allItems.filter((i) => progs.includes(i.program)).length;
+                    html += makeBtn(cat, cat, count, catIcons[cat]);
                 });
                 container.innerHTML = html;
-                container.querySelectorAll('.tab-btn').forEach((btn) => {
-                    btn.addEventListener('click', () => { activeProgram = btn.dataset.program; load(); });
+                container.querySelectorAll('.cat-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        activeCategory = btn.dataset.cat;
+                        activeProgram = '';
+                        load();
+                    });
                 });
             };
 
+            // Program sub-tabs
+            const buildProgramSubtabs = (allItems) => {
+                const container = document.getElementById('program-subtabs');
+                if (!activeCategory) { container.innerHTML = ''; return; }
+                const progs = categories[activeCategory] || [];
+                let html = `<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Filter:</span>`;
+                const makeBtn = (label, value, count) => {
+                    const active = activeProgram === value;
+                    return `<button class="prog-btn px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${active ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300 ring-1 ring-primary/30' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}" data-prog="${value}">${label} <span class="opacity-50">${count}</span></button>`;
+                };
+                html += makeBtn('All', '', allItems.filter((i) => progs.includes(i.program)).length);
+                progs.forEach((p) => {
+                    const count = allItems.filter((i) => i.program === p).length;
+                    if (count > 0) html += makeBtn(p, p, count);
+                });
+                container.innerHTML = html;
+                container.querySelectorAll('.prog-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => { activeProgram = btn.dataset.prog; load(); });
+                });
+            };
+
+            // Algolia-style search dropdown
+            const searchInput = document.getElementById('search-input');
+            const searchDropdown = document.getElementById('search-dropdown');
+            const searchResults = document.getElementById('search-results');
+
+            const showSearchDropdown = () => {
+                const query = searchInput.value.trim().toLowerCase();
+                if (!query) { searchDropdown.classList.add('hidden'); return; }
+
+                const allItems = Store.getAll('students') || [];
+                const matches = allItems.filter((i) =>
+                    i.name.toLowerCase().includes(query) ||
+                    i.student_id.toLowerCase().includes(query) ||
+                    (i.program && i.program.toLowerCase().includes(query)) ||
+                    (i.section && i.section.toLowerCase().includes(query))
+                ).slice(0, 8);
+
+                if (!matches.length) {
+                    searchResults.innerHTML = `<div class="px-4 py-6 text-center text-sm text-slate-400">
+                        <span class="material-symbols-outlined text-2xl mb-1 block">search_off</span>
+                        No results for "${query}"
+                    </div>`;
+                    searchDropdown.classList.remove('hidden');
+                    return;
+                }
+
+                searchResults.innerHTML = matches.map((i) => {
+                    const badge = progBadge[i.program] || 'bg-slate-100 text-slate-500';
+                    const dot = i.status === 'active' ? 'bg-emerald-500' : 'bg-red-400';
+                    return `<button class="search-item w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left" data-id="${i.id}">
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">${i.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">${highlight(i.name, query)}</p>
+                            <p class="text-[11px] text-slate-400">${highlight(i.student_id, query)} <span class="inline-block px-1.5 py-0 rounded text-[10px] font-bold ${badge} ml-1">${highlight(i.program || '', query)}</span> ${i.section ? highlight(i.section, query) : ''}</p>
+                        </div>
+                        <span class="w-1.5 h-1.5 rounded-full ${dot} shrink-0"></span>
+                    </button>`;
+                }).join('');
+
+                searchResults.innerHTML += `<div class="px-4 py-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">${matches.length} result${matches.length !== 1 ? 's' : ''} found</div>`;
+                searchDropdown.classList.remove('hidden');
+
+                searchResults.querySelectorAll('.search-item').forEach((el) => {
+                    el.addEventListener('click', function() {
+                        const i = Store.getById('students', this.dataset.id); if (!i) return;
+                        document.getElementById('modal-title').textContent = 'Edit Student';
+                        document.getElementById('edit-id').value = i.id;
+                        document.getElementById('f-student-id').value = i.student_id;
+                        document.getElementById('f-name').value = i.name;
+                        document.getElementById('f-email').value = i.email;
+                        document.getElementById('f-grade').value = i.grade_level;
+                        document.getElementById('f-program').value = i.program || '';
+                        document.getElementById('f-section').value = i.section;
+                        document.getElementById('f-contact').value = i.contact;
+                        document.getElementById('f-status').value = i.status;
+                        searchDropdown.classList.add('hidden');
+                        App.openModal('modal-form');
+                    });
+                });
+            };
+
+            searchInput.addEventListener('input', () => { showSearchDropdown(); load(); });
+            searchInput.addEventListener('focus', showSearchDropdown);
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+            // Keyboard shortcut: / to focus search
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+
             const load = () => {
                 const allItems = Store.getAll('students') || [];
-                buildTabs(allItems);
+                buildCategoryTabs(allItems);
+                buildProgramSubtabs(allItems);
 
                 const s = document.getElementById('search-input').value.toLowerCase();
                 const sf = document.getElementById('filter-status').value;
                 let items = [...allItems];
-                if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s));
+                if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s) || (i.program && i.program.toLowerCase().includes(s)) || (i.section && i.section.toLowerCase().includes(s)));
+                if (activeCategory && !activeProgram) {
+                    const progs = categories[activeCategory] || [];
+                    items = items.filter((i) => progs.includes(i.program));
+                }
                 if (activeProgram) items = items.filter((i) => i.program === activeProgram);
                 if (sf) items = items.filter((i) => i.status === sf);
 
@@ -233,14 +367,15 @@
                     return;
                 }
 
+                const query = s;
                 tbody.innerHTML = items.map((i, idx) => {
                     const badge = progBadge[i.program] || 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400';
                     const dot = i.status === 'active' ? 'bg-emerald-500' : 'bg-red-400';
                     return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                         <td class="pl-5 pr-2 py-3 text-xs text-slate-400">${idx + 1}</td>
                         <td class="px-3 py-3">
-                            <p class="font-semibold text-[13px]">${i.name}</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">${i.student_id}</p>
+                            <p class="font-semibold text-[13px]">${highlight(i.name, query)}</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">${highlight(i.student_id, query)}</p>
                         </td>
                         <td class="px-3 py-3">
                             <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold ${badge}">${i.program || '—'}</span>
@@ -312,7 +447,6 @@
                 });
             });
 
-            document.getElementById('search-input').addEventListener('input', load);
             document.getElementById('filter-status').addEventListener('change', load);
             load();
         })();
