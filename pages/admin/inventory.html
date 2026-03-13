@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -30,72 +31,69 @@
             <span class="material-symbols-outlined text-primary">inventory_2</span>
             Inventory
           </h1>
-          <p class="text-sm text-slate-500 mt-1">Track book stock levels and availability</p>
+          <p class="text-sm text-slate-500 mt-1">Track book stock levels, incoming deliveries, and outgoing records</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-add-incoming" style="display:none" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 text-sm font-semibold transition-colors">
+            <span class="material-symbols-outlined text-base">south_west</span> Add Incoming
+          </button>
+          <button id="btn-add-outgoing" style="display:none" class="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 text-sm font-semibold transition-colors">
+            <span class="material-symbols-outlined text-base">north_east</span> Add Outgoing
+          </button>
         </div>
       </div>
 
-      <!-- Stat Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-        <!-- Total Titles -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">menu_book</span>
-          </div>
-          <p class="text-sm text-slate-500">Total Titles</p>
-          <p class="text-2xl font-bold" id="inv-titles">0</p>
-        </div>
-        <!-- Total Copies -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">content_copy</span>
-          </div>
-          <p class="text-sm text-slate-500">Total Copies</p>
-          <p class="text-2xl font-bold" id="inv-copies">0</p>
-        </div>
-        <!-- Available -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-sky-600 bg-sky-100 dark:bg-sky-900/30 p-2 rounded-lg">check_circle</span>
-          </div>
-          <p class="text-sm text-slate-500">Available</p>
-          <p class="text-2xl font-bold" id="inv-avail">0</p>
-        </div>
-        <!-- Checked Out -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-amber-600 bg-amber-100 dark:bg-amber-900/30 p-2 rounded-lg">warning</span>
-          </div>
-          <p class="text-sm text-slate-500">Checked Out</p>
-          <p class="text-2xl font-bold" id="inv-out">0</p>
-        </div>
-        <!-- Ingoing (Returns, 30 days) -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">south_west</span>
-          </div>
-          <p class="text-sm text-slate-500">Ingoing (30d)</p>
-          <p class="text-2xl font-bold" id="inv-ingoing">0</p>
-        </div>
-        <!-- Outgoing (Borrows, 30 days) -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-2">
-            <span class="material-symbols-outlined text-rose-600 bg-rose-100 dark:bg-rose-900/30 p-2 rounded-lg">north_east</span>
-          </div>
-          <p class="text-sm text-slate-500">Outgoing (30d)</p>
-          <p class="text-2xl font-bold" id="inv-outgoing">0</p>
-        </div>
+      <!-- Tabs -->
+      <div class="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-6">
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-primary text-primary" data-tab="overview">Overview</button>
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" data-tab="incoming">Incoming</button>
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" data-tab="outgoing">Outgoing</button>
       </div>
 
-      <!-- Inventory Table -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-lg">list</span>
-          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Book Inventory</h2>
+      <!-- OVERVIEW TAB -->
+      <div class="tab-pane active" id="tab-overview">
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">menu_book</span></div>
+            <p class="text-sm text-slate-500">Total Titles</p>
+            <p class="text-2xl font-bold" id="inv-titles">0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">content_copy</span></div>
+            <p class="text-sm text-slate-500">Total Copies</p>
+            <p class="text-2xl font-bold" id="inv-copies">0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-sky-600 bg-sky-100 dark:bg-sky-900/30 p-2 rounded-lg">check_circle</span></div>
+            <p class="text-sm text-slate-500">Available</p>
+            <p class="text-2xl font-bold" id="inv-avail">0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-amber-600 bg-amber-100 dark:bg-amber-900/30 p-2 rounded-lg">warning</span></div>
+            <p class="text-sm text-slate-500">Checked Out</p>
+            <p class="text-2xl font-bold" id="inv-out">0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">south_west</span></div>
+            <p class="text-sm text-slate-500">Incoming (30d)</p>
+            <p class="text-2xl font-bold" id="inv-ingoing">0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-rose-600 bg-rose-100 dark:bg-rose-900/30 p-2 rounded-lg">north_east</span></div>
+            <p class="text-sm text-slate-500">Outgoing (30d)</p>
+            <p class="text-2xl font-bold" id="inv-outgoing">0</p>
+          </div>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left">
-            <thead>
-              <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+        <!-- Book Inventory Table -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-lg">list</span>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Book Inventory</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead><tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Title</th>
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Author</th>
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Category</th>
@@ -103,15 +101,226 @@
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Available</th>
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Checked Out</th>
                 <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 min-w-[160px]">Availability</th>
-              </tr>
-            </thead>
-            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
-          </table>
+              </tr></thead>
+              <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- INCOMING TAB -->
+      <div class="tab-pane" id="tab-incoming">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-600 text-lg">south_west</span>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Incoming Deliveries</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead><tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Incoming #</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Date</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Reference #</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Purpose</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Supplier</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Items</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Grand Total</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+              </tr></thead>
+              <tbody id="incoming-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTGOING TAB -->
+      <div class="tab-pane" id="tab-outgoing">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-600 text-lg">north_east</span>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Outgoing Records</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead><tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Outgoing #</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Date</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Reference #</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Purpose</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Supplier</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Items</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Grand Total</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+              </tr></thead>
+              <tbody id="outgoing-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
     </main>
   </div>
+
+  <!-- INCOMING MODAL -->
+  <div id="modal-incoming" class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-[95%] max-w-[900px] max-h-[90vh] overflow-y-auto shadow-2xl animate-modal-in">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+        <h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600">south_west</span> Add Incoming Delivery</h3>
+        <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"><span class="material-symbols-outlined text-base">close</span></button>
+      </div>
+      <div class="p-6 space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Incoming Number</label>
+            <input type="text" id="inc-number" readonly class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 cursor-not-allowed text-slate-500">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Date</label>
+            <input type="date" id="inc-date" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Prepared By</label>
+            <input type="text" id="inc-prepared" readonly class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 cursor-not-allowed text-slate-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Reference # (DR)</label>
+            <input type="text" id="inc-reference" placeholder="e.g., DR-2026-0100" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Purpose</label>
+            <select id="inc-purpose" class="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="New Purchase">New Purchase</option>
+              <option value="Re-order">Re-order</option>
+              <option value="Donation">Donation</option>
+              <option value="Transfer">Transfer</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Supplier</label>
+            <input type="text" id="inc-supplier" placeholder="Company name" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Book Items</label>
+            <button type="button" id="btn-add-inc-row" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-800 transition-colors"><span class="material-symbols-outlined text-sm">add</span> Add Book</button>
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+            <table class="w-full text-sm text-left">
+              <thead><tr class="bg-slate-50 dark:bg-slate-800/50">
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 min-w-[200px]">Book</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-24">Qty</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-32">Unit Price</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-32">Total</th>
+                <th class="px-4 py-2.5 w-12"></th>
+              </tr></thead>
+              <tbody id="inc-items-body"></tbody>
+              <tfoot><tr class="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
+                <td colspan="3" class="px-4 py-3 text-right font-bold text-sm">Grand Total:</td>
+                <td class="px-4 py-3 font-bold text-sm text-emerald-600" id="inc-grand-total">&#8369;0.00</td>
+                <td></td>
+              </tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 px-6 py-4 border-t border-slate-200 dark:border-slate-800">
+        <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+        <button id="btn-save-incoming" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"><span class="material-symbols-outlined text-base">save</span> Save Incoming</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTGOING MODAL -->
+  <div id="modal-outgoing" class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-[95%] max-w-[900px] max-h-[90vh] overflow-y-auto shadow-2xl animate-modal-in">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+        <h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-rose-600">north_east</span> Add Outgoing Record</h3>
+        <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"><span class="material-symbols-outlined text-base">close</span></button>
+      </div>
+      <div class="p-6 space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Outgoing Number</label>
+            <input type="text" id="out-number" readonly class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 cursor-not-allowed text-slate-500">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Date</label>
+            <input type="date" id="out-date" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Prepared By</label>
+            <input type="text" id="out-prepared" readonly class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 cursor-not-allowed text-slate-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Reference #</label>
+            <input type="text" id="out-reference" placeholder="e.g., RR-2026-0010" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Purpose</label>
+            <select id="out-purpose" class="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="Book Retirement">Book Retirement</option>
+              <option value="Damage Return">Damage Return</option>
+              <option value="Transfer Out">Transfer Out</option>
+              <option value="Disposal">Disposal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Supplier (for returns)</label>
+            <input type="text" id="out-supplier" placeholder="Company name" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Book Items</label>
+            <button type="button" id="btn-add-out-row" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-800 transition-colors"><span class="material-symbols-outlined text-sm">add</span> Add Book</button>
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+            <table class="w-full text-sm text-left">
+              <thead><tr class="bg-slate-50 dark:bg-slate-800/50">
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 min-w-[200px]">Book</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-24">Qty</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-32">Unit Price</th>
+                <th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-32">Total</th>
+                <th class="px-4 py-2.5 w-12"></th>
+              </tr></thead>
+              <tbody id="out-items-body"></tbody>
+              <tfoot><tr class="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
+                <td colspan="3" class="px-4 py-3 text-right font-bold text-sm">Grand Total:</td>
+                <td class="px-4 py-3 font-bold text-sm text-rose-600" id="out-grand-total">&#8369;0.00</td>
+                <td></td>
+              </tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 px-6 py-4 border-t border-slate-200 dark:border-slate-800">
+        <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+        <button id="btn-save-outgoing" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors"><span class="material-symbols-outlined text-base">save</span> Save Outgoing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW RECORD MODAL -->
+  <div id="modal-view" class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-[95%] max-w-[900px] max-h-[90vh] overflow-y-auto shadow-2xl animate-modal-in">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+        <h3 id="view-title" class="text-lg font-bold flex items-center gap-2">Record Details</h3>
+        <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"><span class="material-symbols-outlined text-base">close</span></button>
+      </div>
+      <div id="view-body" class="p-6"></div>
+      <div class="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-800">
+        <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/api.js"></script>
   <script src="/js/store.js"></script>
   <script src="/js/auth.js"></script>
@@ -120,38 +329,383 @@
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
     App.init();
-    const books = Store.getAll('books');
-    const transactions = Store.getAll('transactions');
-    let totalCopies = 0, totalAvail = 0;
-    books.forEach((b) => { totalCopies += b.copies; totalAvail += b.available; });
+    App.bindModalCloses();
 
-    const now = new Date();
-    const start = new Date(now);
-    start.setDate(start.getDate() - 30);
-    const in30 = (isoDate) => {
-      if (!isoDate) return false;
-      const d = new Date(isoDate);
-      return !Number.isNaN(d.getTime()) && d >= start && d <= now;
+    const canIncoming = Auth.hasPermission('can_manage_incoming');
+    const canOutgoing = Auth.hasPermission('can_manage_outgoing');
+    if (canIncoming) document.getElementById('btn-add-incoming').style.display = '';
+    if (canOutgoing) document.getElementById('btn-add-outgoing').style.display = '';
+
+    // ── Tab switching ─────────────────────────────────────────
+    const tabActiveClasses = 'border-primary text-primary';
+    const tabInactiveClasses = 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+    document.querySelectorAll('.nav-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.nav-tab').forEach((t) => {
+                t.classList.remove('active', 'border-primary', 'text-primary');
+                tabInactiveClasses.split(' ').forEach((c) => { t.classList.add(c); });
+            });
+            document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
+            tab.classList.add('active');
+            tabInactiveClasses.split(' ').forEach((c) => { tab.classList.remove(c); });
+            tabActiveClasses.split(' ').forEach((c) => { tab.classList.add(c); });
+            document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+            if (tab.dataset.tab === 'incoming') loadIncoming();
+            if (tab.dataset.tab === 'outgoing') loadOutgoing();
+        });
+    });
+
+    // ── Auto-number generation ────────────────────────────────
+    const generateNumber = (collection, prefix) => {
+        const all = Store.getAll(collection);
+        const year = new Date().getFullYear();
+        const yearPrefix = `${prefix}-${year}-`;
+        const numField = prefix === 'IN' ? 'incoming_number' : 'outgoing_number';
+        const existing = all
+            .filter((item) => item[numField] && item[numField].startsWith(yearPrefix))
+            .map((item) => parseInt(item[numField].replace(yearPrefix, '')) || 0);
+        const nextNum = existing.length > 0 ? Math.max(...existing) + 1 : 1;
+        return `${yearPrefix}${String(nextNum).padStart(4, '0')}`;
     };
-    const ingoing30 = transactions.filter((t) => in30(t.date_returned)).length;
-    const outgoing30 = transactions.filter((t) => in30(t.date_issued)).length;
 
-    document.getElementById('inv-titles').textContent = books.length;
-    document.getElementById('inv-copies').textContent = totalCopies;
-    document.getElementById('inv-avail').textContent = totalAvail;
-    document.getElementById('inv-out').textContent = totalCopies - totalAvail;
-    document.getElementById('inv-ingoing').textContent = ingoing30;
-    document.getElementById('inv-outgoing').textContent = outgoing30;
-    const tbody = document.getElementById('data-table');
-    if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; }
-    else {
+    // ── Book options for dropdowns ────────────────────────────
+    const buildBookOptions = () => {
+        return Store.getAll('books')
+            .filter((b) => b.status === 'active')
+            .map((b) => `<option value="${b.id}">${b.title} (${b.isbn})</option>`)
+            .join('');
+    };
+
+    // ── Dynamic item row ──────────────────────────────────────
+    const addItemRow = (tbodyId) => {
+        const tbody = document.getElementById(tbodyId);
+        const row = document.createElement('tr');
+        row.className = 'border-b border-slate-100 dark:border-slate-800';
+        row.innerHTML = `
+            <td class="px-4 py-2"><select class="item-book w-full h-9 px-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"><option value="">-- Select book --</option>${buildBookOptions()}</select></td>
+            <td class="px-4 py-2"><input type="number" class="item-qty w-full h-9 px-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary" min="1" value="1"></td>
+            <td class="px-4 py-2"><input type="number" class="item-price w-full h-9 px-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary" min="0" step="0.01" value="0.00"></td>
+            <td class="px-4 py-2"><span class="item-total font-semibold text-sm">\u20B10.00</span></td>
+            <td class="px-4 py-2 text-center"><button type="button" class="btn-remove-row flex h-7 w-7 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><span class="material-symbols-outlined text-[18px]">close</span></button></td>`;
+        tbody.appendChild(row);
+        const qty = row.querySelector('.item-qty');
+        const price = row.querySelector('.item-price');
+        const total = row.querySelector('.item-total');
+        const recalc = () => {
+            const t = (parseInt(qty.value) || 0) * (parseFloat(price.value) || 0);
+            total.textContent = `\u20B1${t.toFixed(2)}`;
+            recalcGrandTotal(tbodyId);
+        };
+        qty.addEventListener('input', recalc);
+        price.addEventListener('input', recalc);
+        row.querySelector('.btn-remove-row').addEventListener('click', () => { row.remove(); recalcGrandTotal(tbodyId); });
+    };
+
+    const recalcGrandTotal = (tbodyId) => {
+        const isInc = tbodyId === 'inc-items-body';
+        const el = document.getElementById(isInc ? 'inc-grand-total' : 'out-grand-total');
+        let grand = 0;
+        document.getElementById(tbodyId).querySelectorAll('tr').forEach((row) => {
+            const q = parseInt(row.querySelector('.item-qty')?.value) || 0;
+            const p = parseFloat(row.querySelector('.item-price')?.value) || 0;
+            grand += q * p;
+        });
+        el.textContent = `\u20B1${grand.toFixed(2)}`;
+    };
+
+    // ── Collect items from modal table ────────────────────────
+    const collectItems = (tbodyId) => {
+        const rows = document.getElementById(tbodyId).querySelectorAll('tr');
+        const items = [];
+        let valid = true;
+        rows.forEach((row) => {
+            const bookId = row.querySelector('.item-book').value;
+            const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+            const price = parseFloat(row.querySelector('.item-price').value) || 0;
+            if (!bookId || qty <= 0) { valid = false; return; }
+            items.push({ book_id: bookId, quantity: qty, unit_price: price, total: qty * price });
+        });
+        return valid ? items : null;
+    };
+
+    // ── Overview stats ────────────────────────────────────────
+    const loadOverview = () => {
+        const books = Store.getAll('books');
+        let totalCopies = 0, totalAvail = 0;
+        books.forEach((b) => { totalCopies += b.copies; totalAvail += b.available; });
+        const now = new Date();
+        const start = new Date(now); start.setDate(start.getDate() - 30);
+        const in30 = (dateStr) => { if (!dateStr) return false; const d = new Date(dateStr); return !Number.isNaN(d.getTime()) && d >= start && d <= now; };
+        const incoming30 = Store.getAll('inventory_incoming').filter((r) => r.status === 'completed' && in30(r.date)).length;
+        const outgoing30 = Store.getAll('inventory_outgoing').filter((r) => r.status === 'completed' && in30(r.date)).length;
+
+        document.getElementById('inv-titles').textContent = books.length;
+        document.getElementById('inv-copies').textContent = totalCopies;
+        document.getElementById('inv-avail').textContent = totalAvail;
+        document.getElementById('inv-out').textContent = totalCopies - totalAvail;
+        document.getElementById('inv-ingoing').textContent = incoming30;
+        document.getElementById('inv-outgoing').textContent = outgoing30;
+
+        const tbody = document.getElementById('data-table');
+        if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; return; }
         tbody.innerHTML = books.map((b) => {
             const out = b.copies - b.available;
             const pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
             const color = pct > 50 ? '#22c55e' : (pct > 0 ? '#eab308' : '#ef4444');
             return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 font-semibold">${b.title}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${App.getAuthorName(b.author_id)}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">${App.getCategoryName(b.category_id)}</span></td><td class="px-5 py-3">${b.copies}</td><td class="px-5 py-3">${b.available}</td><td class="px-5 py-3">${out}</td><td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2"><div class="rounded-full h-2" style="width:${pct}%;background:${color}"></div></div><span class="text-xs font-semibold whitespace-nowrap" style="color:${color}">${pct}%</span></div></td></tr>`;
         }).join('');
-    }
+    };
+
+    // ── Helper: get user name by ID ───────────────────────────
+    const getUserName = (userId) => {
+        const u = Store.getById('users', userId);
+        return u ? u.name : 'Unknown';
+    };
+
+    // ── Incoming table ────────────────────────────────────────
+    const loadIncoming = () => {
+        const items = Store.getAll('inventory_incoming').sort((a, b) => new Date(b.date) - new Date(a.date));
+        const tbody = document.getElementById('incoming-table');
+        if (!items.length) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">south_west</span>No incoming records.</td></tr>'; return; }
+        tbody.innerHTML = items.map((r) => {
+            const statusBadge = r.status === 'completed'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+            const voidBtn = canIncoming && r.status === 'completed' ? `<button class="btn-void-inc inline-flex items-center gap-1 rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="px-5 py-3 font-semibold">${r.incoming_number}</td>
+                <td class="px-5 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(r.date)}</td>
+                <td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${r.reference_number}</code></td>
+                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">${r.purpose}</span></td>
+                <td class="px-5 py-3">${r.supplier || '\u2014'}</td>
+                <td class="px-5 py-3">${r.items.length}</td>
+                <td class="px-5 py-3 font-semibold">\u20B1${r.grand_total.toFixed(2)}</td>
+                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadge}">${r.status}</span></td>
+                <td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-view-inc inline-flex items-center gap-1 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>${voidBtn}</div></td></tr>`;
+        }).join('');
+        bindIncomingActions();
+    };
+
+    const bindIncomingActions = () => {
+        document.querySelectorAll('.btn-view-inc').forEach((btn) => {
+            btn.addEventListener('click', () => viewRecord('inventory_incoming', btn.dataset.id));
+        });
+        document.querySelectorAll('.btn-void-inc').forEach((btn) => {
+            btn.addEventListener('click', () => voidRecord('inventory_incoming', btn.dataset.id));
+        });
+    };
+
+    // ── Outgoing table ────────────────────────────────────────
+    const loadOutgoing = () => {
+        const items = Store.getAll('inventory_outgoing').sort((a, b) => new Date(b.date) - new Date(a.date));
+        const tbody = document.getElementById('outgoing-table');
+        if (!items.length) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">north_east</span>No outgoing records.</td></tr>'; return; }
+        tbody.innerHTML = items.map((r) => {
+            const statusBadge = r.status === 'completed'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+            const voidBtn = canOutgoing && r.status === 'completed' ? `<button class="btn-void-out inline-flex items-center gap-1 rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="px-5 py-3 font-semibold">${r.outgoing_number}</td>
+                <td class="px-5 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(r.date)}</td>
+                <td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${r.reference_number}</code></td>
+                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">${r.purpose}</span></td>
+                <td class="px-5 py-3">${r.supplier || '\u2014'}</td>
+                <td class="px-5 py-3">${r.items.length}</td>
+                <td class="px-5 py-3 font-semibold">\u20B1${r.grand_total.toFixed(2)}</td>
+                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadge}">${r.status}</span></td>
+                <td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-view-out inline-flex items-center gap-1 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>${voidBtn}</div></td></tr>`;
+        }).join('');
+        bindOutgoingActions();
+    };
+
+    const bindOutgoingActions = () => {
+        document.querySelectorAll('.btn-view-out').forEach((btn) => {
+            btn.addEventListener('click', () => viewRecord('inventory_outgoing', btn.dataset.id));
+        });
+        document.querySelectorAll('.btn-void-out').forEach((btn) => {
+            btn.addEventListener('click', () => voidRecord('inventory_outgoing', btn.dataset.id));
+        });
+    };
+
+    // ── View record modal ─────────────────────────────────────
+    const viewRecord = (collection, id) => {
+        const rec = Store.getById(collection, id);
+        if (!rec) return;
+        const isInc = collection === 'inventory_incoming';
+        const num = isInc ? rec.incoming_number : rec.outgoing_number;
+        const iconName = isInc ? 'south_west' : 'north_east';
+        const iconColor = isInc ? 'text-emerald-600' : 'text-rose-600';
+        document.getElementById('view-title').innerHTML = `<span class="material-symbols-outlined ${iconColor}">${iconName}</span> ${num}`;
+        const itemsHtml = rec.items.map((item, i) => {
+            return `<tr class="border-b border-slate-100 dark:border-slate-800"><td class="px-4 py-2 text-slate-400">${i + 1}</td><td class="px-4 py-2 font-semibold">${App.getBookTitle(item.book_id)}</td><td class="px-4 py-2">${item.quantity}</td><td class="px-4 py-2">\u20B1${item.unit_price.toFixed(2)}</td><td class="px-4 py-2 font-semibold">\u20B1${item.total.toFixed(2)}</td></tr>`;
+        }).join('');
+        document.getElementById('view-body').innerHTML = `
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Date</p><p class="text-sm font-semibold">${App.formatDate(rec.date)}</p></div>
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Prepared By</p><p class="text-sm font-semibold">${getUserName(rec.prepared_by)}</p></div>
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Reference #</p><p class="text-sm font-semibold">${rec.reference_number}</p></div>
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Purpose</p><p class="text-sm font-semibold">${rec.purpose}</p></div>
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Supplier</p><p class="text-sm font-semibold">${rec.supplier || '\u2014'}</p></div>
+                <div><p class="text-xs text-slate-500 uppercase font-semibold mb-1">Status</p><p class="text-sm font-semibold">${rec.status}</p></div>
+            </div>
+            <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                <table class="w-full text-sm text-left">
+                    <thead><tr class="bg-slate-50 dark:bg-slate-800/50"><th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-12">#</th><th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300">Book</th><th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-20">Qty</th><th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-28">Unit Price</th><th class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 w-28">Total</th></tr></thead>
+                    <tbody>${itemsHtml}</tbody>
+                    <tfoot><tr class="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700"><td colspan="4" class="px-4 py-3 text-right font-bold">Grand Total:</td><td class="px-4 py-3 font-bold ${isInc ? 'text-emerald-600' : 'text-rose-600'}">\u20B1${rec.grand_total.toFixed(2)}</td></tr></tfoot>
+                </table>
+            </div>`;
+        App.openModal('modal-view');
+    };
+
+    // ── Void record ───────────────────────────────────────────
+    const voidRecord = (collection, id) => {
+        const rec = Store.getById(collection, id);
+        if (!rec || rec.status === 'voided') return;
+        const isInc = collection === 'inventory_incoming';
+        const num = isInc ? rec.incoming_number : rec.outgoing_number;
+        Swal.fire({
+            title: `Void ${num}?`,
+            text: `This will reverse the stock changes. This cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e94560',
+            confirmButtonText: 'Yes, void it!'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            rec.items.forEach((item) => {
+                const book = Store.getById('books', item.book_id);
+                if (!book) return;
+                if (isInc) {
+                    Store.update('books', item.book_id, { copies: Math.max(0, book.copies - item.quantity), available: Math.max(0, book.available - item.quantity) });
+                } else {
+                    Store.update('books', item.book_id, { copies: book.copies + item.quantity, available: book.available + item.quantity });
+                }
+            });
+            Store.update(collection, id, { status: 'voided' });
+            Store.logActivity('VOID', collection, `Voided ${num}`);
+            App.showAlert('success', `${num} has been voided.`);
+            if (isInc) loadIncoming(); else loadOutgoing();
+            loadOverview();
+        });
+    };
+
+    // ── Open Incoming Modal ───────────────────────────────────
+    document.getElementById('btn-add-incoming').addEventListener('click', () => {
+        document.getElementById('inc-number').value = generateNumber('inventory_incoming', 'IN');
+        document.getElementById('inc-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('inc-prepared').value = Auth.getCurrentUser().name;
+        document.getElementById('inc-reference').value = '';
+        document.getElementById('inc-purpose').value = 'New Purchase';
+        document.getElementById('inc-supplier').value = '';
+        document.getElementById('inc-items-body').innerHTML = '';
+        document.getElementById('inc-grand-total').textContent = '\u20B10.00';
+        addItemRow('inc-items-body');
+        App.openModal('modal-incoming');
+    });
+
+    document.getElementById('btn-add-inc-row').addEventListener('click', () => addItemRow('inc-items-body'));
+
+    // ── Save Incoming ─────────────────────────────────────────
+    document.getElementById('btn-save-incoming').addEventListener('click', () => {
+        const reference = document.getElementById('inc-reference').value.trim();
+        const purpose = document.getElementById('inc-purpose').value;
+        const supplier = document.getElementById('inc-supplier').value.trim();
+        if (!reference) { App.showAlert('danger', 'Reference number is required.'); return; }
+        if (!supplier && purpose !== 'Donation') { App.showAlert('danger', 'Supplier name is required.'); return; }
+        const items = collectItems('inc-items-body');
+        if (!items) { App.showAlert('danger', 'Each row must have a selected book and quantity > 0.'); return; }
+        if (!items.length) { App.showAlert('danger', 'Add at least one book item.'); return; }
+        const grandTotal = items.reduce((s, i) => s + i.total, 0);
+        const record = {
+            incoming_number: document.getElementById('inc-number').value,
+            date: document.getElementById('inc-date').value,
+            prepared_by: Auth.getCurrentUser().id,
+            reference_number: reference,
+            purpose: purpose,
+            supplier: supplier,
+            items: items,
+            grand_total: grandTotal,
+            status: 'completed'
+        };
+        Store.create('inventory_incoming', record).then(() => {
+            items.forEach((item) => {
+                const book = Store.getById('books', item.book_id);
+                if (book) Store.update('books', item.book_id, { copies: book.copies + item.quantity, available: book.available + item.quantity });
+            });
+            App.closeModal('modal-incoming');
+            Store.logActivity('CREATE', 'inventory_incoming', `Incoming ${record.incoming_number}: ${items.length} items, \u20B1${grandTotal.toFixed(2)}`);
+            Swal.fire({ icon: 'success', title: 'Incoming Saved!', text: `${record.incoming_number} recorded successfully.`, timer: 2000, showConfirmButton: false });
+            loadIncoming();
+            loadOverview();
+        }).catch((err) => {
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
+        });
+    });
+
+    // ── Open Outgoing Modal ───────────────────────────────────
+    document.getElementById('btn-add-outgoing').addEventListener('click', () => {
+        document.getElementById('out-number').value = generateNumber('inventory_outgoing', 'OUT');
+        document.getElementById('out-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('out-prepared').value = Auth.getCurrentUser().name;
+        document.getElementById('out-reference').value = '';
+        document.getElementById('out-purpose').value = 'Book Retirement';
+        document.getElementById('out-supplier').value = '';
+        document.getElementById('out-items-body').innerHTML = '';
+        document.getElementById('out-grand-total').textContent = '\u20B10.00';
+        addItemRow('out-items-body');
+        App.openModal('modal-outgoing');
+    });
+
+    document.getElementById('btn-add-out-row').addEventListener('click', () => addItemRow('out-items-body'));
+
+    // ── Save Outgoing ─────────────────────────────────────────
+    document.getElementById('btn-save-outgoing').addEventListener('click', () => {
+        const reference = document.getElementById('out-reference').value.trim();
+        const purpose = document.getElementById('out-purpose').value;
+        const supplier = document.getElementById('out-supplier').value.trim();
+        if (!reference) { App.showAlert('danger', 'Reference number is required.'); return; }
+        const items = collectItems('out-items-body');
+        if (!items) { App.showAlert('danger', 'Each row must have a selected book and quantity > 0.'); return; }
+        if (!items.length) { App.showAlert('danger', 'Add at least one book item.'); return; }
+        // Validate stock
+        for (const item of items) {
+            const book = Store.getById('books', item.book_id);
+            if (!book || book.available < item.quantity) {
+                Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies. Cannot remove ${item.quantity}.`, confirmButtonColor: '#e94560' });
+                return;
+            }
+        }
+        const grandTotal = items.reduce((s, i) => s + i.total, 0);
+        const record = {
+            outgoing_number: document.getElementById('out-number').value,
+            date: document.getElementById('out-date').value,
+            prepared_by: Auth.getCurrentUser().id,
+            reference_number: reference,
+            purpose: purpose,
+            supplier: supplier,
+            items: items,
+            grand_total: grandTotal,
+            status: 'completed'
+        };
+        Store.create('inventory_outgoing', record).then(() => {
+            items.forEach((item) => {
+                const book = Store.getById('books', item.book_id);
+                if (book) Store.update('books', item.book_id, { copies: Math.max(0, book.copies - item.quantity), available: Math.max(0, book.available - item.quantity) });
+            });
+            App.closeModal('modal-outgoing');
+            Store.logActivity('CREATE', 'inventory_outgoing', `Outgoing ${record.outgoing_number}: ${items.length} items, \u20B1${grandTotal.toFixed(2)}`);
+            Swal.fire({ icon: 'success', title: 'Outgoing Saved!', text: `${record.outgoing_number} recorded successfully.`, timer: 2000, showConfirmButton: false });
+            loadOutgoing();
+            loadOverview();
+        }).catch((err) => {
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
+        });
+    });
+
+    // ── Initial load ──────────────────────────────────────────
+    loadOverview();
   </script>
 </body>
 </html>

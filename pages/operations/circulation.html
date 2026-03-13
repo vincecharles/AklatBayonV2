@@ -242,7 +242,7 @@
                 let matched = false;
                 rows.forEach((row) => {
                     const bookCell = row.cells && row.cells[1];
-                    if (bookCell && bookCell.textContent === found.title) {
+                    if (bookCell && bookCell.dataset.title === found.title) {
                         row.style.background = 'rgba(50,17,212,0.08)';
                         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         matched = true;
@@ -309,7 +309,7 @@
 
                 const actions = `<button class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold transition btn-return" data-id="${t.id}" data-book="${t.book_id}"><span class="material-symbols-outlined text-sm">undo</span>Return</button> <button class="inline-flex items-center gap-1 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1.5 text-xs font-semibold transition btn-renew" data-id="${t.id}" data-book="${t.book_id}" data-student="${t.student_id}" data-renewals="${renewals}"><span class="material-symbols-outlined text-sm">sync</span>Renew</button>`;
 
-                return `<tr><td class="px-4 py-3">${App.getStudentName(t.student_id)}</td><td class="px-4 py-3">${App.getBookTitle(t.book_id)}${reservationBadge}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_issued)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_due)}</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">${renewals}</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${isOverdue ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}">${isOverdue ? 'Overdue' : 'Borrowed'}</span></td><td class="px-4 py-3"><div class="flex items-center gap-2">${actions}</div></td></tr>`;
+                return `<tr><td class="px-4 py-3">${App.getStudentName(t.student_id)}</td><td class="px-4 py-3" data-title="${App.getBookTitle(t.book_id)}">${App.getBookTitle(t.book_id)}${reservationBadge}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_issued)}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${App.formatDate(t.date_due)}</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">${renewals}</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${isOverdue ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}">${isOverdue ? 'Overdue' : 'Borrowed'}</span></td><td class="px-4 py-3"><div class="flex items-center gap-2">${actions}</div></td></tr>`;
             }).join('');
 
             // Bind return buttons

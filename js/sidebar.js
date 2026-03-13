@@ -84,7 +84,7 @@ const Sidebar = (() => {
         }
 
         // Inventory
-        if (Auth.hasPermission('can_view_inventory')) {
+        if (Auth.hasAnyPermission(['can_view_inventory', 'can_manage_incoming', 'can_manage_outgoing'])) {
             html += sectionLabel('Inventory');
             html += navLink('/pages/admin/inventory.html', 'inventory_2', 'Inventory', page);
         }

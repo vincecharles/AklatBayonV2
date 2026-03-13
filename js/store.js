@@ -64,7 +64,8 @@ const Store = (() => {
     const _collections = [
         'roles', 'permissions', 'role_permissions', 'users', 'students',
         'authors', 'publishers', 'categories', 'books', 'transactions',
-        'fines', 'reservations', 'attendance', 'audit_logs', 'settings', 'lcc_classes'
+        'fines', 'reservations', 'attendance', 'audit_logs', 'settings', 'lcc_classes',
+        'inventory_incoming', 'inventory_outgoing'
     ];
 
     const preload = (collections) => {
@@ -300,7 +301,7 @@ const Store = (() => {
     };
 
     // ── Seed (localStorage fallback only) ───────────────────────
-    const SEED_VERSION = 6;
+    const SEED_VERSION = 7;
     const isSeeded = () => localStorage.getItem('aklatbayon_seed_version') === String(SEED_VERSION);
 
     const seed = () => {
@@ -351,16 +352,18 @@ const Store = (() => {
             { id: 'p18', name: 'can_view_dashboard', label: 'View Dashboard', group: 'General', description: 'Access the dashboard overview page' },
             { id: 'p19', name: 'can_view_own_profile', label: 'View Own Profile', group: 'General', description: 'View own user profile and loan history' },
             { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' },
-            { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' }
+            { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' },
+            { id: 'p24', name: 'can_manage_incoming', label: 'Manage Incoming Inventory', group: 'Inventory', description: 'Create and manage incoming stock deliveries' },
+            { id: 'p25', name: 'can_manage_outgoing', label: 'Manage Outgoing Inventory', group: 'Inventory', description: 'Create and manage outgoing stock removals' }
         ]);
 
         seedIfEmpty('role_permissions', {
-            'r1': ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23'],
-            'r2': ['p3','p4','p5','p6','p7','p8','p9','p10','p11','p14','p15','p16','p17','p18','p19','p20','p21','p22'],
-            'r3': ['p5','p8','p9','p10','p15','p16','p18','p19','p20','p21'],
+            'r1': ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23','p24','p25'],
+            'r2': ['p3','p4','p5','p6','p7','p8','p9','p10','p11','p14','p15','p16','p17','p18','p19','p20','p21','p22','p24','p25'],
+            'r3': ['p5','p8','p9','p10','p15','p16','p18','p19','p20','p21','p24','p25'],
             'r4': ['p15','p19','p20','p21','p22','p23'],
             'r5': ['p15','p19','p23'],
-            'r6': ['p3','p8','p9','p10','p15','p18','p19','p20','p21','p23'],
+            'r6': ['p3','p8','p9','p10','p15','p18','p19','p20','p21','p23','p24','p25'],
             'r7': ['p15']
         });
 
@@ -535,6 +538,15 @@ const Store = (() => {
             { id: 'att56', name: 'Bianca Santos', student_id: 's24', date: '2026-02-20', time_in: '08:00', time_out: '12:00', created_at: '2026-02-20T08:00:00Z' },
             { id: 'att57', name: 'Marco Diaz', student_id: 's21', date: '2026-01-22', time_in: '09:00', time_out: '11:00', created_at: '2026-01-22T09:00:00Z' },
             { id: 'att58', name: 'Luis Pangilinan', student_id: 's25', date: '2026-01-15', time_in: '13:00', time_out: '15:00', created_at: '2026-01-15T13:00:00Z' }
+        ]);
+
+        seedIfEmpty('inventory_incoming', [
+            { id: 'inc1', incoming_number: 'IN-2026-0001', date: '2026-03-01', prepared_by: 'u1', reference_number: 'DR-2026-0100', purpose: 'New Purchase', supplier: 'National Book Store', items: [{ book_id: 'b1', quantity: 3, unit_price: 280.00, total: 840.00 }, { book_id: 'b3', quantity: 2, unit_price: 1200.00, total: 2400.00 }], grand_total: 3240.00, status: 'completed', created_at: '2026-03-01T09:00:00Z', updated_at: '2026-03-01T09:00:00Z' },
+            { id: 'inc2', incoming_number: 'IN-2026-0002', date: '2026-03-10', prepared_by: 'u1', reference_number: 'DR-2026-0145', purpose: 'Donation', supplier: 'Philippine Library Association', items: [{ book_id: 'b4', quantity: 5, unit_price: 0.00, total: 0.00 }], grand_total: 0.00, status: 'completed', created_at: '2026-03-10T10:30:00Z', updated_at: '2026-03-10T10:30:00Z' }
+        ]);
+
+        seedIfEmpty('inventory_outgoing', [
+            { id: 'out1', outgoing_number: 'OUT-2026-0001', date: '2026-03-05', prepared_by: 'u1', reference_number: 'RR-2026-0010', purpose: 'Book Retirement', supplier: '', items: [{ book_id: 'b2', quantity: 1, unit_price: 250.00, total: 250.00 }], grand_total: 250.00, status: 'completed', created_at: '2026-03-05T14:00:00Z', updated_at: '2026-03-05T14:00:00Z' }
         ]);
 
         seedIfEmpty('reservations', []);
