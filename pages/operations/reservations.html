@@ -170,13 +170,13 @@
 
       // ── Tab switching ──
       document.querySelectorAll('.nav-tab').forEach((tab) => {
-          tab.addEventListener('click', function() {
+          tab.addEventListener('click', () => {
               document.querySelectorAll('.nav-tab').forEach((t) => { t.classList.remove('active'); });
               document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
-              this.classList.add('active');
-              document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
-              if (this.dataset.tab === 'my') loadMyReservations();
-              if (this.dataset.tab === 'queue') loadQueue();
+              tab.classList.add('active');
+              document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+              if (tab.dataset.tab === 'my') loadMyReservations();
+              if (tab.dataset.tab === 'queue') loadQueue();
           });
       });
 
@@ -336,8 +336,8 @@
 
           // Bind cancel buttons
           document.querySelectorAll('.btn-cancel-my').forEach((btn) => {
-              btn.addEventListener('click', function() {
-                  const resId = this.dataset.id;
+              btn.addEventListener('click', () => {
+                  const resId = btn.dataset.id;
                   Swal.fire({
                       title: 'Cancel Reservation?',
                       text: 'Are you sure you want to cancel this reservation?',
@@ -424,9 +424,9 @@
 
           // Bind "Notify Available" buttons
           document.querySelectorAll('.btn-notify').forEach((btn) => {
-              btn.addEventListener('click', function() {
-                  const resId = this.dataset.id;
-                  const bookId = this.dataset.book;
+              btn.addEventListener('click', () => {
+                  const resId = btn.dataset.id;
+                  const bookId = btn.dataset.book;
                   const expiryHours = parseInt(Store.getSetting('reservation_expiry_hours')) || 48;
                   const expiresAt = new Date();
                   expiresAt.setHours(expiresAt.getHours() + expiryHours);
@@ -451,8 +451,8 @@
 
           // Bind "Mark Claimed" buttons
           document.querySelectorAll('.btn-claim').forEach((btn) => {
-              btn.addEventListener('click', function() {
-                  const resId = this.dataset.id;
+              btn.addEventListener('click', () => {
+                  const resId = btn.dataset.id;
                   Swal.fire({
                       title: 'Mark as Claimed?',
                       text: 'Confirm that this reservation has been claimed by the student.',
@@ -474,8 +474,8 @@
 
           // Bind "Cancel" buttons in queue
           document.querySelectorAll('.btn-cancel-queue').forEach((btn) => {
-              btn.addEventListener('click', function() {
-                  const resId = this.dataset.id;
+              btn.addEventListener('click', () => {
+                  const resId = btn.dataset.id;
                   Swal.fire({
                       title: 'Cancel Reservation?',
                       text: 'Are you sure you want to cancel this reservation?',

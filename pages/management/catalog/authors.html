@@ -124,14 +124,14 @@
         bind();
     };
     const bind = () => {
-        document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
-            const a = Store.getById('authors', this.dataset.id); if (!a) return;
+        document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', () => {
+            const a = Store.getById('authors', b.dataset.id); if (!a) return;
             document.getElementById('modal-title').textContent = 'Edit Author'; document.getElementById('edit-id').value = a.id;
             document.getElementById('f-name').value = a.name; document.getElementById('f-bio').value = a.bio || '';
             App.openModal('modal-form');
         }); });
-        document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
-            const id = this.dataset.id, name = this.dataset.name;
+        document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', () => {
+            const id = b.dataset.id, name = b.dataset.name;
             App.confirmDelete(name).then((r) => { if (r.isConfirmed) { Store.remove('authors', id); App.showAlert('success', 'Author deleted.'); load(); } });
         }); });
     };

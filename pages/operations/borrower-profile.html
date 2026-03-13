@@ -236,15 +236,15 @@
 
     const studentId = new URLSearchParams(window.location.search).get('id');
     if (!studentId) {
-        document.querySelector('main').innerHTML = '<div id="alert-container"></div>'
-            + '<div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>'
-            + '<div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">No student ID provided. Please select a student first.</p></div>';
+        document.querySelector('main').innerHTML = `<div id="alert-container"></div>
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>
+            <div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">No student ID provided. Please select a student first.</p></div>`;
     } else {
         const student = Store.getById('students', studentId);
         if (!student) {
-            document.querySelector('main').innerHTML = '<div id="alert-container"></div>'
-                + '<div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>'
-                + '<div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">Student not found.</p></div>';
+            document.querySelector('main').innerHTML = `<div id="alert-container"></div>
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>
+                <div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">Student not found.</p></div>`;
         } else {
             // Populate profile card
             document.getElementById('profile-name').textContent = student.name;
@@ -303,15 +303,15 @@
 
             // Tab switching
             document.querySelectorAll('.nav-tab').forEach((tab) => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', () => {
                     document.querySelectorAll('.nav-tab').forEach((t) => {
                         t.classList.remove('active', 'text-primary', 'border-primary');
                         t.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
                     });
                     document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
-                    this.classList.add('active', 'text-primary', 'border-primary');
-                    this.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
-                    document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
+                    tab.classList.add('active', 'text-primary', 'border-primary');
+                    tab.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+                    document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
                 });
             });
 

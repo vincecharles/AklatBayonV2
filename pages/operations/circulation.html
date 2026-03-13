@@ -176,18 +176,18 @@
         const tabInactiveClasses = 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
 
         document.querySelectorAll('.nav-tab').forEach((tab) => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', () => {
                 document.querySelectorAll('.nav-tab').forEach((t) => {
                     t.classList.remove('active', 'border-primary', 'text-primary');
                     tabInactiveClasses.split(' ').forEach((c) => { t.classList.add(c); });
                 });
                 document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
-                this.classList.add('active');
-                tabInactiveClasses.split(' ').forEach((c) => { this.classList.remove(c); });
-                tabActiveClasses.split(' ').forEach((c) => { this.classList.add(c); });
-                document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
-                if (this.dataset.tab === 'return') loadReturns();
-                if (this.dataset.tab === 'history') loadHistory();
+                tab.classList.add('active');
+                tabInactiveClasses.split(' ').forEach((c) => { tab.classList.remove(c); });
+                tabActiveClasses.split(' ').forEach((c) => { tab.classList.add(c); });
+                document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+                if (tab.dataset.tab === 'return') loadReturns();
+                if (tab.dataset.tab === 'history') loadHistory();
             });
         });
 
@@ -210,9 +210,9 @@
         document.getElementById('issue-due').value = due.toISOString().split('T')[0];
 
         // ── Barcode scanner for Issue tab ─────────────────────────
-        document.getElementById('scan-issue-isbn').addEventListener('keydown', function(e) {
+        document.getElementById('scan-issue-isbn').addEventListener('keydown', (e) => {
             if (e.key !== 'Enter') return;
-            const isbn = this.value.trim().replace(/-/g, '');
+            const isbn = e.currentTarget.value.trim().replace(/-/g, '');
             if (!isbn) return;
             const allBooks = Store.getAll('books');
             const found = allBooks.find((b) => b.isbn.replace(/-/g, '') === isbn);
@@ -224,15 +224,15 @@
                     App.showAlert('success', `Book selected: ${found.title}`);
                 }
             } else {
-                App.showAlert('danger', `No book found with ISBN: ${this.value.trim()}`);
+                App.showAlert('danger', `No book found with ISBN: ${e.currentTarget.value.trim()}`);
             }
-            this.value = '';
+            e.currentTarget.value = '';
         });
 
         // ── Barcode scanner for Return tab ────────────────────────
-        document.getElementById('scan-return-isbn').addEventListener('keydown', function(e) {
+        document.getElementById('scan-return-isbn').addEventListener('keydown', (e) => {
             if (e.key !== 'Enter') return;
-            const isbn = this.value.trim().replace(/-/g, '');
+            const isbn = e.currentTarget.value.trim().replace(/-/g, '');
             if (!isbn) return;
             const allBooks = Store.getAll('books');
             const found = allBooks.find((b) => b.isbn.replace(/-/g, '') === isbn);
@@ -255,7 +255,7 @@
             } else {
                 App.showAlert('danger', 'No book found with that ISBN.');
             }
-            this.value = '';
+            e.currentTarget.value = '';
         });
 
         // ── Issue Book ────────────────────────────────────────────
@@ -314,8 +314,8 @@
 
             // Bind return buttons
             document.querySelectorAll('.btn-return').forEach((btn) => {
-                btn.addEventListener('click', function() {
-                    const txnId = this.dataset.id, bookId = this.dataset.book;
+                btn.addEventListener('click', () => {
+                    const txnId = btn.dataset.id, bookId = btn.dataset.book;
                     Store.update('transactions', txnId, { status: 'returned', date_returned: new Date().toISOString().split('T')[0] });
                     const book = Store.getById('books', bookId);
                     if (book) Store.update('books', bookId, { available: book.available + 1 });
@@ -349,11 +349,11 @@
 
             // Bind renew buttons
             document.querySelectorAll('.btn-renew').forEach((btn) => {
-                btn.addEventListener('click', function() {
-                    const txnId = this.dataset.id;
-                    const bookId = this.dataset.book;
-                    const studentId = this.dataset.student;
-                    const currentRenewals = parseInt(this.dataset.renewals) || 0;
+                btn.addEventListener('click', () => {
+                    const txnId = btn.dataset.id;
+                    const bookId = btn.dataset.book;
+                    const studentId = btn.dataset.student;
+                    const currentRenewals = parseInt(btn.dataset.renewals) || 0;
 
                     // Get max renewals for this borrower's role
                     const roleKey = Store.getBorrowerRoleKey(studentId);

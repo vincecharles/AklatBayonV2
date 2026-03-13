@@ -300,7 +300,7 @@ const Store = (() => {
     };
 
     // ── Seed (localStorage fallback only) ───────────────────────
-    const SEED_VERSION = 3;
+    const SEED_VERSION = 5;
     const isSeeded = () => localStorage.getItem('aklatbayon_seed_version') === String(SEED_VERSION);
 
     const seed = () => {
@@ -368,26 +368,32 @@ const Store = (() => {
         ]);
 
         seedIfEmpty('students', [
-            { id: 's1', student_id: '2024-0001', name: 'Carlo Mendoza', email: 'carlo@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '3A', contact: '09171234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's2', student_id: '2024-0002', name: 'Sofia Torres', email: 'sofia@aklatbayon.edu', grade_level: 'College', program: 'BSCS', section: '2B', contact: '09181234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's3', student_id: '2024-0003', name: 'Miguel Bautista', email: 'miguel@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '1A', contact: '09191234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's4', student_id: '2024-0004', name: 'Angela Cruz', email: 'angela@aklatbayon.edu', grade_level: 'College', program: 'BSCE', section: '2A', contact: '09201234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's5', student_id: '2024-0005', name: 'Rafael Santos', email: 'rafael@aklatbayon.edu', grade_level: 'College', program: 'BSME', section: '3B', contact: '09211234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's6', student_id: '2024-0006', name: 'Maria Garcia', email: 'maria@aklatbayon.edu', grade_level: 'College', program: 'BSEE', section: '2A', contact: '09221234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's7', student_id: '2024-0007', name: 'James Reyes', email: 'james@aklatbayon.edu', grade_level: 'College', program: 'BSEcE', section: '1B', contact: '09231234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's8', student_id: '2024-0008', name: 'Patricia Luna', email: 'patricia@aklatbayon.edu', grade_level: 'College', program: 'BSMarE', section: '3A', contact: '09241234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's9', student_id: '2024-0009', name: 'Daniel Ramos', email: 'daniel@aklatbayon.edu', grade_level: 'College', program: 'BSNA', section: '2A', contact: '09251234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's10', student_id: '2024-0010', name: 'Christine Lim', email: 'christine@aklatbayon.edu', grade_level: 'College', program: 'BSArch', section: '1A', contact: '09261234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's11', student_id: '2024-0011', name: 'Mark Villanueva', email: 'mark@aklatbayon.edu', grade_level: 'College', program: 'BSBA', section: '2B', contact: '09271234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's12', student_id: '2024-0012', name: 'Anna Dela Cruz', email: 'anna@aklatbayon.edu', grade_level: 'College', program: 'BSHRA', section: '1A', contact: '09281234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's13', student_id: '2024-0013', name: 'Kevin Aquino', email: 'kevin@aklatbayon.edu', grade_level: 'College', program: 'BSCrim', section: '3A', contact: '09291234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's14', student_id: '2024-0014', name: 'Rina Pascual', email: 'rina@aklatbayon.edu', grade_level: 'Senior High', program: 'SHS', section: '12A', contact: '09301234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's15', student_id: '2024-0015', name: 'Joshua Tan', email: 'joshua@aklatbayon.edu', grade_level: 'Junior High', program: 'JHS', section: '10B', contact: '09311234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's16', student_id: '2024-0016', name: 'Lea Fernandez', email: 'lea@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '2A', contact: '09321234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's17', student_id: '2024-0017', name: 'Paulo Rivera', email: 'paulo@aklatbayon.edu', grade_level: 'College', program: 'BSCE', section: '3A', contact: '09331234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's18', student_id: '2024-0018', name: 'Grace Navarro', email: 'grace@aklatbayon.edu', grade_level: 'College', program: 'BSME', section: '2B', contact: '09341234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's19', student_id: '2024-0019', name: 'Ryan Castillo', email: 'ryan@aklatbayon.edu', grade_level: 'College', program: 'BSCS', section: '1A', contact: '09351234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's20', student_id: '2024-0020', name: 'Joy Soriano', email: 'joy@aklatbayon.edu', grade_level: 'Senior High', program: 'SHS', section: '11B', contact: '09361234567', status: 'active', created_at: now(), updated_at: now() }
+            { id: 's1', student_id: '2024-0001', name: 'Carlo Mendoza', email: 'carlo@feati.edu.ph', grade_level: 'College', program: 'BSIT', section: '3A', contact: '09171234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's2', student_id: '2024-0002', name: 'Sofia Torres', email: 'sofia@feati.edu.ph', grade_level: 'College', program: 'BSCS', section: '2B', contact: '09181234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's3', student_id: '2024-0003', name: 'Miguel Bautista', email: 'miguel@feati.edu.ph', grade_level: 'College', program: 'BSIT', section: '1A', contact: '09191234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's4', student_id: '2024-0004', name: 'Angela Cruz', email: 'angela@feati.edu.ph', grade_level: 'College', program: 'BSCE', section: '2A', contact: '09201234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's5', student_id: '2024-0005', name: 'Rafael Santos', email: 'rafael@feati.edu.ph', grade_level: 'College', program: 'BSME', section: '3B', contact: '09211234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's6', student_id: '2024-0006', name: 'Maria Garcia', email: 'maria@feati.edu.ph', grade_level: 'College', program: 'BSEE', section: '2A', contact: '09221234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's7', student_id: '2024-0007', name: 'James Reyes', email: 'james@feati.edu.ph', grade_level: 'College', program: 'BSEcE', section: '1B', contact: '09231234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's8', student_id: '2024-0008', name: 'Patricia Luna', email: 'patricia@feati.edu.ph', grade_level: 'College', program: 'BSMarE', section: '3A', contact: '09241234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's9', student_id: '2024-0009', name: 'Daniel Ramos', email: 'daniel@feati.edu.ph', grade_level: 'College', program: 'BSMT', section: '2A', contact: '09251234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's10', student_id: '2024-0010', name: 'Christine Lim', email: 'christine@feati.edu.ph', grade_level: 'College', program: 'BSArch', section: '1A', contact: '09261234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's11', student_id: '2024-0011', name: 'Mark Villanueva', email: 'mark@feati.edu.ph', grade_level: 'College', program: 'BSBA', section: '2B', contact: '09271234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's12', student_id: '2024-0012', name: 'Anna Dela Cruz', email: 'anna@feati.edu.ph', grade_level: 'College', program: 'BSTM', section: '1A', contact: '09281234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's13', student_id: '2024-0013', name: 'Kevin Aquino', email: 'kevin@feati.edu.ph', grade_level: 'College', program: 'BSCA', section: '3A', contact: '09291234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's14', student_id: '2024-0014', name: 'Rina Pascual', email: 'rina@feati.edu.ph', grade_level: 'Senior High', program: 'SHS', section: '12A', contact: '09301234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's15', student_id: '2024-0015', name: 'Joshua Tan', email: 'joshua@feati.edu.ph', grade_level: 'Junior High', program: 'JHS', section: '10B', contact: '09311234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's16', student_id: '2024-0016', name: 'Lea Fernandez', email: 'lea@feati.edu.ph', grade_level: 'College', program: 'BSIT', section: '2A', contact: '09321234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's17', student_id: '2024-0017', name: 'Paulo Rivera', email: 'paulo@feati.edu.ph', grade_level: 'College', program: 'BSCE', section: '3A', contact: '09331234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's18', student_id: '2024-0018', name: 'Grace Navarro', email: 'grace@feati.edu.ph', grade_level: 'College', program: 'BSME', section: '2B', contact: '09341234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's19', student_id: '2024-0019', name: 'Ryan Castillo', email: 'ryan@feati.edu.ph', grade_level: 'College', program: 'BSCS', section: '1A', contact: '09351234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's20', student_id: '2024-0020', name: 'Joy Soriano', email: 'joy@feati.edu.ph', grade_level: 'Senior High', program: 'SHS', section: '11B', contact: '09361234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's21', student_id: '2024-0021', name: 'Marco Diaz', email: 'marco@feati.edu.ph', grade_level: 'College', program: 'BSAeE', section: '2A', contact: '09371234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's22', student_id: '2024-0022', name: 'Camille Reyes', email: 'camille@feati.edu.ph', grade_level: 'College', program: 'BSRE', section: '1A', contact: '09381234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's23', student_id: '2024-0023', name: 'Andre Go', email: 'andre@feati.edu.ph', grade_level: 'College', program: 'BSGE', section: '2B', contact: '09391234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's24', student_id: '2024-0024', name: 'Bianca Santos', email: 'bianca@feati.edu.ph', grade_level: 'College', program: 'BSAMT', section: '1A', contact: '09401234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's25', student_id: '2024-0025', name: 'Luis Pangilinan', email: 'luis@feati.edu.ph', grade_level: 'College', program: 'BFA', section: '2A', contact: '09411234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's26', student_id: '2024-0026', name: 'Diana Cruz', email: 'diana@feati.edu.ph', grade_level: 'College', program: 'BAComm', section: '1B', contact: '09421234567', status: 'active', created_at: now(), updated_at: now() }
         ]);
 
         seedIfEmpty('categories', [
@@ -512,7 +518,22 @@ const Store = (() => {
             { id: 'att41', name: 'Christine Lim', student_id: 's10', date: '2026-01-15', time_in: '09:00', time_out: '12:00', created_at: '2026-01-15T09:00:00Z' },
             { id: 'att42', name: 'Daniel Ramos', student_id: 's9', date: '2026-01-10', time_in: '10:00', time_out: '13:00', created_at: '2026-01-10T10:00:00Z' },
             { id: 'att43', name: 'Anna Dela Cruz', student_id: 's12', date: '2026-01-08', time_in: '08:30', time_out: '10:30', created_at: '2026-01-08T08:30:00Z' },
-            { id: 'att44', name: 'Kevin Aquino', student_id: 's13', date: '2026-01-06', time_in: '13:00', time_out: '15:00', created_at: '2026-01-06T13:00:00Z' }
+            { id: 'att44', name: 'Kevin Aquino', student_id: 's13', date: '2026-01-06', time_in: '13:00', time_out: '15:00', created_at: '2026-01-06T13:00:00Z' },
+            // BSAeE, BSRE, BSGE, BSAMT, BFA, BAComm coverage
+            { id: 'att45', name: 'Marco Diaz', student_id: 's21', date: todayStr, time_in: '08:00', time_out: '11:00', created_at: `${todayStr}T08:00:00Z` },
+            { id: 'att46', name: 'Camille Reyes', student_id: 's22', date: todayStr, time_in: '09:00', time_out: '12:00', created_at: `${todayStr}T09:00:00Z` },
+            { id: 'att47', name: 'Andre Go', student_id: 's23', date: todayStr, time_in: '10:00', time_out: '13:00', created_at: `${todayStr}T10:00:00Z` },
+            { id: 'att48', name: 'Bianca Santos', student_id: 's24', date: '2026-03-12', time_in: '08:30', time_out: '11:30', created_at: '2026-03-12T08:30:00Z' },
+            { id: 'att49', name: 'Luis Pangilinan', student_id: 's25', date: '2026-03-12', time_in: '09:30', time_out: '12:30', created_at: '2026-03-12T09:30:00Z' },
+            { id: 'att50', name: 'Diana Cruz', student_id: 's26', date: '2026-03-11', time_in: '10:00', time_out: '14:00', created_at: '2026-03-11T10:00:00Z' },
+            { id: 'att51', name: 'Marco Diaz', student_id: 's21', date: '2026-03-10', time_in: '13:00', time_out: '16:00', created_at: '2026-03-10T13:00:00Z' },
+            { id: 'att52', name: 'Camille Reyes', student_id: 's22', date: '2026-03-07', time_in: '08:00', time_out: '10:00', created_at: '2026-03-07T08:00:00Z' },
+            { id: 'att53', name: 'Andre Go', student_id: 's23', date: '2026-03-05', time_in: '14:00', time_out: '16:00', created_at: '2026-03-05T14:00:00Z' },
+            { id: 'att54', name: 'Luis Pangilinan', student_id: 's25', date: '2026-03-04', time_in: '09:00', time_out: '11:00', created_at: '2026-03-04T09:00:00Z' },
+            { id: 'att55', name: 'Diana Cruz', student_id: 's26', date: '2026-02-28', time_in: '10:30', time_out: '13:30', created_at: '2026-02-28T10:30:00Z' },
+            { id: 'att56', name: 'Bianca Santos', student_id: 's24', date: '2026-02-20', time_in: '08:00', time_out: '12:00', created_at: '2026-02-20T08:00:00Z' },
+            { id: 'att57', name: 'Marco Diaz', student_id: 's21', date: '2026-01-22', time_in: '09:00', time_out: '11:00', created_at: '2026-01-22T09:00:00Z' },
+            { id: 'att58', name: 'Luis Pangilinan', student_id: 's25', date: '2026-01-15', time_in: '13:00', time_out: '15:00', created_at: '2026-01-15T13:00:00Z' }
         ]);
 
         seedIfEmpty('reservations', []);

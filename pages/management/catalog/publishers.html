@@ -136,14 +136,14 @@
           bind();
       };
       const bind = () => {
-          document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
-              const p = Store.getById('publishers', this.dataset.id); if (!p) return;
+          document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', () => {
+              const p = Store.getById('publishers', b.dataset.id); if (!p) return;
               document.getElementById('modal-title').textContent = 'Edit Publisher'; document.getElementById('edit-id').value = p.id;
               document.getElementById('f-name').value = p.name; document.getElementById('f-address').value = p.address || '';
               document.getElementById('f-contact').value = p.contact || ''; App.openModal('modal-form');
           }); });
-          document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
-              const id = this.dataset.id, name = this.dataset.name;
+          document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', () => {
+              const id = b.dataset.id, name = b.dataset.name;
               App.confirmDelete(name).then((r) => { if (r.isConfirmed) { Store.remove('publishers', id); App.showAlert('success', 'Publisher deleted.'); load(); } });
           }); });
       };

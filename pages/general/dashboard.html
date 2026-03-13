@@ -284,17 +284,22 @@
 
   // ── Attendance by Program ──────────────────────────────────
   const featiPrograms = [
-      'BSIT', 'BSCS', 'BSCE', 'BSME', 'BSEE', 'BSEcE', 'BSMarE',
-      'BSNA', 'BSArch', 'BSBA', 'BSHRA', 'BSCrim', 'SHS', 'JHS'
+      'BSCE', 'BSEE', 'BSME', 'BSEcE', 'BSAeE', 'BSRE', 'BSGE', 'BSAMT',
+      'BSIT', 'BSCS', 'BSMarE', 'BSMT', 'BSArch',
+      'BSBA', 'BSTM', 'BSCA', 'BFA', 'BAComm', 'SHS', 'JHS'
   ];
   const progBg = {
+      'BSCE': 'from-amber-500 to-amber-600', 'BSEE': 'from-yellow-500 to-yellow-600',
+      'BSME': 'from-orange-500 to-orange-600', 'BSEcE': 'from-lime-500 to-lime-600',
+      'BSAeE': 'from-sky-500 to-sky-600', 'BSRE': 'from-stone-500 to-stone-600',
+      'BSGE': 'from-emerald-500 to-emerald-600', 'BSAMT': 'from-slate-500 to-slate-600',
       'BSIT': 'from-blue-500 to-blue-600', 'BSCS': 'from-indigo-500 to-indigo-600',
-      'BSCE': 'from-amber-500 to-amber-600', 'BSME': 'from-orange-500 to-orange-600',
-      'BSEE': 'from-yellow-500 to-yellow-600', 'BSEcE': 'from-lime-500 to-lime-600',
-      'BSMarE': 'from-cyan-500 to-cyan-600', 'BSNA': 'from-teal-500 to-teal-600',
-      'BSArch': 'from-pink-500 to-pink-600', 'BSBA': 'from-violet-500 to-violet-600',
-      'BSHRA': 'from-rose-500 to-rose-600', 'BSCrim': 'from-red-500 to-red-600',
-      'SHS': 'from-emerald-500 to-emerald-600', 'JHS': 'from-green-500 to-green-600'
+      'BSMarE': 'from-cyan-500 to-cyan-600', 'BSMT': 'from-teal-500 to-teal-600',
+      'BSArch': 'from-pink-500 to-pink-600',
+      'BSBA': 'from-violet-500 to-violet-600', 'BSTM': 'from-fuchsia-500 to-fuchsia-600',
+      'BSCA': 'from-purple-500 to-purple-600',
+      'BFA': 'from-rose-500 to-rose-600', 'BAComm': 'from-red-500 to-red-600',
+      'SHS': 'from-green-500 to-green-600', 'JHS': 'from-green-600 to-green-700'
   };
 
   const attendance = Store.getAll('attendance') || [];

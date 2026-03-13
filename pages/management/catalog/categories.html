@@ -142,8 +142,8 @@
 
     const bind = () => {
       document.querySelectorAll('.btn-edit').forEach((b) => {
-        b.addEventListener('click', function() {
-          const c = Store.getById('categories', this.dataset.id);
+        b.addEventListener('click', () => {
+          const c = Store.getById('categories', b.dataset.id);
           if (!c) return;
           loadParents();
           document.getElementById('modal-title').textContent = 'Edit Category';
@@ -156,8 +156,8 @@
       });
 
       document.querySelectorAll('.btn-del').forEach((b) => {
-        b.addEventListener('click', function() {
-          const id = this.dataset.id, name = this.dataset.name;
+        b.addEventListener('click', () => {
+          const id = b.dataset.id, name = b.dataset.name;
           App.confirmDelete(name).then((r) => {
             if (r.isConfirmed) {
               Store.remove('categories', id);
