@@ -122,54 +122,46 @@
   <script>
       if (!Auth.requireAuth()) throw '';
       App.init(); App.bindModalCloses();
-      function load() {
-          var items = Store.getAll('publishers'), books = Store.getAll('books');
-          var s = document.getElementById('search-input').value.toLowerCase();
-          if (s) items = items.filter(function(i) { return i.name.toLowerCase().indexOf(s) !== -1; });
-          var tbody = document.getElementById('data-table');
+      const load = () => {
+          let items = Store.getAll('publishers');
+          const books = Store.getAll('books');
+          const s = document.getElementById('search-input').value.toLowerCase();
+          if (s) items = items.filter((i) => i.name.toLowerCase().includes(s));
+          const tbody = document.getElementById('data-table');
           if (!items.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-slate-400 py-8">No publishers found.</td></tr>'; return; }
-          tbody.innerHTML = items.map(function(p, i) {
-              var cnt = books.filter(function(b) { return b.publisher_id === p.id; }).length;
-              return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">'
-                  + '<td class="px-4 py-3 text-slate-500">' + (i+1) + '</td>'
-                  + '<td class="px-4 py-3 font-semibold">' + p.name + '</td>'
-                  + '<td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + (p.address || '\u2014') + '</td>'
-                  + '<td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + (p.contact || '\u2014') + '</td>'
-                  + '<td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">' + cnt + '</span></td>'
-                  + '<td class="px-4 py-3"><div class="flex items-center gap-1">'
-                  + '<button class="btn-edit p-1.5 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors" data-id="' + p.id + '" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>'
-                  + ' <button class="btn-del p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="' + p.id + '" data-name="' + p.name + '" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button>'
-                  + '</div></td></tr>';
+          tbody.innerHTML = items.map((p, i) => {
+              const cnt = books.filter((b) => b.publisher_id === p.id).length;
+              return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-4 py-3 text-slate-500">${i+1}</td><td class="px-4 py-3 font-semibold">${p.name}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${p.address || '\u2014'}</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">${p.contact || '\u2014'}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">${cnt}</span></td><td class="px-4 py-3"><div class="flex items-center gap-1"><button class="btn-edit p-1.5 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors" data-id="${p.id}" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button> <button class="btn-del p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="${p.id}" data-name="${p.name}" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button></div></td></tr>`;
           }).join('');
           bind();
-      }
-      function bind() {
-          document.querySelectorAll('.btn-edit').forEach(function(b) { b.addEventListener('click', function() {
-              var p = Store.getById('publishers', this.dataset.id); if (!p) return;
+      };
+      const bind = () => {
+          document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
+              const p = Store.getById('publishers', this.dataset.id); if (!p) return;
               document.getElementById('modal-title').textContent = 'Edit Publisher'; document.getElementById('edit-id').value = p.id;
               document.getElementById('f-name').value = p.name; document.getElementById('f-address').value = p.address || '';
               document.getElementById('f-contact').value = p.contact || ''; App.openModal('modal-form');
           }); });
-          document.querySelectorAll('.btn-del').forEach(function(b) { b.addEventListener('click', function() {
-              var id = this.dataset.id, name = this.dataset.name;
-              App.confirmDelete(name).then(function(r) { if (r.isConfirmed) { Store.remove('publishers', id); App.showAlert('success', 'Publisher deleted.'); load(); } });
+          document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
+              const id = this.dataset.id, name = this.dataset.name;
+              App.confirmDelete(name).then((r) => { if (r.isConfirmed) { Store.remove('publishers', id); App.showAlert('success', 'Publisher deleted.'); load(); } });
           }); });
-      }
-      document.getElementById('btn-add').addEventListener('click', function() {
+      };
+      document.getElementById('btn-add').addEventListener('click', () => {
           document.getElementById('modal-title').textContent = 'Add Publisher'; document.getElementById('edit-id').value = '';
-          ['f-name', 'f-address', 'f-contact'].forEach(function(id) { document.getElementById(id).value = ''; });
+          ['f-name', 'f-address', 'f-contact'].forEach((id) => { document.getElementById(id).value = ''; });
           App.openModal('modal-form');
       });
-      document.getElementById('btn-save').addEventListener('click', function() {
-          var name = document.getElementById('f-name').value.trim();
+      document.getElementById('btn-save').addEventListener('click', () => {
+          const name = document.getElementById('f-name').value.trim();
           if (!name) { App.showAlert('danger', 'Name required.'); return; }
-          var data = { name: name, address: document.getElementById('f-address').value.trim(), contact: document.getElementById('f-contact').value.trim() };
-          var eid = document.getElementById('edit-id').value;
-          var promise = eid ? Store.update('publishers', eid, data) : Store.create('publishers', data);
-          promise.then(function() {
+          const data = { name, address: document.getElementById('f-address').value.trim(), contact: document.getElementById('f-contact').value.trim() };
+          const eid = document.getElementById('edit-id').value;
+          const promise = eid ? Store.update('publishers', eid, data) : Store.create('publishers', data);
+          promise.then(() => {
               App.showAlert('success', eid ? 'Publisher updated.' : 'Publisher added.');
               App.closeModal('modal-form'); load();
-          }).catch(function(err) {
+          }).catch((err) => {
               Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
           });
       });

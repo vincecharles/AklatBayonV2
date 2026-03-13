@@ -110,52 +110,45 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init(); App.bindModalCloses();
-    function load() {
-        var items = Store.getAll('authors'), books = Store.getAll('books');
-        var s = document.getElementById('search-input').value.toLowerCase();
-        if (s) items = items.filter(function(i) { return i.name.toLowerCase().indexOf(s) !== -1; });
-        var tbody = document.getElementById('data-table');
+    const load = () => {
+        let items = Store.getAll('authors');
+        const books = Store.getAll('books');
+        const s = document.getElementById('search-input').value.toLowerCase();
+        if (s) items = items.filter((i) => i.name.toLowerCase().includes(s));
+        const tbody = document.getElementById('data-table');
         if (!items.length) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-slate-400">No authors found.</td></tr>'; return; }
-        tbody.innerHTML = items.map(function(a, i) {
-            var bookCount = books.filter(function(b) { return b.author_id === a.id; }).length;
-            return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">'
-                + '<td class="px-5 py-3 text-slate-500">' + (i+1) + '</td>'
-                + '<td class="px-5 py-3 font-semibold">' + a.name + '</td>'
-                + '<td class="px-5 py-3 text-slate-500 max-w-xs truncate">' + (a.bio || '\u2014') + '</td>'
-                + '<td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">' + bookCount + '</span></td>'
-                + '<td class="px-5 py-3"><div class="flex items-center gap-1">'
-                + '<button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-slate-800 transition-colors" data-id="' + a.id + '" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button>'
-                + '<button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="' + a.id + '" data-name="' + a.name + '" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button>'
-                + '</div></td></tr>';
+        tbody.innerHTML = items.map((a, i) => {
+            const bookCount = books.filter((b) => b.author_id === a.id).length;
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3 text-slate-500">${i+1}</td><td class="px-5 py-3 font-semibold">${a.name}</td><td class="px-5 py-3 text-slate-500 max-w-xs truncate">${a.bio || '\u2014'}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">${bookCount}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-slate-800 transition-colors" data-id="${a.id}" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button><button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${a.id}" data-name="${a.name}" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button></div></td></tr>`;
         }).join('');
         bind();
-    }
-    function bind() {
-        document.querySelectorAll('.btn-edit').forEach(function(b) { b.addEventListener('click', function() {
-            var a = Store.getById('authors', this.dataset.id); if (!a) return;
+    };
+    const bind = () => {
+        document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
+            const a = Store.getById('authors', this.dataset.id); if (!a) return;
             document.getElementById('modal-title').textContent = 'Edit Author'; document.getElementById('edit-id').value = a.id;
             document.getElementById('f-name').value = a.name; document.getElementById('f-bio').value = a.bio || '';
             App.openModal('modal-form');
         }); });
-        document.querySelectorAll('.btn-del').forEach(function(b) { b.addEventListener('click', function() {
-            var id = this.dataset.id, name = this.dataset.name;
-            App.confirmDelete(name).then(function(r) { if (r.isConfirmed) { Store.remove('authors', id); App.showAlert('success', 'Author deleted.'); load(); } });
+        document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
+            const id = this.dataset.id, name = this.dataset.name;
+            App.confirmDelete(name).then((r) => { if (r.isConfirmed) { Store.remove('authors', id); App.showAlert('success', 'Author deleted.'); load(); } });
         }); });
-    }
-    document.getElementById('btn-add').addEventListener('click', function() {
+    };
+    document.getElementById('btn-add').addEventListener('click', () => {
         document.getElementById('modal-title').textContent = 'Add Author'; document.getElementById('edit-id').value = '';
         document.getElementById('f-name').value = ''; document.getElementById('f-bio').value = '';
         App.openModal('modal-form');
     });
-    document.getElementById('btn-save').addEventListener('click', function() {
-        var name = document.getElementById('f-name').value.trim(), bio = document.getElementById('f-bio').value.trim();
+    document.getElementById('btn-save').addEventListener('click', () => {
+        const name = document.getElementById('f-name').value.trim(), bio = document.getElementById('f-bio').value.trim();
         if (!name) { App.showAlert('danger', 'Name required.'); return; }
-        var eid = document.getElementById('edit-id').value;
-        var promise = eid ? Store.update('authors', eid, { name: name, bio: bio }) : Store.create('authors', { name: name, bio: bio });
-        promise.then(function() {
+        const eid = document.getElementById('edit-id').value;
+        const promise = eid ? Store.update('authors', eid, { name, bio }) : Store.create('authors', { name, bio });
+        promise.then(() => {
             App.showAlert('success', eid ? 'Author updated.' : 'Author added.');
             App.closeModal('modal-form'); load();
-        }).catch(function(err) {
+        }).catch((err) => {
             Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
         });
     });

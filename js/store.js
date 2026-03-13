@@ -357,7 +357,24 @@ const Store = (() => {
         seedIfEmpty('students', [
             { id: 's1', student_id: '2024-0001', name: 'Carlo Mendoza', email: 'carlo@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '3A', contact: '09171234567', status: 'active', created_at: now(), updated_at: now() },
             { id: 's2', student_id: '2024-0002', name: 'Sofia Torres', email: 'sofia@aklatbayon.edu', grade_level: 'College', program: 'BSCS', section: '2B', contact: '09181234567', status: 'active', created_at: now(), updated_at: now() },
-            { id: 's3', student_id: '2024-0003', name: 'Miguel Bautista', email: 'miguel@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '1A', contact: '09191234567', status: 'active', created_at: now(), updated_at: now() }
+            { id: 's3', student_id: '2024-0003', name: 'Miguel Bautista', email: 'miguel@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '1A', contact: '09191234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's4', student_id: '2024-0004', name: 'Angela Cruz', email: 'angela@aklatbayon.edu', grade_level: 'College', program: 'BSCE', section: '2A', contact: '09201234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's5', student_id: '2024-0005', name: 'Rafael Santos', email: 'rafael@aklatbayon.edu', grade_level: 'College', program: 'BSME', section: '3B', contact: '09211234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's6', student_id: '2024-0006', name: 'Maria Garcia', email: 'maria@aklatbayon.edu', grade_level: 'College', program: 'BSEE', section: '2A', contact: '09221234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's7', student_id: '2024-0007', name: 'James Reyes', email: 'james@aklatbayon.edu', grade_level: 'College', program: 'BSEcE', section: '1B', contact: '09231234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's8', student_id: '2024-0008', name: 'Patricia Luna', email: 'patricia@aklatbayon.edu', grade_level: 'College', program: 'BSMarE', section: '3A', contact: '09241234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's9', student_id: '2024-0009', name: 'Daniel Ramos', email: 'daniel@aklatbayon.edu', grade_level: 'College', program: 'BSNA', section: '2A', contact: '09251234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's10', student_id: '2024-0010', name: 'Christine Lim', email: 'christine@aklatbayon.edu', grade_level: 'College', program: 'BSArch', section: '1A', contact: '09261234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's11', student_id: '2024-0011', name: 'Mark Villanueva', email: 'mark@aklatbayon.edu', grade_level: 'College', program: 'BSBA', section: '2B', contact: '09271234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's12', student_id: '2024-0012', name: 'Anna Dela Cruz', email: 'anna@aklatbayon.edu', grade_level: 'College', program: 'BSHRA', section: '1A', contact: '09281234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's13', student_id: '2024-0013', name: 'Kevin Aquino', email: 'kevin@aklatbayon.edu', grade_level: 'College', program: 'BSCrim', section: '3A', contact: '09291234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's14', student_id: '2024-0014', name: 'Rina Pascual', email: 'rina@aklatbayon.edu', grade_level: 'Senior High', program: 'SHS', section: '12A', contact: '09301234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's15', student_id: '2024-0015', name: 'Joshua Tan', email: 'joshua@aklatbayon.edu', grade_level: 'Junior High', program: 'JHS', section: '10B', contact: '09311234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's16', student_id: '2024-0016', name: 'Lea Fernandez', email: 'lea@aklatbayon.edu', grade_level: 'College', program: 'BSIT', section: '2A', contact: '09321234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's17', student_id: '2024-0017', name: 'Paulo Rivera', email: 'paulo@aklatbayon.edu', grade_level: 'College', program: 'BSCE', section: '3A', contact: '09331234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's18', student_id: '2024-0018', name: 'Grace Navarro', email: 'grace@aklatbayon.edu', grade_level: 'College', program: 'BSME', section: '2B', contact: '09341234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's19', student_id: '2024-0019', name: 'Ryan Castillo', email: 'ryan@aklatbayon.edu', grade_level: 'College', program: 'BSCS', section: '1A', contact: '09351234567', status: 'active', created_at: now(), updated_at: now() },
+            { id: 's20', student_id: '2024-0020', name: 'Joy Soriano', email: 'joy@aklatbayon.edu', grade_level: 'Senior High', program: 'SHS', section: '11B', contact: '09361234567', status: 'active', created_at: now(), updated_at: now() }
         ]);
 
         seedIfEmpty('categories', [
@@ -432,6 +449,57 @@ const Store = (() => {
             { id: 'set81', key: 'reservation_max_faculty', value: '5', label: 'Faculty — Max Active Reservations' },
             { id: 'set82', key: 'reservation_expiry_hours', value: '48', label: 'Reservation Claim Window (hours)' },
             { id: 'set83', key: 'fine_block_threshold', value: '100', label: 'Fine Block Threshold (₱) — Blocks borrowing/renewal' }
+        ]);
+
+        seedIfEmpty('attendance', [
+            // Today (2026-03-13)
+            { id: 'att1', name: 'Carlo Mendoza', student_id: 's1', date: '2026-03-13', time_in: '08:15', time_out: '11:30', created_at: '2026-03-13T08:15:00Z' },
+            { id: 'att2', name: 'Sofia Torres', student_id: 's2', date: '2026-03-13', time_in: '09:00', time_out: '12:00', created_at: '2026-03-13T09:00:00Z' },
+            { id: 'att3', name: 'Angela Cruz', student_id: 's4', date: '2026-03-13', time_in: '07:45', time_out: '10:30', created_at: '2026-03-13T07:45:00Z' },
+            { id: 'att4', name: 'Rafael Santos', student_id: 's5', date: '2026-03-13', time_in: '10:00', time_out: '13:00', created_at: '2026-03-13T10:00:00Z' },
+            { id: 'att5', name: 'Maria Garcia', student_id: 's6', date: '2026-03-13', time_in: '08:30', time_out: '11:00', created_at: '2026-03-13T08:30:00Z' },
+            { id: 'att6', name: 'Kevin Aquino', student_id: 's13', date: '2026-03-13', time_in: '13:00', time_out: '15:30', created_at: '2026-03-13T13:00:00Z' },
+            { id: 'att7', name: 'Rina Pascual', student_id: 's14', date: '2026-03-13', time_in: '09:30', time_out: '11:00', created_at: '2026-03-13T09:30:00Z' },
+            { id: 'att8', name: 'Lea Fernandez', student_id: 's16', date: '2026-03-13', time_in: '14:00', time_out: '16:00', created_at: '2026-03-13T14:00:00Z' },
+            // This week (March 2026)
+            { id: 'att9', name: 'Carlo Mendoza', student_id: 's1', date: '2026-03-12', time_in: '08:00', time_out: '11:00', created_at: '2026-03-12T08:00:00Z' },
+            { id: 'att10', name: 'Miguel Bautista', student_id: 's3', date: '2026-03-12', time_in: '09:15', time_out: '12:30', created_at: '2026-03-12T09:15:00Z' },
+            { id: 'att11', name: 'Sofia Torres', student_id: 's2', date: '2026-03-11', time_in: '10:00', time_out: '13:00', created_at: '2026-03-11T10:00:00Z' },
+            { id: 'att12', name: 'James Reyes', student_id: 's7', date: '2026-03-11', time_in: '08:30', time_out: '10:30', created_at: '2026-03-11T08:30:00Z' },
+            { id: 'att13', name: 'Patricia Luna', student_id: 's8', date: '2026-03-11', time_in: '13:00', time_out: '15:00', created_at: '2026-03-11T13:00:00Z' },
+            { id: 'att14', name: 'Daniel Ramos', student_id: 's9', date: '2026-03-10', time_in: '09:00', time_out: '12:00', created_at: '2026-03-10T09:00:00Z' },
+            { id: 'att15', name: 'Christine Lim', student_id: 's10', date: '2026-03-10', time_in: '10:30', time_out: '14:00', created_at: '2026-03-10T10:30:00Z' },
+            { id: 'att16', name: 'Mark Villanueva', student_id: 's11', date: '2026-03-10', time_in: '08:00', time_out: '10:00', created_at: '2026-03-10T08:00:00Z' },
+            { id: 'att17', name: 'Anna Dela Cruz', student_id: 's12', date: '2026-03-10', time_in: '14:00', time_out: '16:30', created_at: '2026-03-10T14:00:00Z' },
+            { id: 'att18', name: 'Joshua Tan', student_id: 's15', date: '2026-03-10', time_in: '09:00', time_out: '11:00', created_at: '2026-03-10T09:00:00Z' },
+            { id: 'att19', name: 'Paulo Rivera', student_id: 's17', date: '2026-03-07', time_in: '08:00', time_out: '11:30', created_at: '2026-03-07T08:00:00Z' },
+            { id: 'att20', name: 'Grace Navarro', student_id: 's18', date: '2026-03-07', time_in: '10:00', time_out: '13:00', created_at: '2026-03-07T10:00:00Z' },
+            { id: 'att21', name: 'Ryan Castillo', student_id: 's19', date: '2026-03-07', time_in: '13:30', time_out: '16:00', created_at: '2026-03-07T13:30:00Z' },
+            { id: 'att22', name: 'Joy Soriano', student_id: 's20', date: '2026-03-06', time_in: '09:00', time_out: '11:30', created_at: '2026-03-06T09:00:00Z' },
+            { id: 'att23', name: 'Carlo Mendoza', student_id: 's1', date: '2026-03-06', time_in: '14:00', time_out: '16:00', created_at: '2026-03-06T14:00:00Z' },
+            { id: 'att24', name: 'Angela Cruz', student_id: 's4', date: '2026-03-05', time_in: '08:00', time_out: '10:30', created_at: '2026-03-05T08:00:00Z' },
+            { id: 'att25', name: 'Rafael Santos', student_id: 's5', date: '2026-03-05', time_in: '10:00', time_out: '12:00', created_at: '2026-03-05T10:00:00Z' },
+            { id: 'att26', name: 'Kevin Aquino', student_id: 's13', date: '2026-03-04', time_in: '09:00', time_out: '11:30', created_at: '2026-03-04T09:00:00Z' },
+            { id: 'att27', name: 'Lea Fernandez', student_id: 's16', date: '2026-03-04', time_in: '13:00', time_out: '15:00', created_at: '2026-03-04T13:00:00Z' },
+            { id: 'att28', name: 'Maria Garcia', student_id: 's6', date: '2026-03-03', time_in: '08:15', time_out: '11:00', created_at: '2026-03-03T08:15:00Z' },
+            { id: 'att29', name: 'Rina Pascual', student_id: 's14', date: '2026-03-03', time_in: '10:00', time_out: '12:30', created_at: '2026-03-03T10:00:00Z' },
+            // February 2026 (previous month, counts for year only)
+            { id: 'att30', name: 'Carlo Mendoza', student_id: 's1', date: '2026-02-25', time_in: '08:00', time_out: '11:00', created_at: '2026-02-25T08:00:00Z' },
+            { id: 'att31', name: 'Sofia Torres', student_id: 's2', date: '2026-02-25', time_in: '09:30', time_out: '12:00', created_at: '2026-02-25T09:30:00Z' },
+            { id: 'att32', name: 'Miguel Bautista', student_id: 's3', date: '2026-02-20', time_in: '10:00', time_out: '13:00', created_at: '2026-02-20T10:00:00Z' },
+            { id: 'att33', name: 'Angela Cruz', student_id: 's4', date: '2026-02-18', time_in: '08:30', time_out: '11:00', created_at: '2026-02-18T08:30:00Z' },
+            { id: 'att34', name: 'Rafael Santos', student_id: 's5', date: '2026-02-15', time_in: '09:00', time_out: '12:00', created_at: '2026-02-15T09:00:00Z' },
+            { id: 'att35', name: 'James Reyes', student_id: 's7', date: '2026-02-14', time_in: '13:00', time_out: '15:30', created_at: '2026-02-14T13:00:00Z' },
+            { id: 'att36', name: 'Patricia Luna', student_id: 's8', date: '2026-02-12', time_in: '08:00', time_out: '10:00', created_at: '2026-02-12T08:00:00Z' },
+            { id: 'att37', name: 'Mark Villanueva', student_id: 's11', date: '2026-02-10', time_in: '10:00', time_out: '12:30', created_at: '2026-02-10T10:00:00Z' },
+            { id: 'att38', name: 'Joshua Tan', student_id: 's15', date: '2026-02-05', time_in: '09:00', time_out: '11:00', created_at: '2026-02-05T09:00:00Z' },
+            { id: 'att39', name: 'Joy Soriano', student_id: 's20', date: '2026-02-03', time_in: '14:00', time_out: '16:00', created_at: '2026-02-03T14:00:00Z' },
+            // January 2026
+            { id: 'att40', name: 'Carlo Mendoza', student_id: 's1', date: '2026-01-20', time_in: '08:00', time_out: '11:00', created_at: '2026-01-20T08:00:00Z' },
+            { id: 'att41', name: 'Christine Lim', student_id: 's10', date: '2026-01-15', time_in: '09:00', time_out: '12:00', created_at: '2026-01-15T09:00:00Z' },
+            { id: 'att42', name: 'Daniel Ramos', student_id: 's9', date: '2026-01-10', time_in: '10:00', time_out: '13:00', created_at: '2026-01-10T10:00:00Z' },
+            { id: 'att43', name: 'Anna Dela Cruz', student_id: 's12', date: '2026-01-08', time_in: '08:30', time_out: '10:30', created_at: '2026-01-08T08:30:00Z' },
+            { id: 'att44', name: 'Kevin Aquino', student_id: 's13', date: '2026-01-06', time_in: '13:00', time_out: '15:00', created_at: '2026-01-06T13:00:00Z' }
         ]);
 
         seedIfEmpty('reservations', []);

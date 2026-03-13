@@ -107,40 +107,34 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init();
-    var user = Auth.getCurrentUser();
+    const user = Auth.getCurrentUser();
     if (!user.student_id) {
         document.getElementById('data-table').innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 dark:text-slate-500 py-8">No linked student record. Contact a librarian if you believe this is an error.</td></tr>';
     } else {
-        function load() {
-            var allFines = Store.getAll('fines');
-            var myFines = allFines.filter(function(f) { return f.student_id === user.student_id; });
-            var pending = myFines.filter(function(f) { return f.status === 'pending'; });
-            var resolved = myFines.filter(function(f) { return f.status !== 'pending'; });
-            var totalPending = pending.reduce(function(sum, f) { return sum + Number(f.amount); }, 0);
+        const load = () => {
+            const allFines = Store.getAll('fines');
+            const myFines = allFines.filter((f) => f.student_id === user.student_id);
+            const pending = myFines.filter((f) => f.status === 'pending');
+            const resolved = myFines.filter((f) => f.status !== 'pending');
+            const totalPending = pending.reduce((sum, f) => sum + Number(f.amount), 0);
             document.getElementById('stat-pending').textContent = pending.length;
-            document.getElementById('stat-total').innerHTML = '&#8369;' + totalPending;
+            document.getElementById('stat-total').innerHTML = `&#8369;${totalPending}`;
             document.getElementById('stat-resolved').textContent = resolved.length;
-            var sf = document.getElementById('filter-status').value;
-            var items = myFines;
-            if (sf) items = items.filter(function(f) { return f.status === sf; });
-            var tbody = document.getElementById('data-table');
+            const sf = document.getElementById('filter-status').value;
+            let items = myFines;
+            if (sf) items = items.filter((f) => f.status === sf);
+            const tbody = document.getElementById('data-table');
             if (!items.length) { tbody.innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 dark:text-slate-500 py-8">No fines found.</td></tr>'; return; }
-            var statusMap = {
+            const statusMap = {
                 pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
                 paid: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
                 waived: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
             };
-            var defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
-            tbody.innerHTML = items.map(function(f, i) {
-                return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
-                    + '<td class="px-4 py-3 text-slate-500">' + (i+1) + '</td>'
-                    + '<td class="px-4 py-3">' + f.reason + '</td>'
-                    + '<td class="px-4 py-3 font-semibold">&#8369;' + f.amount + '</td>'
-                    + '<td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + (statusMap[f.status] || defaultBadge) + '">' + f.status + '</span></td>'
-                    + '<td class="px-4 py-3 text-slate-500">' + App.formatDate(f.created_at) + '</td>'
-                    + '</tr>';
+            const defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+            tbody.innerHTML = items.map((f, i) => {
+                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-4 py-3 text-slate-500">${i+1}</td><td class="px-4 py-3">${f.reason}</td><td class="px-4 py-3 font-semibold">&#8369;${f.amount}</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusMap[f.status] || defaultBadge}">${f.status}</span></td><td class="px-4 py-3 text-slate-500">${App.formatDate(f.created_at)}</td></tr>`;
             }).join('');
-        }
+        };
         document.getElementById('filter-status').addEventListener('change', load);
         load();
     }

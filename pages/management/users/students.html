@@ -28,25 +28,61 @@
 
       <!-- Page Header -->
       <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
-        <h1 class="text-2xl font-bold flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-3xl">school</span>
-          Student Management
-        </h1>
+        <div>
+          <h1 class="text-2xl font-bold flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-3xl">school</span>
+            Student Management
+          </h1>
+          <p class="text-sm text-slate-500 mt-1">Manage enrolled student records</p>
+        </div>
         <button id="btn-add" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-800 transition-colors">
           <span class="material-symbols-outlined text-[20px]">add_circle</span>
           Add Student
         </button>
       </div>
 
+      <!-- Stats Row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" id="stats-row"></div>
+
       <!-- Filter Bar -->
       <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-5">
         <div class="relative flex-1 min-w-[200px]">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-          <input type="text" id="search-input" placeholder="Search students..."
+          <input type="text" id="search-input" placeholder="Search by name or student ID..."
             class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
-        <select id="filter-status"
+        <select id="filter-program"
           class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary min-w-[160px]">
+          <option value="">All Programs</option>
+          <optgroup label="Engineering">
+            <option value="BSCE">BSCE</option>
+            <option value="BSME">BSME</option>
+            <option value="BSEE">BSEE</option>
+            <option value="BSEcE">BSEcE</option>
+            <option value="BSMarE">BSMarE</option>
+            <option value="BSNA">BSNA</option>
+          </optgroup>
+          <optgroup label="Computing">
+            <option value="BSIT">BSIT</option>
+            <option value="BSCS">BSCS</option>
+          </optgroup>
+          <optgroup label="Architecture">
+            <option value="BSArch">BSArch</option>
+          </optgroup>
+          <optgroup label="Business & Hospitality">
+            <option value="BSBA">BSBA</option>
+            <option value="BSHRA">BSHRA</option>
+          </optgroup>
+          <optgroup label="Criminal Justice">
+            <option value="BSCrim">BSCrim</option>
+          </optgroup>
+          <optgroup label="Basic Education">
+            <option value="SHS">SHS</option>
+            <option value="JHS">JHS</option>
+          </optgroup>
+        </select>
+        <select id="filter-status"
+          class="h-10 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary min-w-[140px]">
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -59,16 +95,12 @@
           <table class="w-full text-sm text-left">
             <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th class="px-4 py-3">#</th>
-                <th class="px-4 py-3">Student ID</th>
-                <th class="px-4 py-3">Name</th>
-                <th class="px-4 py-3">Email</th>
-                <th class="px-4 py-3">Grade Level</th>
-                <th class="px-4 py-3">Program</th>
-                <th class="px-4 py-3">Section</th>
-                <th class="px-4 py-3">Contact</th>
-                <th class="px-4 py-3">Status</th>
-                <th class="px-4 py-3 text-center">Actions</th>
+                <th class="px-5 py-3">#</th>
+                <th class="px-5 py-3">Student</th>
+                <th class="px-5 py-3">Program & Section</th>
+                <th class="px-5 py-3">Contact</th>
+                <th class="px-5 py-3">Status</th>
+                <th class="px-5 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
@@ -91,22 +123,39 @@
       <!-- Modal Body -->
       <div class="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
         <input type="hidden" id="edit-id">
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Student ID</label>
-          <input id="f-student-id" placeholder="e.g. 2024-0001"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Student ID</label>
+            <input id="f-student-id" placeholder="e.g. 2024-0001"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Status</label>
+            <select id="f-status"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1.5">Full Name</label>
           <input id="f-name"
             class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Email</label>
-          <input id="f-email" type="email"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-        </div>
         <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Email</label>
+            <input id="f-email" type="email"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Contact</label>
+            <input id="f-contact" placeholder="09XXXXXXXXX"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Grade Level</label>
             <select id="f-grade"
@@ -122,51 +171,38 @@
               class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
               <option value="">-- Select --</option>
               <optgroup label="Engineering">
-                <option value="BSCE">BSCE - Civil Engineering</option>
-                <option value="BSME">BSME - Mechanical Engineering</option>
-                <option value="BSEE">BSEE - Electrical Engineering</option>
-                <option value="BSEcE">BSEcE - Electronics Engineering</option>
-                <option value="BSMarE">BSMarE - Marine Engineering</option>
-                <option value="BSNA">BSNA - Naval Architecture</option>
+                <option value="BSCE">BSCE</option>
+                <option value="BSME">BSME</option>
+                <option value="BSEE">BSEE</option>
+                <option value="BSEcE">BSEcE</option>
+                <option value="BSMarE">BSMarE</option>
+                <option value="BSNA">BSNA</option>
               </optgroup>
               <optgroup label="Computing">
-                <option value="BSIT">BSIT - Information Technology</option>
-                <option value="BSCS">BSCS - Computer Science</option>
+                <option value="BSIT">BSIT</option>
+                <option value="BSCS">BSCS</option>
               </optgroup>
               <optgroup label="Architecture">
-                <option value="BSArch">BSArch - Architecture</option>
+                <option value="BSArch">BSArch</option>
               </optgroup>
               <optgroup label="Business & Hospitality">
-                <option value="BSBA">BSBA - Business Administration</option>
-                <option value="BSHRA">BSHRA - Hotel & Restaurant Admin</option>
+                <option value="BSBA">BSBA</option>
+                <option value="BSHRA">BSHRA</option>
               </optgroup>
               <optgroup label="Criminal Justice">
-                <option value="BSCrim">BSCrim - Criminology</option>
+                <option value="BSCrim">BSCrim</option>
               </optgroup>
               <optgroup label="Basic Education">
-                <option value="SHS">SHS - Senior High School</option>
-                <option value="JHS">JHS - Junior High School</option>
+                <option value="SHS">SHS</option>
+                <option value="JHS">JHS</option>
               </optgroup>
             </select>
           </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Section</label>
-          <input id="f-section" placeholder="e.g. 3A"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Contact</label>
-          <input id="f-contact" placeholder="09XXXXXXXXX"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Status</label>
-          <select id="f-status"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Section</label>
+            <input id="f-section" placeholder="e.g. 3A"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
         </div>
       </div>
       <!-- Modal Footer -->
@@ -188,78 +224,171 @@
   <script src="/js/sidebar.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    if (!Auth.requireAuth()) throw '';
-    App.init(); App.bindModalCloses();
-    const load = () => {
-        let items = Store.getAll('students');
-        const s = document.getElementById('search-input').value.toLowerCase();
-        const sf = document.getElementById('filter-status').value;
-        if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s));
-        if (sf) items = items.filter((i) => i.status === sf);
-        const tbody = document.getElementById('data-table');
-        if (!items.length) { tbody.innerHTML='<tr><td colspan="10" class="text-center text-slate-400 py-8">No students found.</td></tr>'; return; }
-        tbody.innerHTML = items.map((i, idx) => {
-            const statusClasses = i.status==='active'
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">`
-                +`<td class="px-4 py-3 text-slate-500">${idx+1}</td>`
-                +`<td class="px-4 py-3 font-semibold">${i.student_id}</td>`
-                +`<td class="px-4 py-3">${i.name}</td>`
-                +`<td class="px-4 py-3">${i.email}</td>`
-                +`<td class="px-4 py-3">${i.grade_level}</td>`
-                +`<td class="px-4 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">${i.program||'—'}</span></td>`
-                +`<td class="px-4 py-3">${i.section||'—'}</td>`
-                +`<td class="px-4 py-3">${i.contact}</td>`
-                +`<td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusClasses}">${i.status}</span></td>`
-                +`<td class="px-4 py-3 text-center"><div class="inline-flex items-center gap-1">`
-                +`<a href="/pages/operations/borrower-profile.html?id=${i.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors" title="View Profile"><span class="material-symbols-outlined text-[20px]">visibility</span></a>`
-                +`<button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[20px]">edit</span></button>`
-                +`<button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[20px]">delete</span></button>`
-                +`</div></td></tr>`;
-        }).join('');
-        bindActions();
-    };
-    const bindActions = () => {
-        document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
-            const i = Store.getById('students', this.dataset.id); if(!i) return;
-            document.getElementById('modal-title').textContent='Edit Student'; document.getElementById('edit-id').value=i.id;
-            document.getElementById('f-student-id').value=i.student_id; document.getElementById('f-name').value=i.name;
-            document.getElementById('f-email').value=i.email; document.getElementById('f-grade').value=i.grade_level;
-            document.getElementById('f-program').value=i.program||'';
-            document.getElementById('f-section').value=i.section; document.getElementById('f-contact').value=i.contact;
-            document.getElementById('f-status').value=i.status; App.openModal('modal-form');
-        }); });
-        document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
-            const id=this.dataset.id, name=this.dataset.name;
-            App.confirmDelete(name).then((r) => { if(r.isConfirmed){Store.remove('students',id);App.showAlert('success','Student deleted.');load();} });
-        }); });
-    };
-    document.getElementById('btn-add').addEventListener('click', () => {
-        document.getElementById('modal-title').textContent='Add Student'; document.getElementById('edit-id').value='';
-        ['f-student-id','f-name','f-email','f-section','f-contact'].forEach((id) => {document.getElementById(id).value='';});
-        document.getElementById('f-grade').value='College'; document.getElementById('f-program').value=''; document.getElementById('f-status').value='active'; App.openModal('modal-form');
-    });
-    document.getElementById('btn-save').addEventListener('click', () => {
-        const sid=document.getElementById('f-student-id').value.trim(), name=document.getElementById('f-name').value.trim(),
-            email=document.getElementById('f-email').value.trim(), grade=document.getElementById('f-grade').value,
-            program=document.getElementById('f-program').value,
-            section=document.getElementById('f-section').value.trim(), contact=document.getElementById('f-contact').value.trim(),
-            status=document.getElementById('f-status').value;
-        if(!sid||!name||!email){App.showAlert('danger','Fill required fields.');return;}
-        const eid=document.getElementById('edit-id').value;
-        const data={student_id:sid,name:name,email:email,grade_level:grade,program:program,section:section,contact:contact,status:status};
-        const promise = eid ? Store.update('students',eid,data) : Store.create('students',data);
-        promise.then(() => {
-            App.showAlert('success', eid ? 'Student updated.' : 'Student created.');
-            App.closeModal('modal-form'); load();
-        }).catch((err) => {
-            Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
-        });
-    });
-    document.getElementById('search-input').addEventListener('input', load);
-    document.getElementById('filter-status').addEventListener('change', load);
-    load();
+    window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
+
+    if (!Auth.requireAuth()) {
+        window.location.href = '/pages/auth/login.html';
+    } else {
+        (() => {
+            App.init();
+            App.bindModalCloses();
+
+            const programColors = {
+                'BSIT': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+                'BSCS': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+                'BSCE': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+                'BSME': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+                'BSEE': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+                'BSEcE': 'bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-300',
+                'BSMarE': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
+                'BSNA': 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
+                'BSArch': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+                'BSBA': 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
+                'BSHRA': 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
+                'BSCrim': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+                'SHS': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+                'JHS': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+            };
+            const defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+
+            const loadStats = (items) => {
+                const total = items.length;
+                const active = items.filter((i) => i.status === 'active').length;
+                const inactive = items.filter((i) => i.status === 'inactive').length;
+                const programs = [...new Set(items.map((i) => i.program).filter(Boolean))].length;
+                document.getElementById('stats-row').innerHTML = [
+                    { label: 'Total Students', value: total, icon: 'groups', color: 'text-primary' },
+                    { label: 'Active', value: active, icon: 'check_circle', color: 'text-emerald-600' },
+                    { label: 'Inactive', value: inactive, icon: 'cancel', color: 'text-red-500' },
+                    { label: 'Programs', value: programs, icon: 'category', color: 'text-violet-600' }
+                ].map((s) => `
+                    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined ${s.color}">${s.icon}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase tracking-wide">${s.label}</p>
+                            <p class="text-xl font-bold">${s.value}</p>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            const load = () => {
+                let items = Store.getAll('students') || [];
+                loadStats(items);
+
+                const s = document.getElementById('search-input').value.toLowerCase();
+                const pf = document.getElementById('filter-program').value;
+                const sf = document.getElementById('filter-status').value;
+                if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s));
+                if (pf) items = items.filter((i) => i.program === pf);
+                if (sf) items = items.filter((i) => i.status === sf);
+
+                const tbody = document.getElementById('data-table');
+                if (!items.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-slate-400 py-10">No students found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = items.map((i, idx) => {
+                    const statusCls = i.status === 'active'
+                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+                    const progCls = programColors[i.program] || defaultBadge;
+
+                    return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        <td class="px-5 py-3.5 text-slate-400 text-xs">${idx + 1}</td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                                    ${i.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-sm leading-tight truncate">${i.name}</p>
+                                    <p class="text-xs text-slate-500 truncate">${i.student_id} &middot; ${i.email}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold ${progCls}">${i.program || '—'}</span>
+                            <span class="text-xs text-slate-500 ml-1">${i.section ? i.section : ''}</span>
+                            <p class="text-xs text-slate-400 mt-0.5">${i.grade_level}</p>
+                        </td>
+                        <td class="px-5 py-3.5 text-sm text-slate-600 dark:text-slate-400">${i.contact || '—'}</td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusCls}">${i.status}</span>
+                        </td>
+                        <td class="px-5 py-3.5 text-center">
+                            <div class="inline-flex items-center gap-1">
+                                <a href="/pages/operations/borrower-profile.html?id=${i.id}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors" title="View Profile"><span class="material-symbols-outlined text-[20px]">visibility</span></a>
+                                <button class="btn-edit w-8 h-8 inline-flex items-center justify-center rounded-lg text-primary hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                <button class="btn-del w-8 h-8 inline-flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+                bindActions();
+            };
+
+            const bindActions = () => {
+                document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
+                    const i = Store.getById('students', this.dataset.id); if (!i) return;
+                    document.getElementById('modal-title').textContent = 'Edit Student';
+                    document.getElementById('edit-id').value = i.id;
+                    document.getElementById('f-student-id').value = i.student_id;
+                    document.getElementById('f-name').value = i.name;
+                    document.getElementById('f-email').value = i.email;
+                    document.getElementById('f-grade').value = i.grade_level;
+                    document.getElementById('f-program').value = i.program || '';
+                    document.getElementById('f-section').value = i.section;
+                    document.getElementById('f-contact').value = i.contact;
+                    document.getElementById('f-status').value = i.status;
+                    App.openModal('modal-form');
+                }); });
+                document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
+                    const id = this.dataset.id, name = this.dataset.name;
+                    App.confirmDelete(name).then((r) => { if (r.isConfirmed) { Store.remove('students', id); App.showAlert('success', 'Student deleted.'); load(); } });
+                }); });
+            };
+
+            document.getElementById('btn-add').addEventListener('click', () => {
+                document.getElementById('modal-title').textContent = 'Add Student';
+                document.getElementById('edit-id').value = '';
+                ['f-student-id', 'f-name', 'f-email', 'f-section', 'f-contact'].forEach((id) => { document.getElementById(id).value = ''; });
+                document.getElementById('f-grade').value = 'College';
+                document.getElementById('f-program').value = '';
+                document.getElementById('f-status').value = 'active';
+                App.openModal('modal-form');
+            });
+
+            document.getElementById('btn-save').addEventListener('click', () => {
+                const sid = document.getElementById('f-student-id').value.trim();
+                const name = document.getElementById('f-name').value.trim();
+                const email = document.getElementById('f-email').value.trim();
+                const grade = document.getElementById('f-grade').value;
+                const program = document.getElementById('f-program').value;
+                const section = document.getElementById('f-section').value.trim();
+                const contact = document.getElementById('f-contact').value.trim();
+                const status = document.getElementById('f-status').value;
+                if (!sid || !name || !email) { App.showAlert('danger', 'Fill required fields.'); return; }
+                const eid = document.getElementById('edit-id').value;
+                const data = { student_id: sid, name, email, grade_level: grade, program, section, contact, status };
+                const promise = eid ? Store.update('students', eid, data) : Store.create('students', data);
+                promise.then(() => {
+                    App.showAlert('success', eid ? 'Student updated.' : 'Student created.');
+                    App.closeModal('modal-form'); load();
+                }).catch((err) => {
+                    Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
+                });
+            });
+
+            document.getElementById('search-input').addEventListener('input', load);
+            document.getElementById('filter-program').addEventListener('change', load);
+            document.getElementById('filter-status').addEventListener('change', load);
+            load();
+        })();
+    }
   </script>
 </body>
 </html>

@@ -113,46 +113,37 @@
     if (!Auth.requireAuth()) throw '';
     App.init(); App.bindModalCloses();
 
-    function loadParents() {
-      var cats = Store.getAll('categories');
-      var sel = document.getElementById('f-parent');
+    const loadParents = () => {
+      const cats = Store.getAll('categories');
+      const sel = document.getElementById('f-parent');
       sel.innerHTML = '<option value="">None (Top Level)</option>';
-      cats.forEach(function(c) {
-        sel.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+      cats.forEach((c) => {
+        sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
       });
-    }
+    };
 
-    function load() {
-      var items = Store.getAll('categories'), books = Store.getAll('books');
-      var tbody = document.getElementById('data-table');
+    const load = () => {
+      const items = Store.getAll('categories'), books = Store.getAll('books');
+      const tbody = document.getElementById('data-table');
 
       if (!items.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-10 text-center text-slate-400 dark:text-slate-500">No categories found.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = items.map(function(c, i) {
-        var parent = c.parent_id ? App.getCategoryName(c.parent_id) : '<span class="text-slate-400">\u2014</span>';
-        var cnt = books.filter(function(b) { return b.category_id === c.id; }).length;
-        return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">'
-          + '<td class="px-5 py-3 text-slate-500">' + (i + 1) + '</td>'
-          + '<td class="px-5 py-3 font-semibold">' + c.name + '</td>'
-          + '<td class="px-5 py-3 text-slate-500 dark:text-slate-400">' + (c.description || '<span class="text-slate-400">\u2014</span>') + '</td>'
-          + '<td class="px-5 py-3">' + parent + '</td>'
-          + '<td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">' + cnt + '</span></td>'
-          + '<td class="px-5 py-3"><div class="flex items-center gap-1">'
-          + '<button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="' + c.id + '" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>'
-          + ' <button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" data-id="' + c.id + '" data-name="' + c.name + '" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button>'
-          + '</div></td></tr>';
+      tbody.innerHTML = items.map((c, i) => {
+        const parent = c.parent_id ? App.getCategoryName(c.parent_id) : '<span class="text-slate-400">\u2014</span>';
+        const cnt = books.filter((b) => b.category_id === c.id).length;
+        return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3 text-slate-500">${i + 1}</td><td class="px-5 py-3 font-semibold">${c.name}</td><td class="px-5 py-3 text-slate-500 dark:text-slate-400">${c.description || '<span class="text-slate-400">\u2014</span>'}</td><td class="px-5 py-3">${parent}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${cnt}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="${c.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button> <button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" data-id="${c.id}" data-name="${c.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td></tr>`;
       }).join('');
 
       bind();
-    }
+    };
 
-    function bind() {
-      document.querySelectorAll('.btn-edit').forEach(function(b) {
+    const bind = () => {
+      document.querySelectorAll('.btn-edit').forEach((b) => {
         b.addEventListener('click', function() {
-          var c = Store.getById('categories', this.dataset.id);
+          const c = Store.getById('categories', this.dataset.id);
           if (!c) return;
           loadParents();
           document.getElementById('modal-title').textContent = 'Edit Category';
@@ -164,10 +155,10 @@
         });
       });
 
-      document.querySelectorAll('.btn-del').forEach(function(b) {
+      document.querySelectorAll('.btn-del').forEach((b) => {
         b.addEventListener('click', function() {
-          var id = this.dataset.id, name = this.dataset.name;
-          App.confirmDelete(name).then(function(r) {
+          const id = this.dataset.id, name = this.dataset.name;
+          App.confirmDelete(name).then((r) => {
             if (r.isConfirmed) {
               Store.remove('categories', id);
               App.showAlert('success', 'Category deleted.');
@@ -176,9 +167,9 @@
           });
         });
       });
-    }
+    };
 
-    document.getElementById('btn-add').addEventListener('click', function() {
+    document.getElementById('btn-add').addEventListener('click', () => {
       loadParents();
       document.getElementById('modal-title').textContent = 'Add Category';
       document.getElementById('edit-id').value = '';
@@ -188,21 +179,21 @@
       App.openModal('modal-form');
     });
 
-    document.getElementById('btn-save').addEventListener('click', function() {
-      var name = document.getElementById('f-name').value.trim();
+    document.getElementById('btn-save').addEventListener('click', () => {
+      const name = document.getElementById('f-name').value.trim();
       if (!name) { App.showAlert('danger', 'Name required.'); return; }
-      var data = {
-        name: name,
+      const data = {
+        name,
         description: document.getElementById('f-desc').value.trim(),
         parent_id: document.getElementById('f-parent').value || null
       };
-      var eid = document.getElementById('edit-id').value;
-      var promise = eid ? Store.update('categories', eid, data) : Store.create('categories', data);
-      promise.then(function() {
+      const eid = document.getElementById('edit-id').value;
+      const promise = eid ? Store.update('categories', eid, data) : Store.create('categories', data);
+      promise.then(() => {
         App.showAlert('success', eid ? 'Category updated.' : 'Category added.');
         App.closeModal('modal-form');
         load();
-      }).catch(function(err) {
+      }).catch((err) => {
         Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
       });
     });
