@@ -70,9 +70,10 @@ const Store = (() => {
     const preload = (collections) => {
         if (_preloadPromise) return _preloadPromise;
         const cols = collections || _collections;
+        // Always load localStorage first as baseline
+        cols.forEach((c) => { _cache[c] = _lsGet(c); });
+        _preloaded = true;
         if (!_useApi) {
-            cols.forEach((c) => { _cache[c] = _lsGet(c); });
-            _preloaded = true;
             _preloadPromise = Promise.resolve();
             return _preloadPromise;
         }
@@ -106,6 +107,16 @@ const Store = (() => {
         if (check.found) {
             return Promise.reject({ message: `Inappropriate language detected in "${check.field}". Please remove offensive words and try again.` });
         }
+        const _localCreate = () => {
+            const items = _getCached(collection);
+            item.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            item.created_at = new Date().toISOString();
+            item.updated_at = item.created_at;
+            items.push(item);
+            _setCached(collection, items);
+            logActivity('CREATE', collection, item.name || item.title || item.id);
+            return { data: item };
+        };
         if (_useApi) {
             return Api.create(collection, item).then((resp) => {
                 const created = resp.data;
@@ -114,16 +125,9 @@ const Store = (() => {
                 _setCached(collection, items);
                 logActivity('CREATE', collection, created.name || created.title || created.id);
                 return { data: created };
-            });
+            }).catch(() => Promise.resolve(_localCreate()));
         }
-        const items = _getCached(collection);
-        item.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-        item.created_at = new Date().toISOString();
-        item.updated_at = item.created_at;
-        items.push(item);
-        _setCached(collection, items);
-        logActivity('CREATE', collection, item.name || item.title || item.id);
-        return Promise.resolve({ data: item });
+        return Promise.resolve(_localCreate());
     };
 
     const update = (collection, id, updates) => {
@@ -131,6 +135,15 @@ const Store = (() => {
         if (check.found) {
             return Promise.reject({ message: `Inappropriate language detected in "${check.field}". Please remove offensive words and try again.` });
         }
+        const _localUpdate = () => {
+            const items = _getCached(collection);
+            const idx = items.findIndex((i) => i.id === id);
+            if (idx === -1) return Promise.reject({ message: 'Not found' });
+            Object.assign(items[idx], updates, { updated_at: new Date().toISOString() });
+            _setCached(collection, items);
+            logActivity('UPDATE', collection, items[idx].name || items[idx].title || id);
+            return Promise.resolve({ data: items[idx] });
+        };
         if (_useApi) {
             return Api.update(collection, id, updates).then((resp) => {
                 const updated = resp.data;
@@ -140,18 +153,19 @@ const Store = (() => {
                 _setCached(collection, items);
                 logActivity('UPDATE', collection, updated.name || updated.title || id);
                 return { data: updated };
-            });
+            }).catch(() => _localUpdate());
         }
-        const items = _getCached(collection);
-        const idx = items.findIndex((i) => i.id === id);
-        if (idx === -1) return Promise.reject({ message: 'Not found' });
-        Object.assign(items[idx], updates, { updated_at: new Date().toISOString() });
-        _setCached(collection, items);
-        logActivity('UPDATE', collection, items[idx].name || items[idx].title || id);
-        return Promise.resolve({ data: items[idx] });
+        return _localUpdate();
     };
 
     const remove = (collection, id) => {
+        const _localRemove = () => {
+            const items = _getCached(collection);
+            const item = items.find((i) => i.id === id);
+            _setCached(collection, items.filter((i) => i.id !== id));
+            if (item) logActivity('DELETE', collection, item.name || item.title || id);
+            return Promise.resolve({ data: { success: true } });
+        };
         if (_useApi) {
             return Api.remove(collection, id).then(() => {
                 const items = _getCached(collection);
@@ -159,13 +173,9 @@ const Store = (() => {
                 _setCached(collection, items.filter((i) => i.id !== id));
                 if (item) logActivity('DELETE', collection, item.name || item.title || id);
                 return { data: { success: true } };
-            });
+            }).catch(() => _localRemove());
         }
-        const items = _getCached(collection);
-        const item = items.find((i) => i.id === id);
-        _setCached(collection, items.filter((i) => i.id !== id));
-        if (item) logActivity('DELETE', collection, item.name || item.title || id);
-        return Promise.resolve({ data: { success: true } });
+        return _localRemove();
     };
 
     const search = (collection, field, value) =>
@@ -290,11 +300,10 @@ const Store = (() => {
     };
 
     // ── Seed (localStorage fallback only) ───────────────────────
-    const SEED_VERSION = 2;
+    const SEED_VERSION = 3;
     const isSeeded = () => localStorage.getItem('aklatbayon_seed_version') === String(SEED_VERSION);
 
     const seed = () => {
-        if (_useApi) return;
         if (isSeeded()) return;
         // Clear old seed data when version changes
         const keys = Object.keys(localStorage).filter((k) => k.startsWith('aklatbayon_'));
