@@ -153,29 +153,15 @@
 
     <!-- Attendance by Program -->
     <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
-      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
-        <span class="material-symbols-outlined text-lg text-primary">groups</span>
-        <h3 class="text-sm font-bold uppercase tracking-wider">Library Attendance by Program</h3>
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg text-primary">groups</span>
+          <h3 class="text-sm font-bold uppercase tracking-wider">Attendance by Program</h3>
+        </div>
+        <span class="text-xs text-slate-400" id="att-total-label"></span>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
-        <!-- Chart (2/5) -->
-        <div class="lg:col-span-2 p-5 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800">
-          <canvas id="chart-attendance" height="280"></canvas>
-        </div>
-        <!-- Table (3/5) -->
-        <div class="lg:col-span-3 overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                <th class="px-3 py-2.5">Program</th>
-                <th class="px-3 py-2.5 text-center">Today</th>
-                <th class="px-3 py-2.5 text-center">This Month</th>
-                <th class="px-3 py-2.5 text-center">This Year</th>
-              </tr>
-            </thead>
-            <tbody id="attendance-program-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
-          </table>
-        </div>
+      <div class="p-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" id="attendance-grid"></div>
       </div>
     </div>
 
@@ -304,11 +290,15 @@
       'BSIT', 'BSCS', 'BSCE', 'BSME', 'BSEE', 'BSEcE', 'BSMarE',
       'BSNA', 'BSArch', 'BSBA', 'BSHRA', 'BSCrim', 'SHS', 'JHS'
   ];
-  const programColors = [
-      '#3211d4','#e94560','#28a745','#ffc107','#17a2b8','#6f42c1',
-      '#fd7e14','#20c997','#e83e8c','#6610f2','#007bff','#dc3545',
-      '#28a745','#6c757d'
-  ];
+  const progBg = {
+      'BSIT': 'from-blue-500 to-blue-600', 'BSCS': 'from-indigo-500 to-indigo-600',
+      'BSCE': 'from-amber-500 to-amber-600', 'BSME': 'from-orange-500 to-orange-600',
+      'BSEE': 'from-yellow-500 to-yellow-600', 'BSEcE': 'from-lime-500 to-lime-600',
+      'BSMarE': 'from-cyan-500 to-cyan-600', 'BSNA': 'from-teal-500 to-teal-600',
+      'BSArch': 'from-pink-500 to-pink-600', 'BSBA': 'from-violet-500 to-violet-600',
+      'BSHRA': 'from-rose-500 to-rose-600', 'BSCrim': 'from-red-500 to-red-600',
+      'SHS': 'from-emerald-500 to-emerald-600', 'JHS': 'from-green-500 to-green-600'
+  };
 
   const attendance = Store.getAll('attendance') || [];
   const allStudents = Store.getAll('students') || [];
@@ -316,77 +306,49 @@
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Build attendance stats per program using student.program field
   const programStats = featiPrograms.map((prog) => {
       const progRecords = attendance.filter((a) => {
           const student = allStudents.find((s) => s.name === a.name);
           return student && student.program && student.program.toUpperCase() === prog.toUpperCase();
       });
-
-      const todayCount = progRecords.filter((a) => {
-          return a.date === todayStr;
-      }).length;
-
+      const todayCount = progRecords.filter((a) => a.date === todayStr).length;
       const monthCount = progRecords.filter((a) => {
           const d = new Date(a.date || a.created_at);
           return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
       }).length;
-
       const yearCount = progRecords.filter((a) => {
           const d = new Date(a.date || a.created_at);
           return d.getFullYear() === currentYear;
       }).length;
-
       return { program: prog, today: todayCount, month: monthCount, year: yearCount };
   });
 
-  // Render attendance table
-  const attBody = document.getElementById('attendance-program-table');
-  programStats.forEach((ps) => {
-      attBody.innerHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">\
-<td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">${ps.program}</td>\
-<td class="px-3 py-2 text-center">${ps.today}</td>\
-<td class="px-3 py-2 text-center">${ps.month}</td>\
-<td class="px-3 py-2 text-center">${ps.year}</td>\
-</tr>`;
-  });
+  const totalToday = programStats.reduce((s, p) => s + p.today, 0);
+  document.getElementById('att-total-label').textContent = `${totalToday} visit${totalToday !== 1 ? 's' : ''} today`;
 
-  // Render attendance bar chart (monthly totals)
-  new Chart(document.getElementById('chart-attendance'), {
-      type: 'bar',
-      data: {
-          labels: featiPrograms,
-          datasets: [{
-              label: 'This Month',
-              data: programStats.map((ps) => ps.month),
-              backgroundColor: programColors,
-              borderRadius: 6,
-              barThickness: 20
-          }]
-      },
-      options: {
-          responsive: true,
-          plugins: {
-              legend: { display: false }
-          },
-          scales: {
-              y: {
-                  beginAtZero: true,
-                  ticks: {
-                      stepSize: 1,
-                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
-                  },
-                  grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(148,163,184,0.1)' : 'rgba(0,0,0,0.05)' }
-              },
-              x: {
-                  ticks: {
-                      font: { size: 11 },
-                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
-                  },
-                  grid: { display: false }
-              }
-          }
-      }
+  const attGrid = document.getElementById('attendance-grid');
+  programStats.forEach((ps) => {
+      const gradient = progBg[ps.program] || 'from-slate-500 to-slate-600';
+      attGrid.innerHTML += `<div class="rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden hover:shadow-md transition-shadow">
+          <div class="bg-gradient-to-r ${gradient} px-4 py-2.5 flex items-center justify-between">
+              <span class="text-white font-bold text-sm">${ps.program}</span>
+              <span class="text-white/70 text-[11px] font-medium">${ps.year} this year</span>
+          </div>
+          <div class="grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
+              <div class="px-3 py-2.5 text-center">
+                  <p class="text-lg font-bold">${ps.today}</p>
+                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Today</p>
+              </div>
+              <div class="px-3 py-2.5 text-center">
+                  <p class="text-lg font-bold">${ps.month}</p>
+                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Month</p>
+              </div>
+              <div class="px-3 py-2.5 text-center">
+                  <p class="text-lg font-bold">${ps.year}</p>
+                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Year</p>
+              </div>
+          </div>
+      </div>`;
   });
 
   })(); } // end auth else block

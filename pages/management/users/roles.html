@@ -103,107 +103,90 @@
     <script>
         if (!Auth.requireAuth()) throw '';
         App.init();
-        var editingRoleId = null;
-        var groupIcons = { Books: 'menu_book', Catalog: 'sell', Reports: 'bar_chart', Users: 'manage_accounts', System: 'settings', Circulation: 'swap_horiz', Finance: 'payments', Students: 'school' };
-        var groupColors = { Books: '#e94560', Catalog: '#17a2b8', Reports: '#6f42c1', Users: '#0f3460', System: '#333', Circulation: '#ffc107', Finance: '#28a745', Students: '#28a745' };
+        let editingRoleId = null;
+        const groupIcons = { Books: 'menu_book', Catalog: 'sell', Reports: 'bar_chart', Users: 'manage_accounts', System: 'settings', Circulation: 'swap_horiz', Finance: 'payments', Students: 'school' };
+        const groupColors = { Books: '#e94560', Catalog: '#17a2b8', Reports: '#6f42c1', Users: '#0f3460', System: '#333', Circulation: '#ffc107', Finance: '#28a745', Students: '#28a745' };
 
-        function loadRoles() {
-            var roles = Store.getAll('roles'), users = Store.getAll('users'), rolePerms = Store.getAll('role_permissions');
-            var tbody = document.getElementById('role-table');
-            tbody.innerHTML = roles.map(function(r, i) {
-                var uCount = users.filter(function(u) { return u.role_id === r.id; }).length;
-                var pCount = (rolePerms[r.id] || []).length;
-                var isAdmin = r.name === 'System Administrator';
-                var permBadge = isAdmin
+        const loadRoles = () => {
+            const roles = Store.getAll('roles'), users = Store.getAll('users'), rolePerms = Store.getAll('role_permissions');
+            const tbody = document.getElementById('role-table');
+            tbody.innerHTML = roles.map((r, i) => {
+                const uCount = users.filter((u) => u.role_id === r.id).length;
+                const pCount = (rolePerms[r.id] || []).length;
+                const isAdmin = r.name === 'System Administrator';
+                const permBadge = isAdmin
                     ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">All Permissions</span>'
-                    : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">' + pCount + ' assigned</span>';
-                var actions = isAdmin
+                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">${pCount} assigned</span>`;
+                const actions = isAdmin
                     ? '<span class="text-xs text-slate-400 dark:text-slate-500">Full access</span>'
-                    : '<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition-colors btn-manage-perms" data-id="' + r.id + '"><span class="material-symbols-outlined text-sm">tune</span> Manage</button>';
-                return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">'
-                    + '<td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">' + (i+1) + '</td>'
-                    + '<td class="px-5 py-3.5 font-semibold text-slate-900 dark:text-slate-100">' + r.name + (isAdmin ? ' <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 ml-1.5">SUPER</span>' : '') + '</td>'
-                    + '<td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">' + r.description + '</td>'
-                    + '<td class="px-5 py-3.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">' + uCount + '</span></td>'
-                    + '<td class="px-5 py-3.5">' + permBadge + '</td>'
-                    + '<td class="px-5 py-3.5">' + actions + '</td>'
-                    + '</tr>';
+                    : `<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition-colors btn-manage-perms" data-id="${r.id}"><span class="material-symbols-outlined text-sm">tune</span> Manage</button>`;
+                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">${i+1}</td><td class="px-5 py-3.5 font-semibold text-slate-900 dark:text-slate-100">${r.name}${isAdmin ? ' <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 ml-1.5">SUPER</span>' : ''}</td><td class="px-5 py-3.5 text-slate-500 dark:text-slate-400">${r.description}</td><td class="px-5 py-3.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">${uCount}</span></td><td class="px-5 py-3.5">${permBadge}</td><td class="px-5 py-3.5">${actions}</td></tr>`;
             }).join('');
-            document.querySelectorAll('.btn-manage-perms').forEach(function(btn) {
+            document.querySelectorAll('.btn-manage-perms').forEach((btn) => {
                 btn.addEventListener('click', function() { showPermissions(this.dataset.id); });
             });
-        }
+        };
 
-        function showPermissions(roleId) {
+        const showPermissions = (roleId) => {
             editingRoleId = roleId;
-            var role = Store.getById('roles', roleId);
-            var allPerms = Store.getAll('permissions');
-            var rolePerms = Store.getAll('role_permissions');
-            var assigned = rolePerms[roleId] || [];
+            const role = Store.getById('roles', roleId);
+            const allPerms = Store.getAll('permissions');
+            const rolePerms = Store.getAll('role_permissions');
+            const assigned = rolePerms[roleId] || [];
             document.getElementById('perm-role-name').textContent = role.name;
-            var groups = {};
-            allPerms.forEach(function(p) { if (!groups[p.group]) groups[p.group] = []; groups[p.group].push(p); });
-            var html = '';
-            for (var groupName in groups) {
-                var perms = groups[groupName];
-                var checked = perms.filter(function(p) { return assigned.indexOf(p.id) !== -1; }).length;
-                var allChecked = checked === perms.length;
-                var gSlug = groupName.toLowerCase().replace(/\s+/g, '-');
-                var gColor = groupColors[groupName] || '#333';
-                var gIcon = groupIcons[groupName] || 'lock';
+            const groups = {};
+            allPerms.forEach((p) => { if (!groups[p.group]) groups[p.group] = []; groups[p.group].push(p); });
+            let html = '';
+            for (const groupName in groups) {
+                const perms = groups[groupName];
+                const checked = perms.filter((p) => assigned.includes(p.id)).length;
+                const allChecked = checked === perms.length;
+                const gSlug = groupName.toLowerCase().replace(/\s+/g, '-');
+                const gColor = groupColors[groupName] || '#333';
+                const gIcon = groupIcons[groupName] || 'lock';
 
                 html += '<div class="border border-slate-200 dark:border-slate-800 rounded-xl mb-5 overflow-hidden">';
                 // Group header
-                html += '<div class="bg-slate-50 dark:bg-slate-800/50 px-5 py-3.5 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">'
-                    + '<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm" style="background:' + gColor + '"><span class="material-symbols-outlined text-base">' + gIcon + '</span></div>'
-                    + '<span class="text-[15px] font-bold text-slate-900 dark:text-slate-100">' + groupName + '</span>'
-                    + '<span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300">' + checked + '/' + perms.length + '</span>'
-                    + '</div>';
+                html += `<div class="bg-slate-50 dark:bg-slate-800/50 px-5 py-3.5 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800"><div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm" style="background:${gColor}"><span class="material-symbols-outlined text-base">${gIcon}</span></div><span class="text-[15px] font-bold text-slate-900 dark:text-slate-100">${groupName}</span><span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300">${checked}/${perms.length}</span></div>`;
                 // Toggle all bar
-                html += '<div class="flex items-center justify-between px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/10 border-b border-emerald-200 dark:border-emerald-800/30">'
-                    + '<label class="text-[13px] font-semibold text-emerald-700 dark:text-emerald-400 cursor-pointer">Toggle all ' + groupName + ' permissions</label>'
-                    + '<label class="toggle-switch"><input type="checkbox" class="toggle-all-group" data-group="' + gSlug + '"' + (allChecked ? ' checked' : '') + '><span class="toggle-slider"></span></label>'
-                    + '</div>';
+                html += `<div class="flex items-center justify-between px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/10 border-b border-emerald-200 dark:border-emerald-800/30"><label class="text-[13px] font-semibold text-emerald-700 dark:text-emerald-400 cursor-pointer">Toggle all ${groupName} permissions</label><label class="toggle-switch"><input type="checkbox" class="toggle-all-group" data-group="${gSlug}"${allChecked ? ' checked' : ''}><span class="toggle-slider"></span></label></div>`;
                 // Permission items
-                perms.forEach(function(p) {
-                    var isOn = assigned.indexOf(p.id) !== -1;
-                    html += '<div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">'
-                        + '<div><p class="font-semibold text-sm text-slate-900 dark:text-slate-100">' + p.label + '</p><p class="text-xs text-slate-500 font-mono">' + (p.description || p.name) + '</p></div>'
-                        + '<label class="toggle-switch"><input type="checkbox" class="perm-toggle perm-group-' + gSlug + '" data-group="' + gSlug + '" data-id="' + p.id + '"' + (isOn ? ' checked' : '') + '><span class="toggle-slider"></span></label>'
-                        + '</div>';
+                perms.forEach((p) => {
+                    const isOn = assigned.includes(p.id);
+                    html += `<div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><div><p class="font-semibold text-sm text-slate-900 dark:text-slate-100">${p.label}</p><p class="text-xs text-slate-500 font-mono">${p.description || p.name}</p></div><label class="toggle-switch"><input type="checkbox" class="perm-toggle perm-group-${gSlug}" data-group="${gSlug}" data-id="${p.id}"${isOn ? ' checked' : ''}><span class="toggle-slider"></span></label></div>`;
                 });
                 html += '</div>';
             }
             document.getElementById('perm-groups').innerHTML = html;
             document.getElementById('perm-section').style.display = 'block';
             updateCounter();
-            document.querySelectorAll('.perm-toggle').forEach(function(t) {
+            document.querySelectorAll('.perm-toggle').forEach((t) => {
                 t.addEventListener('change', function() { updateGroupToggle(this.dataset.group); updateCounter(); });
             });
-            document.querySelectorAll('.toggle-all-group').forEach(function(t) {
+            document.querySelectorAll('.toggle-all-group').forEach((t) => {
                 t.addEventListener('change', function() {
-                    var g = this.dataset.group, checked = this.checked;
-                    document.querySelectorAll('.perm-group-' + g).forEach(function(cb) { cb.checked = checked; });
+                    const g = this.dataset.group, isChecked = this.checked;
+                    document.querySelectorAll(`.perm-group-${g}`).forEach((cb) => { cb.checked = isChecked; });
                     updateCounter();
                 });
             });
-        }
+        };
 
-        function updateCounter() {
+        const updateCounter = () => {
             document.getElementById('perm-counter').textContent = document.querySelectorAll('.perm-toggle:checked').length;
-        }
+        };
 
-        function updateGroupToggle(group) {
-            var items = document.querySelectorAll('.perm-group-' + group);
-            var allChecked = Array.from(items).every(function(cb) { return cb.checked; });
-            var toggleAll = document.querySelector('.toggle-all-group[data-group="' + group + '"]');
+        const updateGroupToggle = (group) => {
+            const items = document.querySelectorAll(`.perm-group-${group}`);
+            const allChecked = Array.from(items).every((cb) => cb.checked);
+            const toggleAll = document.querySelector(`.toggle-all-group[data-group="${group}"]`);
             if (toggleAll) toggleAll.checked = allChecked;
-        }
+        };
 
-        document.getElementById('btn-save-perms').addEventListener('click', function() {
-            var checked = document.querySelectorAll('.perm-toggle:checked');
-            var ids = Array.from(checked).map(function(cb) { return cb.dataset.id; });
-            var rolePerms = Store.getAll('role_permissions');
+        document.getElementById('btn-save-perms').addEventListener('click', () => {
+            const checked = document.querySelectorAll('.perm-toggle:checked');
+            const ids = Array.from(checked).map((cb) => cb.dataset.id);
+            const rolePerms = Store.getAll('role_permissions');
             rolePerms[editingRoleId] = ids;
             localStorage.setItem('aklatbayon_role_permissions', JSON.stringify(rolePerms));
             Store.logActivity('UPDATE', 'role_permissions', 'Updated permissions for role');
@@ -212,7 +195,7 @@
             loadRoles();
         });
 
-        document.getElementById('btn-cancel-perms').addEventListener('click', function() {
+        document.getElementById('btn-cancel-perms').addEventListener('click', () => {
             document.getElementById('perm-section').style.display = 'none';
         });
 
