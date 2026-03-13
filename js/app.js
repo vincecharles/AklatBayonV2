@@ -1,9 +1,24 @@
 const App = (() => {
     const THEME_KEY = 'aklatbayon_theme';
+    const LEGACY_THEME_KEY = 'aklatbayon_dark_mode';
+
+    const applyStoredTheme = () => {
+        let stored = localStorage.getItem(THEME_KEY);
+        if (!stored) {
+            const legacy = localStorage.getItem(LEGACY_THEME_KEY);
+            stored = legacy === 'true' ? 'dark' : 'light';
+            localStorage.setItem(THEME_KEY, stored);
+        }
+        const html = document.documentElement;
+        if (stored === 'dark') html.classList.add('dark');
+        else html.classList.remove('dark');
+    };
 
     const init = () => {
+        applyStoredTheme();
         renderHeader();
         Sidebar.render();
+        updateToggleIcon();
     };
 
     const toggleDarkMode = () => {
@@ -11,6 +26,7 @@ const App = (() => {
         const isDark = html.classList.contains('dark');
         html.classList.toggle('dark');
         localStorage.setItem(THEME_KEY, isDark ? 'light' : 'dark');
+        localStorage.setItem(LEGACY_THEME_KEY, isDark ? 'false' : 'true');
         updateToggleIcon();
     };
 

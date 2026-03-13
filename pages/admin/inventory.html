@@ -35,7 +35,7 @@
       </div>
 
       <!-- Stat Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         <!-- Total Titles -->
         <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <div class="flex items-center justify-between mb-2">
@@ -67,6 +67,22 @@
           </div>
           <p class="text-sm text-slate-500">Checked Out</p>
           <p class="text-2xl font-bold" id="inv-out">0</p>
+        </div>
+        <!-- Ingoing (Returns, 30 days) -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">south_west</span>
+          </div>
+          <p class="text-sm text-slate-500">Ingoing (30d)</p>
+          <p class="text-2xl font-bold" id="inv-ingoing">0</p>
+        </div>
+        <!-- Outgoing (Borrows, 30 days) -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-rose-600 bg-rose-100 dark:bg-rose-900/30 p-2 rounded-lg">north_east</span>
+          </div>
+          <p class="text-sm text-slate-500">Outgoing (30d)</p>
+          <p class="text-2xl font-bold" id="inv-outgoing">0</p>
         </div>
       </div>
 
@@ -105,12 +121,27 @@
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
     App.init();
     const books = Store.getAll('books');
+    const transactions = Store.getAll('transactions');
     let totalCopies = 0, totalAvail = 0;
     books.forEach((b) => { totalCopies += b.copies; totalAvail += b.available; });
+
+    const now = new Date();
+    const start = new Date(now);
+    start.setDate(start.getDate() - 30);
+    const in30 = (isoDate) => {
+      if (!isoDate) return false;
+      const d = new Date(isoDate);
+      return !Number.isNaN(d.getTime()) && d >= start && d <= now;
+    };
+    const ingoing30 = transactions.filter((t) => in30(t.date_returned)).length;
+    const outgoing30 = transactions.filter((t) => in30(t.date_issued)).length;
+
     document.getElementById('inv-titles').textContent = books.length;
     document.getElementById('inv-copies').textContent = totalCopies;
     document.getElementById('inv-avail').textContent = totalAvail;
     document.getElementById('inv-out').textContent = totalCopies - totalAvail;
+    document.getElementById('inv-ingoing').textContent = ingoing30;
+    document.getElementById('inv-outgoing').textContent = outgoing30;
     const tbody = document.getElementById('data-table');
     if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; }
     else {
