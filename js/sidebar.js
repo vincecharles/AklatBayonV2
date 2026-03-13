@@ -12,7 +12,7 @@ var Sidebar = (function() {
         var nav = document.getElementById('sidebar-nav');
         if (!nav) return;
 
-        nav.className = 'hidden lg:flex w-72 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-y-auto';
+        nav.className = 'hidden lg:flex fixed top-16 left-0 w-72 h-[calc(100vh-4rem)] flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-y-auto z-30';
 
         var html = '';
         html += '<div class="p-4 space-y-1">';

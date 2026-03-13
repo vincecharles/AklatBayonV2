@@ -18,9 +18,10 @@
   </script>
 </head>
 <body class="bg-bg-light dark:bg-bg-dark font-sans min-h-screen">
-    <header class="top-header" id="top-header"></header>
-    <nav class="sidebar" id="sidebar-nav"></nav>
-    <main class="main-content">
+<div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
         <!-- Alert container -->
         <div id="alert-container"></div>
 
@@ -92,6 +93,7 @@
             <strong>How it works:</strong> Roles define a group of permissions. Each user is assigned a role, and their access is determined by role permissions. System Administrator automatically has all permissions.
         </div>
     </main>
+</div>
 
     <script src="/js/api.js"></script>
     <script src="/js/store.js"></script>

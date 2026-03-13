@@ -34,7 +34,7 @@ var App = (function() {
         if (!header) return;
         var isDark = document.documentElement.classList.contains('dark');
 
-        header.className = 'sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-6';
+        header.className = 'fixed top-0 left-0 right-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-6';
 
         header.innerHTML =
             '<div class="flex items-center gap-3">' +
