@@ -1,17 +1,10 @@
 // Runs synchronously in <head> to prevent flash of wrong theme
-(function() {
-    var stored = localStorage.getItem('aklatbayon_theme');
+(() => {
+    let stored = localStorage.getItem('aklatbayon_theme');
     if (!stored) {
-        // Migrate from old dark-mode boolean key
-        var oldPref = localStorage.getItem('aklatbayon_dark_mode');
-        if (oldPref === 'true') {
-            stored = 'dark';
-        } else {
-            stored = 'light';
-        }
+        const oldPref = localStorage.getItem('aklatbayon_dark_mode');
+        stored = oldPref === 'true' ? 'dark' : 'light';
         localStorage.setItem('aklatbayon_theme', stored);
     }
-    if (stored === 'dark') {
-        document.documentElement.classList.add('dark');
-    }
+    if (stored === 'dark') document.documentElement.classList.add('dark');
 })();

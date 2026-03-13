@@ -64,6 +64,7 @@
                 <th class="px-4 py-3">Name</th>
                 <th class="px-4 py-3">Email</th>
                 <th class="px-4 py-3">Grade Level</th>
+                <th class="px-4 py-3">Program</th>
                 <th class="px-4 py-3">Section</th>
                 <th class="px-4 py-3">Contact</th>
                 <th class="px-4 py-3">Status</th>
@@ -105,18 +106,53 @@
           <input id="f-email" type="email"
             class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
-        <div>
-          <label class="block text-sm font-medium mb-1.5">Grade Level</label>
-          <select id="f-grade"
-            class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-            <option value="College">College</option>
-            <option value="Senior High">Senior High</option>
-            <option value="Junior High">Junior High</option>
-          </select>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Grade Level</label>
+            <select id="f-grade"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="College">College</option>
+              <option value="Senior High">Senior High</option>
+              <option value="Junior High">Junior High</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Program</label>
+            <select id="f-program"
+              class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="">-- Select --</option>
+              <optgroup label="Engineering">
+                <option value="BSCE">BSCE - Civil Engineering</option>
+                <option value="BSME">BSME - Mechanical Engineering</option>
+                <option value="BSEE">BSEE - Electrical Engineering</option>
+                <option value="BSEcE">BSEcE - Electronics Engineering</option>
+                <option value="BSMarE">BSMarE - Marine Engineering</option>
+                <option value="BSNA">BSNA - Naval Architecture</option>
+              </optgroup>
+              <optgroup label="Computing">
+                <option value="BSIT">BSIT - Information Technology</option>
+                <option value="BSCS">BSCS - Computer Science</option>
+              </optgroup>
+              <optgroup label="Architecture">
+                <option value="BSArch">BSArch - Architecture</option>
+              </optgroup>
+              <optgroup label="Business & Hospitality">
+                <option value="BSBA">BSBA - Business Administration</option>
+                <option value="BSHRA">BSHRA - Hotel & Restaurant Admin</option>
+              </optgroup>
+              <optgroup label="Criminal Justice">
+                <option value="BSCrim">BSCrim - Criminology</option>
+              </optgroup>
+              <optgroup label="Basic Education">
+                <option value="SHS">SHS - Senior High School</option>
+                <option value="JHS">JHS - Junior High School</option>
+              </optgroup>
+            </select>
+          </div>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1.5">Section</label>
-          <input id="f-section" placeholder="e.g. BSIT-3A"
+          <input id="f-section" placeholder="e.g. 3A"
             class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
         </div>
         <div>
@@ -154,67 +190,70 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init(); App.bindModalCloses();
-    function load() {
-        var items = Store.getAll('students');
-        var s = document.getElementById('search-input').value.toLowerCase();
-        var sf = document.getElementById('filter-status').value;
-        if (s) items = items.filter(function(i) { return i.name.toLowerCase().indexOf(s)!==-1 || i.student_id.toLowerCase().indexOf(s)!==-1; });
-        if (sf) items = items.filter(function(i) { return i.status === sf; });
-        var tbody = document.getElementById('data-table');
-        if (!items.length) { tbody.innerHTML='<tr><td colspan="9" class="text-center text-slate-400 py-8">No students found.</td></tr>'; return; }
-        tbody.innerHTML = items.map(function(i,idx) {
-            var statusClasses = i.status==='active'
+    const load = () => {
+        let items = Store.getAll('students');
+        const s = document.getElementById('search-input').value.toLowerCase();
+        const sf = document.getElementById('filter-status').value;
+        if (s) items = items.filter((i) => i.name.toLowerCase().includes(s) || i.student_id.toLowerCase().includes(s));
+        if (sf) items = items.filter((i) => i.status === sf);
+        const tbody = document.getElementById('data-table');
+        if (!items.length) { tbody.innerHTML='<tr><td colspan="10" class="text-center text-slate-400 py-8">No students found.</td></tr>'; return; }
+        tbody.innerHTML = items.map((i, idx) => {
+            const statusClasses = i.status==='active'
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                 : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-            return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
-                +'<td class="px-4 py-3 text-slate-500">'+(idx+1)+'</td>'
-                +'<td class="px-4 py-3 font-semibold">'+i.student_id+'</td>'
-                +'<td class="px-4 py-3">'+i.name+'</td>'
-                +'<td class="px-4 py-3">'+i.email+'</td>'
-                +'<td class="px-4 py-3">'+i.grade_level+'</td>'
-                +'<td class="px-4 py-3">'+i.section+'</td>'
-                +'<td class="px-4 py-3">'+i.contact+'</td>'
-                +'<td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold '+statusClasses+'">'+i.status+'</span></td>'
-                +'<td class="px-4 py-3 text-center"><div class="inline-flex items-center gap-1">'
-                +'<a href="/pages/operations/borrower-profile.html?id='+i.id+'" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors" title="View Profile"><span class="material-symbols-outlined text-[20px]">visibility</span></a>'
-                +'<button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="'+i.id+'" title="Edit"><span class="material-symbols-outlined text-[20px]">edit</span></button>'
-                +'<button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="'+i.id+'" data-name="'+i.name+'" title="Delete"><span class="material-symbols-outlined text-[20px]">delete</span></button>'
-                +'</div></td></tr>';
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">`
+                +`<td class="px-4 py-3 text-slate-500">${idx+1}</td>`
+                +`<td class="px-4 py-3 font-semibold">${i.student_id}</td>`
+                +`<td class="px-4 py-3">${i.name}</td>`
+                +`<td class="px-4 py-3">${i.email}</td>`
+                +`<td class="px-4 py-3">${i.grade_level}</td>`
+                +`<td class="px-4 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">${i.program||'—'}</span></td>`
+                +`<td class="px-4 py-3">${i.section||'—'}</td>`
+                +`<td class="px-4 py-3">${i.contact}</td>`
+                +`<td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusClasses}">${i.status}</span></td>`
+                +`<td class="px-4 py-3 text-center"><div class="inline-flex items-center gap-1">`
+                +`<a href="/pages/operations/borrower-profile.html?id=${i.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors" title="View Profile"><span class="material-symbols-outlined text-[20px]">visibility</span></a>`
+                +`<button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[20px]">edit</span></button>`
+                +`<button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[20px]">delete</span></button>`
+                +`</div></td></tr>`;
         }).join('');
         bindActions();
-    }
-    function bindActions() {
-        document.querySelectorAll('.btn-edit').forEach(function(b) { b.addEventListener('click', function() {
-            var i = Store.getById('students', this.dataset.id); if(!i) return;
+    };
+    const bindActions = () => {
+        document.querySelectorAll('.btn-edit').forEach((b) => { b.addEventListener('click', function() {
+            const i = Store.getById('students', this.dataset.id); if(!i) return;
             document.getElementById('modal-title').textContent='Edit Student'; document.getElementById('edit-id').value=i.id;
             document.getElementById('f-student-id').value=i.student_id; document.getElementById('f-name').value=i.name;
             document.getElementById('f-email').value=i.email; document.getElementById('f-grade').value=i.grade_level;
+            document.getElementById('f-program').value=i.program||'';
             document.getElementById('f-section').value=i.section; document.getElementById('f-contact').value=i.contact;
             document.getElementById('f-status').value=i.status; App.openModal('modal-form');
         }); });
-        document.querySelectorAll('.btn-del').forEach(function(b) { b.addEventListener('click', function() {
-            var id=this.dataset.id, name=this.dataset.name;
-            App.confirmDelete(name).then(function(r) { if(r.isConfirmed){Store.remove('students',id);App.showAlert('success','Student deleted.');load();} });
+        document.querySelectorAll('.btn-del').forEach((b) => { b.addEventListener('click', function() {
+            const id=this.dataset.id, name=this.dataset.name;
+            App.confirmDelete(name).then((r) => { if(r.isConfirmed){Store.remove('students',id);App.showAlert('success','Student deleted.');load();} });
         }); });
-    }
-    document.getElementById('btn-add').addEventListener('click', function() {
+    };
+    document.getElementById('btn-add').addEventListener('click', () => {
         document.getElementById('modal-title').textContent='Add Student'; document.getElementById('edit-id').value='';
-        ['f-student-id','f-name','f-email','f-section','f-contact'].forEach(function(id){document.getElementById(id).value='';});
-        document.getElementById('f-grade').value='College'; document.getElementById('f-status').value='active'; App.openModal('modal-form');
+        ['f-student-id','f-name','f-email','f-section','f-contact'].forEach((id) => {document.getElementById(id).value='';});
+        document.getElementById('f-grade').value='College'; document.getElementById('f-program').value=''; document.getElementById('f-status').value='active'; App.openModal('modal-form');
     });
-    document.getElementById('btn-save').addEventListener('click', function() {
-        var sid=document.getElementById('f-student-id').value.trim(), name=document.getElementById('f-name').value.trim(),
+    document.getElementById('btn-save').addEventListener('click', () => {
+        const sid=document.getElementById('f-student-id').value.trim(), name=document.getElementById('f-name').value.trim(),
             email=document.getElementById('f-email').value.trim(), grade=document.getElementById('f-grade').value,
+            program=document.getElementById('f-program').value,
             section=document.getElementById('f-section').value.trim(), contact=document.getElementById('f-contact').value.trim(),
             status=document.getElementById('f-status').value;
         if(!sid||!name||!email){App.showAlert('danger','Fill required fields.');return;}
-        var eid=document.getElementById('edit-id').value;
-        var data={student_id:sid,name:name,email:email,grade_level:grade,section:section,contact:contact,status:status};
-        var promise = eid ? Store.update('students',eid,data) : Store.create('students',data);
-        promise.then(function() {
+        const eid=document.getElementById('edit-id').value;
+        const data={student_id:sid,name:name,email:email,grade_level:grade,program:program,section:section,contact:contact,status:status};
+        const promise = eid ? Store.update('students',eid,data) : Store.create('students',data);
+        promise.then(() => {
             App.showAlert('success', eid ? 'Student updated.' : 'Student created.');
             App.closeModal('modal-form'); load();
-        }).catch(function(err) {
+        }).catch((err) => {
             Swal.fire({icon:'error',title:'Not Allowed',text:err.message||'Could not save.',confirmButtonColor:'#e94560'});
         });
     });

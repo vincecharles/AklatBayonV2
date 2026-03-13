@@ -104,21 +104,21 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init();
-    var books = Store.getAll('books');
-    var totalCopies = 0, totalAvail = 0;
-    books.forEach(function(b) { totalCopies += b.copies; totalAvail += b.available; });
+    const books = Store.getAll('books');
+    let totalCopies = 0, totalAvail = 0;
+    books.forEach((b) => { totalCopies += b.copies; totalAvail += b.available; });
     document.getElementById('inv-titles').textContent = books.length;
     document.getElementById('inv-copies').textContent = totalCopies;
     document.getElementById('inv-avail').textContent = totalAvail;
     document.getElementById('inv-out').textContent = totalCopies - totalAvail;
-    var tbody = document.getElementById('data-table');
+    const tbody = document.getElementById('data-table');
     if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-slate-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; }
     else {
-        tbody.innerHTML = books.map(function(b) {
-            var out = b.copies - b.available;
-            var pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
-            var color = pct > 50 ? '#22c55e' : (pct > 0 ? '#eab308' : '#ef4444');
-            return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 font-semibold">' + b.title + '</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">' + App.getAuthorName(b.author_id) + '</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">' + App.getCategoryName(b.category_id) + '</span></td><td class="px-5 py-3">' + b.copies + '</td><td class="px-5 py-3">' + b.available + '</td><td class="px-5 py-3">' + out + '</td><td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2"><div class="rounded-full h-2" style="width:' + pct + '%;background:' + color + '"></div></div><span class="text-xs font-semibold whitespace-nowrap" style="color:' + color + '">' + pct + '%</span></div></td></tr>';
+        tbody.innerHTML = books.map((b) => {
+            const out = b.copies - b.available;
+            const pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
+            const color = pct > 50 ? '#22c55e' : (pct > 0 ? '#eab308' : '#ef4444');
+            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 font-semibold">${b.title}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${App.getAuthorName(b.author_id)}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">${App.getCategoryName(b.category_id)}</span></td><td class="px-5 py-3">${b.copies}</td><td class="px-5 py-3">${b.available}</td><td class="px-5 py-3">${out}</td><td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2"><div class="rounded-full h-2" style="width:${pct}%;background:${color}"></div></div><span class="text-xs font-semibold whitespace-nowrap" style="color:${color}">${pct}%</span></div></td></tr>`;
         }).join('');
     }
   </script>

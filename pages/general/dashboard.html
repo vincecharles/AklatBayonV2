@@ -46,71 +46,81 @@
     <!-- Stat Cards Row 1 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-primary">
-          <span class="material-symbols-outlined text-xl">menu_book</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-primary">
+            <span class="material-symbols-outlined text-xl">menu_book</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Books</p>
         </div>
         <p class="text-2xl font-bold" id="stat-books">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Total Books</p>
       </div>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-emerald-600">
-          <span class="material-symbols-outlined text-xl">school</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-emerald-600">
+            <span class="material-symbols-outlined text-xl">school</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Active Students</p>
         </div>
         <p class="text-2xl font-bold" id="stat-students">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Active Students</p>
       </div>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-amber-500">
-          <span class="material-symbols-outlined text-xl">volunteer_activism</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-amber-500">
+            <span class="material-symbols-outlined text-xl">volunteer_activism</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Books Issued</p>
         </div>
         <p class="text-2xl font-bold" id="stat-issued">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Books Issued</p>
       </div>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-red-600">
-          <span class="material-symbols-outlined text-xl">warning</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-red-600">
+            <span class="material-symbols-outlined text-xl">warning</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Overdue Books</p>
         </div>
         <p class="text-2xl font-bold" id="stat-overdue">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Overdue Books</p>
       </div>
     </div>
 
-    <!-- Stat Cards Row 2 -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Stat Cards Row 2 (3 cards: Due Today, Reservations, Fines combined) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-cyan-600">
-          <span class="material-symbols-outlined text-xl">calendar_today</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-cyan-600">
+            <span class="material-symbols-outlined text-xl">calendar_today</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Due Today</p>
         </div>
         <p class="text-2xl font-bold" id="stat-due-today">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Due Today</p>
       </div>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-violet-600">
-          <span class="material-symbols-outlined text-xl">bookmark</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-violet-600">
+            <span class="material-symbols-outlined text-xl">bookmark</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Active Reservations</p>
         </div>
         <p class="text-2xl font-bold" id="stat-reservations">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Active Reservations</p>
       </div>
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-accent">
-          <span class="material-symbols-outlined text-xl">receipt_long</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-accent">
+            <span class="material-symbols-outlined text-xl">receipt_long</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Pending Fines</p>
         </div>
-        <p class="text-2xl font-bold" id="stat-pending-fines">0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Pending Fines</p>
-      </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-slate-700">
-          <span class="material-symbols-outlined text-xl">payments</span>
+        <div class="flex items-end justify-between">
+          <p class="text-2xl font-bold" id="stat-pending-fines">0</p>
+          <p class="text-sm font-semibold text-accent" id="stat-fine-total">&#8369;0</p>
         </div>
-        <p class="text-2xl font-bold" id="stat-fine-total">&#8369;0</p>
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Uncollected Fines</p>
       </div>
     </div>
 
     <!-- Overdue / Due-Today Alert Area -->
     <div id="overdue-alert-area" class="mb-6"></div>
 
-    <!-- Activity Table + Chart -->
+    <!-- Activity Table + Collection Chart -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
       <!-- Recent Activity -->
       <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -141,11 +151,34 @@
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="mb-6">
-      <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 mb-4">Quick Actions</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="quick-actions"></div>
+    <!-- Attendance by Program -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg text-primary">groups</span>
+        <h3 class="text-sm font-bold uppercase tracking-wider">Library Attendance by Program</h3>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+        <!-- Chart (2/5) -->
+        <div class="lg:col-span-2 p-5 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800">
+          <canvas id="chart-attendance" height="280"></canvas>
+        </div>
+        <!-- Table (3/5) -->
+        <div class="lg:col-span-3 overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <th class="px-3 py-2.5">Program</th>
+                <th class="px-3 py-2.5 text-center">Today</th>
+                <th class="px-3 py-2.5 text-center">This Month</th>
+                <th class="px-3 py-2.5 text-center">This Year</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-program-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
   </main>
 </div>
 
@@ -155,19 +188,23 @@
 <script src="/js/sidebar.js"></script>
 <script src="/js/app.js"></script>
 <script>
-  if (!Auth.requireAuth()) throw '';
+  // Suppress SweetAlert unhandled rejection popups from background API failures
+  window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
+
+  if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; }
+  else { (() => {
   App.init();
-  var user = Auth.getCurrentUser();
-  document.getElementById('welcome-text').textContent = 'Welcome back, ' + user.name + '!';
+  const user = Auth.getCurrentUser();
+  document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}!`;
   document.getElementById('stat-books').textContent = Store.count('books');
   document.getElementById('stat-students').textContent = Store.count('students');
-  var txns = Store.getAll('transactions');
-  var issued = txns.filter(function(t) { return t.status === 'borrowed'; }).length;
-  var todayStr = new Date().toISOString().split('T')[0];
-  var overdue = txns.filter(function(t) {
+  const txns = Store.getAll('transactions');
+  const issued = txns.filter((t) => t.status === 'borrowed').length;
+  const todayStr = new Date().toISOString().split('T')[0];
+  const overdue = txns.filter((t) => {
       return t.status === 'borrowed' && new Date(t.date_due) < new Date();
   }).length;
-  var dueToday = txns.filter(function(t) {
+  const dueToday = txns.filter((t) => {
       return t.status === 'borrowed' && t.date_due === todayStr;
   }).length;
   document.getElementById('stat-issued').textContent = issued;
@@ -175,7 +212,7 @@
   document.getElementById('stat-due-today').textContent = dueToday;
 
   // Active reservations count
-  var activeReservations = Store.getAll('reservations').filter(function(r) {
+  const activeReservations = Store.getAll('reservations').filter((r) => {
       return r.status === 'active' || r.status === 'available';
   }).length;
   document.getElementById('stat-reservations').textContent = activeReservations;
@@ -184,62 +221,63 @@
   Store.expireReservations();
 
   // Process overdue fines automatically
-  var newFinesCount = Store.processOverdueFines();
+  const newFinesCount = Store.processOverdueFines();
 
-  // Pending fines stats
-  var allFines = Store.getAll('fines');
-  var pendingFines = allFines.filter(function(f) { return f.status === 'pending'; });
-  var pendingTotal = pendingFines.reduce(function(sum, f) { return sum + (parseFloat(f.amount) || 0); }, 0);
+  // Pending fines stats (combined card)
+  const allFines = Store.getAll('fines');
+  const pendingFines = allFines.filter((f) => f.status === 'pending');
+  const pendingTotal = pendingFines.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
   document.getElementById('stat-pending-fines').textContent = pendingFines.length;
-  document.getElementById('stat-fine-total').textContent = '\u20B1' + pendingTotal.toFixed(0);
+  document.getElementById('stat-fine-total').textContent = `\u20B1${pendingTotal.toFixed(0)}`;
 
   // Show overdue alert if there are new auto-generated fines
-  var alertArea = document.getElementById('overdue-alert-area');
+  const alertArea = document.getElementById('overdue-alert-area');
   if (newFinesCount > 0) {
-      alertArea.innerHTML = '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">' +
-          '<span class="material-symbols-outlined text-lg">warning</span>' +
-          '<strong>' + newFinesCount + ' new fine(s)</strong> auto-generated for overdue books. ' +
-          '<a href="/pages/operations/fines.html" class="font-semibold underline">View Fines</a></div>';
+      alertArea.innerHTML = `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">\
+<span class="material-symbols-outlined text-lg">warning</span>\
+<strong>${newFinesCount} new fine(s)</strong> auto-generated for overdue books. \
+<a href="/pages/operations/fines.html" class="font-semibold underline">View Fines</a></div>`;
   } else if (overdue > 0) {
-      alertArea.innerHTML = '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">' +
-          '<span class="material-symbols-outlined text-lg">warning</span>' +
-          '<strong>' + overdue + ' book(s)</strong> are currently overdue. ' +
-          '<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>';
+      alertArea.innerHTML = `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">\
+<span class="material-symbols-outlined text-lg">warning</span>\
+<strong>${overdue} book(s)</strong> are currently overdue. \
+<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>`;
   }
   if (dueToday > 0) {
-      alertArea.innerHTML += '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">' +
-          '<span class="material-symbols-outlined text-lg">calendar_today</span>' +
-          '<strong>' + dueToday + ' book(s)</strong> are due today. ' +
-          '<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>';
+      alertArea.innerHTML += `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">\
+<span class="material-symbols-outlined text-lg">calendar_today</span>\
+<strong>${dueToday} book(s)</strong> are due today. \
+<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>`;
   }
 
-  var allLogs = Store.getAll('audit_logs');
-  // Admin, Head Librarian, Librarian Staff see all activity; others see only their own
-  var privilegedRoles = ['r1', 'r2', 'r3'];
-  var logs;
-  if (privilegedRoles.indexOf(user.role_id) !== -1) {
+  // Recent Activity table
+  const allLogs = Store.getAll('audit_logs');
+  const privilegedRoles = ['r1', 'r2', 'r3'];
+  let logs;
+  if (privilegedRoles.includes(user.role_id)) {
       logs = allLogs.slice(0, 10);
   } else {
-      logs = allLogs.filter(function(l) { return l.user === user.name; }).slice(0, 10);
+      logs = allLogs.filter((l) => l.user === user.name).slice(0, 10);
   }
-  var tbody = document.getElementById('activity-table');
+  const tbody = document.getElementById('activity-table');
   if (logs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-slate-400 py-8">No recent activity found.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-slate-400 py-8">No recent activity found.</td></tr>`;
   } else {
-      logs.forEach(function(log) {
-          tbody.innerHTML += '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">' +
-              '<td class="px-6 py-3 whitespace-nowrap text-slate-600 dark:text-slate-400">' + App.formatDateTime(log.created_at) + '</td>' +
-              '<td class="px-6 py-3 whitespace-nowrap font-medium">' + log.user + '</td>' +
-              '<td class="px-6 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">' + log.action + '</span></td>' +
-              '<td class="px-6 py-3 text-slate-600 dark:text-slate-400">' + log.details + '</td></tr>';
+      logs.forEach((log) => {
+          tbody.innerHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">\
+<td class="px-6 py-3 whitespace-nowrap text-slate-600 dark:text-slate-400">${App.formatDateTime(log.created_at)}</td>\
+<td class="px-6 py-3 whitespace-nowrap font-medium">${log.user}</td>\
+<td class="px-6 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">${log.action}</span></td>\
+<td class="px-6 py-3 text-slate-600 dark:text-slate-400">${log.details}</td></tr>`;
       });
   }
 
-  var categories = Store.getAll('categories');
-  var books = Store.getAll('books');
-  var catLabels = categories.map(function(c) { return c.name; });
-  var catCounts = categories.map(function(c) {
-      return books.filter(function(b) { return b.category_id === c.id; }).length;
+  // Collection Overview chart
+  const categories = Store.getAll('categories');
+  const books = Store.getAll('books');
+  const catLabels = categories.map((c) => c.name);
+  const catCounts = categories.map((c) => {
+      return books.filter((b) => b.category_id === c.id).length;
   });
   new Chart(document.getElementById('chart-categories'), {
       type: 'doughnut',
@@ -261,41 +299,97 @@
       }
   });
 
-  var actionsHtml = '';
-  if (Auth.hasPermission('can_add_books')) {
-      actionsHtml += '<a href="/pages/management/catalog/books.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-primary">add_circle</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Add Book</span></a>';
-  }
-  if (Auth.hasPermission('can_manage_students')) {
-      actionsHtml += '<a href="/pages/management/users/students.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-emerald-600">person_add</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Add Student</span></a>';
-  }
-  if (Auth.hasPermission('can_issue_books')) {
-      actionsHtml += '<a href="/pages/operations/circulation.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-amber-500">volunteer_activism</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Issue Book</span></a>';
-  }
-  if (Auth.hasPermission('can_return_books')) {
-      actionsHtml += '<a href="/pages/operations/circulation.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-red-600">undo</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Return Book</span></a>';
-  }
-  if (Auth.hasPermission('can_browse_catalog')) {
-      actionsHtml += '<a href="/pages/management/catalog/books.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-cyan-600">search</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Browse Catalog</span></a>';
-  }
-  if (Auth.hasPermission('can_reserve_books')) {
-      actionsHtml += '<a href="/pages/operations/reservations.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
-          '<span class="material-symbols-outlined text-3xl mb-2 block text-violet-600">bookmark</span>' +
-          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Reservations</span></a>';
-  }
-  if (!actionsHtml) {
-      actionsHtml = '<div class="col-span-full text-center py-8 text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 block">block</span><p class="text-sm">No quick actions available for your role.</p></div>';
-  }
-  document.getElementById('quick-actions').innerHTML = actionsHtml;
+  // ── Attendance by Program ──────────────────────────────────
+  const featiPrograms = [
+      'BSIT', 'BSCS', 'BSCE', 'BSME', 'BSEE', 'BSEcE', 'BSMarE',
+      'BSNA', 'BSArch', 'BSBA', 'BSHRA', 'BSCrim', 'SHS', 'JHS'
+  ];
+  const programColors = [
+      '#3211d4','#e94560','#28a745','#ffc107','#17a2b8','#6f42c1',
+      '#fd7e14','#20c997','#e83e8c','#6610f2','#007bff','#dc3545',
+      '#28a745','#6c757d'
+  ];
+
+  const attendance = Store.getAll('attendance') || [];
+  const allStudents = Store.getAll('students') || [];
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  // Build attendance stats per program using student.program field
+  const programStats = featiPrograms.map((prog) => {
+      const progRecords = attendance.filter((a) => {
+          const student = allStudents.find((s) => s.name === a.name);
+          return student && student.program && student.program.toUpperCase() === prog.toUpperCase();
+      });
+
+      const todayCount = progRecords.filter((a) => {
+          return a.date === todayStr;
+      }).length;
+
+      const monthCount = progRecords.filter((a) => {
+          const d = new Date(a.date || a.created_at);
+          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      }).length;
+
+      const yearCount = progRecords.filter((a) => {
+          const d = new Date(a.date || a.created_at);
+          return d.getFullYear() === currentYear;
+      }).length;
+
+      return { program: prog, today: todayCount, month: monthCount, year: yearCount };
+  });
+
+  // Render attendance table
+  const attBody = document.getElementById('attendance-program-table');
+  programStats.forEach((ps) => {
+      attBody.innerHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">\
+<td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">${ps.program}</td>\
+<td class="px-3 py-2 text-center">${ps.today}</td>\
+<td class="px-3 py-2 text-center">${ps.month}</td>\
+<td class="px-3 py-2 text-center">${ps.year}</td>\
+</tr>`;
+  });
+
+  // Render attendance bar chart (monthly totals)
+  new Chart(document.getElementById('chart-attendance'), {
+      type: 'bar',
+      data: {
+          labels: featiPrograms,
+          datasets: [{
+              label: 'This Month',
+              data: programStats.map((ps) => ps.month),
+              backgroundColor: programColors,
+              borderRadius: 6,
+              barThickness: 20
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: { display: false }
+          },
+          scales: {
+              y: {
+                  beginAtZero: true,
+                  ticks: {
+                      stepSize: 1,
+                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
+                  },
+                  grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(148,163,184,0.1)' : 'rgba(0,0,0,0.05)' }
+              },
+              x: {
+                  ticks: {
+                      font: { size: 11 },
+                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
+                  },
+                  grid: { display: false }
+              }
+          }
+      }
+  });
+
+  })(); } // end auth else block
 </script>
 </body>
 </html>

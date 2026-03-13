@@ -112,17 +112,17 @@
   <script src="/js/store.js"></script>
   <script src="/js/auth.js"></script>
   <script>
-      document.getElementById('login-form').addEventListener('submit', function(e) {
+      document.getElementById('login-form').addEventListener('submit', (e) => {
           e.preventDefault();
-          var username = document.getElementById('username').value.trim();
-          var password = document.getElementById('password').value.trim();
-          var result = Auth.login(username, password);
+          const username = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value.trim();
+          const result = Auth.login(username, password);
           if (result.success) {
               window.location.href = '/pages/auth/welcome.html';
           } else {
-              var alert = document.getElementById('error-alert');
+              const alert = document.getElementById('error-alert');
               alert.className = 'block bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-lg text-[13px] mb-4 p-2.5';
-              alert.innerHTML = '<span class="material-symbols-outlined text-sm align-middle mr-1.5">error</span>' + result.message;
+              alert.innerHTML = `<span class="material-symbols-outlined text-sm align-middle mr-1.5">error</span>${result.message}`;
           }
       });
   </script>

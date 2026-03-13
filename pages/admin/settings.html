@@ -66,22 +66,21 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init();
-    function load() {
-      var settings = Store.getAll('settings');
-      var html = '';
-      settings.forEach(function(s) {
-        html += '<div class="mb-4"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">' + s.label + '</label>' +
-          '<input type="text" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary setting-input" data-key="' + s.key + '" data-id="' + s.id + '" value="' + s.value + '"></div>';
+    const load = () => {
+      const settings = Store.getAll('settings');
+      let html = '';
+      settings.forEach((s) => {
+        html += `<div class="mb-4"><label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">${s.label}</label><input type="text" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary setting-input" data-key="${s.key}" data-id="${s.id}" value="${s.value}"></div>`;
       });
       document.getElementById('settings-form').innerHTML = html;
-    }
-    document.getElementById('btn-save').addEventListener('click', function() {
-      document.querySelectorAll('.setting-input').forEach(function(input) {
+    };
+    document.getElementById('btn-save').addEventListener('click', () => {
+      document.querySelectorAll('.setting-input').forEach((input) => {
         Store.update('settings', input.dataset.id, { value: input.value });
       });
       App.showAlert('success', 'Settings saved.');
     });
-    document.getElementById('btn-reset').addEventListener('click', function() {
+    document.getElementById('btn-reset').addEventListener('click', () => {
       Swal.fire({
         title: 'Reset All Data?',
         text: 'This will reset all data to the initial seed state. This cannot be undone.',
@@ -89,11 +88,11 @@
         showCancelButton: true,
         confirmButtonColor: '#e94560',
         confirmButtonText: 'Yes, reset!'
-      }).then(function(r) {
+      }).then((r) => {
         if (r.isConfirmed) {
           localStorage.removeItem('aklatbayon_seeded');
-          var keys = Object.keys(localStorage);
-          keys.forEach(function(k) { if (k.startsWith('aklatbayon_')) localStorage.removeItem(k); });
+          const keys = Object.keys(localStorage);
+          keys.forEach((k) => { if (k.startsWith('aklatbayon_')) localStorage.removeItem(k); });
           Store.seed();
           App.showAlert('success', 'Data reset to defaults.');
           load();

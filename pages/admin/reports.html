@@ -117,22 +117,22 @@
   <script>
     if (!Auth.requireAuth()) throw '';
     App.init();
-    var books = Store.getAll('books'), students = Store.getAll('students'), txns = Store.getAll('transactions'), fines = Store.getAll('fines'), categories = Store.getAll('categories');
+    const books = Store.getAll('books'), students = Store.getAll('students'), txns = Store.getAll('transactions'), fines = Store.getAll('fines'), categories = Store.getAll('categories');
     document.getElementById('r-books').textContent = books.length;
     document.getElementById('r-students').textContent = students.length;
     document.getElementById('r-txns').textContent = txns.length;
-    var pendingFines = fines.filter(function(f) { return f.status === 'pending'; }).reduce(function(sum, f) { return sum + f.amount; }, 0);
-    document.getElementById('r-fines').textContent = '\u20B1' + pendingFines;
+    const pendingFines = fines.filter((f) => f.status === 'pending').reduce((sum, f) => sum + f.amount, 0);
+    document.getElementById('r-fines').textContent = `\u20B1${pendingFines}`;
     new Chart(document.getElementById('chart-cat'), {
         type: 'bar',
         data: {
-            labels: categories.map(function(c) { return c.name; }),
-            datasets: [{ label: 'Books', data: categories.map(function(c) { return books.filter(function(b) { return b.category_id === c.id; }).length; }), backgroundColor: ['#e94560','#0f3460','#28a745','#ffc107','#17a2b8'] }]
+            labels: categories.map((c) => c.name),
+            datasets: [{ label: 'Books', data: categories.map((c) => books.filter((b) => b.category_id === c.id).length), backgroundColor: ['#e94560','#0f3460','#28a745','#ffc107','#17a2b8'] }]
         },
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
-    var borrowed = txns.filter(function(t) { return t.status === 'borrowed'; }).length;
-    var returned = txns.filter(function(t) { return t.status === 'returned'; }).length;
+    const borrowed = txns.filter((t) => t.status === 'borrowed').length;
+    const returned = txns.filter((t) => t.status === 'returned').length;
     new Chart(document.getElementById('chart-txn'), {
         type: 'doughnut',
         data: { labels: ['Borrowed', 'Returned'], datasets: [{ data: [borrowed, returned], backgroundColor: ['#ffc107', '#28a745'] }] },
