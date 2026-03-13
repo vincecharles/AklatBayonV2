@@ -305,8 +305,9 @@ const Store = (() => {
 
     const seed = () => {
         if (isSeeded()) return;
-        // Clear old seed data when version changes
-        const keys = Object.keys(localStorage).filter((k) => k.startsWith('aklatbayon_'));
+        // Clear old seed data when version changes (preserve theme preference)
+        const _themeKeys = ['aklatbayon_theme', 'aklatbayon_dark_mode'];
+        const keys = Object.keys(localStorage).filter((k) => k.startsWith('aklatbayon_') && !_themeKeys.includes(k));
         keys.forEach((k) => localStorage.removeItem(k));
 
         const now = () => new Date().toISOString();
