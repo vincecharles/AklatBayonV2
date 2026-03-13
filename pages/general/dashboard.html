@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+            accent: '#e94560',
+            'bg-light': '#f6f6f8',
+            'bg-dark': '#131022'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+<div class="flex min-h-screen">
+  <header id="top-header"></header>
+  <nav id="sidebar-nav"></nav>
+  <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <div id="alert-container"></div>
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight">Dashboard</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="welcome-text"></p>
+      </div>
+    </div>
+
+    <!-- Stat Cards Row 1 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-primary">
+          <span class="material-symbols-outlined text-xl">menu_book</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-books">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Total Books</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-emerald-600">
+          <span class="material-symbols-outlined text-xl">school</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-students">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Active Students</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-amber-500">
+          <span class="material-symbols-outlined text-xl">volunteer_activism</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-issued">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Books Issued</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-red-600">
+          <span class="material-symbols-outlined text-xl">warning</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-overdue">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Overdue Books</p>
+      </div>
+    </div>
+
+    <!-- Stat Cards Row 2 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-cyan-600">
+          <span class="material-symbols-outlined text-xl">calendar_today</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-due-today">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Due Today</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-violet-600">
+          <span class="material-symbols-outlined text-xl">bookmark</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-reservations">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Active Reservations</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-accent">
+          <span class="material-symbols-outlined text-xl">receipt_long</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-pending-fines">0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Pending Fines</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white mb-3 bg-slate-700">
+          <span class="material-symbols-outlined text-xl">payments</span>
+        </div>
+        <p class="text-2xl font-bold" id="stat-fine-total">&#8369;0</p>
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Uncollected Fines</p>
+      </div>
+    </div>
+
+    <!-- Overdue / Due-Today Alert Area -->
+    <div id="overdue-alert-area" class="mb-6"></div>
+
+    <!-- Activity Table + Chart -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <!-- Recent Activity -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg text-primary">schedule</span>
+          <h3 class="text-sm font-bold uppercase tracking-wider">Recent Activity</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-slate-800/50 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <th class="px-6 py-3">Date</th>
+                <th class="px-6 py-3">User</th>
+                <th class="px-6 py-3">Action</th>
+                <th class="px-6 py-3">Details</th>
+              </tr>
+            </thead>
+            <tbody id="activity-table" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Collection Overview Chart -->
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <h3 class="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg text-primary">donut_large</span>Collection Overview
+        </h3>
+        <canvas id="chart-categories" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-6">
+      <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 mb-4">Quick Actions</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="quick-actions"></div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/store.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/sidebar.js"></script>
+<script src="/js/app.js"></script>
+<script>
+  if (!Auth.requireAuth()) throw '';
+  App.init();
+  var user = Auth.getCurrentUser();
+  document.getElementById('welcome-text').textContent = 'Welcome back, ' + user.name + '!';
+  document.getElementById('stat-books').textContent = Store.count('books');
+  document.getElementById('stat-students').textContent = Store.count('students');
+  var txns = Store.getAll('transactions');
+  var issued = txns.filter(function(t) { return t.status === 'borrowed'; }).length;
+  var todayStr = new Date().toISOString().split('T')[0];
+  var overdue = txns.filter(function(t) {
+      return t.status === 'borrowed' && new Date(t.date_due) < new Date();
+  }).length;
+  var dueToday = txns.filter(function(t) {
+      return t.status === 'borrowed' && t.date_due === todayStr;
+  }).length;
+  document.getElementById('stat-issued').textContent = issued;
+  document.getElementById('stat-overdue').textContent = overdue;
+  document.getElementById('stat-due-today').textContent = dueToday;
+
+  // Active reservations count
+  var activeReservations = Store.getAll('reservations').filter(function(r) {
+      return r.status === 'active' || r.status === 'available';
+  }).length;
+  document.getElementById('stat-reservations').textContent = activeReservations;
+
+  // Expire stale reservations
+  Store.expireReservations();
+
+  // Process overdue fines automatically
+  var newFinesCount = Store.processOverdueFines();
+
+  // Pending fines stats
+  var allFines = Store.getAll('fines');
+  var pendingFines = allFines.filter(function(f) { return f.status === 'pending'; });
+  var pendingTotal = pendingFines.reduce(function(sum, f) { return sum + (parseFloat(f.amount) || 0); }, 0);
+  document.getElementById('stat-pending-fines').textContent = pendingFines.length;
+  document.getElementById('stat-fine-total').textContent = '\u20B1' + pendingTotal.toFixed(0);
+
+  // Show overdue alert if there are new auto-generated fines
+  var alertArea = document.getElementById('overdue-alert-area');
+  if (newFinesCount > 0) {
+      alertArea.innerHTML = '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">' +
+          '<span class="material-symbols-outlined text-lg">warning</span>' +
+          '<strong>' + newFinesCount + ' new fine(s)</strong> auto-generated for overdue books. ' +
+          '<a href="/pages/operations/fines.html" class="font-semibold underline">View Fines</a></div>';
+  } else if (overdue > 0) {
+      alertArea.innerHTML = '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">' +
+          '<span class="material-symbols-outlined text-lg">warning</span>' +
+          '<strong>' + overdue + ' book(s)</strong> are currently overdue. ' +
+          '<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>';
+  }
+  if (dueToday > 0) {
+      alertArea.innerHTML += '<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">' +
+          '<span class="material-symbols-outlined text-lg">calendar_today</span>' +
+          '<strong>' + dueToday + ' book(s)</strong> are due today. ' +
+          '<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>';
+  }
+
+  var allLogs = Store.getAll('audit_logs');
+  // Admin, Head Librarian, Librarian Staff see all activity; others see only their own
+  var privilegedRoles = ['r1', 'r2', 'r3'];
+  var logs;
+  if (privilegedRoles.indexOf(user.role_id) !== -1) {
+      logs = allLogs.slice(0, 10);
+  } else {
+      logs = allLogs.filter(function(l) { return l.user === user.name; }).slice(0, 10);
+  }
+  var tbody = document.getElementById('activity-table');
+  if (logs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-slate-400 py-8">No recent activity found.</td></tr>';
+  } else {
+      logs.forEach(function(log) {
+          tbody.innerHTML += '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">' +
+              '<td class="px-6 py-3 whitespace-nowrap text-slate-600 dark:text-slate-400">' + App.formatDateTime(log.created_at) + '</td>' +
+              '<td class="px-6 py-3 whitespace-nowrap font-medium">' + log.user + '</td>' +
+              '<td class="px-6 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">' + log.action + '</span></td>' +
+              '<td class="px-6 py-3 text-slate-600 dark:text-slate-400">' + log.details + '</td></tr>';
+      });
+  }
+
+  var categories = Store.getAll('categories');
+  var books = Store.getAll('books');
+  var catLabels = categories.map(function(c) { return c.name; });
+  var catCounts = categories.map(function(c) {
+      return books.filter(function(b) { return b.category_id === c.id; }).length;
+  });
+  new Chart(document.getElementById('chart-categories'), {
+      type: 'doughnut',
+      data: {
+          labels: catLabels,
+          datasets: [{ data: catCounts, backgroundColor: ['#e94560','#3211d4','#28a745','#ffc107','#17a2b8','#6f42c1'] }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  position: 'bottom',
+                  labels: {
+                      font: { size: 12 },
+                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
+                  }
+              }
+          }
+      }
+  });
+
+  var actionsHtml = '';
+  if (Auth.hasPermission('can_add_books')) {
+      actionsHtml += '<a href="/pages/management/catalog/books.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-primary">add_circle</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Add Book</span></a>';
+  }
+  if (Auth.hasPermission('can_manage_students')) {
+      actionsHtml += '<a href="/pages/management/users/students.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-emerald-600">person_add</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Add Student</span></a>';
+  }
+  if (Auth.hasPermission('can_issue_books')) {
+      actionsHtml += '<a href="/pages/operations/circulation.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-amber-500">volunteer_activism</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Issue Book</span></a>';
+  }
+  if (Auth.hasPermission('can_return_books')) {
+      actionsHtml += '<a href="/pages/operations/circulation.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-red-600">undo</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Return Book</span></a>';
+  }
+  if (Auth.hasPermission('can_browse_catalog')) {
+      actionsHtml += '<a href="/pages/management/catalog/books.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-cyan-600">search</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Browse Catalog</span></a>';
+  }
+  if (Auth.hasPermission('can_reserve_books')) {
+      actionsHtml += '<a href="/pages/operations/reservations.html" class="group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all">' +
+          '<span class="material-symbols-outlined text-3xl mb-2 block text-violet-600">bookmark</span>' +
+          '<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Reservations</span></a>';
+  }
+  if (!actionsHtml) {
+      actionsHtml = '<div class="col-span-full text-center py-8 text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 block">block</span><p class="text-sm">No quick actions available for your role.</p></div>';
+  }
+  document.getElementById('quick-actions').innerHTML = actionsHtml;
+</script>
+</body>
+</html>

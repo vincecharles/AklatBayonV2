@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' }, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
+    }
+  </script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+  <div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+      <div id="alert-container"></div>
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800 gap-4">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
+            <span class="material-symbols-outlined text-accent">assignment_ind</span>
+            Attendance
+          </h1>
+          <p class="text-sm text-slate-500 mt-1">RFID tap-in visit records</p>
+        </div>
+        <button id="btn-export" class="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary-800 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
+          <span class="material-symbols-outlined text-lg">download</span>
+          Export CSV
+        </button>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Total Visits -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">assignment_ind</span>
+            <span class="text-xs font-bold text-emerald-500" id="trend-total"></span>
+          </div>
+          <p class="text-sm text-slate-500">Total Visits</p>
+          <p class="text-2xl font-bold" id="stat-total">0</p>
+        </div>
+        <!-- Unique Visitors -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-emerald-600 bg-emerald-500/10 p-2 rounded-lg">group</span>
+            <span class="text-xs font-bold text-emerald-500" id="trend-unique"></span>
+          </div>
+          <p class="text-sm text-slate-500">Unique Visitors</p>
+          <p class="text-2xl font-bold" id="stat-unique">0</p>
+        </div>
+        <!-- Peak Hour -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-accent bg-accent/10 p-2 rounded-lg">local_fire_department</span>
+            <span class="text-xs font-bold text-accent" id="trend-peak"></span>
+          </div>
+          <p class="text-sm text-slate-500">Peak Hour</p>
+          <p class="text-2xl font-bold" id="stat-peak">&mdash;</p>
+        </div>
+        <!-- Avg Visits / Hour -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-violet-600 bg-violet-500/10 p-2 rounded-lg">schedule</span>
+            <span class="text-xs font-bold text-violet-500" id="trend-avg"></span>
+          </div>
+          <p class="text-sm text-slate-500">Avg. Visits / Hour</p>
+          <p class="text-2xl font-bold" id="stat-avg">0</p>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+        <span class="material-symbols-outlined text-slate-400 text-lg">calendar_today</span>
+        <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">Filter Date</label>
+        <input type="date" id="filter-date" class="h-10 px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none max-w-[200px]">
+        <div class="relative flex-1 max-w-xs">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <input type="text" id="search-input" placeholder="Search name or RFID..." class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+        </div>
+        <span class="ml-auto text-sm text-slate-500" id="result-count"></span>
+      </div>
+
+      <!-- Table + Charts -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Visit Log Table (2/3 width on xl) -->
+        <div class="xl:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-slate-200 dark:border-slate-800">
+            <span class="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
+              <span class="material-symbols-outlined text-lg text-primary">list_alt</span>
+              Visit Log
+            </span>
+            <span class="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full" id="table-count-badge">0</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left" id="attendance-table">
+              <thead>
+                <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">#</th>
+                  <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Time</th>
+                  <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Name</th>
+                  <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Role</th>
+                  <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">RFID</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Charts Column (1/3 width on xl) -->
+        <div class="flex flex-col gap-6">
+          <!-- Hourly Distribution Chart -->
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-lg text-primary">bar_chart</span>
+              Hourly Distribution
+            </h3>
+            <div class="min-h-[240px]">
+              <canvas id="chart-hourly" height="240"></canvas>
+            </div>
+          </div>
+          <!-- Visitors by Role Chart -->
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-lg text-primary">donut_large</span>
+              Visitors by Role
+            </h3>
+            <canvas id="chart-roles" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!Auth.requireAuth()) throw '';
+    App.init();
+
+    var hourlyChart = null;
+    var rolesChart = null;
+
+    // Default date to today
+    var dateInput = document.getElementById('filter-date');
+    var today = new Date();
+    dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+    function getRecordsForDate(dateStr) {
+        var all = Store.getAll('attendance');
+        return all.filter(function(r) {
+            var d = new Date(r.tap_time || r.created_at);
+            var rDate = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+            return rDate === dateStr;
+        });
+    }
+
+    function formatTime(isoStr) {
+        var d = new Date(isoStr);
+        var h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+        var s = String(d.getSeconds()).padStart(2,'0');
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return h + ':' + m + ':' + s + ' ' + ampm;
+    }
+
+    function getRoleDotColor(role) {
+        var map = {
+            'System Administrator': '#e94560',
+            'Librarian': '#28a745',
+            'Faculty': '#17a2b8',
+            'Student': '#ffc107',
+            'Student Assistant': '#6f42c1',
+            'Guest': '#6c757d'
+        };
+        return map[role] || '#6c757d';
+    }
+
+    function getRoleBadgeClasses(role) {
+        var map = {
+            'System Administrator': 'bg-red-500/10 text-red-600 dark:text-red-400',
+            'Librarian': 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+            'Faculty': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+            'Student': 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+            'Student Assistant': 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+            'Guest': 'bg-slate-500/10 text-slate-600 dark:text-slate-400'
+        };
+        return map[role] || 'bg-slate-500/10 text-slate-600 dark:text-slate-400';
+    }
+
+    function renderAttendance() {
+        var dateStr = dateInput.value;
+        var records = getRecordsForDate(dateStr);
+        var searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+
+        // Apply search filter
+        if (searchTerm) {
+            records = records.filter(function(r) {
+                return (r.user_name && r.user_name.toLowerCase().indexOf(searchTerm) !== -1) ||
+                       (r.rfid_id && r.rfid_id.toLowerCase().indexOf(searchTerm) !== -1);
+            });
+        }
+
+        // Sort by time descending (most recent first)
+        records.sort(function(a, b) {
+            return new Date(b.tap_time || b.created_at) - new Date(a.tap_time || a.created_at);
+        });
+
+        // --- Stats ---
+        var allForDate = getRecordsForDate(dateStr); // unfiltered for stats
+        var totalVisits = allForDate.length;
+        var uniqueIds = {};
+        allForDate.forEach(function(r) { uniqueIds[r.user_id] = true; });
+        var uniqueVisitors = Object.keys(uniqueIds).length;
+
+        // Peak hour
+        var hourCounts = {};
+        allForDate.forEach(function(r) {
+            var h = new Date(r.tap_time || r.created_at).getHours();
+            hourCounts[h] = (hourCounts[h] || 0) + 1;
+        });
+        var peakHour = null, peakCount = 0;
+        for (var h in hourCounts) {
+            if (hourCounts[h] > peakCount) { peakCount = hourCounts[h]; peakHour = parseInt(h); }
+        }
+        var peakLabel = '\u2014';
+        if (peakHour !== null) {
+            var ph = peakHour % 12 || 12;
+            var pampm = peakHour >= 12 ? 'PM' : 'AM';
+            peakLabel = ph + ':00 ' + pampm;
+        }
+
+        // Avg visits per active hour
+        var activeHours = Object.keys(hourCounts).length;
+        var avgVisits = activeHours > 0 ? (totalVisits / activeHours).toFixed(1) : '0';
+
+        document.getElementById('stat-total').textContent = totalVisits;
+        document.getElementById('stat-unique').textContent = uniqueVisitors;
+        document.getElementById('stat-peak').textContent = peakLabel;
+        document.getElementById('stat-avg').textContent = avgVisits;
+        document.getElementById('table-count-badge').textContent = records.length;
+        document.getElementById('result-count').textContent = records.length + ' record' + (records.length !== 1 ? 's' : '') + ' found';
+
+        // Trend indicators
+        var trendTotal = document.getElementById('trend-total');
+        var trendUnique = document.getElementById('trend-unique');
+        var trendPeak = document.getElementById('trend-peak');
+        var trendAvg = document.getElementById('trend-avg');
+        if (totalVisits > 0) {
+            trendTotal.textContent = '\u25CF Active';
+            trendTotal.className = 'text-xs font-bold text-emerald-500';
+        } else {
+            trendTotal.textContent = 'No visits yet';
+            trendTotal.className = 'text-xs font-bold text-slate-400';
+        }
+        if (uniqueVisitors > 0) {
+            trendUnique.textContent = uniqueVisitors + ' individual' + (uniqueVisitors !== 1 ? 's' : '');
+            trendUnique.className = 'text-xs font-bold text-emerald-500';
+        } else {
+            trendUnique.textContent = '\u2014';
+            trendUnique.className = 'text-xs font-bold text-slate-400';
+        }
+        if (peakHour !== null) {
+            trendPeak.textContent = peakCount + ' visits';
+            trendPeak.className = 'text-xs font-bold text-accent';
+        } else {
+            trendPeak.textContent = '';
+        }
+        if (activeHours > 0) {
+            trendAvg.textContent = activeHours + 'h active';
+            trendAvg.className = 'text-xs font-bold text-violet-500';
+        } else {
+            trendAvg.textContent = '';
+        }
+
+        // --- Table ---
+        var tbody = document.getElementById('attendance-tbody');
+        if (records.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 py-10 px-5">' +
+                '<span class="material-symbols-outlined text-4xl block mb-2 opacity-30">inbox</span>' +
+                (searchTerm ? 'No results matching "' + searchTerm + '"' : 'No attendance records for this date.') +
+                '</td></tr>';
+        } else {
+            var html = '';
+            records.forEach(function(r, idx) {
+                html += '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">' +
+                    '<td class="px-5 py-3 text-slate-400">' + (idx + 1) + '</td>' +
+                    '<td class="px-5 py-3 font-semibold text-primary dark:text-primary-50 tabular-nums">' + formatTime(r.tap_time || r.created_at) + '</td>' +
+                    '<td class="px-5 py-3 font-semibold">' + (r.user_name || 'Unknown') + '</td>' +
+                    '<td class="px-5 py-3"><span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background:' + getRoleDotColor(r.role_name) + '"></span><span class="text-xs font-semibold px-2.5 py-1 rounded-full ' + getRoleBadgeClasses(r.role_name) + '">' + (r.role_name || 'N/A') + '</span></span></td>' +
+                    '<td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">' + (r.rfid_id || '\u2014') + '</code></td>' +
+                    '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+
+        // --- Hourly Chart ---
+        var hourLabels = [];
+        var hourData = [];
+        for (var i = 7; i <= 21; i++) {
+            var lh = i % 12 || 12;
+            var la = i >= 12 ? 'PM' : 'AM';
+            hourLabels.push(lh + ' ' + la);
+            hourData.push(hourCounts[i] || 0);
+        }
+
+        var isDark = document.documentElement.classList.contains('dark');
+        var gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+        var tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        if (hourlyChart) hourlyChart.destroy();
+        hourlyChart = new Chart(document.getElementById('chart-hourly'), {
+            type: 'bar',
+            data: {
+                labels: hourLabels,
+                datasets: [{
+                    label: 'Visits',
+                    data: hourData,
+                    backgroundColor: hourData.map(function(v, idx) {
+                        return (idx + 7) === peakHour
+                            ? 'rgba(233, 69, 96, 0.85)'
+                            : 'rgba(50, 17, 212, 0.55)';
+                    }),
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(ctx) { return ctx[0].label; },
+                            label: function(ctx) { return ctx.raw + ' visit' + (ctx.raw !== 1 ? 's' : ''); }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, font: { size: 11 }, color: tickColor },
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        ticks: { font: { size: 10 }, maxRotation: 45, color: tickColor },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- Roles Doughnut Chart ---
+        var roleCounts = {};
+        allForDate.forEach(function(r) {
+            var rn = r.role_name || 'Unknown';
+            roleCounts[rn] = (roleCounts[rn] || 0) + 1;
+        });
+        var roleLabels = Object.keys(roleCounts);
+        var roleData = roleLabels.map(function(k) { return roleCounts[k]; });
+        var roleColors = {
+            'System Administrator': '#e94560',
+            'Librarian': '#28a745',
+            'Faculty': '#17a2b8',
+            'Student': '#ffc107',
+            'Student Assistant': '#6f42c1',
+            'Guest': '#6c757d'
+        };
+        var bgColors = roleLabels.map(function(r) { return roleColors[r] || '#999'; });
+
+        if (rolesChart) rolesChart.destroy();
+        rolesChart = new Chart(document.getElementById('chart-roles'), {
+            type: 'doughnut',
+            data: {
+                labels: roleLabels,
+                datasets: [{ data: roleData, backgroundColor: bgColors }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 11 },
+                            padding: 12,
+                            color: tickColor
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Bind events
+    dateInput.addEventListener('change', renderAttendance);
+    document.getElementById('search-input').addEventListener('input', renderAttendance);
+
+    // Export CSV
+    document.getElementById('btn-export').addEventListener('click', function() {
+        var dateStr = dateInput.value;
+        var records = getRecordsForDate(dateStr);
+        if (records.length === 0) {
+            App.showAlert('info', 'No records to export for this date.');
+            return;
+        }
+        records.sort(function(a, b) {
+            return new Date(a.tap_time || a.created_at) - new Date(b.tap_time || b.created_at);
+        });
+        var csv = 'No.,Time,Name,Role,RFID\n';
+        records.forEach(function(r, idx) {
+            csv += (idx+1) + ',' +
+                '"' + formatTime(r.tap_time || r.created_at) + '",' +
+                '"' + (r.user_name || '') + '",' +
+                '"' + (r.role_name || '') + '",' +
+                '"' + (r.rfid_id || '') + '"\n';
+        });
+        var blob = new Blob([csv], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'attendance-' + dateStr + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        App.showAlert('success', 'CSV exported for ' + dateStr);
+    });
+
+    // Initial render
+    renderAttendance();
+  </script>
+</body>
+</html>

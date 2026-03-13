@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circulation - AklatBayon</title>
+    <script src="/js/theme-init.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                fontFamily: { sans: ['Inter', 'sans-serif'] },
+                colors: {
+                    primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+                    accent: '#e94560',
+                    'bg-light': '#f6f6f8',
+                    'bg-dark': '#131022'
+                }
+            }
+        }
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+<div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+        <div id="alert-container"></div>
+
+        <!-- Page Header -->
+        <div class="flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-3xl text-primary">swap_horiz</span>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Circulation</h1>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-6">
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-primary text-primary" data-tab="issue">Issue Book</button>
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" data-tab="return">Return Book</button>
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" data-tab="history">Borrowing History</button>
+        </div>
+
+        <!-- ════════════ ISSUE TAB ════════════ -->
+        <div class="tab-pane active" id="tab-issue">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
+                    <span class="material-symbols-outlined text-xl text-primary">volunteer_activism</span>
+                    Issue a Book
+                </div>
+                <div class="p-6">
+                    <!-- Scanner Bar -->
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3.5 mb-5">
+                        <span class="material-symbols-outlined text-xl text-primary">barcode_scanner</span>
+                        <input type="text" id="scan-issue-isbn" placeholder="Scan barcode or type ISBN to auto-select book..."
+                               class="flex-1 h-10 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Press Enter after scan</span>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Student</label>
+                            <select class="w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="issue-student"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Book</label>
+                            <select class="w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="issue-book"></select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Date Issued</label>
+                            <input type="date" id="issue-date"
+                                   class="w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Due Date</label>
+                            <input type="date" id="issue-due"
+                                   class="w-full h-11 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                        </div>
+                    </div>
+
+                    <button class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 text-sm font-semibold transition" id="btn-issue">
+                        <span class="material-symbols-outlined text-lg">check</span> Issue Book
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════ RETURN TAB ════════════ -->
+        <div class="tab-pane" id="tab-return">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
+                    <span class="material-symbols-outlined text-xl text-primary">assignment_return</span>
+                    Return a Book
+                </div>
+                <div class="p-6">
+                    <!-- Scanner Bar -->
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3.5 mb-5">
+                        <span class="material-symbols-outlined text-xl text-primary">barcode_scanner</span>
+                        <input type="text" id="scan-return-isbn" placeholder="Scan barcode to highlight borrowed book..."
+                               class="flex-1 h-10 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Press Enter after scan</span>
+                    </div>
+
+                    <div id="reservation-notice-area"></div>
+
+                    <!-- Return Table -->
+                    <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Student</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Book</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Issued</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Due</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Renewals</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Status</th>
+                                    <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="return-table" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════ HISTORY TAB ════════════ -->
+        <div class="tab-pane" id="tab-history">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-200 dark:border-slate-700 font-semibold text-base">
+                    <span class="material-symbols-outlined text-xl text-primary">history</span>
+                    Borrowing History
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">#</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Student</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Book</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Issued</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Due</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Returned</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Renewals</th>
+                                <th class="px-4 py-3 font-semibold text-slate-600 dark:text-slate-300">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+    <script src="/js/api.js"></script>
+    <script src="/js/store.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+
+        // ── Tab switching ─────────────────────────────────────────
+        var tabActiveClasses = 'border-primary text-primary';
+        var tabInactiveClasses = 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+
+        document.querySelectorAll('.nav-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(function(t) {
+                    t.classList.remove('active', 'border-primary', 'text-primary');
+                    tabInactiveClasses.split(' ').forEach(function(c) { t.classList.add(c); });
+                });
+                document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+                this.classList.add('active');
+                tabInactiveClasses.split(' ').forEach(function(c) { this.classList.remove(c); }.bind(this));
+                tabActiveClasses.split(' ').forEach(function(c) { this.classList.add(c); }.bind(this));
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                if (this.dataset.tab === 'return') loadReturns();
+                if (this.dataset.tab === 'history') loadHistory();
+            });
+        });
+
+        // ── Populate dropdowns ────────────────────────────────────
+        var students = Store.getAll('students'), books = Store.getAll('books');
+        var ssel = document.getElementById('issue-student'), bsel = document.getElementById('issue-book');
+        students.forEach(function(s) { ssel.innerHTML += '<option value="' + s.id + '">' + s.student_id + ' — ' + s.name + '</option>'; });
+        function refreshBookDropdown() {
+            var bks = Store.getAll('books');
+            bsel.innerHTML = '';
+            bks.filter(function(b) { return b.available > 0; }).forEach(function(b) {
+                bsel.innerHTML += '<option value="' + b.id + '" data-isbn="' + b.isbn + '">' + b.title + ' (' + b.available + ' avail.)</option>';
+            });
+        }
+        refreshBookDropdown();
+
+        var today = new Date().toISOString().split('T')[0];
+        var due = new Date(); due.setDate(due.getDate() + 14);
+        document.getElementById('issue-date').value = today;
+        document.getElementById('issue-due').value = due.toISOString().split('T')[0];
+
+        // ── Barcode scanner for Issue tab ─────────────────────────
+        document.getElementById('scan-issue-isbn').addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter') return;
+            var isbn = this.value.trim().replace(/-/g, '');
+            if (!isbn) return;
+            var allBooks = Store.getAll('books');
+            var found = allBooks.find(function(b) { return b.isbn.replace(/-/g, '') === isbn; });
+            if (found) {
+                bsel.value = found.id;
+                if (!bsel.value) {
+                    App.showAlert('info', 'Book "' + found.title + '" found but has 0 copies available.');
+                } else {
+                    App.showAlert('success', 'Book selected: ' + found.title);
+                }
+            } else {
+                App.showAlert('danger', 'No book found with ISBN: ' + this.value.trim());
+            }
+            this.value = '';
+        });
+
+        // ── Barcode scanner for Return tab ────────────────────────
+        document.getElementById('scan-return-isbn').addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter') return;
+            var isbn = this.value.trim().replace(/-/g, '');
+            if (!isbn) return;
+            var allBooks = Store.getAll('books');
+            var found = allBooks.find(function(b) { return b.isbn.replace(/-/g, '') === isbn; });
+            if (found) {
+                // Highlight matching rows
+                var rows = document.querySelectorAll('#return-table tr');
+                var matched = false;
+                rows.forEach(function(row) {
+                    var bookCell = row.cells && row.cells[1];
+                    if (bookCell && bookCell.textContent === found.title) {
+                        row.style.background = 'rgba(50,17,212,0.08)';
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        matched = true;
+                    } else if (row.style) {
+                        row.style.background = '';
+                    }
+                });
+                if (matched) App.showAlert('success', 'Found: ' + found.title);
+                else App.showAlert('info', 'Book "' + found.title + '" is not currently borrowed.');
+            } else {
+                App.showAlert('danger', 'No book found with that ISBN.');
+            }
+            this.value = '';
+        });
+
+        // ── Issue Book ────────────────────────────────────────────
+        document.getElementById('btn-issue').addEventListener('click', function() {
+            var studentId = document.getElementById('issue-student').value;
+            var bookId = document.getElementById('issue-book').value;
+            var dateIssued = document.getElementById('issue-date').value;
+            var dateDue = document.getElementById('issue-due').value;
+            if (!studentId || !bookId || !dateIssued || !dateDue) { App.showAlert('danger', 'Fill all fields.'); return; }
+
+            // Check fine block threshold
+            var fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
+            var totalFines = Store.getStudentFinesTotal(studentId);
+            if (totalFines >= fineThreshold) {
+                Swal.fire({ icon: 'error', title: 'Borrowing Blocked', text: 'This student has ₱' + totalFines.toFixed(2) + ' in unpaid fines (limit: ₱' + fineThreshold + '). Fines must be settled first.', confirmButtonColor: '#e94560' });
+                return;
+            }
+
+            var book = Store.getById('books', bookId);
+            if (!book || book.available <= 0) { App.showAlert('danger', 'Book not available.'); return; }
+            Store.create('transactions', { student_id: studentId, book_id: bookId, type: 'borrow', date_issued: dateIssued, date_due: dateDue, date_returned: null, status: 'borrowed', renewal_count: 0 });
+            Store.update('books', bookId, { available: book.available - 1 });
+            refreshBookDropdown();
+            App.showAlert('success', 'Book issued successfully!');
+            Swal.fire({ icon: 'success', title: 'Book Issued!', text: book.title + ' issued to ' + App.getStudentName(studentId), timer: 2000, showConfirmButton: false });
+        });
+
+        // ── Return Tab ────────────────────────────────────────────
+        function loadReturns() {
+            var txns = Store.getAll('transactions').filter(function(t) { return t.status === 'borrowed'; });
+            var tbody = document.getElementById('return-table');
+            var noticeArea = document.getElementById('reservation-notice-area');
+            noticeArea.innerHTML = '';
+
+            // Check for books with active reservations
+            var reservations = Store.getAll('reservations');
+            var booksWithReservations = {};
+            reservations.forEach(function(r) {
+                if (r.status === 'active') {
+                    if (!booksWithReservations[r.book_id]) booksWithReservations[r.book_id] = 0;
+                    booksWithReservations[r.book_id]++;
+                }
+            });
+
+            if (!txns.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-slate-400 py-8">No outstanding borrowings.</td></tr>'; return; }
+            tbody.innerHTML = txns.map(function(t) {
+                var isOverdue = new Date(t.date_due) < new Date();
+                var renewals = t.renewal_count || 0;
+                var hasReservation = booksWithReservations[t.book_id] > 0;
+                var reservationBadge = hasReservation ? ' <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" title="Has pending reservations"><span class="material-symbols-outlined text-[12px]">bookmark</span></span>' : '';
+
+                var actions = '<button class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold transition btn-return" data-id="' + t.id + '" data-book="' + t.book_id + '"><span class="material-symbols-outlined text-sm">undo</span>Return</button>';
+                actions += ' <button class="inline-flex items-center gap-1 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1.5 text-xs font-semibold transition btn-renew" data-id="' + t.id + '" data-book="' + t.book_id + '" data-student="' + t.student_id + '" data-renewals="' + renewals + '"><span class="material-symbols-outlined text-sm">sync</span>Renew</button>';
+
+                return '<tr><td class="px-4 py-3">' + App.getStudentName(t.student_id) + '</td><td class="px-4 py-3">' + App.getBookTitle(t.book_id) + reservationBadge + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_issued) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_due) + '</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">' + renewals + '</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ' + (isOverdue ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400') + '">' + (isOverdue ? 'Overdue' : 'Borrowed') + '</span></td><td class="px-4 py-3"><div class="flex items-center gap-2">' + actions + '</div></td></tr>';
+            }).join('');
+
+            // Bind return buttons
+            document.querySelectorAll('.btn-return').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var txnId = this.dataset.id, bookId = this.dataset.book;
+                    Store.update('transactions', txnId, { status: 'returned', date_returned: new Date().toISOString().split('T')[0] });
+                    var book = Store.getById('books', bookId);
+                    if (book) Store.update('books', bookId, { available: book.available + 1 });
+
+                    // Check reservation queue for this book
+                    var queue = Store.getReservationQueue(bookId);
+                    if (queue.length > 0) {
+                        var nextReservation = queue[0];
+                        var expiryHours = parseInt(Store.getSetting('reservation_expiry_hours')) || 48;
+                        var expiresAt = new Date();
+                        expiresAt.setHours(expiresAt.getHours() + expiryHours);
+                        Store.update('reservations', nextReservation.id, {
+                            status: 'available',
+                            notified_at: new Date().toISOString(),
+                            expires_at: expiresAt.toISOString()
+                        });
+                        var studentName = App.getStudentName(nextReservation.student_id);
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Reservation Triggered',
+                            html: 'Book returned successfully.<br><br><strong>' + studentName + '</strong> has a reservation for <strong>' + App.getBookTitle(bookId) + '</strong>.<br>They have <strong>' + expiryHours + ' hours</strong> to claim it.',
+                            confirmButtonColor: '#3211d4'
+                        });
+                    } else {
+                        App.showAlert('success', 'Book returned successfully.');
+                    }
+                    refreshBookDropdown();
+                    loadReturns();
+                });
+            });
+
+            // Bind renew buttons
+            document.querySelectorAll('.btn-renew').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var txnId = this.dataset.id;
+                    var bookId = this.dataset.book;
+                    var studentId = this.dataset.student;
+                    var currentRenewals = parseInt(this.dataset.renewals) || 0;
+
+                    // Get max renewals for this borrower's role
+                    var roleKey = Store.getBorrowerRoleKey(studentId);
+                    var maxRenewals = parseInt(Store.getSetting('borrow_' + roleKey + '_max_renewals')) || 1;
+                    var loanDays = parseInt(Store.getSetting('borrow_' + roleKey + '_loan_days')) || 7;
+
+                    // Check: max renewals reached?
+                    if (currentRenewals >= maxRenewals) {
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'Maximum renewals (' + maxRenewals + ') reached for this borrower role.', confirmButtonColor: '#e94560' });
+                        return;
+                    }
+
+                    // Check: book has active reservations?
+                    var queue = Store.getReservationQueue(bookId);
+                    if (queue.length > 0) {
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'This book has ' + queue.length + ' pending reservation(s). Cannot renew.', confirmButtonColor: '#e94560' });
+                        return;
+                    }
+
+                    // Check: student has unpaid fines exceeding threshold?
+                    var fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
+                    var totalFines = Store.getStudentFinesTotal(studentId);
+                    if (totalFines >= fineThreshold) {
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: 'Outstanding fines of ₱' + totalFines.toFixed(2) + ' exceed the ₱' + fineThreshold + ' limit.', confirmButtonColor: '#e94560' });
+                        return;
+                    }
+
+                    // Do the renewal
+                    var txn = Store.getById('transactions', txnId);
+                    if (!txn) return;
+                    var newDue = new Date(txn.date_due);
+                    newDue.setDate(newDue.getDate() + loanDays);
+
+                    Swal.fire({
+                        title: 'Confirm Renewal',
+                        html: 'Renew <strong>' + App.getBookTitle(bookId) + '</strong>?<br>New due date: <strong>' + newDue.toISOString().split('T')[0] + '</strong><br>Renewal ' + (currentRenewals + 1) + ' of ' + maxRenewals,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3211d4',
+                        confirmButtonText: 'Renew'
+                    }).then(function(result) {
+                        if (result.isConfirmed) {
+                            Store.update('transactions', txnId, {
+                                date_due: newDue.toISOString().split('T')[0],
+                                renewal_count: currentRenewals + 1
+                            });
+                            Store.logActivity('RENEW', 'transactions', App.getBookTitle(bookId) + ' for ' + App.getStudentName(studentId));
+                            App.showAlert('success', 'Book renewed! New due date: ' + App.formatDate(newDue.toISOString()));
+                            loadReturns();
+                        }
+                    });
+                });
+            });
+        }
+
+        // ── History Tab ───────────────────────────────────────────
+        function loadHistory() {
+            var txns = Store.getAll('transactions');
+            var tbody = document.getElementById('history-table');
+            if (!txns.length) { tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-8">No history.</td></tr>'; return; }
+            tbody.innerHTML = txns.map(function(t, i) {
+                var statusClass = t.status === 'returned' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : (new Date(t.date_due) < new Date() ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400');
+                var statusLabel = t.status === 'returned' ? 'Returned' : (new Date(t.date_due) < new Date() ? 'Overdue' : 'Borrowed');
+                var renewals = t.renewal_count || 0;
+                return '<tr><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + (i+1) + '</td><td class="px-4 py-3">' + App.getStudentName(t.student_id) + '</td><td class="px-4 py-3">' + App.getBookTitle(t.book_id) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_issued) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_due) + '</td><td class="px-4 py-3 text-slate-500 dark:text-slate-400">' + App.formatDate(t.date_returned) + '</td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">' + renewals + '</span></td><td class="px-4 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ' + statusClass + '">' + statusLabel + '</span></td></tr>';
+            }).join('');
+        }
+    </script>
+</body>
+</html>

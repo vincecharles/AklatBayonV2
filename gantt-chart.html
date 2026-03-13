@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AklatBayon — Project Gantt Chart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #242734;
+            --border: #2e3144;
+            --text: #e4e4e7;
+            --text2: #9ca3af;
+            --accent: #6366f1;
+            --accent2: #818cf8;
+            --green: #22c55e;
+            --yellow: #eab308;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --cyan: #06b6d4;
+            --orange: #f97316;
+            --pink: #ec4899;
+            --purple: #a855f7;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--surface), var(--surface2));
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 0 0 8px 0;
+            background: linear-gradient(135deg, var(--accent2), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text2);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            color: var(--text2);
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text2);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .gantt-container {
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            padding: 0;
+        }
+
+        .gantt-table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+        }
+
+        .gantt-table thead th {
+            position: sticky;
+            top: 0;
+            background: var(--surface2);
+            padding: 12px 8px;
+            font-size: 0.75rem;
+            color: var(--text2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .gantt-table thead th.task-col {
+            width: 280px;
+            min-width: 280px;
+            text-align: left;
+            padding-left: 16px;
+        }
+
+        .gantt-table thead th.day-col {
+            width: auto;
+            text-align: center;
+            min-width: 50px;
+        }
+
+        .gantt-table thead th.day-col.weekend {
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .gantt-table thead th.day-col.today {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.12);
+        }
+
+        .gantt-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .gantt-table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.04);
+        }
+
+        .gantt-table tbody tr.phase-row {
+            background: var(--surface2);
+        }
+
+        .gantt-table tbody tr.phase-row td {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent2);
+            letter-spacing: 0.3px;
+        }
+
+        .gantt-table tbody td {
+            padding: 6px 8px;
+            vertical-align: middle;
+        }
+
+        .gantt-table tbody td.task-cell {
+            padding-left: 24px;
+            font-size: 0.82rem;
+        }
+
+        .gantt-table tbody td.task-cell .task-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gantt-table tbody td.task-cell .task-name i {
+            width: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .task-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+        }
+
+        .status-done { background: rgba(34,197,94,0.15); color: var(--green); }
+        .status-progress { background: rgba(59,130,246,0.15); color: var(--blue); }
+        .status-pending { background: rgba(234,179,8,0.15); color: var(--yellow); }
+
+        .gantt-table tbody td.day-cell {
+            padding: 6px 2px;
+            text-align: center;
+            position: relative;
+        }
+
+        .gantt-table tbody td.day-cell.weekend {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .gantt-table tbody td.day-cell.today {
+            background: rgba(6, 182, 212, 0.06);
+        }
+
+        .bar {
+            height: 22px;
+            border-radius: 4px;
+            min-width: 100%;
+            display: block;
+        }
+
+        .bar-done { background: linear-gradient(90deg, #22c55e, #16a34a); opacity: 0.85; }
+        .bar-progress { background: linear-gradient(90deg, #3b82f6, #2563eb); opacity: 0.85; animation: pulse 2s infinite; }
+        .bar-pending { background: linear-gradient(90deg, #eab308, #ca8a04); opacity: 0.5; }
+
+        .bar-start { border-radius: 4px 0 0 4px; }
+        .bar-end { border-radius: 0 4px 4px 0; }
+        .bar-mid { border-radius: 0; }
+        .bar-single { border-radius: 4px; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 0.6; }
+        }
+
+        .milestone {
+            width: 14px;
+            height: 14px;
+            background: var(--pink);
+            transform: rotate(45deg);
+            margin: 4px auto;
+            border-radius: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text2);
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body { background: #fff; color: #000; padding: 10px; }
+            .header { background: #f8f9fa; border-color: #dee2e6; }
+            .header h1 { background: none; -webkit-text-fill-color: #4338ca; }
+            .gantt-container, .stat-card, .legend { background: #fff; border-color: #dee2e6; }
+            .gantt-table thead th { background: #f1f3f5; color: #495057; }
+            .gantt-table tbody tr.phase-row { background: #f8f9fa; }
+            .gantt-table tbody tr.phase-row td { color: #4338ca; }
+            .gantt-table tbody td.task-cell { color: #212529; }
+            .bar-pending { opacity: 0.35; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1><i class="fas fa-book-open"></i> AklatBayon v2 — Project Gantt Chart</h1>
+    <p>FEATI University Library Management System &mdash; Development Timeline (Feb 26 – Mar 25, 2026)</p>
+</div>
+
+<div class="stats-row" id="statsRow"></div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Completed</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> In Progress</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--yellow);opacity:0.5"></div> Planned / Pending</div>
+    <div class="legend-item"><div class="legend-dot milestone" style="width:10px;height:10px;margin:0"></div> Milestone</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent);opacity:0.08;border:1px solid var(--accent)"></div> Weekend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--cyan);opacity:0.12;border:1px solid var(--cyan)"></div> Today</div>
+</div>
+
+<div class="gantt-container">
+    <table class="gantt-table" id="ganttTable">
+        <thead id="ganttHead"></thead>
+        <tbody id="ganttBody"></tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <i class="fas fa-chart-gantt"></i> Generated for AklatBayon v2 &mdash; FEATI University &mdash; <span id="genDate"></span>
+</div>
+
+<script>
+(function () {
+    // ── Timeline range ──────────────────────────────────────
+    var START = new Date('2026-02-26');
+    var END   = new Date('2026-03-25');
+    var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
+    // ── Generate day columns ────────────────────────────────
+    var days = [];
+    for (var d = new Date(START); d <= END; d.setDate(d.getDate() + 1)) {
+        days.push(new Date(d));
+    }
+
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    // ── Task data ───────────────────────────────────────────
+    // status: done | progress | pending
+    var phases = [
+        {
+            name: 'Phase 1 — Project Setup & Foundation',
+            icon: 'fa-rocket',
+            tasks: [
+                { name: 'Project initialization & repo setup',     icon: 'fa-folder-open',    start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Netlify deployment config (netlify.toml)', icon: 'fa-cloud',          start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'CSS styling & responsive design',         icon: 'fa-palette',        start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Landing page (index.html)',               icon: 'fa-home',           start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Login page with RFID support',            icon: 'fa-sign-in-alt',    start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Package.json & dependency management',    icon: 'fa-box',            start: '2026-03-11', end: '2026-03-11', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 2 — Core UI Shell & Auth',
+            icon: 'fa-shield-halved',
+            tasks: [
+                { name: 'Authentication system (auth.js)',          icon: 'fa-lock',           start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'LocalStorage data store (store.js)',       icon: 'fa-database',       start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Permission-based sidebar (sidebar.js)',    icon: 'fa-bars',           start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'App shell & header (app.js)',              icon: 'fa-window-maximize',start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Welcome page & session flow',             icon: 'fa-hand-wave',      start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Dashboard with stats & charts',           icon: 'fa-chart-pie',      start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Dark mode toggle',                        icon: 'fa-moon',           start: '2026-02-26', end: '2026-02-26', status: 'done' },
+                { name: 'Profanity filter (EN + Tagalog)',         icon: 'fa-filter',         start: '2026-02-26', end: '2026-02-26', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 3 — User & Role Management',
+            icon: 'fa-users-gear',
+            tasks: [
+                { name: 'User CRUD (users.html)',                   icon: 'fa-user',           start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Role management with 7 roles',            icon: 'fa-user-tag',       start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Permission assignment (23 permissions)',   icon: 'fa-key',            start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Student records CRUD',                    icon: 'fa-user-graduate',  start: '2026-02-26', end: '2026-02-27', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 4 — Catalog Management',
+            icon: 'fa-book',
+            tasks: [
+                { name: 'Books CRUD with ISBN/call number',        icon: 'fa-book',           start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Authors management',                      icon: 'fa-pen-nib',        start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Publishers management',                   icon: 'fa-building',       start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Categories (hierarchical)',               icon: 'fa-sitemap',        start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'LCC Classification browser',             icon: 'fa-book-open-reader',start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'LOC Book Search integration',             icon: 'fa-search',         start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Barcode generation (JsBarcode)',          icon: 'fa-barcode',        start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Advanced OPAC with filters',              icon: 'fa-magnifying-glass',start: '2026-03-09', end: '2026-03-09', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 5 — Circulation & Reservations',
+            icon: 'fa-arrows-rotate',
+            tasks: [
+                { name: 'Book issue & return',                     icon: 'fa-right-left',     start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Book renewal with role-based limits',     icon: 'fa-rotate',         start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Reservation system with queue & expiry',  icon: 'fa-clock-rotate-left', start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Overdue auto-fine processing',            icon: 'fa-exclamation-triangle', start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Fine block threshold enforcement',        icon: 'fa-ban',            start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Borrower profile with QR code',           icon: 'fa-qrcode',         start: '2026-03-09', end: '2026-03-09', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 6 — Finance & Administration',
+            icon: 'fa-coins',
+            tasks: [
+                { name: 'Fine management (admin)',                 icon: 'fa-money-bill',     start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'My Fines page (student/faculty view)',    icon: 'fa-receipt',        start: '2026-03-09', end: '2026-03-09', status: 'done' },
+                { name: 'Inventory view',                          icon: 'fa-boxes-stacked',  start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Reports & analytics',                    icon: 'fa-chart-bar',      start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'RFID attendance tracking',                icon: 'fa-id-card',        start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'Audit log system',                        icon: 'fa-clock',          start: '2026-02-26', end: '2026-02-27', status: 'done' },
+                { name: 'System settings (30+ params)',            icon: 'fa-gear',           start: '2026-02-26', end: '2026-03-09', status: 'done' },
+            ]
+        },
+        {
+            name: 'Phase 7 — Backend Migration (Neon Postgres)',
+            icon: 'fa-server',
+            tasks: [
+                { name: 'Netlify Neon DB provisioning',            icon: 'fa-database',       start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Drizzle ORM schema (16 tables)',          icon: 'fa-table',          start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Database migration to Postgres',          icon: 'fa-arrow-right-arrow-left', start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'REST API serverless function (api.mts)',  icon: 'fa-code',           start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Database seed function (seed.mts)',       icon: 'fa-seedling',       start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Frontend API client (api.js)',            icon: 'fa-plug',           start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Hybrid Store (API + localStorage)',       icon: 'fa-layer-group',    start: '2026-03-11', end: '2026-03-11', status: 'done' },
+                { name: 'Deploy & seed production database',       icon: 'fa-rocket',         start: '2026-03-11', end: '2026-03-12', status: 'progress' },
+            ]
+        },
+        {
+            name: 'Phase 8 — Security Hardening',
+            icon: 'fa-lock',
+            tasks: [
+                { name: 'Password hashing (bcrypt/argon2)',        icon: 'fa-shield',         start: '2026-03-13', end: '2026-03-14', status: 'pending' },
+                { name: 'JWT session tokens',                      icon: 'fa-ticket',         start: '2026-03-13', end: '2026-03-15', status: 'pending' },
+                { name: 'Server-side auth middleware',             icon: 'fa-lock',           start: '2026-03-14', end: '2026-03-16', status: 'pending' },
+                { name: 'Rate limiting & brute force protection',  icon: 'fa-gauge-high',     start: '2026-03-15', end: '2026-03-16', status: 'pending' },
+                { name: 'Input sanitization (server-side)',        icon: 'fa-broom',          start: '2026-03-16', end: '2026-03-17', status: 'pending' },
+                { name: 'RBAC enforcement on API endpoints',       icon: 'fa-user-shield',    start: '2026-03-16', end: '2026-03-18', status: 'pending' },
+            ]
+        },
+        {
+            name: 'Phase 9 — Testing & QA',
+            icon: 'fa-vial',
+            tasks: [
+                { name: 'API endpoint testing',                    icon: 'fa-flask-vial',     start: '2026-03-18', end: '2026-03-19', status: 'pending' },
+                { name: 'Cross-browser compatibility',             icon: 'fa-globe',          start: '2026-03-19', end: '2026-03-20', status: 'pending' },
+                { name: 'Data integrity validation',               icon: 'fa-check-double',   start: '2026-03-19', end: '2026-03-20', status: 'pending' },
+                { name: 'User acceptance testing (UAT)',           icon: 'fa-clipboard-check',start: '2026-03-20', end: '2026-03-22', status: 'pending' },
+            ]
+        },
+        {
+            name: 'Phase 10 — Production Launch',
+            icon: 'fa-flag-checkered',
+            tasks: [
+                { name: 'Final deploy & smoke test',               icon: 'fa-rocket',         start: '2026-03-23', end: '2026-03-23', status: 'pending' },
+                { name: 'Documentation & handover',                icon: 'fa-file-lines',     start: '2026-03-23', end: '2026-03-24', status: 'pending' },
+                { name: 'GO LIVE',                                 icon: 'fa-star',           start: '2026-03-25', end: '2026-03-25', status: 'pending', milestone: true },
+            ]
+        }
+    ];
+
+    // ── Render header ───────────────────────────────────────
+    var thead = document.getElementById('ganttHead');
+    var headRow = '<tr><th class="task-col">Task</th>';
+    days.forEach(function (d) {
+        var isWeekend = d.getDay() === 0 || d.getDay() === 6;
+        var isToday = d.getTime() === TODAY.getTime();
+        var cls = 'day-col' + (isWeekend ? ' weekend' : '') + (isToday ? ' today' : '');
+        var label = MONTHS[d.getMonth()] + ' ' + d.getDate();
+        headRow += '<th class="' + cls + '">' + label + '</th>';
+    });
+    headRow += '</tr>';
+    thead.innerHTML = headRow;
+
+    // ── Render body ─────────────────────────────────────────
+    var tbody = document.getElementById('ganttBody');
+    var html = '';
+    var totalTasks = 0, doneTasks = 0, progressTasks = 0, pendingTasks = 0;
+
+    phases.forEach(function (phase) {
+        html += '<tr class="phase-row"><td colspan="' + (days.length + 1) + '"><i class="fas ' + phase.icon + '"></i> ' + phase.name + '</td></tr>';
+
+        phase.tasks.forEach(function (task) {
+            totalTasks++;
+            if (task.status === 'done') doneTasks++;
+            else if (task.status === 'progress') progressTasks++;
+            else pendingTasks++;
+
+            var statusLabel = task.status === 'done' ? '<span class="task-status status-done">Done</span>' :
+                              task.status === 'progress' ? '<span class="task-status status-progress">In Progress</span>' :
+                              '<span class="task-status status-pending">Pending</span>';
+
+            html += '<tr>';
+            html += '<td class="task-cell"><div class="task-name"><i class="fas ' + task.icon + '" style="color:var(--text2)"></i> ' + task.name + statusLabel + '</div></td>';
+
+            var taskStart = new Date(task.start); taskStart.setHours(0,0,0,0);
+            var taskEnd = new Date(task.end); taskEnd.setHours(0,0,0,0);
+
+            days.forEach(function (d, i) {
+                var isWeekend = d.getDay() === 0 || d.getDay() === 6;
+                var isToday = d.getTime() === TODAY.getTime();
+                var cls = 'day-cell' + (isWeekend ? ' weekend' : '') + (isToday ? ' today' : '');
+
+                var dt = d.getTime();
+                if (dt >= taskStart.getTime() && dt <= taskEnd.getTime()) {
+                    var barCls = 'bar bar-' + task.status;
+                    if (taskStart.getTime() === taskEnd.getTime()) barCls += ' bar-single';
+                    else if (dt === taskStart.getTime()) barCls += ' bar-start';
+                    else if (dt === taskEnd.getTime()) barCls += ' bar-end';
+                    else barCls += ' bar-mid';
+
+                    if (task.milestone) {
+                        html += '<td class="' + cls + '"><div class="milestone"></div></td>';
+                    } else {
+                        html += '<td class="' + cls + '"><span class="' + barCls + '"></span></td>';
+                    }
+                } else {
+                    html += '<td class="' + cls + '"></td>';
+                }
+            });
+
+            html += '</tr>';
+        });
+    });
+    tbody.innerHTML = html;
+
+    // ── Stats ───────────────────────────────────────────────
+    var pct = Math.round((doneTasks / totalTasks) * 100);
+    document.getElementById('statsRow').innerHTML =
+        '<div class="stat-card"><div class="value" style="color:var(--accent2)">' + totalTasks + '</div><div class="label">Total Tasks</div></div>' +
+        '<div class="stat-card"><div class="value" style="color:var(--green)">' + doneTasks + '</div><div class="label">Completed</div></div>' +
+        '<div class="stat-card"><div class="value" style="color:var(--blue)">' + progressTasks + '</div><div class="label">In Progress</div></div>' +
+        '<div class="stat-card"><div class="value" style="color:var(--yellow)">' + pendingTasks + '</div><div class="label">Pending</div></div>' +
+        '<div class="stat-card"><div class="value" style="color:var(--cyan)">' + pct + '%</div><div class="label">Overall Progress</div></div>' +
+        '<div class="stat-card"><div class="value" style="color:var(--text)">' + phases.length + '</div><div class="label">Phases</div></div>';
+
+    document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+})();
+</script>
+
+</body>
+</html>

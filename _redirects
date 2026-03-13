@@ -1,1 +1,24 @@
-# No SPA rewrites needed — each page is a standalone .html file
+# Redirects from old flat paths to new folderized structure
+/dashboard.html          /pages/general/dashboard.html          301
+/students.html           /pages/management/users/students.html  301
+/users.html              /pages/management/users/users.html     301
+/roles.html              /pages/management/users/roles.html     301
+/books.html              /pages/management/catalog/books.html   301
+/authors.html            /pages/management/catalog/authors.html 301
+/publishers.html         /pages/management/catalog/publishers.html 301
+/categories.html         /pages/management/catalog/categories.html 301
+/loc-search.html         /pages/management/catalog/loc-search.html 301
+/lcc-browser.html        /pages/management/catalog/lcc-browser.html 301
+/catalog.html            /pages/management/catalog/catalog.html 301
+/circulation.html        /pages/operations/circulation.html     301
+/reservations.html       /pages/operations/reservations.html    301
+/borrower-profile.html   /pages/operations/borrower-profile.html 301
+/fines.html              /pages/operations/fines.html           301
+/my-fines.html           /pages/operations/my-fines.html        301
+/inventory.html          /pages/admin/inventory.html            301
+/reports.html            /pages/admin/reports.html              301
+/attendance.html         /pages/admin/attendance.html           301
+/settings.html           /pages/admin/settings.html             301
+/audit-logs.html         /pages/admin/audit-logs.html           301
+/login.html              /pages/auth/login.html                 301
+/welcome.html            /pages/auth/welcome.html               301

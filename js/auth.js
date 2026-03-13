@@ -51,7 +51,7 @@ var Auth = (function() {
         var user = getCurrentUser();
         if (user) Store.logActivity('LOGOUT', 'auth', user.name);
         sessionStorage.removeItem(SESSION_KEY);
-        window.location.href = 'index.html';
+        window.location.href = '/index.html';
     }
 
     function getCurrentUser() {
@@ -65,7 +65,7 @@ var Auth = (function() {
 
     function requireAuth() {
         if (!isLoggedIn()) {
-            window.location.href = 'login.html';
+            window.location.href = '/pages/auth/login.html';
             return false;
         }
         return true;

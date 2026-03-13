@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Catalog - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 100: '#e0e3ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+            accent: '#e94560',
+            'bg-light': '#f6f6f8',
+            'bg-dark': '#131022',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans min-h-screen antialiased">
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+    <!-- ── Gradient Header Banner ─────────────────────────────── -->
+    <div class="bg-gradient-to-br from-[#1a1a2e] to-[#0f3460] text-white py-10 px-8 rounded-b-2xl -mx-4 sm:-mx-6 lg:-mx-8 mb-6 text-center">
+      <h1 class="text-3xl sm:text-4xl font-black mb-2 flex items-center justify-center gap-3">
+        <span class="material-symbols-outlined text-4xl">menu_book</span>
+        AklatBayon Catalog
+      </h1>
+      <p class="text-white/60 text-sm">FEATI University Library — Browse our collection</p>
+
+      <!-- Search Bar -->
+      <div class="max-w-lg mx-auto mt-5 relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xl">search</span>
+        <input type="text" id="search-input"
+               placeholder="Search books by title, author, or ISBN..."
+               class="w-full py-3.5 pl-12 pr-5 rounded-xl border-2 border-white/20 bg-white/10 text-white text-base placeholder-white/40 backdrop-blur-lg focus:outline-none focus:border-white/50 transition-colors">
+      </div>
+
+      <!-- ── Filter Bar (inside header) ─────────────────────── -->
+      <div id="opac-filters" class="flex flex-wrap gap-3 items-end justify-center mt-6 p-4 bg-white/[0.08] rounded-xl border border-white/[0.15]">
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Category</label>
+          <select id="filter-cat" class="px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans [&>option]:text-gray-800 [&>option]:bg-white">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Author</label>
+          <select id="filter-author" class="px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans [&>option]:text-gray-800 [&>option]:bg-white">
+            <option value="">All Authors</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Publisher</label>
+          <select id="filter-publisher" class="px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans [&>option]:text-gray-800 [&>option]:bg-white">
+            <option value="">All Publishers</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Year From</label>
+          <input type="number" id="filter-year-min" placeholder="Min" min="0" max="9999"
+                 class="w-20 px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans placeholder-white/40">
+        </div>
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Year To</label>
+          <input type="number" id="filter-year-max" placeholder="Max" min="0" max="9999"
+                 class="w-20 px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans placeholder-white/40">
+        </div>
+
+        <div class="flex flex-col gap-1 text-left">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">Sort By</label>
+          <select id="filter-sort" class="px-3 py-2 rounded-lg border border-white/20 bg-white/[0.08] text-white text-[13px] font-sans [&>option]:text-gray-800 [&>option]:bg-white">
+            <option value="title-az">Title A-Z</option>
+            <option value="title-za">Title Z-A</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="most-borrowed">Most Borrowed</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1 justify-end">
+          <label class="text-[11px] font-semibold text-white/60 uppercase tracking-wide">&nbsp;</label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="filter-available" class="w-4 h-4 rounded accent-blue-400">
+            <span class="text-[13px] text-white font-normal">Show only available</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Navigation Bar ─────────────────────────────────────── -->
+    <div class="flex items-center justify-end gap-4 mb-5">
+      <a href="/index.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0f3460] dark:text-blue-400 hover:underline">
+        <span class="material-symbols-outlined text-lg">badge</span> RFID Tap
+      </a>
+      <a href="/pages/auth/login.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0f3460] dark:text-blue-400 hover:underline">
+        <span class="material-symbols-outlined text-lg">login</span> Login
+      </a>
+    </div>
+
+    <!-- ── New Arrivals Section ────────────────────────────────── -->
+    <div id="new-arrivals" class="mb-6 hidden">
+      <h5 class="text-lg font-bold text-[#1a1a2e] dark:text-white mb-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#0f3460] dark:text-blue-400">auto_awesome</span>
+        New Arrivals
+        <span class="bg-gradient-to-r from-accent to-[#ff6b6b] text-white text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">New</span>
+      </h5>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5" id="new-arrivals-grid"></div>
+    </div>
+
+    <!-- ── Did You Mean ────────────────────────────────────────── -->
+    <div id="did-you-mean" class="hidden text-center py-3 text-white/70 dark:text-slate-400 text-sm">
+      Did you mean: <a href="#" id="dym-link" class="text-blue-400 font-semibold hover:underline"></a>?
+    </div>
+
+    <!-- ── Main Book Grid ──────────────────────────────────────── -->
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5" id="book-grid"></div>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    // ── Inline helpers (no app.js on this page) ──────────────
+    function getAuthorName(authorId) {
+        var author = Store.getById('authors', authorId);
+        return author ? author.name : 'Unknown';
+    }
+    function getPublisherName(pubId) {
+        var pub = Store.getById('publishers', pubId);
+        return pub ? pub.name : 'Unknown';
+    }
+    function getCategoryName(catId) {
+        var cat = Store.getById('categories', catId);
+        return cat ? cat.name : 'Unknown';
+    }
+
+    // ── Populate filter dropdowns ───────────────────────────────
+    var categories = Store.getAll('categories');
+    var fcat = document.getElementById('filter-cat');
+    categories.forEach(function(c) { fcat.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>'; });
+
+    var authors = Store.getAll('authors');
+    var fauthor = document.getElementById('filter-author');
+    authors.sort(function(a, b) { return a.name.localeCompare(b.name); });
+    authors.forEach(function(a) { fauthor.innerHTML += '<option value="' + a.id + '">' + a.name + '</option>'; });
+
+    var publishers = Store.getAll('publishers');
+    var fpub = document.getElementById('filter-publisher');
+    publishers.sort(function(a, b) { return a.name.localeCompare(b.name); });
+    publishers.forEach(function(p) { fpub.innerHTML += '<option value="' + p.id + '">' + p.name + '</option>'; });
+
+    // ── Levenshtein distance ────────────────────────────────────
+    function levenshtein(a, b) {
+        var m = a.length, n = b.length;
+        var dp = [];
+        for (var i = 0; i <= m; i++) {
+            dp[i] = [i];
+            for (var j = 1; j <= n; j++) {
+                if (i === 0) { dp[i][j] = j; continue; }
+                var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+        return dp[m][n];
+    }
+
+    // ── Build a single book card ────────────────────────────────
+    function buildBookCard(b) {
+        var availColor = b.available > 0 ? '#16a34a' : '#dc2626';
+        var availText = b.available > 0 ? b.available + ' available' : 'Unavailable';
+        var pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
+        var barColor = pct > 50 ? '#16a34a' : pct > 20 ? '#eab308' : '#dc2626';
+        return '<div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/[0.08] hover:-translate-y-0.5">' +
+            (b.call_number ? '<div class="inline-block text-xs text-[#0f3460] dark:text-blue-400 bg-[#0f3460]/[0.08] dark:bg-blue-400/10 px-2 py-1 rounded-md mb-2 font-semibold font-mono"><span class="material-symbols-outlined text-[10px] align-middle mr-0.5">tag</span>' + b.call_number + '</div>' : '') +
+            '<div class="text-lg font-bold text-[#1a1a2e] dark:text-white mb-2">' + b.title + '</div>' +
+            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">edit</span> ' + getAuthorName(b.author_id) + '</div>' +
+            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">apartment</span> ' + getPublisherName(b.publisher_id) + '</div>' +
+            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">label</span> ' + getCategoryName(b.category_id) + '</div>' +
+            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">barcode</span> ' + b.isbn + '</div>' +
+            '<div class="text-[13px] text-gray-500 dark:text-slate-400 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">event</span> ' + b.year + '</div>' +
+            '<div class="mt-3 flex items-center justify-between">' +
+                '<span class="inline-block text-xs font-semibold text-white px-2.5 py-1 rounded-full" style="background:' + availColor + '">' + availText + '</span>' +
+                '<span class="text-xs text-gray-400 dark:text-slate-500">' + b.copies + ' total copies</span>' +
+            '</div>' +
+            '<div class="mt-2">' +
+                '<div class="flex justify-between text-[11px] text-gray-500 dark:text-slate-400"><span>' + b.available + ' of ' + b.copies + '</span><span>' + pct + '%</span></div>' +
+                '<div class="h-1.5 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden mt-1"><div class="h-full rounded-full transition-all duration-300" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    // ── New Arrivals (books added in last 30 days) ──────────────
+    function loadNewArrivals() {
+        var allBooks = Store.getAll('books');
+        var now = new Date();
+        var thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        var newBooks = allBooks.filter(function(b) {
+            return b.created_at && new Date(b.created_at) >= thirtyDaysAgo;
+        });
+        var container = document.getElementById('new-arrivals');
+        var grid = document.getElementById('new-arrivals-grid');
+        if (newBooks.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+        newBooks.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+        container.classList.remove('hidden');
+        grid.innerHTML = newBooks.map(buildBookCard).join('');
+    }
+
+    // ── Main load function ──────────────────────────────────────
+    function load() {
+        var books = Store.getAll('books');
+        var s = document.getElementById('search-input').value.toLowerCase();
+        var cf = document.getElementById('filter-cat').value;
+        var af = document.getElementById('filter-author').value;
+        var pf = document.getElementById('filter-publisher').value;
+        var yearMin = document.getElementById('filter-year-min').value;
+        var yearMax = document.getElementById('filter-year-max').value;
+        var sortBy = document.getElementById('filter-sort').value;
+        var onlyAvail = document.getElementById('filter-available').checked;
+
+        // Text search
+        if (s) books = books.filter(function(b) { return b.title.toLowerCase().indexOf(s) !== -1 || b.isbn.toLowerCase().indexOf(s) !== -1 || getAuthorName(b.author_id).toLowerCase().indexOf(s) !== -1; });
+
+        // Category filter
+        if (cf) books = books.filter(function(b) { return b.category_id === cf; });
+
+        // Author filter
+        if (af) books = books.filter(function(b) { return b.author_id === af; });
+
+        // Publisher filter
+        if (pf) books = books.filter(function(b) { return b.publisher_id === pf; });
+
+        // Year range filter
+        if (yearMin) books = books.filter(function(b) { return b.year >= parseInt(yearMin, 10); });
+        if (yearMax) books = books.filter(function(b) { return b.year <= parseInt(yearMax, 10); });
+
+        // Availability filter
+        if (onlyAvail) books = books.filter(function(b) { return b.available > 0; });
+
+        // Sorting
+        if (sortBy === 'title-az') {
+            books.sort(function(a, b) { return a.title.localeCompare(b.title); });
+        } else if (sortBy === 'title-za') {
+            books.sort(function(a, b) { return b.title.localeCompare(a.title); });
+        } else if (sortBy === 'newest') {
+            books.sort(function(a, b) { return (b.year || 0) - (a.year || 0); });
+        } else if (sortBy === 'oldest') {
+            books.sort(function(a, b) { return (a.year || 0) - (b.year || 0); });
+        } else if (sortBy === 'most-borrowed') {
+            var txns = Store.getAll('transactions');
+            books.sort(function(a, b) {
+                var aCount = txns.filter(function(t) { return t.book_id === a.id; }).length;
+                var bCount = txns.filter(function(t) { return t.book_id === b.id; }).length;
+                return bCount - aCount;
+            });
+        }
+
+        var grid = document.getElementById('book-grid');
+        var dymContainer = document.getElementById('did-you-mean');
+        dymContainer.classList.add('hidden');
+
+        if (!books.length) {
+            grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center py-16 text-gray-400 dark:text-slate-500"><span class="material-symbols-outlined text-5xl mb-3">search</span><p class="text-base">No books found.</p></div>';
+
+            // "Did you mean?" suggestions
+            if (s) {
+                var allBooks = Store.getAll('books');
+                var bestMatch = null;
+                var bestDist = Infinity;
+                allBooks.forEach(function(b) {
+                    var titleLower = b.title.toLowerCase();
+                    var dist = levenshtein(s, titleLower);
+                    // Also check individual words in the title
+                    var words = titleLower.split(/\s+/);
+                    words.forEach(function(w) {
+                        var wDist = levenshtein(s, w);
+                        if (wDist < dist) dist = wDist;
+                    });
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestMatch = b.title;
+                    }
+                });
+                if (bestMatch && bestDist < 4) {
+                    var dymLink = document.getElementById('dym-link');
+                    dymLink.textContent = bestMatch;
+                    dymContainer.classList.remove('hidden');
+                }
+            }
+            return;
+        }
+
+        grid.innerHTML = books.map(buildBookCard).join('');
+    }
+
+    // ── "Did you mean" click handler ────────────────────────────
+    document.getElementById('dym-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        var suggestion = this.textContent;
+        document.getElementById('search-input').value = suggestion;
+        document.getElementById('did-you-mean').classList.add('hidden');
+        load();
+    });
+
+    // ── Bind all filter events ──────────────────────────────────
+    document.getElementById('search-input').addEventListener('input', load);
+    document.getElementById('filter-cat').addEventListener('change', load);
+    document.getElementById('filter-author').addEventListener('change', load);
+    document.getElementById('filter-publisher').addEventListener('change', load);
+    document.getElementById('filter-year-min').addEventListener('input', load);
+    document.getElementById('filter-year-max').addEventListener('input', load);
+    document.getElementById('filter-sort').addEventListener('change', load);
+    document.getElementById('filter-available').addEventListener('change', load);
+
+    // ── Initial render ──────────────────────────────────────────
+    loadNewArrivals();
+    load();
+  </script>
+</body>
+</html>

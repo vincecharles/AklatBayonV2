@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCC Classification Browser - AklatBayon</title>
+    <meta name="description" content="Browse Library of Congress Classification outline and find books by class.">
+    <script src="/js/theme-init.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                fontFamily: { sans: ['Inter', 'sans-serif'] },
+                colors: {
+                    primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+                    accent: '#e94560',
+                    'bg-light': '#f6f6f8',
+                    'bg-dark': '#131022'
+                }
+            }
+        }
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* Results panel toggle */
+        .lcc-results-panel { display: none; }
+        .lcc-results-panel.show { display: block; animation: fadeIn 0.3s ease; }
+
+        /* Active tile highlight */
+        .lcc-tile.active { ring: 2px; box-shadow: 0 0 0 2px #e94560; }
+    </style>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+<div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+        <div id="alert-container"></div>
+
+        <!-- Hero Banner -->
+        <div class="bg-gradient-to-br from-[#1a5276] to-[#2ecc71] rounded-xl px-8 py-7 mb-6 text-white flex items-center gap-5">
+            <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-2xl text-white/90">account_tree</span>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold mb-1">LCC Classification Browser</h2>
+                <p class="text-sm text-white/70 m-0">Browse the Library of Congress Classification system &mdash; click any class to explore books</p>
+            </div>
+        </div>
+
+        <!-- LCC Class Grid -->
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 mb-6" id="lcc-grid"></div>
+
+        <!-- Results Panel -->
+        <div class="lcc-results-panel mt-2 mb-6" id="results-panel">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700/60">
+                <!-- Results Header -->
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                    <h3 id="results-heading" class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center m-0">
+                        <span class="material-symbols-outlined mr-2 text-lg">book</span>Books
+                    </h3>
+                    <button id="btn-close-results" title="Close"
+                        class="bg-transparent border-none text-xl text-slate-400 dark:text-slate-500 cursor-pointer px-2 py-1 rounded hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">&times;</button>
+                </div>
+                <!-- Results Body -->
+                <div class="p-5">
+                    <!-- Loading Spinner -->
+                    <div id="results-loading" style="display:none">
+                        <div class="flex justify-center items-center py-10">
+                            <div class="w-10 h-10 border-4 border-slate-200 dark:border-slate-700 border-t-accent rounded-full animate-spin-custom"></div>
+                        </div>
+                    </div>
+                    <!-- Results Grid -->
+                    <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5" id="loc-results"></div>
+                    <!-- Empty State -->
+                    <div id="results-empty" class="text-center text-slate-400 dark:text-slate-500 py-8" style="display:none">No books found for this classification.</div>
+                    <!-- Pagination -->
+                    <div id="pagination-bar" class="flex justify-center items-center gap-4 mt-5" style="display:none">
+                        <button id="btn-prev" class="inline-flex items-center gap-1 px-5 py-2 text-sm font-semibold rounded-lg border border-primary text-primary hover:bg-primary hover:text-white dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-400 dark:hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span> Previous
+                        </button>
+                        <span id="page-info" class="text-[13px] text-slate-500 dark:text-slate-400 font-semibold"></span>
+                        <button id="btn-next" class="inline-flex items-center gap-1 px-5 py-2 text-sm font-semibold rounded-lg border border-primary text-primary hover:bg-primary hover:text-white dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-400 dark:hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                            Next <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/store.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        if (!Auth.requireAuth()) throw '';
+        App.init();
+
+        var LOC_API = 'https://www.loc.gov/books/';
+        var PER_PAGE = 25;
+        var currentClass = null;
+        var currentPage = 1;
+        var paginationData = null;
+
+        // Color palette for tile letters
+        var colors = ['#e94560','#0f3460','#16213e','#1a5276','#2ecc71','#e67e22','#9b59b6','#3498db','#1abc9c','#e74c3c',
+                      '#2c3e50','#27ae60','#8e44ad','#2980b9','#f39c12','#c0392b','#16a085','#d35400','#7f8c8d','#34495e','#1e8449'];
+
+        // Font Awesome -> Material Symbols mapping
+        var FA_TO_MS = {
+            'fa-globe': 'public',
+            'fa-brain': 'psychology',
+            'fa-landmark': 'account_balance',
+            'fa-earth-americas': 'language',
+            'fa-flag-usa': 'flag',
+            'fa-map-location-dot': 'pin_drop',
+            'fa-map': 'map',
+            'fa-users': 'groups',
+            'fa-balance-scale': 'balance',
+            'fa-gavel': 'gavel',
+            'fa-graduation-cap': 'school',
+            'fa-music': 'music_note',
+            'fa-palette': 'palette',
+            'fa-book-open': 'auto_stories',
+            'fa-flask': 'science',
+            'fa-stethoscope': 'stethoscope',
+            'fa-seedling': 'eco',
+            'fa-microchip': 'memory',
+            'fa-shield-halved': 'shield',
+            'fa-anchor': 'anchor',
+            'fa-bookmark': 'bookmark'
+        };
+        function getMsIcon(faClass) { return FA_TO_MS[faClass] || 'category'; }
+
+        function renderGrid() {
+            var classes = Store.getAll('lcc_classes');
+            var grid = document.getElementById('lcc-grid');
+            grid.innerHTML = classes.map(function(cls, i) {
+                var bg = colors[i % colors.length];
+                var msIcon = getMsIcon(cls.icon);
+                var html = '<div class="lcc-tile bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden" data-id="' + cls.id + '" data-letter="' + cls.letter + '" data-name="' + cls.name + '">';
+                html += '<div class="p-4">';
+                html += '<div class="flex items-center gap-3 mb-2.5">';
+                html += '<div class="w-11 h-11 rounded-[10px] flex items-center justify-center flex-shrink-0" style="background:' + bg + '"><span class="material-symbols-outlined text-base text-white/90">' + msIcon + '</span></div>';
+                html += '<div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">' + cls.letter + ' &mdash; ' + cls.name + '</div></div>';
+                html += '</div>';
+                html += '<div class="flex flex-wrap gap-1">';
+                cls.subclasses.slice(0, 5).forEach(function(sc) {
+                    html += '<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-500/[0.07] dark:bg-blue-400/10 text-primary-700 dark:text-blue-400 border border-slate-500/[0.12] dark:border-blue-400/20">' + sc + '</span>';
+                });
+                if (cls.subclasses.length > 5) html += '<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-500/[0.07] dark:bg-blue-400/10 text-primary-700 dark:text-blue-400 border border-slate-500/[0.12] dark:border-blue-400/20">+' + (cls.subclasses.length - 5) + '</span>';
+                html += '</div></div></div>';
+                return html;
+            }).join('');
+
+            grid.querySelectorAll('.lcc-tile').forEach(function(tile) {
+                tile.addEventListener('click', function() {
+                    grid.querySelectorAll('.lcc-tile').forEach(function(t) { t.classList.remove('active'); });
+                    tile.classList.add('active');
+                    var name = tile.dataset.name;
+                    var letter = tile.dataset.letter;
+                    currentClass = { letter: letter, name: name };
+                    currentPage = 1;
+                    searchClass(name, 1);
+                });
+            });
+        }
+
+        function searchClass(className, page) {
+            currentPage = page;
+            var panel = document.getElementById('results-panel');
+            var loading = document.getElementById('results-loading');
+            var results = document.getElementById('loc-results');
+            var empty = document.getElementById('results-empty');
+            var pagBar = document.getElementById('pagination-bar');
+
+            panel.classList.add('show');
+            loading.style.display = '';
+            results.innerHTML = '';
+            empty.style.display = 'none';
+            pagBar.style.display = 'none';
+            document.getElementById('results-heading').innerHTML = '<span class="material-symbols-outlined mr-2 text-lg">book</span>' + currentClass.letter + ' &mdash; ' + currentClass.name;
+
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            axios.get(LOC_API, {
+                params: { q: className, fo: 'json', c: PER_PAGE, sp: currentPage }
+            }).then(function(response) {
+                loading.style.display = 'none';
+                var data = response.data;
+                var items = data.results || [];
+                paginationData = data.pagination || null;
+
+                if (items.length === 0) {
+                    empty.style.display = '';
+                    return;
+                }
+                renderResults(items, results);
+                renderPagination();
+            }).catch(function(err) {
+                loading.style.display = 'none';
+                empty.style.display = '';
+                empty.textContent = err.response && err.response.status === 429
+                    ? 'Rate limited. Please wait a moment.'
+                    : 'Error connecting to LOC API.';
+                console.error('LOC API error:', err);
+            });
+        }
+
+        function renderResults(items, container) {
+            var html = '';
+            items.forEach(function(r) {
+                var title = (r.item && r.item.title) || r.title || 'Untitled';
+                var authors = (r.item && r.item.contributors) || [];
+                var authorStr = authors.length > 0 ? authors[0].replace(/\.$/, '') : (r.contributor && r.contributor.length > 0 ? r.contributor[0] : 'Unknown');
+                var date = (r.item && r.item.date) || r.date || '';
+                var callNums = (r.item && r.item.call_number) || [];
+                var callNumber = callNums.length > 0 ? callNums[0] : '';
+                var subjects = (r.item && r.item.subjects) || [];
+                var published = (r.item && r.item.created_published) || [];
+                var publisherStr = published.length > 0 ? published[0] : '';
+                var locUrl = r.url || r.id || '';
+                if (locUrl && !locUrl.startsWith('http')) locUrl = 'https://www.loc.gov' + (locUrl.startsWith('/') ? '' : '/') + locUrl;
+
+                html += '<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700/60"><div class="p-5 flex flex-col min-h-[200px]">';
+                html += '<div class="text-[15px] font-bold text-slate-800 dark:text-slate-100 mb-2 leading-snug line-clamp-2" title="' + escAttr(title) + '">' + escHtml(title) + '</div>';
+                html += '<div class="text-xs text-slate-500 dark:text-slate-400 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-0.5 flex-shrink-0">person</span> ' + escHtml(authorStr) + '</div>';
+                if (date && date !== '||||') html += '<div class="text-xs text-slate-500 dark:text-slate-400 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-0.5 flex-shrink-0">calendar_today</span> ' + escHtml(date) + '</div>';
+                if (callNumber) html += '<div class="text-xs text-slate-500 dark:text-slate-400 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-0.5 flex-shrink-0">qr_code</span> <span class="inline-flex items-center gap-1 bg-primary/[0.08] dark:bg-blue-400/[0.15] text-primary-600 dark:text-blue-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono">' + escHtml(callNumber) + '</span></div>';
+
+                if (subjects.length > 0) {
+                    html += '<div class="flex flex-wrap gap-1 mt-2">';
+                    subjects.slice(0, 3).forEach(function(s) {
+                        html += '<span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 font-medium">' + escHtml(truncate(s.split('--')[0], 25)) + '</span>';
+                    });
+                    html += '</div>';
+                }
+
+                html += '<div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-700/60 flex justify-between items-center">';
+                if (locUrl) html += '<a href="' + locUrl + '" target="_blank" class="text-slate-400 dark:text-slate-500 text-xs no-underline hover:text-primary dark:hover:text-primary-400 transition-colors inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">open_in_new</span>LOC</a>';
+                else html += '<span></span>';
+                html += '<button class="inline-flex items-center gap-1 bg-gradient-to-br from-green-500 to-emerald-500 text-white border-none px-3.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer hover:opacity-85 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed" onclick="importBook(this)" '
+                    + 'data-title="' + escAttr(title) + '" '
+                    + 'data-author="' + escAttr(authorStr) + '" '
+                    + 'data-year="' + escAttr(date) + '" '
+                    + 'data-call="' + escAttr(callNumber) + '" '
+                    + 'data-publisher="' + escAttr(publisherStr) + '" '
+                    + 'data-subject="' + escAttr(subjects.length > 0 ? subjects[0].split('--')[0] : '') + '" '
+                    + '><span class="material-symbols-outlined text-sm">download</span> Import</button>';
+                html += '</div></div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function renderPagination() {
+            var bar = document.getElementById('pagination-bar');
+            if (!paginationData || !paginationData.total || paginationData.total <= 1) { bar.style.display = 'none'; return; }
+            bar.style.display = '';
+            document.getElementById('page-info').textContent = 'Page ' + paginationData.current + ' of ' + paginationData.total;
+            document.getElementById('btn-prev').disabled = !paginationData.previous;
+            document.getElementById('btn-next').disabled = !paginationData.next;
+        }
+
+        function importBook(btn) {
+            var title = btn.dataset.title;
+            var author = btn.dataset.author;
+            var year = parseInt(btn.dataset.year) || 0;
+            var callNumber = btn.dataset.call;
+            var publisherRaw = btn.dataset.publisher;
+            var subjectRaw = btn.dataset.subject;
+
+            var existing = Store.getAll('books');
+            var dup = existing.find(function(b) { return b.title.toLowerCase() === title.toLowerCase(); });
+            if (dup) {
+                Swal.fire({ icon: 'warning', title: 'Book Already Exists', text: '"' + title + '" is already in your local catalog.', confirmButtonColor: '#e94560' });
+                return;
+            }
+
+            var authorId = '';
+            if (author && author !== 'Unknown') {
+                var authors = Store.getAll('authors');
+                var found = authors.find(function(a) { return a.name.toLowerCase() === author.toLowerCase(); });
+                if (found) { authorId = found.id; }
+                else { Store.create('authors', { name: author, bio: 'Imported from LOC' }); var all = Store.getAll('authors'); authorId = all[all.length - 1].id; }
+            }
+            var pubName = '';
+            if (publisherRaw) { var parts = publisherRaw.split(':'); pubName = parts.length > 1 ? parts[1].replace(/,.*$/, '').trim() : publisherRaw.replace(/,.*$/, '').replace(/[\[\]]/g, '').trim(); }
+            var pubId = '';
+            if (pubName) {
+                var pubs = Store.getAll('publishers');
+                var foundPub = pubs.find(function(p) { return p.name.toLowerCase() === pubName.toLowerCase(); });
+                if (foundPub) { pubId = foundPub.id; }
+                else { Store.create('publishers', { name: pubName, address: '', contact: '' }); var allPubs = Store.getAll('publishers'); pubId = allPubs[allPubs.length - 1].id; }
+            }
+            var catId = '';
+            if (subjectRaw) {
+                var cats = Store.getAll('categories');
+                var foundCat = cats.find(function(c) { return c.name.toLowerCase() === subjectRaw.toLowerCase(); });
+                if (foundCat) { catId = foundCat.id; }
+                else { Store.create('categories', { name: subjectRaw, description: 'Imported from LOC', parent_id: null }); var allCats = Store.getAll('categories'); catId = allCats[allCats.length - 1].id; }
+            }
+
+            Store.create('books', { title: title, isbn: 'LOC-' + Date.now(), author_id: authorId, publisher_id: pubId, category_id: catId, call_number: callNumber, year: year, copies: 1, available: 1, status: 'active' });
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Imported';
+            Swal.fire({ icon: 'success', title: 'Book Imported!', text: '"' + truncate(title, 50) + '" added to your catalog.', timer: 2500, showConfirmButton: false, toast: true, position: 'top-end' });
+        }
+
+        function escHtml(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+        function escAttr(str) { return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+        function truncate(str, max) { return str.length > max ? str.substring(0, max) + '...' : str; }
+
+        document.getElementById('btn-close-results').addEventListener('click', function() {
+            document.getElementById('results-panel').classList.remove('show');
+            document.querySelectorAll('.lcc-tile').forEach(function(t) { t.classList.remove('active'); });
+        });
+        document.getElementById('btn-prev').addEventListener('click', function() { if (paginationData && paginationData.previous && currentClass) searchClass(currentClass.name, currentPage - 1); });
+        document.getElementById('btn-next').addEventListener('click', function() { if (paginationData && paginationData.next && currentClass) searchClass(currentClass.name, currentPage + 1); });
+
+        renderGrid();
+    </script>
+</body>
+</html>

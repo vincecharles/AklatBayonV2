@@ -1,30 +1,29 @@
 var App = (function() {
-    var DARK_MODE_KEY = 'aklatbayon_dark_mode';
+    var THEME_KEY = 'aklatbayon_theme';
 
     function init() {
-        initDarkMode();
         renderHeader();
         Sidebar.render();
     }
 
-    function initDarkMode() {
-        var pref = localStorage.getItem(DARK_MODE_KEY);
-        if (pref === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-    }
-
     function toggleDarkMode() {
-        var isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem(DARK_MODE_KEY, isDark ? 'true' : 'false');
+        var html = document.documentElement;
+        var isDark = html.classList.contains('dark');
+        if (isDark) {
+            html.classList.remove('dark');
+            localStorage.setItem(THEME_KEY, 'light');
+        } else {
+            html.classList.add('dark');
+            localStorage.setItem(THEME_KEY, 'dark');
+        }
         updateToggleIcon();
     }
 
     function updateToggleIcon() {
         var btn = document.getElementById('btn-dark-mode');
         if (!btn) return;
-        var isDark = document.body.classList.contains('dark-mode');
-        btn.innerHTML = '<i class="fas ' + (isDark ? 'fa-sun' : 'fa-moon') + '"></i>';
+        var isDark = document.documentElement.classList.contains('dark');
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg">' + (isDark ? 'light_mode' : 'dark_mode') + '</span>';
         btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
     }
 
@@ -33,19 +32,30 @@ var App = (function() {
         if (!user) return;
         var header = document.getElementById('top-header');
         if (!header) return;
-        var isDark = document.body.classList.contains('dark-mode');
+        var isDark = document.documentElement.classList.contains('dark');
+
+        header.className = 'sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-6';
+
         header.innerHTML =
-            '<div class="logo"><img src="images/logo.png" alt="" style="width:28px;height:28px;object-fit:contain;margin-right:8px"><span>AklatBayon</span></div>' +
-            '<div class="user-info">' +
-                '<div class="text-end">' +
-                    '<div class="user-name">' + user.name + '</div>' +
-                    '<div class="user-role">' + user.role_name + (user.faculty_subtype ? ' (' + user.faculty_subtype + ')' : '') + '</div>' +
+            '<div class="flex items-center gap-3">' +
+                '<img src="/images/logo.png" alt="AklatBayon" class="w-8 h-8 object-contain rounded-full bg-primary/10 p-0.5">' +
+                '<span class="text-lg font-bold tracking-tight text-primary">AklatBayon</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-4">' +
+                '<div class="flex items-center gap-3 pr-4 border-r border-slate-200 dark:border-slate-700">' +
+                    '<div class="text-right">' +
+                        '<div class="text-sm font-semibold text-slate-900 dark:text-slate-100">' + user.name + '</div>' +
+                        '<div class="text-[11px] text-slate-500 dark:text-slate-400">' + user.role_name + (user.faculty_subtype ? ' (' + user.faculty_subtype + ')' : '') + '</div>' +
+                    '</div>' +
                 '</div>' +
-                '<button class="dark-mode-toggle" id="btn-dark-mode" title="' + (isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode') + '">' +
-                    '<i class="fas ' + (isDark ? 'fa-sun' : 'fa-moon') + '"></i>' +
+                '<button id="btn-dark-mode" title="' + (isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode') + '" class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">' +
+                    '<span class="material-symbols-outlined text-lg">' + (isDark ? 'light_mode' : 'dark_mode') + '</span>' +
                 '</button>' +
-                '<button class="btn-logout" id="btn-logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</button>' +
+                '<button id="btn-logout" class="inline-flex items-center gap-1.5 rounded-lg bg-red-500 hover:bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors">' +
+                    '<span class="material-symbols-outlined text-base">logout</span> Logout' +
+                '</button>' +
             '</div>';
+
         document.getElementById('btn-dark-mode').addEventListener('click', function() {
             toggleDarkMode();
         });
@@ -57,10 +67,15 @@ var App = (function() {
     function showAlert(type, message) {
         var container = document.getElementById('alert-container');
         if (!container) return;
-        var iconMap = { success: 'fa-check-circle', danger: 'fa-exclamation-circle', info: 'fa-info-circle' };
+        var styles = {
+            success: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+            danger:  'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800',
+            info:    'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+        };
+        var icons = { success: 'check_circle', danger: 'error', info: 'info' };
         var div = document.createElement('div');
-        div.className = 'alert alert-' + type;
-        div.innerHTML = '<i class="fas ' + (iconMap[type] || 'fa-info-circle') + '"></i> ' + message;
+        div.className = 'flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 animate-fade-in ' + (styles[type] || styles.info);
+        div.innerHTML = '<span class="material-symbols-outlined text-lg">' + (icons[type] || 'info') + '</span> ' + message;
         container.prepend(div);
         setTimeout(function() { div.remove(); }, 4000);
     }
@@ -72,20 +87,20 @@ var App = (function() {
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e94560',
-            cancelButtonColor: '#6c757d',
+            cancelButtonColor: '#64748b',
             confirmButtonText: 'Yes, delete it!'
         });
     }
 
     function formatDate(isoStr) {
-        if (!isoStr) return '—';
+        if (!isoStr) return '\u2014';
         var d = new Date(isoStr);
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
     }
 
     function formatDateTime(isoStr) {
-        if (!isoStr) return '—';
+        if (!isoStr) return '\u2014';
         var d = new Date(isoStr);
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         var h = d.getHours();

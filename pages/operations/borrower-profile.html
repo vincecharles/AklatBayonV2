@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borrower Profile - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+            accent: '#e94560',
+            'bg-light': '#f6f6f8',
+            'bg-dark': '#131022'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+  <div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+      <div id="alert-container"></div>
+
+      <!-- Page Header -->
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>
+          Borrower Profile
+        </h1>
+      </div>
+
+      <!-- Two-Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Profile Card -->
+        <div class="lg:col-span-1">
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 text-center" id="profile-card">
+            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-outlined text-4xl text-primary">person</span>
+            </div>
+            <h3 class="text-xl font-bold" id="profile-name">Loading...</h3>
+            <div class="mt-2 mb-4" id="profile-student-id"></div>
+
+            <!-- Profile Details -->
+            <div class="text-left space-y-3 px-2 mt-4">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lg text-slate-400">mail</span>
+                <span class="text-sm text-slate-600 dark:text-slate-300" id="profile-email"></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lg text-slate-400">layers</span>
+                <span class="text-sm text-slate-600 dark:text-slate-300" id="profile-section"></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lg text-slate-400">school</span>
+                <span class="text-sm text-slate-600 dark:text-slate-300" id="profile-grade"></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lg text-slate-400">phone</span>
+                <span class="text-sm text-slate-600 dark:text-slate-300" id="profile-contact"></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lg" id="profile-status-icon">fiber_manual_record</span>
+                <span id="profile-status"></span>
+              </div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mt-5">
+              <p class="text-sm font-semibold mb-3">Library QR Code</p>
+              <div id="qr-code" class="flex justify-center mb-3"></div>
+              <button class="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" id="btn-print-qr">
+                <span class="material-symbols-outlined text-base">print</span> Print QR Card
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Stats + Tabs -->
+        <div class="lg:col-span-2">
+
+          <!-- Stat Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">auto_stories</span>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold" id="stat-borrowed">0</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Currently Borrowed</div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary dark:text-primary-50">menu_book</span>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold" id="stat-total">0</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Total Books Borrowed</div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-red-600 dark:text-red-400">payments</span>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold" id="stat-fines">&#8369;0</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Outstanding Fines</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="flex border-b-2 border-slate-200 dark:border-slate-800 mb-5 gap-1">
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary -mb-[2px] transition-colors" data-tab="current">Currently Borrowed</button>
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b-2 border-transparent -mb-[2px] transition-colors hover:text-slate-900 dark:hover:text-slate-100" data-tab="history">Borrowing History</button>
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b-2 border-transparent -mb-[2px] transition-colors hover:text-slate-900 dark:hover:text-slate-100" data-tab="fines">Fines</button>
+            <button class="nav-tab px-5 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b-2 border-transparent -mb-[2px] transition-colors hover:text-slate-900 dark:hover:text-slate-100" data-tab="reservations">Reservations</button>
+          </div>
+
+          <!-- Tab 1: Currently Borrowed -->
+          <div class="tab-pane active" id="tab-current">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Book</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Date Issued</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Date Due</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-current" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Borrowing History -->
+          <div class="tab-pane" id="tab-history">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">#</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Book</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Issued</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Due</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Returned</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-history" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Fines -->
+          <div class="tab-pane" id="tab-fines">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">#</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reason</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Amount</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-fines" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                </table>
+              </div>
+            </div>
+            <div id="fines-total" class="text-right font-bold text-sm mt-2"></div>
+          </div>
+
+          <!-- Tab 4: Reservations -->
+          <div class="tab-pane" id="tab-reservations">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-slate-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">#</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Book</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reserved Date</th>
+                      <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Expires</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-reservations" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /lg:col-span-2 -->
+      </div><!-- /grid -->
+
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!Auth.requireAuth()) throw '';
+    App.init();
+
+    var studentId = new URLSearchParams(window.location.search).get('id');
+    if (!studentId) {
+        document.querySelector('main').innerHTML = '<div id="alert-container"></div>'
+            + '<div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>'
+            + '<div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">No student ID provided. Please select a student first.</p></div>';
+    } else {
+        var student = Store.getById('students', studentId);
+        if (!student) {
+            document.querySelector('main').innerHTML = '<div id="alert-container"></div>'
+                + '<div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800"><h1 class="text-2xl font-black tracking-tight flex items-center gap-2"><span class="material-symbols-outlined text-primary dark:text-primary-50">account_circle</span>Borrower Profile</h1></div>'
+                + '<div class="flex flex-col items-center justify-center py-16 text-slate-400"><span class="material-symbols-outlined text-6xl mb-3">person_off</span><p class="text-sm">Student not found.</p></div>';
+        } else {
+            // Populate profile card
+            document.getElementById('profile-name').textContent = student.name;
+            document.getElementById('profile-student-id').innerHTML = '<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary text-white">' + student.student_id + '</span>';
+            document.getElementById('profile-email').textContent = student.email;
+            document.getElementById('profile-section').textContent = student.section;
+            document.getElementById('profile-grade').textContent = student.grade_level;
+            document.getElementById('profile-contact').textContent = student.contact;
+            var statusIcon = document.getElementById('profile-status-icon');
+            if (student.status === 'active') {
+                statusIcon.classList.add('text-emerald-500');
+                document.getElementById('profile-status').innerHTML = '<span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">' + student.status + '</span>';
+            } else {
+                statusIcon.classList.add('text-slate-400');
+                document.getElementById('profile-status').innerHTML = '<span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300">' + student.status + '</span>';
+            }
+
+            // Generate QR Code
+            var qrUrl = window.location.origin + '/pages/operations/borrower-profile.html?id=' + studentId;
+            var qrContainer = document.getElementById('qr-code');
+            new QRCode(qrContainer, { text: qrUrl, width: 180, height: 180, colorDark: '#1e293b', colorLight: '#ffffff' });
+
+            // Print QR Card
+            document.getElementById('btn-print-qr').addEventListener('click', function() {
+                var qrImg = qrContainer.querySelector('img');
+                var imgData = qrImg ? qrImg.src : qrContainer.querySelector('canvas').toDataURL();
+                var w = window.open('', '_blank', 'width=400,height=500');
+                w.document.write('<html><head><title>Library Card</title><style>body{font-family:Arial,sans-serif;text-align:center;padding:30px 20px;margin:0}h2{color:#1a1a2e;margin:0 0 4px}p{color:#555;margin:4px 0}img{margin:16px auto;display:block}.id-badge{display:inline-block;background:#3211d4;color:#fff;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:600;margin:8px 0 12px}.label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;margin-top:16px}hr{border:none;border-top:1px dashed #ccc;margin:16px 0}</style></head><body>');
+                w.document.write('<div class="label">AklatBayon Library</div>');
+                w.document.write('<h2>' + student.name + '</h2>');
+                w.document.write('<div class="id-badge">' + student.student_id + '</div>');
+                w.document.write('<p>' + student.section + ' &bull; ' + student.grade_level + '</p>');
+                w.document.write('<hr>');
+                w.document.write('<img src="' + imgData + '" width="180" height="180">');
+                w.document.write('<div class="label">Scan to view borrower profile</div>');
+                w.document.write('</body></html>');
+                w.document.close();
+                w.focus();
+                w.print();
+            });
+
+            // Load all data
+            var allTransactions = Store.getAll('transactions');
+            var studentTransactions = allTransactions.filter(function(t) { return t.student_id === studentId; });
+            var currentlyBorrowed = studentTransactions.filter(function(t) { return t.status === 'borrowed'; });
+            var allFines = Store.getAll('fines');
+            var studentFines = allFines.filter(function(f) { return f.student_id === studentId; });
+            var allReservations = Store.getAll('reservations');
+            var studentReservations = allReservations.filter(function(r) { return r.student_id === studentId; });
+
+            // Stats
+            document.getElementById('stat-borrowed').textContent = currentlyBorrowed.length;
+            document.getElementById('stat-total').textContent = studentTransactions.length;
+            var outstandingFines = Store.getStudentFinesTotal(studentId);
+            document.getElementById('stat-fines').innerHTML = '&#8369;' + outstandingFines;
+
+            // Tab switching
+            document.querySelectorAll('.nav-tab').forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(function(t) {
+                        t.classList.remove('active', 'text-primary', 'border-primary');
+                        t.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+                    });
+                    document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+                    this.classList.add('active', 'text-primary', 'border-primary');
+                    this.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Tab 1: Currently Borrowed
+            (function() {
+                var tbody = document.getElementById('table-current');
+                if (!currentlyBorrowed.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-sm text-slate-400">No books currently borrowed.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = currentlyBorrowed.map(function(t) {
+                    var isOverdue = new Date(t.date_due) < new Date();
+                    var statusBadge = isOverdue
+                        ? '<span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Overdue</span>'
+                        : '<span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Borrowed</span>';
+                    return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
+                        + '<td class="px-4 py-3 text-sm font-medium">' + App.getBookTitle(t.book_id) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(t.date_issued) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(t.date_due) + '</td>'
+                        + '<td class="px-4 py-3">' + statusBadge + '</td></tr>';
+                }).join('');
+            })();
+
+            // Tab 2: Borrowing History
+            (function() {
+                var tbody = document.getElementById('table-history');
+                if (!studentTransactions.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-slate-400">No borrowing history.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = studentTransactions.map(function(t, i) {
+                    var statusClass, statusLabel;
+                    if (t.status === 'returned') {
+                        statusClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'; statusLabel = 'Returned';
+                    } else if (new Date(t.date_due) < new Date()) {
+                        statusClass = 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'; statusLabel = 'Overdue';
+                    } else {
+                        statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'; statusLabel = 'Borrowed';
+                    }
+                    return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + (i + 1) + '</td>'
+                        + '<td class="px-4 py-3 text-sm font-medium">' + App.getBookTitle(t.book_id) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(t.date_issued) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(t.date_due) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(t.date_returned) + '</td>'
+                        + '<td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ' + statusClass + '">' + statusLabel + '</span></td></tr>';
+                }).join('');
+            })();
+
+            // Tab 3: Fines
+            (function() {
+                var tbody = document.getElementById('table-fines');
+                if (!studentFines.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-sm text-slate-400">No fines found.</td></tr>';
+                    document.getElementById('fines-total').textContent = '';
+                    return;
+                }
+                var statusMap = {
+                    pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+                    paid: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+                    waived: 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300'
+                };
+                var total = 0;
+                tbody.innerHTML = studentFines.map(function(f, i) {
+                    total += parseFloat(f.amount) || 0;
+                    return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + (i + 1) + '</td>'
+                        + '<td class="px-4 py-3 text-sm">' + f.reason + '</td>'
+                        + '<td class="px-4 py-3 text-sm font-semibold">' + '\u20B1' + f.amount + '</td>'
+                        + '<td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ' + (statusMap[f.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300') + '">' + f.status + '</span></td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(f.created_at) + '</td></tr>';
+                }).join('');
+                document.getElementById('fines-total').innerHTML = 'Total: &#8369;' + total;
+            })();
+
+            // Tab 4: Reservations
+            (function() {
+                var tbody = document.getElementById('table-reservations');
+                if (!studentReservations.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-sm text-slate-400">No reservations found.</td></tr>';
+                    return;
+                }
+                var resStatusMap = {
+                    active: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-50',
+                    available: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+                    expired: 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300',
+                    cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                    fulfilled: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
+                };
+                tbody.innerHTML = studentReservations.map(function(r, i) {
+                    return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + (i + 1) + '</td>'
+                        + '<td class="px-4 py-3 text-sm font-medium">' + App.getBookTitle(r.book_id) + '</td>'
+                        + '<td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ' + (resStatusMap[r.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300') + '">' + r.status + '</span></td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(r.created_at) + '</td>'
+                        + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDateTime(r.expires_at) + '</td></tr>';
+                }).join('');
+            })();
+        }
+    }
+  </script>
+</body>
+</html>

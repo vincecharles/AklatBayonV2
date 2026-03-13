@@ -1,8 +1,8 @@
 var Sidebar = (function() {
     function getCurrentPage() {
         var path = window.location.pathname;
-        var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-        return file;
+        if (path === '/' || path === '') return '/index.html';
+        return path;
     }
 
     function render() {
@@ -11,61 +11,76 @@ var Sidebar = (function() {
         var page = getCurrentPage();
         var nav = document.getElementById('sidebar-nav');
         if (!nav) return;
+
+        nav.className = 'hidden lg:flex w-72 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-y-auto';
+
         var html = '';
+        html += '<div class="p-4 space-y-1">';
 
-        html += '<div class="sidebar-brand"><img src="images/logo.png" alt="AklatBayon" style="width:36px;height:36px;object-fit:contain;margin-right:10px;border-radius:50%;background:rgba(255,255,255,0.1);padding:2px"><span style="font-weight:700;font-size:15px;color:#fff;letter-spacing:0.5px">AklatBayon</span></div>';
+        // Brand
+        html += '<div class="flex items-center gap-2.5 px-3 py-3 mb-2 border-b border-slate-200 dark:border-slate-800 pb-4">';
+        html += '<img src="/images/logo.png" alt="AklatBayon" class="w-9 h-9 object-contain rounded-full bg-primary/10 p-0.5">';
+        html += '<span class="font-bold text-[15px] text-primary tracking-tight">AklatBayon</span>';
+        html += '</div>';
 
-        html += navLink('dashboard.html', 'fa-tachometer-alt', 'Dashboard', page);
+        // General section
+        html += sectionLabel('General');
+        html += navLink('/pages/general/dashboard.html', 'dashboard', 'Dashboard', page);
 
-        if (Auth.hasAnyPermission(['can_manage_users', 'can_manage_roles'])) {
-            html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-users-cog', 'User Manage', ['users.html','roles.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['users.html','roles.html'], page) ? ' show' : '') + '">';
+        // User Management
+        if (Auth.hasAnyPermission(['can_manage_users', 'can_manage_roles', 'can_manage_students'])) {
+            html += sectionLabel('Management');
+            var userPages = ['/pages/management/users/users.html', '/pages/management/users/roles.html', '/pages/management/users/students.html'];
+            html += dropdownToggle('manage_accounts', 'User Management', userPages, page);
+            html += '<div class="' + submenuClass(userPages, page) + '">';
             if (Auth.hasPermission('can_manage_users')) {
-                html += navLink('users.html', 'fa-user', 'Users', page);
+                html += subNavLink('/pages/management/users/users.html', 'person', 'Users', page);
             }
             if (Auth.hasPermission('can_manage_roles')) {
-                html += navLink('roles.html', 'fa-user-shield', 'Roles', page);
+                html += subNavLink('/pages/management/users/roles.html', 'admin_panel_settings', 'Roles', page);
+            }
+            if (Auth.hasPermission('can_manage_students')) {
+                html += subNavLink('/pages/management/users/students.html', 'school', 'Students', page);
             }
             html += '</div></div>';
         }
 
-        if (Auth.hasPermission('can_manage_students')) {
-            html += navLink('students.html', 'fa-user-graduate', 'Student Management', page);
-        }
-
-        html += '<div class="nav-dropdown">';
-        html += dropdownToggle('fa-book', 'Catalog', ['books.html','authors.html','publishers.html','categories.html','loc-search.html','lcc-browser.html'], page);
-        html += '<div class="nav-dropdown-items' + (isActiveGroup(['books.html','authors.html','publishers.html','categories.html','loc-search.html','lcc-browser.html'], page) ? ' show' : '') + '">';
-        html += navLink('books.html', 'fa-book-open', 'Books', page);
+        // Catalog
+        var catalogPages = ['/pages/management/catalog/books.html', '/pages/management/catalog/authors.html', '/pages/management/catalog/publishers.html', '/pages/management/catalog/categories.html', '/pages/management/catalog/loc-search.html', '/pages/management/catalog/lcc-browser.html'];
+        html += dropdownToggle('menu_book', 'Catalog', catalogPages, page);
+        html += '<div class="' + submenuClass(catalogPages, page) + '">';
+        html += subNavLink('/pages/management/catalog/books.html', 'auto_stories', 'Books', page);
         if (Auth.hasPermission('can_add_categories')) {
-            html += navLink('authors.html', 'fa-pen-fancy', 'Authors', page);
-            html += navLink('publishers.html', 'fa-building', 'Publishers', page);
-            html += navLink('categories.html', 'fa-tags', 'Categories', page);
+            html += subNavLink('/pages/management/catalog/authors.html', 'edit', 'Authors', page);
+            html += subNavLink('/pages/management/catalog/publishers.html', 'apartment', 'Publishers', page);
+            html += subNavLink('/pages/management/catalog/categories.html', 'sell', 'Categories', page);
         }
         if (Auth.hasPermission('can_browse_catalog')) {
-            html += navLink('loc-search.html', 'fa-landmark', 'LOC Search', page);
-            html += navLink('lcc-browser.html', 'fa-sitemap', 'LCC Browser', page);
+            html += subNavLink('/pages/management/catalog/loc-search.html', 'account_balance', 'LOC Search', page);
+            html += subNavLink('/pages/management/catalog/lcc-browser.html', 'account_tree', 'LCC Browser', page);
         }
         html += '</div></div>';
 
+        // Circulation
         if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
-            html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-exchange-alt', 'Circulation', ['circulation.html','reservations.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['circulation.html','reservations.html'], page) ? ' show' : '') + '">';
-            html += navLink('circulation.html', 'fa-exchange-alt', 'Circulation', page);
+            html += sectionLabel('Operations');
+            var circPages = ['/pages/operations/circulation.html', '/pages/operations/reservations.html'];
+            html += dropdownToggle('swap_horiz', 'Circulation', circPages, page);
+            html += '<div class="' + submenuClass(circPages, page) + '">';
+            html += subNavLink('/pages/operations/circulation.html', 'swap_horiz', 'Transactions', page);
             if (Auth.hasPermission('can_reserve_books')) {
-                html += navLink('reservations.html', 'fa-bookmark', 'Reservations', page);
+                html += subNavLink('/pages/operations/reservations.html', 'bookmark', 'Reservations', page);
             }
             html += '</div></div>';
         }
 
+        // Finance
         if (Auth.hasPermission('can_manage_fines') || Auth.hasPermission('can_view_own_fines')) {
-            html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-money-bill-wave', 'Finance', ['fines.html','my-fines.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['fines.html','my-fines.html'], page) ? ' show' : '') + '">';
+            var financePages = ['/pages/operations/fines.html', '/pages/operations/my-fines.html'];
+            html += dropdownToggle('payments', 'Finance', financePages, page);
+            html += '<div class="' + submenuClass(financePages, page) + '">';
             if (Auth.hasPermission('can_manage_fines')) {
-                html += navLink('fines.html', 'fa-receipt', 'Fine Manage', page);
+                html += subNavLink('/pages/operations/fines.html', 'receipt_long', 'Fine Management', page);
             }
             if (Auth.hasPermission('can_view_own_fines')) {
                 var myFineCount = 0;
@@ -74,52 +89,100 @@ var Sidebar = (function() {
                     var allFines = Store.getAll('fines');
                     myFineCount = allFines.filter(function(f) { return f.student_id === currentUser.student_id && f.status === 'pending'; }).length;
                 }
-                html += navLink('my-fines.html', 'fa-file-invoice-dollar', 'My Fines' + (myFineCount > 0 ? ' <span class="badge bg-danger" style="font-size:10px;margin-left:4px">' + myFineCount + '</span>' : ''), page);
+                var badge = myFineCount > 0 ? ' <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">' + myFineCount + '</span>' : '';
+                html += subNavLink('/pages/operations/my-fines.html', 'request_quote', 'My Fines' + badge, page);
             }
             html += '</div></div>';
         }
 
+        // Administration
         if (Auth.hasAnyPermission(['can_view_reports', 'can_view_inventory', 'can_view_attendance'])) {
-            html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-chart-bar', 'Administration', ['inventory.html','reports.html','attendance.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['inventory.html','reports.html','attendance.html'], page) ? ' show' : '') + '">';
+            html += sectionLabel('Administration');
+            var adminPages = ['/pages/admin/inventory.html', '/pages/admin/reports.html', '/pages/admin/attendance.html'];
+            html += dropdownToggle('bar_chart', 'Reports & Data', adminPages, page);
+            html += '<div class="' + submenuClass(adminPages, page) + '">';
             if (Auth.hasPermission('can_view_inventory')) {
-                html += navLink('inventory.html', 'fa-boxes-stacked', 'Inventory', page);
+                html += subNavLink('/pages/admin/inventory.html', 'inventory_2', 'Inventory', page);
             }
             if (Auth.hasPermission('can_view_reports')) {
-                html += navLink('reports.html', 'fa-file-alt', 'Reports', page);
+                html += subNavLink('/pages/admin/reports.html', 'description', 'Reports', page);
             }
             if (Auth.hasPermission('can_view_attendance')) {
-                html += navLink('attendance.html', 'fa-clipboard-user', 'Attendance', page);
+                html += subNavLink('/pages/admin/attendance.html', 'assignment_ind', 'Attendance', page);
             }
             html += '</div></div>';
         }
 
+        // System
         if (Auth.hasAnyPermission(['can_manage_settings', 'can_manage_backups', 'can_view_audit_logs'])) {
-            html += '<div class="nav-dropdown">';
-            html += dropdownToggle('fa-cog', 'System', ['settings.html','audit-logs.html'], page);
-            html += '<div class="nav-dropdown-items' + (isActiveGroup(['settings.html','audit-logs.html'], page) ? ' show' : '') + '">';
+            html += sectionLabel('System');
+            var sysPages = ['/pages/admin/settings.html', '/pages/admin/audit-logs.html'];
+            html += dropdownToggle('settings', 'System Settings', sysPages, page);
+            html += '<div class="' + submenuClass(sysPages, page) + '">';
             if (Auth.hasPermission('can_manage_settings')) {
-                html += navLink('settings.html', 'fa-sliders-h', 'Settings', page);
+                html += subNavLink('/pages/admin/settings.html', 'tune', 'Settings', page);
             }
             if (Auth.hasPermission('can_view_audit_logs')) {
-                html += navLink('audit-logs.html', 'fa-clipboard-list', 'Audit Logs', page);
+                html += subNavLink('/pages/admin/audit-logs.html', 'checklist', 'Audit Logs', page);
             }
             html += '</div></div>';
         }
+
+        html += '</div>';
+
+        // Footer
+        html += '<div class="mt-auto p-4 space-y-3">';
+        html += '<div class="p-4 bg-primary/5 rounded-xl border border-primary/10">';
+        html += '<p class="text-xs font-semibold text-primary mb-1">AY 2025-2026</p>';
+        html += '<p class="text-[10px] text-slate-500 leading-tight">FEATI University Library<br>System Status: Operational</p>';
+        html += '</div></div>';
 
         nav.innerHTML = html;
         bindDropdowns();
     }
 
+    function sectionLabel(text) {
+        return '<p class="px-3 pt-5 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">' + text + '</p>';
+    }
+
     function navLink(href, icon, label, currentPage) {
-        var active = currentPage === href ? ' active' : '';
-        return '<a href="' + href + '" class="nav-link' + active + '"><i class="fas ' + icon + '"></i> ' + label + '</a>';
+        var isActive = currentPage === href;
+        var cls = isActive
+            ? 'flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white font-medium text-sm'
+            : 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-sm transition-colors';
+        return '<a href="' + href + '" class="' + cls + '">' +
+            '<span class="material-symbols-outlined text-xl">' + icon + '</span>' +
+            '<span>' + label + '</span></a>';
+    }
+
+    function subNavLink(href, icon, label, currentPage) {
+        var isActive = currentPage === href;
+        var cls = isActive
+            ? 'flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary text-sm font-semibold'
+            : 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors';
+        return '<a href="' + href + '" class="' + cls + '">' +
+            '<span class="material-symbols-outlined text-lg">' + icon + '</span>' +
+            '<span>' + label + '</span></a>';
     }
 
     function dropdownToggle(icon, label, pages, currentPage) {
-        var open = isActiveGroup(pages, currentPage) ? ' open' : '';
-        return '<a href="#" class="nav-link nav-dropdown-toggle' + open + '"><i class="fas ' + icon + '"></i> <span>' + label + '</span><i class="fas fa-chevron-down nav-chevron"></i></a>';
+        var isOpen = isActiveGroup(pages, currentPage);
+        var cls = isOpen
+            ? 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-primary text-white font-medium text-sm'
+            : 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm transition-colors';
+        return '<div class="nav-dropdown">' +
+            '<button type="button" class="' + cls + '" data-target="menu_' + icon + '" aria-expanded="' + isOpen + '">' +
+                '<div class="flex items-center gap-3">' +
+                    '<span class="material-symbols-outlined text-xl">' + icon + '</span>' +
+                    '<span>' + label + '</span>' +
+                '</div>' +
+                '<span class="material-symbols-outlined text-sm menu-arrow transition-transform' + (isOpen ? ' rotate-180' : '') + '">expand_more</span>' +
+            '</button>';
+    }
+
+    function submenuClass(pages, currentPage) {
+        var isOpen = isActiveGroup(pages, currentPage);
+        return (isOpen ? '' : 'hidden ') + 'ml-5 mt-1 space-y-0.5 border-l border-slate-200 dark:border-slate-700 pl-3';
     }
 
     function isActiveGroup(pages, currentPage) {
@@ -127,13 +190,22 @@ var Sidebar = (function() {
     }
 
     function bindDropdowns() {
-        document.querySelectorAll('.nav-dropdown-toggle').forEach(function(toggle) {
+        document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
-                var items = this.nextElementSibling;
-                if (items && items.classList.contains('nav-dropdown-items')) {
-                    items.classList.toggle('show');
-                    this.classList.toggle('open');
+                var submenu = this.nextElementSibling;
+                if (!submenu) return;
+                var arrow = this.querySelector('.menu-arrow');
+                var isHidden = submenu.classList.contains('hidden');
+
+                if (isHidden) {
+                    submenu.classList.remove('hidden');
+                    if (arrow) arrow.classList.add('rotate-180');
+                    this.setAttribute('aria-expanded', 'true');
+                } else {
+                    submenu.classList.add('hidden');
+                    if (arrow) arrow.classList.remove('rotate-180');
+                    this.setAttribute('aria-expanded', 'false');
                 }
             });
         });

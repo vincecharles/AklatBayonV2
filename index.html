@@ -1,154 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FEATI-LMS | AklatBayon</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            color: #fff;
-            transition: background 1s ease;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: { DEFAULT: '#3211d4', 700: '#3211d4', 800: '#2e14a8' },
+                        accent: '#e94560',
+                    }
+                }
+            }
         }
-        body.time-night { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f3460 100%); }
-        body.time-dawn { background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 30%, #e07040 70%, #f4a460 100%); }
-        body.time-morning { background: linear-gradient(135deg, #1565c0 0%, #42a5f5 50%, #90caf9 100%); }
+    </script>
+    <style>
+        /* Time-based background gradients */
+        body.time-night     { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f3460 100%); }
+        body.time-dawn      { background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 30%, #e07040 70%, #f4a460 100%); }
+        body.time-morning   { background: linear-gradient(135deg, #1565c0 0%, #42a5f5 50%, #90caf9 100%); }
         body.time-afternoon { background: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #64b5f6 100%); }
-        body.time-dusk { background: linear-gradient(135deg, #1a1a2e 0%, #4a1942 30%, #c0392b 70%, #e67e22 100%); }
-        body.time-morning .main-title, body.time-morning .sub-title { color: #0d2137; text-shadow: 0 0 30px rgba(13,33,55,0.2); }
-        body.time-morning .system-status { color: rgba(13,33,55,0.7); }
-        body.time-morning .status-dot { background-color: #1b5e20; }
-        body.time-morning .clock { color: #0d2137; }
-        body.time-morning .station-label { color: rgba(13,33,55,0.5); }
-        body.time-morning .instruction-text { color: rgba(13,33,55,0.6); }
-        body.time-morning .time-indicator { color: rgba(13,33,55,0.5); }
-        body.time-morning .scan-ring { border-color: rgba(13,33,55,0.3); }
-        body.time-morning .scan-line { background: linear-gradient(90deg, transparent, rgba(13,33,55,0.6), transparent); box-shadow: 0 0 15px rgba(13,33,55,0.3); }
-        body.time-morning .logo-glow { background: radial-gradient(circle, rgba(13,33,55,0.1) 0%, transparent 70%); }
-        body.time-morning .particle { background: rgba(255,255,255,0.25); }
+        body.time-dusk      { background: linear-gradient(135deg, #1a1a2e 0%, #4a1942 30%, #c0392b 70%, #e67e22 100%); }
+
+        /* Morning mode - dark text overrides */
+        body.time-morning .text-hero { color: #0d2137; text-shadow: 0 0 30px rgba(13,33,55,0.2); }
+        body.time-morning .text-sub  { color: rgba(13,33,55,0.6); }
+        body.time-morning .text-dim  { color: rgba(13,33,55,0.5); }
+        body.time-morning .ring-scan { border-color: rgba(13,33,55,0.3); }
+        body.time-morning .line-scan { background: linear-gradient(90deg, transparent, rgba(13,33,55,0.6), transparent); box-shadow: 0 0 15px rgba(13,33,55,0.3); }
+        body.time-morning .particle  { background: rgba(255,255,255,0.25); }
         body.time-afternoon .particle { background: rgba(255,255,255,0.25); }
-        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
-        .system-status { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #28a745; animation: pulse-dot 2s ease-in-out infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .clock { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,0.9); }
-        .station-label { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-align: right; }
-        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; z-index: 1; }
-        .logo-container { position: relative; width: 220px; height: 220px; margin-bottom: 30px; }
-        .logo-container .logo-icon { width: 180px; height: 180px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; display: flex; align-items: center; justify-content: center; }
-        .logo-container .logo-icon img { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(224,230,240,0.3)); }
-        .scan-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border-radius: 50%; border: 2px solid rgba(224,230,240,0.3); animation: scan-pulse 2.5s ease-out infinite; }
-        .scan-ring:nth-child(2) { animation-delay: 0.5s; }
-        .scan-ring:nth-child(3) { animation-delay: 1s; }
+
+        /* Scan ring pulse */
         @keyframes scan-pulse { 0% { width: 200px; height: 200px; opacity: 0.8; } 100% { width: 320px; height: 320px; opacity: 0; } }
-        .scan-line { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 180px; height: 3px; background: linear-gradient(90deg, transparent, rgba(224,230,240,0.7), transparent); border-radius: 2px; animation: scan-sweep 2.5s ease-in-out infinite; z-index: 4; box-shadow: 0 0 15px rgba(224,230,240,0.3); }
+        .ring-scan { animation: scan-pulse 2.5s ease-out infinite; }
+        .ring-scan:nth-child(2) { animation-delay: 0.5s; }
+        .ring-scan:nth-child(3) { animation-delay: 1s; }
+
+        /* Scan line sweep */
         @keyframes scan-sweep { 0% { top: 15px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 200px; opacity: 0; } }
-        .logo-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(224,230,240,0.1) 0%, transparent 70%); z-index: 1; animation: glow-pulse 3s ease-in-out infinite; }
-        @keyframes glow-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } }
-        .main-title { font-size: 48px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-align: center; margin-bottom: 0; color: #e0e6f0; text-shadow: 0 0 30px rgba(224,230,240,0.2); }
-        .sub-title { font-size: 42px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-align: center; color: #e0e6f0; margin-bottom: 16px; text-shadow: 0 0 30px rgba(224,230,240,0.2); }
-        .instruction-text { display: flex; align-items: center; gap: 10px; font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 24px; letter-spacing: 0.5px; }
-        .rfid-input-wrap { position: relative; margin-bottom: 24px; }
-        .rfid-input-wrap input { width: 340px; padding: 14px 20px 14px 48px; font-size: 18px; font-weight: 600; letter-spacing: 2px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.1); color: #fff; text-align: center; transition: all 0.3s; backdrop-filter: blur(8px); }
-        .rfid-input-wrap input::placeholder { color: rgba(255,255,255,0.4); letter-spacing: 1px; font-weight: 400; }
-        .rfid-input-wrap input:focus { outline: none; border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.15); box-shadow: 0 0 30px rgba(255,255,255,0.1); }
-        .rfid-input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: rgba(255,255,255,0.5); }
-        .bottom-links { display: flex; gap: 32px; margin-top: 12px; }
-        .bottom-links a { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.3s; }
-        .bottom-links a:hover { color: #fff; }
-        .reg-form { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 28px; width: 380px; backdrop-filter: blur(12px); animation: fadeIn 0.3s ease; }
-        .reg-form h4 { font-size: 18px; font-weight: 700; margin-bottom: 16px; text-align: center; }
-        .reg-form .form-group { margin-bottom: 12px; }
-        .reg-form label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; }
-        .reg-form input, .reg-form select { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; font-family: inherit; }
-        .reg-form input:focus, .reg-form select:focus { outline: none; border-color: rgba(255,255,255,0.5); }
-        .reg-form select option { color: #333; background: #fff; }
-        .reg-form .btn-register { width: 100%; padding: 12px; background: #28a745; border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
-        .reg-form .btn-register:hover { background: #218838; }
-        .reg-form .btn-cancel { width: 100%; padding: 10px; background: none; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; color: rgba(255,255,255,0.7); font-size: 13px; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
-        .reg-form .btn-cancel:hover { border-color: #fff; color: #fff; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .faculty-sub { display: none; }
-        .faculty-sub.visible { display: block; }
-        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .particle { position: absolute; width: 2px; height: 2px; background: rgba(224,230,240,0.2); border-radius: 50%; animation: float-up linear infinite; }
+        .line-scan { animation: scan-sweep 2.5s ease-in-out infinite; }
+
+        /* Glow pulse */
+        @keyframes glow-pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; } }
+
+        /* Floating particles */
         @keyframes float-up { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
-        .time-indicator { position: absolute; bottom: 20px; right: 32px; z-index: 10; font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
-        .welcome-toast { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); max-width: 460px; width: 90%; background: rgba(15,52,96,0.95); border: 1px solid rgba(40,167,69,0.5); border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); padding: 16px 20px; display: flex; align-items: center; gap: 14px; animation: slide-up 0.5s ease-out, fade-out 0.5s ease-in 4.5s forwards; z-index: 100; }
+        .particle { position: absolute; border-radius: 50%; background: rgba(224,230,240,0.2); animation: float-up linear infinite; }
+
+        /* Status dot pulse */
+        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Welcome toast animations */
         @keyframes slide-up { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         @keyframes fade-out { to { opacity: 0; pointer-events: none; } }
-        .toast-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(40,167,69,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .toast-icon i { color: #28a745; font-size: 18px; }
-        .toast-content { flex: 1; }
-        .toast-label { font-size: 11px; font-weight: 700; color: #28a745; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
-        .toast-title { font-size: 15px; font-weight: 700; color: #fff; }
-        .toast-detail { font-size: 12px; color: rgba(255,255,255,0.5); }
-        .toast-detail .text-green { color: #28a745; font-weight: 700; }
-        .toast-avatar { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .toast-avatar i { font-size: 20px; color: rgba(255,255,255,0.5); }
+        .toast-anim { animation: slide-up 0.5s ease-out, fade-out 0.5s ease-in 4.5s forwards; }
+
+        /* Fade in */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Faculty sub toggle */
+        .faculty-sub { display: none; }
+        .faculty-sub.visible { display: block; }
     </style>
 </head>
-<body class="time-night">
-    <div class="particles" id="particles"></div>
-    <div class="status-bar">
-        <div class="system-status"><div class="status-dot"></div> SYSTEM ONLINE</div>
-        <div class="text-end" style="text-align:right">
-            <div class="clock" id="clock">12:00:00 PM</div>
-            <div class="station-label">FEATI-LMS STATION 01</div>
+<body class="time-night font-sans min-h-screen flex flex-col overflow-hidden text-white transition-[background] duration-1000">
+    <!-- Particles -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <!-- Status Bar -->
+    <div class="flex justify-between items-center px-8 py-4 absolute top-0 left-0 right-0 z-10">
+        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[1.5px] text-white/70">
+            <div class="w-2 h-2 rounded-full bg-emerald-500" style="animation: pulse-dot 2s ease-in-out infinite"></div>
+            SYSTEM ONLINE
+        </div>
+        <div class="text-right">
+            <div id="clock" class="text-2xl font-bold tracking-wide text-white/90">12:00:00 PM</div>
+            <div class="text-[11px] text-white/50 tracking-wide text-dim">FEATI-LMS STATION 01</div>
         </div>
     </div>
-    <div class="main-content">
-        <div class="logo-container">
-            <div class="scan-ring"></div>
-            <div class="scan-ring"></div>
-            <div class="scan-ring"></div>
-            <div class="logo-glow"></div>
-            <div class="scan-line"></div>
-            <div class="logo-icon"><img src="images/logo.png" alt="AklatBayon"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col items-center justify-center px-5 z-[1]">
+        <!-- Logo Container -->
+        <div class="relative w-[220px] h-[220px] mb-8">
+            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
+            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
+            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full z-[1]" style="background: radial-gradient(circle, rgba(224,230,240,0.1) 0%, transparent 70%); animation: glow-pulse 3s ease-in-out infinite"></div>
+            <div class="line-scan absolute left-1/2 -translate-x-1/2 w-[180px] h-[3px] rounded z-[4] bg-gradient-to-r from-transparent via-white/70 to-transparent shadow-[0_0_15px_rgba(224,230,240,0.3)]"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[3] flex items-center justify-center">
+                <img src="images/logo.png" alt="AklatBayon" class="w-[140px] h-[140px] object-contain drop-shadow-[0_0_20px_rgba(224,230,240,0.3)]">
+            </div>
         </div>
+
+        <!-- Tap Section -->
         <div id="tap-section">
-            <h1 class="main-title">TAP RFID</h1>
-            <h2 class="sub-title">TO ENTER</h2>
-            <div class="instruction-text"><i class="fas fa-book-reader"></i> Welcome to FEATI University Library</div>
-            <div class="rfid-input-wrap">
-                <i class="fas fa-id-card"></i>
-                <input type="text" id="rfid-input" placeholder="Scan or type RFID" autofocus>
+            <h1 class="text-5xl font-black uppercase tracking-[3px] text-center mb-0 text-hero text-[#e0e6f0]" style="text-shadow: 0 0 30px rgba(224,230,240,0.2)">TAP RFID</h1>
+            <h2 class="text-[42px] font-black uppercase tracking-[3px] text-center text-hero text-[#e0e6f0] mb-4" style="text-shadow: 0 0 30px rgba(224,230,240,0.2)">TO ENTER</h2>
+            <div class="flex items-center gap-2.5 text-base text-white/60 mb-6 tracking-wide justify-center text-sub">
+                <span class="material-symbols-outlined">auto_stories</span> Welcome to FEATI University Library
             </div>
-            <div class="bottom-links">
-                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Manual Login</a>
-                <a href="catalog.html"><i class="fas fa-search"></i> Browse Catalog</a>
+            <div class="relative mb-6 flex justify-center">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg text-white/50 z-10">badge</span>
+                <input type="text" id="rfid-input" placeholder="Scan or type RFID" autofocus
+                    class="w-[340px] py-3.5 px-5 pl-12 text-lg font-semibold tracking-[2px] border-2 border-white/30 rounded-xl bg-white/10 text-white text-center transition-all backdrop-blur-lg placeholder:text-white/40 placeholder:tracking-wide placeholder:font-normal focus:outline-none focus:border-white/70 focus:bg-white/15 focus:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+            </div>
+            <div class="flex gap-8 mt-3 justify-center">
+                <a href="/pages/auth/login.html" class="flex items-center gap-1.5 text-white/50 text-[13px] font-semibold uppercase tracking-wide hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">login</span> Manual Login
+                </a>
+                <a href="/pages/management/catalog/catalog.html" class="flex items-center gap-1.5 text-white/50 text-[13px] font-semibold uppercase tracking-wide hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">search</span> Browse Catalog
+                </a>
             </div>
         </div>
+
+        <!-- Register Section -->
         <div id="register-section" style="display:none">
-            <div class="reg-form">
-                <h4><i class="fas fa-user-plus" style="margin-right:8px"></i>New User Registration</h4>
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="reg-name" placeholder="e.g. Juan Dela Cruz">
+            <div class="bg-white/[.08] border border-white/20 rounded-2xl p-7 w-[380px] backdrop-blur-xl" style="animation: fadeIn 0.3s ease">
+                <h4 class="text-lg font-bold mb-4 text-center flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">person_add</span>New User Registration
+                </h4>
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="e.g. Juan Dela Cruz"
+                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
                 </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" placeholder="email@aklatbayon.edu">
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Email</label>
+                    <input type="email" id="reg-email" placeholder="email@aklatbayon.edu"
+                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
                 </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="reg-username" placeholder="Choose a username">
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Username</label>
+                    <input type="text" id="reg-username" placeholder="Choose a username"
+                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="reg-password" placeholder="Choose a password">
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Password</label>
+                    <input type="password" id="reg-password" placeholder="Choose a password"
+                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
                 </div>
-                <div class="form-group">
-                    <label>Role</label>
-                    <select id="reg-role">
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Role</label>
+                    <select id="reg-role" class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50 [&>option]:text-gray-800 [&>option]:bg-white">
                         <option value="">Select Role</option>
                         <option value="r5">Student</option>
                         <option value="r4">Faculty</option>
@@ -156,34 +159,47 @@
                         <option value="r7">Guest</option>
                     </select>
                 </div>
-                <div class="form-group faculty-sub" id="faculty-sub-group">
-                    <label>Faculty Subtype</label>
-                    <select id="reg-faculty-sub">
+                <div class="faculty-sub mb-3" id="faculty-sub-group">
+                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Faculty Subtype</label>
+                    <select id="reg-faculty-sub" class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50 [&>option]:text-gray-800 [&>option]:bg-white">
                         <option value="Teaching">Teaching</option>
                         <option value="Non-Teaching">Non-Teaching</option>
                         <option value="Department Chair">Department Chair</option>
                         <option value="Department Head">Department Head</option>
                     </select>
                 </div>
-                <div id="reg-rfid-display" style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:8px;"></div>
-                <button class="btn-register" id="btn-register"><i class="fas fa-check"></i> Register & Enter</button>
-                <button class="btn-cancel" id="btn-reg-cancel">Cancel</button>
+                <div id="reg-rfid-display" class="text-center text-xs text-white/50 mb-2"></div>
+                <button id="btn-register" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 border-none rounded-lg text-white text-[15px] font-bold cursor-pointer mt-2 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-base">check_circle</span> Register & Enter
+                </button>
+                <button id="btn-reg-cancel" class="w-full py-2.5 bg-transparent border border-white/30 rounded-lg text-white/70 text-[13px] cursor-pointer mt-2 hover:border-white hover:text-white transition-all">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
-    <div class="time-indicator">
-        <i class="fas fa-moon" id="time-icon"></i>
+
+    <!-- Time Indicator -->
+    <div class="absolute bottom-5 right-8 z-10 text-xs text-white/40 tracking-wide flex items-center gap-1.5 text-dim">
+        <span class="material-symbols-outlined text-sm" id="time-icon">dark_mode</span>
         <span id="time-label">Night</span>
     </div>
-    <div class="welcome-toast">
-        <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
-        <div class="toast-content">
-            <div class="toast-label">SYSTEM READY</div>
-            <div class="toast-title">Welcome to FEATI-LMS</div>
-            <div class="toast-detail">System <span class="text-green">ONLINE</span></div>
+
+    <!-- Welcome Toast -->
+    <div class="toast-anim fixed bottom-3 left-1/2 -translate-x-1/2 max-w-[460px] w-[90%] bg-[rgba(15,52,96,0.95)] border border-emerald-500/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] py-4 px-5 flex items-center gap-3.5 z-[100]">
+        <div class="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-emerald-500 text-lg">check_circle</span>
         </div>
-        <div class="toast-avatar"><img src="images/logo.png" alt="" style="width:32px;height:32px;object-fit:contain"></div>
+        <div class="flex-1">
+            <div class="text-[11px] font-bold text-emerald-500 tracking-[1.5px] uppercase mb-0.5">SYSTEM READY</div>
+            <div class="text-[15px] font-bold text-white">Welcome to FEATI-LMS</div>
+            <div class="text-xs text-white/50">System <span class="text-emerald-500 font-bold">ONLINE</span></div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+            <img src="images/logo.png" alt="" class="w-8 h-8 object-contain">
+        </div>
     </div>
+
     <script src="js/api.js"></script>
     <script src="js/store.js"></script>
     <script src="js/auth.js"></script>
@@ -204,11 +220,11 @@
             var hour = new Date().getHours();
             var body = document.body, icon = document.getElementById('time-icon'), label = document.getElementById('time-label');
             body.classList.remove('time-night','time-dawn','time-morning','time-afternoon','time-dusk');
-            if (hour >= 5 && hour < 7) { body.classList.add('time-dawn'); icon.className='fas fa-cloud-sun'; label.textContent='Dawn'; }
-            else if (hour >= 7 && hour < 12) { body.classList.add('time-morning'); icon.className='fas fa-sun'; label.textContent='Morning'; }
-            else if (hour >= 12 && hour < 17) { body.classList.add('time-afternoon'); icon.className='fas fa-sun'; label.textContent='Afternoon'; }
-            else if (hour >= 17 && hour < 19) { body.classList.add('time-dusk'); icon.className='fas fa-cloud-sun'; label.textContent='Dusk'; }
-            else { body.classList.add('time-night'); icon.className='fas fa-moon'; label.textContent='Night'; }
+            if (hour >= 5 && hour < 7) { body.classList.add('time-dawn'); icon.textContent='partly_cloudy_day'; label.textContent='Dawn'; }
+            else if (hour >= 7 && hour < 12) { body.classList.add('time-morning'); icon.textContent='light_mode'; label.textContent='Morning'; }
+            else if (hour >= 12 && hour < 17) { body.classList.add('time-afternoon'); icon.textContent='light_mode'; label.textContent='Afternoon'; }
+            else if (hour >= 17 && hour < 19) { body.classList.add('time-dusk'); icon.textContent='partly_cloudy_day'; label.textContent='Dusk'; }
+            else { body.classList.add('time-night'); icon.textContent='dark_mode'; label.textContent='Night'; }
         }
         updateBackground();
         setInterval(updateBackground, 60000);
@@ -239,7 +255,7 @@
                         rfid_id: result.user.rfid_id,
                         tap_time: new Date().toISOString()
                     });
-                    window.location.href = 'welcome.html';
+                    window.location.href = '/pages/auth/welcome.html';
                 } else {
                     scannedRfid = rfid;
                     document.getElementById('tap-section').style.display = 'none';
@@ -280,7 +296,7 @@
                     tap_time: new Date().toISOString()
                 });
             }
-            window.location.href = 'welcome.html';
+            window.location.href = '/pages/auth/welcome.html';
         });
 
         document.getElementById('btn-reg-cancel').addEventListener('click', function() {

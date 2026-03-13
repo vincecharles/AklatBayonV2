@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 100: '#e0e3ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+            accent: '#e94560',
+            'bg-light': '#f6f6f8',
+            'bg-dark': '#131022',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Role badge variants (applied dynamically via JS) */
+    .role-admin     { background: rgba(233,69,96,0.2);  border: 1px solid rgba(233,69,96,0.4);  color: #e94560; }
+    .role-librarian { background: rgba(34,197,94,0.2);   border: 1px solid rgba(34,197,94,0.4);  color: #22c55e; }
+    .role-faculty   { background: rgba(6,182,212,0.2);   border: 1px solid rgba(6,182,212,0.4);  color: #06b6d4; }
+    .role-student   { background: rgba(234,179,8,0.2);   border: 1px solid rgba(234,179,8,0.4);  color: #eab308; }
+    .role-assistant { background: rgba(139,92,246,0.2);   border: 1px solid rgba(139,92,246,0.4); color: #8b5cf6; }
+    .role-guest     { background: rgba(107,114,128,0.2);  border: 1px solid rgba(107,114,128,0.4); color: #6b7280; }
+
+    /* Avatar pulse glow */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
+      50%      { box-shadow: 0 0 30px 10px rgba(255,255,255,0.08); }
+    }
+    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+    /* Particle element (created by JS with className = 'particle') */
+    .particle {
+      position: absolute;
+      border-radius: 9999px;
+      background: rgba(224,230,240,0.15);
+      animation: float-up linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans min-h-screen antialiased">
+
+  <!-- Full-screen gradient backdrop -->
+  <div class="fixed inset-0 bg-gradient-to-br from-[#1a1a2e] to-[#0f3460] flex items-center justify-center overflow-hidden">
+
+    <!-- Particles container -->
+    <div class="fixed inset-0 pointer-events-none z-0" id="particles"></div>
+
+    <!-- Welcome card -->
+    <div class="relative z-10 text-center animate-fade-in">
+
+      <!-- Avatar / Logo -->
+      <div class="w-[120px] h-[120px] rounded-full bg-white/10 border-[3px] border-white/20 flex items-center justify-center mx-auto mb-6 overflow-hidden animate-pulse-glow">
+        <img src="/images/logo.png" alt="AklatBayon" class="w-[90px] h-[90px] object-contain">
+      </div>
+
+      <!-- Welcome label -->
+      <p class="text-sm font-semibold uppercase tracking-[3px] text-white/50 mb-2">Welcome Back</p>
+
+      <!-- User name -->
+      <h1 class="text-[42px] font-black tracking-wide text-white mb-3" id="user-name">User</h1>
+
+      <!-- Role badge -->
+      <div class="inline-block px-5 py-1.5 rounded-full text-[13px] font-semibold tracking-wide mb-8" id="user-role">Role</div>
+
+      <!-- Redirect text -->
+      <p class="text-[13px] text-white/40">
+        Redirecting to dashboard<span class="inline-block w-5 text-left" id="dots"></span>
+      </p>
+
+      <!-- Progress bar -->
+      <div class="w-[200px] h-[3px] bg-white/10 rounded-full mx-auto mt-4 overflow-hidden">
+        <div class="h-full bg-accent rounded-full animate-fill-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+      var user = Auth.getCurrentUser();
+      if (!user) { window.location.href = '/pages/auth/login.html'; }
+      else {
+          document.getElementById('user-name').textContent = user.name;
+          var roleText = user.role_name;
+          if (user.faculty_subtype) roleText += ' — ' + user.faculty_subtype;
+          var roleEl = document.getElementById('user-role');
+          roleEl.textContent = roleText;
+          var roleClassMap = {
+              'System Administrator': 'role-admin',
+              'Librarian': 'role-librarian',
+              'Faculty': 'role-faculty',
+              'Student': 'role-student',
+              'Student Assistant': 'role-assistant',
+              'Guest': 'role-guest'
+          };
+          roleEl.classList.add(roleClassMap[user.role_name] || 'role-guest');
+      }
+
+      var dotCount = 0;
+      setInterval(function() {
+          dotCount = (dotCount + 1) % 4;
+          document.getElementById('dots').textContent = '.'.repeat(dotCount);
+      }, 500);
+
+      (function() {
+          var container = document.getElementById('particles');
+          for (var i = 0; i < 20; i++) {
+              var p = document.createElement('div');
+              p.className = 'particle';
+              p.style.left = Math.random()*100 + '%';
+              p.style.animationDuration = (8+Math.random()*12) + 's';
+              p.style.animationDelay = Math.random()*10 + 's';
+              p.style.width = p.style.height = (1+Math.random()*3) + 'px';
+              container.appendChild(p);
+          }
+      })();
+
+      setTimeout(function() { window.location.href = '/pages/general/dashboard.html'; }, 3000);
+  </script>
+</body>
+</html>

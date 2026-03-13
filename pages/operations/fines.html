@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fine Management - AklatBayon</title>
+  <script src="/js/theme-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+            accent: '#e94560',
+            'bg-light': '#f6f6f8',
+            'bg-dark': '#131022',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+  <div class="flex min-h-screen">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+      <div id="alert-container"></div>
+
+      <!-- Page Header -->
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary dark:text-primary-50">receipt_long</span>
+          Fine Management
+        </h1>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-5">
+        <div class="relative flex-1 min-w-[200px]">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+          <input type="text" id="search-input" placeholder="Search fines..."
+            class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+        </div>
+        <select id="filter-status"
+          class="h-10 px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none max-w-[160px]">
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="paid">Paid</option>
+          <option value="waived">Waived</option>
+        </select>
+      </div>
+
+      <!-- Table Card -->
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+              <tr>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">#</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Student</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reason</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Amount</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Date</th>
+                <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!Auth.requireAuth()) throw '';
+    App.init();
+
+    function load() {
+        var items = Store.getAll('fines');
+        var s = document.getElementById('search-input').value.toLowerCase();
+        var sf = document.getElementById('filter-status').value;
+        if (sf) items = items.filter(function(f) { return f.status === sf; });
+        if (s) items = items.filter(function(f) { return App.getStudentName(f.student_id).toLowerCase().indexOf(s) !== -1 || f.reason.toLowerCase().indexOf(s) !== -1; });
+        var tbody = document.getElementById('data-table');
+        if (!items.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-sm text-slate-400">No fines found.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(function(f, i) {
+            var statusMap = {
+                pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+                paid: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+                waived: 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300'
+            };
+            var actions = f.status === 'pending'
+                ? '<button class="btn-collect inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-emerald-600 hover:bg-emerald-700 text-white" data-id="' + f.id + '"><span class="material-symbols-outlined text-[16px]">check_circle</span>Collect</button> '
+                + '<button class="btn-waive inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-sky-600 hover:bg-sky-700 text-white" data-id="' + f.id + '"><span class="material-symbols-outlined text-[16px]">volunteer_activism</span>Waive</button>'
+                : '<span class="text-xs text-slate-400">Resolved</span>';
+            return '<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">'
+                + '<td class="px-4 py-3 text-sm text-slate-500">' + (i+1) + '</td>'
+                + '<td class="px-4 py-3 text-sm font-medium">' + App.getStudentName(f.student_id) + '</td>'
+                + '<td class="px-4 py-3 text-sm">' + f.reason + '</td>'
+                + '<td class="px-4 py-3 text-sm font-semibold">' + '\u20B1' + f.amount + '</td>'
+                + '<td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ' + (statusMap[f.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300') + '">' + f.status + '</span></td>'
+                + '<td class="px-4 py-3 text-sm text-slate-500">' + App.formatDate(f.created_at) + '</td>'
+                + '<td class="px-4 py-3">' + actions + '</td></tr>';
+        }).join('');
+        document.querySelectorAll('.btn-collect').forEach(function(b) {
+            b.addEventListener('click', function() { Store.update('fines', this.dataset.id, { status: 'paid' }); App.showAlert('success', 'Fine collected.'); load(); });
+        });
+        document.querySelectorAll('.btn-waive').forEach(function(b) {
+            b.addEventListener('click', function() { Store.update('fines', this.dataset.id, { status: 'waived' }); App.showAlert('success', 'Fine waived.'); load(); });
+        });
+    }
+
+    document.getElementById('search-input').addEventListener('input', load);
+    document.getElementById('filter-status').addEventListener('change', load);
+    load();
+  </script>
+</body>
+</html>
