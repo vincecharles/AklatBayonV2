@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/vincecharles/AklatBayonV2#readme",
   "dependencies": {
+    "@netlify/functions": "^2.8.2",
     "@netlify/neon": "^0.1.2",
     "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
+    "@types/node": "^22.10.5",
     "drizzle-kit": "^0.31.9",
     "typescript": "^5.9.3"
   }
