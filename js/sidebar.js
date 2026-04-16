@@ -34,15 +34,17 @@ const Sidebar = (() => {
         // General
         html += sectionLabel('General');
         html += navLink('/pages/general/dashboard.html', 'dashboard', 'Dashboard', page);
+        html += navLink('/pages/management/users/profile.html', 'person', 'My Profile', page);
 
         // User Management
         if (Auth.hasAnyPermission(['can_manage_users', 'can_manage_students'])) {
             html += sectionLabel('Management');
-            const userPages = ['/pages/management/users/users.html', '/pages/management/users/students.html'];
+            const userPages = ['/pages/management/users/users.html', '/pages/management/users/students.html', '/pages/management/users/faculty-profile.html'];
             html += dropdownToggle('manage_accounts', 'User Management', userPages, page);
             html += `<div class="${submenuClass(userPages, page)}">`;
             if (Auth.hasPermission('can_manage_users')) html += subNavLink('/pages/management/users/users.html', 'person', 'Users', page);
             if (Auth.hasPermission('can_manage_students')) html += subNavLink('/pages/management/users/students.html', 'school', 'Students', page);
+            html += subNavLink('/pages/management/users/faculty-profile.html', 'school', 'Faculty Portal', page);
             html += '</div></div>';
         }
 
@@ -53,7 +55,7 @@ const Sidebar = (() => {
         }
 
         // Book Management
-        const catalogPages = ['/pages/management/catalog/books.html', '/pages/management/catalog/authors.html', '/pages/management/catalog/publishers.html', '/pages/management/catalog/categories.html', '/pages/management/catalog/loc-search.html', '/pages/management/catalog/lcc-browser.html'];
+        const catalogPages = ['/pages/management/catalog/books.html', '/pages/management/catalog/authors.html', '/pages/management/catalog/publishers.html', '/pages/management/catalog/categories.html', '/pages/management/catalog/loc-search.html', '/pages/management/catalog/lcc-browser.html', '/pages/management/catalog/ai-search.html'];
         html += dropdownToggle('menu_book', 'Book Management', catalogPages, page);
         html += `<div class="${submenuClass(catalogPages, page)}">`;
         html += subNavLink('/pages/management/catalog/books.html', 'auto_stories', 'Books', page);
@@ -66,16 +68,18 @@ const Sidebar = (() => {
             html += subNavLink('/pages/management/catalog/loc-search.html', 'account_balance', 'LOC Search', page);
             html += subNavLink('/pages/management/catalog/lcc-browser.html', 'account_tree', 'LCC Browser', page);
         }
+        html += subNavLink('/pages/management/catalog/ai-search.html', 'auto_awesome', 'AI Search', page);
         html += '</div></div>';
 
         // Circulation
         if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
             html += sectionLabel('Operations');
-            const circPages = ['/pages/operations/circulation.html', '/pages/operations/reservations.html'];
+            const circPages = ['/pages/operations/circulation.html', '/pages/operations/reservations.html', '/pages/operations/reading-history.html'];
             html += dropdownToggle('swap_horiz', 'Circulation', circPages, page);
             html += `<div class="${submenuClass(circPages, page)}">`;
             html += subNavLink('/pages/operations/circulation.html', 'swap_horiz', 'Transactions', page);
             if (Auth.hasPermission('can_reserve_books')) html += subNavLink('/pages/operations/reservations.html', 'bookmark', 'Reservations', page);
+            html += subNavLink('/pages/operations/reading-history.html', 'history', 'Reading History', page);
             html += '</div></div>';
         }
 

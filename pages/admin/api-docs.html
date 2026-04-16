@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - AklatBayon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }
+  </script>
+  <style>
+    .glass-panel { background: rgba(30,30,50,0.5); backdrop-filter: blur(16px); border: 1px solid rgba(255,181,153,0.08); }
+    .code-block { background: #0d0d1a; border: 1px solid #1e1e32; font-family: 'JetBrains Mono', monospace; }
+    .endpoint-card { transition: all 0.2s ease; cursor: pointer; }
+    .endpoint-card:hover { border-color: rgba(255,181,153,0.2); }
+    .endpoint-card.active { border-color: rgba(255,181,153,0.3); background: rgba(255,181,153,0.03); }
+    .method-get { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+    .method-post { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+    .method-put { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+    .method-delete { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+    .syntax-key { color: #d2bcfa; }
+    .syntax-string { color: #4ade80; }
+    .syntax-number { color: #fbbf24; }
+    .syntax-comment { color: #4a4a6a; }
+    .nav-link { transition: all 0.15s; }
+    .nav-link:hover { color: #ffb599; background: rgba(255,181,153,0.05); }
+    .nav-link.active { color: #ffb599; border-left-color: #ffb599; background: rgba(255,181,153,0.05); }
+  </style>
+</head>
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+
+  <div class="flex min-h-screen">
+    <!-- Left Sidebar Nav -->
+    <aside class="w-72 flex-shrink-0 border-r border-slate-800 bg-[#0d0d1a] overflow-y-auto sticky top-0 h-screen hidden lg:block">
+      <div class="p-6">
+        <!-- Logo -->
+        <a href="/pages/auth/welcome.html" class="flex items-center gap-3 mb-8">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500/30 to-orange-600/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-orange-400 text-sm">api</span>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white">AklatBayon API</h2>
+            <p class="text-[9px] text-slate-500 uppercase tracking-wider">v0.8.2 · Technical Docs</p>
+          </div>
+        </a>
+
+        <!-- Nav Sections -->
+        <div class="space-y-6">
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Getting Started</p>
+            <div class="space-y-1">
+              <a href="#overview" class="nav-link active block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Overview</a>
+              <a href="#auth" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Authentication</a>
+              <a href="#rate-limits" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Rate Limits</a>
+            </div>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Core Endpoints</p>
+            <div class="space-y-1">
+              <a href="#books" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Books</a>
+              <a href="#students" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Students</a>
+              <a href="#transactions" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Transactions</a>
+              <a href="#reservations" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Reservations</a>
+              <a href="#fines" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Fines</a>
+            </div>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Metadata</p>
+            <div class="space-y-1">
+              <a href="#categories" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Categories</a>
+              <a href="#authors" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Authors</a>
+              <a href="#publishers" class="nav-link block px-3 py-2 text-sm text-slate-400 rounded-lg border-l-2 border-transparent">Publishers</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex">
+      <!-- Docs Column -->
+      <div class="flex-1 max-w-3xl mx-auto px-6 lg:px-12 py-12 space-y-12">
+        <!-- Overview -->
+        <section id="overview">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full mb-4">
+            <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold text-orange-400 uppercase tracking-[0.15em]">API Reference</span>
+          </div>
+          <h1 class="text-4xl font-extrabold tracking-tighter text-white mb-4">AklatBayon API</h1>
+          <p class="text-slate-400 text-base leading-relaxed mb-6">
+            The AklatBayon API provides programmatic access to the FEATI Library Management System.
+            All endpoints follow RESTful conventions and return JSON responses.
+          </p>
+          <div class="glass-panel rounded-2xl p-6">
+            <h3 class="text-sm font-bold text-white mb-3">Base URL</h3>
+            <div class="code-block rounded-xl p-4 text-sm">
+              <span class="syntax-string">https://aklatbayonfeati.netlify.app/api/v1</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Authentication -->
+        <section id="auth">
+          <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">lock</span>
+            Authentication
+          </h2>
+          <p class="text-slate-400 text-sm mb-4">All API requests require authentication via Bearer token.</p>
+          <div class="code-block rounded-xl p-5 text-sm font-mono overflow-x-auto">
+            <div><span class="syntax-comment"># Include the token in your request headers</span></div>
+            <div class="mt-1"><span class="text-orange-400">curl</span> <span class="syntax-string">-H</span> <span class="syntax-string">"Authorization: Bearer YOUR_API_TOKEN"</span> \</div>
+            <div class="pl-4"><span class="syntax-string">https://aklatbayonfeati.netlify.app/api/v1/books</span></div>
+          </div>
+        </section>
+
+        <!-- Rate Limits -->
+        <section id="rate-limits">
+          <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">speed</span>
+            Rate Limits
+          </h2>
+          <div class="glass-panel rounded-2xl overflow-hidden">
+            <table class="w-full text-sm">
+              <thead><tr class="bg-slate-900/50 text-slate-500 text-[10px] uppercase tracking-widest">
+                <th class="px-6 py-3 text-left">Plan</th><th class="px-6 py-3 text-left">Requests/Min</th><th class="px-6 py-3 text-left">Burst</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-800">
+                <tr><td class="px-6 py-3 text-white font-bold">Free</td><td class="px-6 py-3 text-slate-400">60</td><td class="px-6 py-3 text-slate-400">100</td></tr>
+                <tr><td class="px-6 py-3 text-white font-bold">Premium</td><td class="px-6 py-3 text-slate-400">300</td><td class="px-6 py-3 text-slate-400">500</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Books Endpoint -->
+        <section id="books">
+          <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">menu_book</span>
+            Books
+          </h2>
+
+          <!-- GET /books -->
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'get-books')">
+            <div class="flex items-center gap-3">
+              <span class="method-get text-[10px] font-bold px-2 py-0.5 rounded font-mono">GET</span>
+              <span class="text-sm font-mono text-white">/api/v1/books</span>
+              <span class="text-xs text-slate-500 ml-auto">List all books</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="get-books">
+              <p class="text-xs text-slate-400 mb-3">Returns a paginated list of all books in the repository.</p>
+              <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-2">Response</h4>
+              <div class="code-block rounded-xl p-4 text-xs overflow-x-auto">
+<pre>{
+  <span class="syntax-key">"data"</span>: [
+    {
+      <span class="syntax-key">"id"</span>: <span class="syntax-string">"b001"</span>,
+      <span class="syntax-key">"title"</span>: <span class="syntax-string">"Introduction to Algorithms"</span>,
+      <span class="syntax-key">"isbn"</span>: <span class="syntax-string">"978-0-262-03384-8"</span>,
+      <span class="syntax-key">"year"</span>: <span class="syntax-number">2022</span>,
+      <span class="syntax-key">"copies"</span>: <span class="syntax-number">5</span>,
+      <span class="syntax-key">"available"</span>: <span class="syntax-number">3</span>
+    }
+  ],
+  <span class="syntax-key">"total"</span>: <span class="syntax-number">142</span>
+}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- POST /books -->
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'post-books')">
+            <div class="flex items-center gap-3">
+              <span class="method-post text-[10px] font-bold px-2 py-0.5 rounded font-mono">POST</span>
+              <span class="text-sm font-mono text-white">/api/v1/books</span>
+              <span class="text-xs text-slate-500 ml-auto">Create a book</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="post-books">
+              <p class="text-xs text-slate-400 mb-3">Creates a new book entry in the library catalog.</p>
+              <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-2">Request Body</h4>
+              <div class="code-block rounded-xl p-4 text-xs overflow-x-auto">
+<pre>{
+  <span class="syntax-key">"title"</span>: <span class="syntax-string">"Data Structures"</span>,
+  <span class="syntax-key">"isbn"</span>: <span class="syntax-string">"978-0-13-468599-1"</span>,
+  <span class="syntax-key">"author_id"</span>: <span class="syntax-string">"a001"</span>,
+  <span class="syntax-key">"category_id"</span>: <span class="syntax-string">"c002"</span>,
+  <span class="syntax-key">"copies"</span>: <span class="syntax-number">3</span>
+}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- DELETE /books/:id -->
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'delete-books')">
+            <div class="flex items-center gap-3">
+              <span class="method-delete text-[10px] font-bold px-2 py-0.5 rounded font-mono">DELETE</span>
+              <span class="text-sm font-mono text-white">/api/v1/books/:id</span>
+              <span class="text-xs text-slate-500 ml-auto">Delete a book</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="delete-books">
+              <p class="text-xs text-slate-400 mb-3">Permanently removes a book from the catalog. Requires admin privileges.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Transactions -->
+        <section id="transactions">
+          <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">swap_horiz</span>
+            Transactions
+          </h2>
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'get-txn')">
+            <div class="flex items-center gap-3">
+              <span class="method-get text-[10px] font-bold px-2 py-0.5 rounded font-mono">GET</span>
+              <span class="text-sm font-mono text-white">/api/v1/transactions</span>
+              <span class="text-xs text-slate-500 ml-auto">List transactions</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="get-txn">
+              <p class="text-xs text-slate-400 mb-3">Returns all borrow/return transactions with filtering options.</p>
+              <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-2">Query Parameters</h4>
+              <div class="space-y-2">
+                <div class="flex gap-3 text-xs"><span class="font-mono text-orange-400">status</span><span class="text-slate-500">Filter by status (borrowed, returned)</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-mono text-orange-400">student_id</span><span class="text-slate-500">Filter by student</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'post-txn')">
+            <div class="flex items-center gap-3">
+              <span class="method-post text-[10px] font-bold px-2 py-0.5 rounded font-mono">POST</span>
+              <span class="text-sm font-mono text-white">/api/v1/transactions</span>
+              <span class="text-xs text-slate-500 ml-auto">Create transaction</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="post-txn">
+              <p class="text-xs text-slate-400">Creates a new borrow transaction.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Students -->
+        <section id="students">
+          <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">group</span>
+            Students
+          </h2>
+          <div class="endpoint-card glass-panel rounded-2xl p-6 mb-4" onclick="showEndpoint(this, 'get-students')">
+            <div class="flex items-center gap-3">
+              <span class="method-get text-[10px] font-bold px-2 py-0.5 rounded font-mono">GET</span>
+              <span class="text-sm font-mono text-white">/api/v1/students</span>
+              <span class="text-xs text-slate-500 ml-auto">List all students</span>
+            </div>
+            <div class="hidden mt-4 pt-4 border-t border-slate-800" id="get-students">
+              <p class="text-xs text-slate-400">Returns registered student records with pagination.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <div class="pt-8 border-t border-slate-800 text-center">
+          <a href="/pages/auth/welcome.html" class="text-sm text-orange-400 hover:text-orange-300 transition-colors">
+            ← Back to AklatBayon Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Interactive Console -->
+      <div class="w-96 border-l border-slate-800 bg-[#0d0d1a] overflow-y-auto sticky top-0 h-screen hidden xl:block">
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-6">
+            <span class="material-symbols-outlined text-orange-400 text-sm">terminal</span>
+            <span class="text-sm font-bold text-white">Interactive Console</span>
+          </div>
+
+          <!-- Method selector -->
+          <div class="flex gap-2 mb-4">
+            <select id="console-method" class="bg-slate-900 border border-slate-800 text-sm px-3 py-2 rounded-lg font-mono text-white focus:outline-none focus:border-orange-500">
+              <option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option>
+            </select>
+            <input type="text" id="console-url" value="/api/v1/books" class="flex-1 bg-slate-900 border border-slate-800 text-sm px-3 py-2 rounded-lg font-mono text-white focus:outline-none focus:border-orange-500">
+          </div>
+
+          <!-- Headers -->
+          <div class="mb-4">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Headers</p>
+            <div class="code-block rounded-xl p-3 text-[11px]">
+              <div><span class="syntax-key">Authorization</span>: <span class="syntax-string">Bearer tk_live_...</span></div>
+              <div><span class="syntax-key">Content-Type</span>: <span class="syntax-string">application/json</span></div>
+            </div>
+          </div>
+
+          <!-- Send Button -->
+          <button onclick="simulateRequest()" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-xl hover:shadow-lg transition-all mb-4">
+            <span class="material-symbols-outlined text-sm align-middle mr-1">send</span>Send Request
+          </button>
+
+          <!-- Response -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Response</p>
+              <span id="console-status" class="text-[10px] font-bold font-mono text-green-400">200 OK</span>
+            </div>
+            <div class="code-block rounded-xl p-4 text-[11px] max-h-96 overflow-y-auto" id="console-response">
+              <pre class="text-slate-400">Click "Send Request" to test an endpoint.</pre>
+            </div>
+          </div>
+
+          <!-- cURL -->
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">cURL</p>
+            <div class="code-block rounded-xl p-3 text-[10px] overflow-x-auto" id="console-curl">
+              <pre class="text-orange-400">curl -X GET \
+  https://aklatbayonfeati.netlify.app/api/v1/books \
+  -H "Authorization: Bearer tk_live_..."</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script>
+    function showEndpoint(card, panelId) {
+      const panel = document.getElementById(panelId);
+      panel.classList.toggle('hidden');
+      card.classList.toggle('active');
+    }
+
+    // Smooth scroll for nav
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Simulate API request
+    function simulateRequest() {
+      const method = document.getElementById('console-method').value;
+      const url = document.getElementById('console-url').value;
+
+      // Map URL to Store data
+      let responseData = {};
+      let status = '200 OK';
+
+      if (url.includes('/books')) {
+        responseData = { data: Store.getAll('books').slice(0, 3), total: Store.getAll('books').length };
+      } else if (url.includes('/students')) {
+        responseData = { data: Store.getAll('students').slice(0, 3), total: Store.getAll('students').length };
+      } else if (url.includes('/transactions')) {
+        responseData = { data: Store.getAll('transactions').slice(0, 3), total: Store.getAll('transactions').length };
+      } else if (url.includes('/categories')) {
+        responseData = { data: Store.getAll('categories'), total: Store.getAll('categories').length };
+      } else {
+        responseData = { error: 'Endpoint not found' };
+        status = '404 Not Found';
+      }
+
+      document.getElementById('console-status').textContent = status;
+      document.getElementById('console-status').className = status.startsWith('2')
+        ? 'text-[10px] font-bold font-mono text-green-400'
+        : 'text-[10px] font-bold font-mono text-red-400';
+
+      document.getElementById('console-response').innerHTML = `<pre class="text-slate-300">${JSON.stringify(responseData, null, 2)}</pre>`;
+
+      document.getElementById('console-curl').innerHTML = `<pre class="text-orange-400">curl -X ${method} \\
+  https://aklatbayonfeati.netlify.app${url} \\
+  -H "Authorization: Bearer tk_live_..."</pre>`;
+    }
+  </script>
+</body>
+</html>

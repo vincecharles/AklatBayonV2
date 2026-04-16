@@ -10,33 +10,19 @@
   <link href="/css/custom.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          
-        }
-      }
-    }
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
   </script>
   <style>
-    .nav-tab {
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      border-radius: 0.5rem;
-      transition: all 0.15s;
-      color: #64748b;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
-    .nav-tab:hover { color: #334155; background: rgba(0,0,0,0.04); }
-    .nav-tab.active { background: #3211d4; color: #fff; }
-    .dark .nav-tab { color: #94a3b8; }
-    .dark .nav-tab:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
-    .dark .nav-tab.active { background: #3211d4; color: #fff; }
+    .glass-card { background: rgba(30,30,50,0.5); backdrop-filter: blur(16px); border: 1px solid rgba(255,181,153,0.08); }
+    .status-ready { background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(74,222,128,0.02)); border: 1px solid rgba(74,222,128,0.15); }
+    .status-pending { background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.02)); border: 1px solid rgba(251,191,36,0.15); }
+    .reservation-card { transition: all 0.2s ease; }
+    .reservation-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .nav-tab { padding: 0.6rem 1.2rem; font-size: 0.875rem; font-weight: 700; border-radius: 0.75rem; transition: all 0.15s; color: #94a3b8; background: transparent; border: none; cursor: pointer; }
+    .nav-tab:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+    .nav-tab.active { background: linear-gradient(135deg, #e17141, #ffb599); color: #370e00; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
   </style>
 </head>
 <body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
@@ -46,82 +32,70 @@
     <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
-      <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
-        <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-          <span class="material-symbols-outlined text-[#ffb599] dark:text-primary-50">bookmark</span>
-          Book Reservations
-        </h1>
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-slate-800">
+        <div>
+          <h1 class="text-3xl font-extrabold tracking-tighter text-white flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/20 to-purple-500/20 border border-orange-500/20 flex items-center justify-center">
+              <span class="material-symbols-outlined text-orange-400">bookmark</span>
+            </div>
+            Book Reservations
+          </h1>
+          <p class="text-slate-500 text-sm mt-1">Manage and track book reservations across the Bayon system.</p>
+        </div>
+        <div class="flex items-center gap-3" id="stats-bar">
+          <div class="glass-card px-4 py-2 rounded-xl">
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Active</span>
+            <span class="text-sm font-bold text-orange-400 ml-2" id="stat-active">0</span>
+          </div>
+          <div class="glass-card px-4 py-2 rounded-xl">
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Ready</span>
+            <span class="text-sm font-bold text-green-400 ml-2" id="stat-ready">0</span>
+          </div>
+        </div>
       </div>
 
       <!-- Tabs -->
-      <div class="flex items-center gap-2 mb-5" id="nav-tabs"></div>
+      <div class="flex items-center gap-2 mb-6" id="nav-tabs"></div>
 
       <!-- Tab 1: Reserve a Book -->
       <div class="tab-pane active" id="tab-reserve">
-        <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">add_circle</span>
-            Reserve a Book
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">add_circle</span>
+            <span class="text-sm font-bold">New Reservation</span>
           </div>
-          <div class="p-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
               <div>
-                <label class="block text-sm font-medium mb-1.5">Student</label>
-                <select class="h-10 w-full px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:border-[#ffb599] focus:ring-1 focus:ring-primary outline-none" id="reserve-student">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Student</label>
+                <select class="h-12 w-full px-4 text-sm rounded-xl border border-slate-800 bg-[#1a1a2e] focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" id="reserve-student">
                   <option value="">-- Select Student --</option>
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1.5">Book</label>
-                <select class="h-10 w-full px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:border-[#ffb599] focus:ring-1 focus:ring-primary outline-none" id="reserve-book">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Book</label>
+                <select class="h-12 w-full px-4 text-sm rounded-xl border border-slate-800 bg-[#1a1a2e] focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" id="reserve-book">
                   <option value="">-- Select Book --</option>
                 </select>
               </div>
             </div>
-            <button class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)]" id="btn-reserve">
-              <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+            <button class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold rounded-xl transition-all bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:shadow-[0_8px_30px_rgba(225,113,65,0.3)] hover:scale-[1.02] active:scale-[0.98]" id="btn-reserve">
+              <span class="material-symbols-outlined text-lg">bookmark_add</span>
               Place Reservation
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Tab 2: My Reservations -->
+      <!-- Tab 2: My Reservations (Card Layout) -->
       <div class="tab-pane" id="tab-my">
-        <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">list</span>
-            My Reservations
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead class="bg-[#1a1a2e]">
-                <tr>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">#</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Book</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Status</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Position in Queue</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Reserved Date</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Expires At</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="my-reservations-table" class="divide-y divide-[#3a3a52]/50"></tbody>
-            </table>
-          </div>
-        </div>
+        <div id="my-reservations-cards" class="space-y-4"></div>
       </div>
 
       <!-- Tab 3: Reservation Queue -->
       <div class="tab-pane" id="tab-queue">
-        <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">layers</span>
-            Reservation Queue
-          </div>
-          <div id="queue-container"></div>
-        </div>
+        <div id="queue-container"></div>
       </div>
 
     </main>
@@ -140,33 +114,25 @@
       const canReserve = Auth.hasPermission('can_reserve_books');
       const canIssue = Auth.hasPermission('can_issue_books');
 
-      // ── Build tabs dynamically based on permissions ──
+      // Build tabs dynamically
       let tabsHtml = '';
-      if (canReserve) {
-          tabsHtml += '<button class="nav-tab active" data-tab="reserve">Reserve a Book</button>';
-      }
+      if (canReserve) tabsHtml += '<button class="nav-tab active" data-tab="reserve">Reserve a Book</button>';
       tabsHtml += `<button class="nav-tab${!canReserve ? ' active' : ''}" data-tab="my">My Reservations</button>`;
-      if (canIssue) {
-          tabsHtml += '<button class="nav-tab" data-tab="queue">Reservation Queue</button>';
-      }
+      if (canIssue) tabsHtml += '<button class="nav-tab" data-tab="queue">Reservation Queue</button>';
       document.getElementById('nav-tabs').innerHTML = tabsHtml;
 
-      // If user cannot reserve, hide the reserve tab and make My Reservations active
       if (!canReserve) {
           document.getElementById('tab-reserve').style.display = 'none';
           document.getElementById('tab-reserve').classList.remove('active');
           document.getElementById('tab-my').classList.add('active');
       }
-      // Hide queue tab pane if no permission
-      if (!canIssue) {
-          document.getElementById('tab-queue').style.display = 'none';
-      }
+      if (!canIssue) document.getElementById('tab-queue').style.display = 'none';
 
-      // ── Tab switching ──
+      // Tab switching
       document.querySelectorAll('.nav-tab').forEach((tab) => {
           tab.addEventListener('click', () => {
-              document.querySelectorAll('.nav-tab').forEach((t) => { t.classList.remove('active'); });
-              document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
+              document.querySelectorAll('.nav-tab').forEach((t) => t.classList.remove('active'));
+              document.querySelectorAll('.tab-pane').forEach((p) => p.classList.remove('active'));
               tab.classList.add('active');
               document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
               if (tab.dataset.tab === 'my') loadMyReservations();
@@ -174,21 +140,23 @@
           });
       });
 
-      // ── Tab 1: Reserve a Book ──
+      // Update stats
+      const updateStats = () => {
+        const allRes = Store.getAll('reservations');
+        document.getElementById('stat-active').textContent = allRes.filter(r => r.status === 'active').length;
+        document.getElementById('stat-ready').textContent = allRes.filter(r => r.status === 'available').length;
+      };
+      updateStats();
+
+      // Tab 1: Reserve a Book
       if (canReserve) {
           const students = Store.getAll('students');
           const books = Store.getAll('books');
           const ssel = document.getElementById('reserve-student');
           const bsel = document.getElementById('reserve-book');
-
-          students.forEach((s) => {
-              ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`;
-          });
-
+          students.forEach((s) => { ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`; });
           books.forEach((b) => {
-              const label = b.available > 0
-                  ? `${b.title} (Available: ${b.available})`
-                  : `${b.title} (All copies out \u2014 reservable)`;
+              const label = b.available > 0 ? `${b.title} (Available: ${b.available})` : `${b.title} (All copies out \u2014 reservable)`;
               bsel.innerHTML += `<option value="${b.id}" data-available="${b.available}">${label}</option>`;
           });
 
@@ -196,59 +164,28 @@
               const studentId = document.getElementById('reserve-student').value;
               const bookId = document.getElementById('reserve-book').value;
               if (!studentId || !bookId) { App.showAlert('danger', 'Please select both a student and a book.'); return; }
-
-              // Check: only allow reservation if ALL copies are currently checked out
               const book = Store.getById('books', bookId);
               if (!book) { App.showAlert('danger', 'Book not found.'); return; }
-              if (book.available > 0) {
-                  App.showAlert('danger', `This book still has available copies (${book.available}). Reservations are only allowed when all copies are checked out.`);
-                  return;
-              }
-
-              // Check max reservation limit based on role
+              if (book.available > 0) { App.showAlert('danger', `This book still has available copies (${book.available}). Reservations are only allowed when all copies are checked out.`); return; }
               const roleKey = Store.getBorrowerRoleKey(studentId);
               const isFaculty = roleKey.includes('faculty');
               const maxSetting = isFaculty ? 'reservation_max_faculty' : 'reservation_max_student';
               const maxReservations = parseInt(Store.getSetting(maxSetting)) || (isFaculty ? 5 : 2);
               const activeCount = Store.getActiveReservationCount(studentId);
-
-              if (activeCount >= maxReservations) {
-                  App.showAlert('danger', `This ${isFaculty ? 'faculty member' : 'student'} has reached the maximum reservation limit (${maxReservations}).`);
-                  return;
-              }
-
-              // Check no duplicate reservation for same student+book combo
+              if (activeCount >= maxReservations) { App.showAlert('danger', `This ${isFaculty ? 'faculty member' : 'student'} has reached the maximum reservation limit (${maxReservations}).`); return; }
               const allReservations = Store.getAll('reservations');
               const duplicate = allReservations.find((r) => r.student_id === studentId && r.book_id === bookId && (r.status === 'active' || r.status === 'available'));
-              if (duplicate) {
-                  App.showAlert('danger', 'This student already has an active reservation for this book.');
-                  return;
-              }
+              if (duplicate) { App.showAlert('danger', 'This student already has an active reservation for this book.'); return; }
 
-              // Create reservation
-              Store.create('reservations', {
-                  student_id: studentId,
-                  book_id: bookId,
-                  status: 'active',
-                  notified_at: null,
-                  expires_at: null
-              }).then((result) => {
+              Store.create('reservations', { student_id: studentId, book_id: bookId, status: 'active', notified_at: null, expires_at: null }).then((result) => {
                   App.showAlert('success', 'Reservation placed successfully!');
                   const studentName = App.getStudentName(studentId);
                   const bookTitle = App.getBookTitle(bookId);
                   const queue = Store.getReservationQueue(bookId);
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Reservation Placed!',
-                      text: `${bookTitle} reserved for ${studentName}. Position in queue: #${queue.length}`,
-                      timer: 3000,
-                      showConfirmButton: false
-                  });
-                  // Refresh book dropdown to reflect updated data
+                  Swal.fire({ icon: 'success', title: 'Reservation Placed!', text: `${bookTitle} reserved for ${studentName}. Position in queue: #${queue.length}`, timer: 3000, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
                   refreshBookDropdown();
-              }).catch((err) => {
-                  App.showAlert('danger', err.message || 'Failed to create reservation.');
-              });
+                  updateStats();
+              }).catch((err) => { App.showAlert('danger', err.message || 'Failed to create reservation.'); });
           });
       }
 
@@ -258,165 +195,145 @@
           const books = Store.getAll('books');
           bsel.innerHTML = '<option value="">-- Select Book --</option>';
           books.forEach((b) => {
-              const label = b.available > 0
-                  ? `${b.title} (Available: ${b.available})`
-                  : `${b.title} (All copies out \u2014 reservable)`;
+              const label = b.available > 0 ? `${b.title} (Available: ${b.available})` : `${b.title} (All copies out \u2014 reservable)`;
               bsel.innerHTML += `<option value="${b.id}" data-available="${b.available}">${label}</option>`;
           });
       };
 
-      // ── Tab 2: My Reservations ──
+      // Tab 2: My Reservations (Card Layout)
       const loadMyReservations = () => {
-          // Auto-expire any past-due reservations
           const expiredCount = Store.expireReservations();
-          if (expiredCount > 0) {
-              App.showAlert('info', `${expiredCount} reservation(s) expired automatically.`);
-          }
+          if (expiredCount > 0) App.showAlert('info', `${expiredCount} reservation(s) expired automatically.`);
 
           const allReservations = Store.getAll('reservations');
-          let items;
-
-          // Staff with can_issue_books see ALL reservations; otherwise only own
-          if (canIssue) {
-              items = allReservations;
-          } else {
-              items = allReservations.filter((r) => r.student_id === user.student_id);
-          }
-
-          // Sort by created_at descending (newest first)
+          let items = canIssue ? allReservations : allReservations.filter((r) => r.student_id === user.student_id);
           items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-          const tbody = document.getElementById('my-reservations-table');
-          if (!items.length) {
-              tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-sm text-[#9b99b8]">No reservations found.</td></tr>';
-              return;
-          }
+          const container = document.getElementById('my-reservations-cards');
+          if (!items.length) { container.innerHTML = '<div class="glass-card rounded-2xl p-12 text-center"><span class="material-symbols-outlined text-4xl text-slate-600 mb-3 block">bookmark_border</span><p class="text-slate-500">No reservations found.</p></div>'; return; }
 
-          const statusClasses = {
-              active: 'bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50',
-              available: 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
-              claimed: '" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)',
-              expired: '" style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)',
-              cancelled: 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300'
+          const statusConfig = {
+            active: { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', icon: 'schedule', label: 'Pending' },
+            available: { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/20', icon: 'check_circle', label: 'Ready for Pickup' },
+            claimed: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20', icon: 'verified', label: 'Claimed' },
+            expired: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20', icon: 'timer_off', label: 'Expired' },
+            cancelled: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-500/20', icon: 'cancel', label: 'Cancelled' }
           };
 
-          tbody.innerHTML = items.map((r, i) => {
-              const queue = Store.getReservationQueue(r.book_id);
-              let position = '\u2014';
-              for (let q = 0; q < queue.length; q++) {
-                  if (queue[q].id === r.id) { position = `#${q + 1}`; break; }
-              }
-              if (r.status === 'claimed' || r.status === 'expired' || r.status === 'cancelled') {
-                  position = '\u2014';
-              }
+          // Group: ready for pickup on top
+          const readyItems = items.filter(r => r.status === 'available');
+          const otherItems = items.filter(r => r.status !== 'available');
 
-              const badgeClass = statusClasses[r.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300';
-              const statusLabel = r.status.charAt(0).toUpperCase() + r.status.slice(1);
+          let html = '';
 
-              let bookLabel = App.getBookTitle(r.book_id);
-              if (canIssue) {
-                  bookLabel = `${App.getStudentName(r.student_id)} \u2014 ${bookLabel}`;
-              }
+          if (readyItems.length) {
+            html += '<div class="mb-6"><h3 class="text-sm font-bold text-green-400 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">check_circle</span>Ready for Pickup</h3><div class="space-y-3">';
+            readyItems.forEach(r => { html += buildReservationCard(r, statusConfig); });
+            html += '</div></div>';
+          }
 
-              let actions = '';
-              if (r.status === 'active' || r.status === 'available') {
-                  actions = `<button class="btn-cancel-my inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
-              } else {
-                  actions = '<span class="text-xs text-[#9b99b8]">No actions</span>';
-              }
+          if (otherItems.length) {
+            html += '<div><h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">list</span>All Reservations</h3><div class="space-y-3">';
+            otherItems.forEach(r => { html += buildReservationCard(r, statusConfig); });
+            html += '</div></div>';
+          }
 
-              return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-4 py-3 text-sm text-[#9b99b8]">${i + 1}</td><td class="px-4 py-3 text-sm font-medium">${bookLabel}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm font-semibold">${position}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
-          }).join('');
+          container.innerHTML = html;
 
           // Bind cancel buttons
           document.querySelectorAll('.btn-cancel-my').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  const resId = btn.dataset.id;
-                  Swal.fire({
-                      title: 'Cancel Reservation?',
-                      text: 'Are you sure you want to cancel this reservation?',
-                      icon: 'warning',
-                      showCancelButton: true,
-                      confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
-                      cancelButtonColor: '#6c757d',
-                      confirmButtonText: 'Yes, cancel it'
-                  }).then((result) => {
+                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
                       if (result.isConfirmed) {
-                          Store.update('reservations', resId, { status: 'cancelled' }).then(() => {
-                              App.showAlert('success', 'Reservation cancelled.');
-                              loadMyReservations();
-                          });
+                          Store.update('reservations', btn.dataset.id, { status: 'cancelled' }).then(() => { App.showAlert('success', 'Reservation cancelled.'); loadMyReservations(); updateStats(); });
                       }
                   });
               });
           });
       };
 
-      // ── Tab 3: Reservation Queue (staff only) ──
-      const loadQueue = () => {
-          // Auto-expire first
-          Store.expireReservations();
+      const buildReservationCard = (r, statusConfig) => {
+        const sc = statusConfig[r.status] || statusConfig.cancelled;
+        const queue = Store.getReservationQueue(r.book_id);
+        let position = '\u2014';
+        for (let q = 0; q < queue.length; q++) { if (queue[q].id === r.id) { position = `#${q + 1}`; break; } }
+        if (r.status === 'claimed' || r.status === 'expired' || r.status === 'cancelled') position = '\u2014';
 
+        let bookLabel = App.getBookTitle(r.book_id);
+        if (canIssue) bookLabel = `${App.getStudentName(r.student_id)} \u2014 ${bookLabel}`;
+
+        const cancelBtn = (r.status === 'active' || r.status === 'available')
+          ? `<button class="btn-cancel-my ml-auto flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all" data-id="${r.id}"><span class="material-symbols-outlined text-sm">close</span>Cancel</button>`
+          : '';
+
+        return `<div class="reservation-card glass-card rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-4">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="w-12 h-14 rounded-lg flex items-center justify-center flex-shrink-0 ${sc.bg} ${sc.border} border">
+              <span class="material-symbols-outlined ${sc.text}">${sc.icon}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-bold text-white truncate">${bookLabel}</h4>
+              <div class="flex flex-wrap items-center gap-3 mt-1">
+                <span class="text-[10px] font-bold ${sc.bg} ${sc.text} ${sc.border} border px-2 py-0.5 rounded-full uppercase">${sc.label}</span>
+                <span class="text-[10px] text-slate-500">Queue: <span class="font-bold text-white">${position}</span></span>
+                <span class="text-[10px] text-slate-500">Reserved: <span class="font-bold text-slate-300">${App.formatDate(r.created_at)}</span></span>
+                ${r.expires_at ? `<span class="text-[10px] text-slate-500">Expires: <span class="font-bold text-orange-400">${App.formatDateTime(r.expires_at)}</span></span>` : ''}
+              </div>
+            </div>
+          </div>
+          ${cancelBtn}
+        </div>`;
+      };
+
+      // Tab 3: Reservation Queue (staff)
+      const loadQueue = () => {
+          Store.expireReservations();
           const allReservations = Store.getAll('reservations');
           const activeReservations = allReservations.filter((r) => r.status === 'active' || r.status === 'available');
-
           const container = document.getElementById('queue-container');
-          if (!activeReservations.length) {
-              container.innerHTML = '<div class="px-4 py-8 text-center text-sm text-[#9b99b8]">No active reservations in queue.</div>';
-              return;
-          }
+          if (!activeReservations.length) { container.innerHTML = '<div class="glass-card rounded-2xl p-12 text-center"><span class="material-symbols-outlined text-4xl text-slate-600 mb-3 block">layers</span><p class="text-slate-500">No active reservations in queue.</p></div>'; return; }
 
-          // Group by book_id
           const bookGroups = {};
-          activeReservations.forEach((r) => {
-              if (!bookGroups[r.book_id]) bookGroups[r.book_id] = [];
-              bookGroups[r.book_id].push(r);
-          });
+          activeReservations.forEach((r) => { if (!bookGroups[r.book_id]) bookGroups[r.book_id] = []; bookGroups[r.book_id].push(r); });
+          Object.keys(bookGroups).forEach((bookId) => { bookGroups[bookId].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); });
 
-          // Sort each group by created_at (FIFO)
-          Object.keys(bookGroups).forEach((bookId) => {
-              bookGroups[bookId].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-          });
-
-          const statusClasses = {
-              active: 'bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50',
-              available: 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)'
-          };
-
-          let html = '';
+          let html = '<div class="space-y-6">';
           Object.keys(bookGroups).forEach((bookId) => {
               const bookTitle = App.getBookTitle(bookId);
               const book = Store.getById('books', bookId);
-              const availableLabel = book ? ` (Available copies: ${book.available})` : '';
               const queue = bookGroups[bookId];
-
-              html += '<div class="border-b border-[#3a3a52]/50 last:border-b-0">';
-              html += `<div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-[#ffb599] text-[20px]">menu_book</span>${bookTitle}${availableLabel} <span class="inline-block ml-2 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50">${queue.length} in queue</span></div>`;
-              html += '<table class="w-full text-left"><thead class="bg-[#1a1a2e]"><tr><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Queue #</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Student</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Status</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Reserved Date</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Expires At</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Actions</th></tr></thead><tbody class="divide-y divide-[#3a3a52]/50">';
+              html += `<div class="glass-card rounded-2xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-3">
+                  <span class="material-symbols-outlined text-orange-400">menu_book</span>
+                  <span class="text-sm font-bold text-white">${bookTitle}</span>
+                  ${book ? `<span class="text-[10px] text-slate-500">(Available: ${book.available})</span>` : ''}
+                  <span class="text-[10px] font-bold bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded-full">${queue.length} in queue</span>
+                </div>
+                <div class="p-4 space-y-3">`;
 
               queue.forEach((r, idx) => {
-                  const badgeClass = statusClasses[r.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300';
-                  const statusLabel = r.status.charAt(0).toUpperCase() + r.status.slice(1);
                   const studentName = App.getStudentName(r.student_id);
-
-                  let actions = '';
-                  if (r.status === 'active') {
-                      actions += `<button class="btn-notify inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] mr-2" data-id="${r.id}" data-book="${r.book_id}"><span class="material-symbols-outlined text-[16px]">notifications</span>Notify Available</button>`;
-                      actions += `<button class="btn-cancel-queue inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
-                  } else if (r.status === 'available') {
-                      actions += `<button class="btn-claim inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-sky-600 hover:bg-sky-700 text-white mr-2" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">check_circle</span>Mark Claimed</button>`;
-                      actions += `<button class="btn-cancel-queue inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
-                  }
-
-                  html += `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-4 py-3 text-sm font-semibold text-[#9b99b8]">#${idx + 1}</td><td class="px-4 py-3 text-sm font-medium">${studentName}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
+                  const isAvailable = r.status === 'available';
+                  html += `<div class="flex items-center gap-4 p-4 rounded-xl ${isAvailable ? 'status-ready' : 'bg-slate-900/30 border border-slate-800/50'}">
+                    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-orange-400">#${idx+1}</div>
+                    <div class="flex-1">
+                      <span class="text-sm font-bold text-white">${studentName}</span>
+                      <span class="text-[10px] ml-2 ${isAvailable ? 'text-green-400' : 'text-orange-400'}">${r.status.toUpperCase()}</span>
+                      <div class="text-[10px] text-slate-500 mt-0.5">${App.formatDate(r.created_at)}${r.expires_at ? ` · Expires: ${App.formatDateTime(r.expires_at)}` : ''}</div>
+                    </div>
+                    <div class="flex gap-2">
+                      ${r.status === 'active' ? `<button class="btn-notify px-3 py-1.5 text-[10px] font-bold rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:shadow-lg transition-all" data-id="${r.id}" data-book="${r.book_id}">Notify</button>` : ''}
+                      ${r.status === 'available' ? `<button class="btn-claim px-3 py-1.5 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500/20 transition-all" data-id="${r.id}">Mark Claimed</button>` : ''}
+                      <button class="btn-cancel-queue px-3 py-1.5 text-[10px] font-bold rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all" data-id="${r.id}">Cancel</button>
+                    </div>
+                  </div>`;
               });
-
-              html += '</tbody></table></div>';
+              html += '</div></div>';
           });
-
+          html += '</div>';
           container.innerHTML = html;
 
-          // Bind "Notify Available" buttons
+          // Bind buttons
           document.querySelectorAll('.btn-notify').forEach((btn) => {
               btn.addEventListener('click', () => {
                   const resId = btn.dataset.id;
@@ -424,78 +341,29 @@
                   const expiryHours = parseInt(Store.getSetting('reservation_expiry_hours')) || 48;
                   const expiresAt = new Date();
                   expiresAt.setHours(expiresAt.getHours() + expiryHours);
-
-                  Store.update('reservations', resId, {
-                      status: 'available',
-                      notified_at: new Date().toISOString(),
-                      expires_at: expiresAt.toISOString()
-                  }).then(() => {
+                  Store.update('reservations', resId, { status: 'available', notified_at: new Date().toISOString(), expires_at: expiresAt.toISOString() }).then(() => {
                       App.showAlert('success', `Student notified. Reservation expires in ${expiryHours} hours.`);
-                      Swal.fire({
-                          icon: 'info',
-                          title: 'Student Notified',
-                          text: `The student has been notified that ${App.getBookTitle(bookId)} is available. They have ${expiryHours} hours to claim it.`,
-                          timer: 3000,
-                          showConfirmButton: false
-                      });
-                      loadQueue();
+                      loadQueue(); updateStats();
                   });
               });
           });
-
-          // Bind "Mark Claimed" buttons
           document.querySelectorAll('.btn-claim').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  const resId = btn.dataset.id;
-                  Swal.fire({
-                      title: 'Mark as Claimed?',
-                      text: 'Confirm that this reservation has been claimed by the student.',
-                      icon: 'question',
-                      showCancelButton: true,
-                      confirmButtonColor: '#17a2b8',
-                      cancelButtonColor: '#6c757d',
-                      confirmButtonText: 'Yes, mark claimed'
-                  }).then((result) => {
-                      if (result.isConfirmed) {
-                          Store.update('reservations', resId, { status: 'claimed' }).then(() => {
-                              App.showAlert('success', 'Reservation marked as claimed.');
-                              loadQueue();
-                          });
-                      }
+                  Swal.fire({ title: 'Mark as Claimed?', text: 'Confirm this reservation has been claimed.', icon: 'question', showCancelButton: true, confirmButtonColor: '#17a2b8', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, mark claimed', background: '#1e1e32', color: '#e2e0fc' }).then((result) => {
+                      if (result.isConfirmed) { Store.update('reservations', btn.dataset.id, { status: 'claimed' }).then(() => { App.showAlert('success', 'Reservation marked as claimed.'); loadQueue(); updateStats(); }); }
                   });
               });
           });
-
-          // Bind "Cancel" buttons in queue
           document.querySelectorAll('.btn-cancel-queue').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  const resId = btn.dataset.id;
-                  Swal.fire({
-                      title: 'Cancel Reservation?',
-                      text: 'Are you sure you want to cancel this reservation?',
-                      icon: 'warning',
-                      showCancelButton: true,
-                      confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
-                      cancelButtonColor: '#6c757d',
-                      confirmButtonText: 'Yes, cancel it'
-                  }).then((result) => {
-                      if (result.isConfirmed) {
-                          Store.update('reservations', resId, { status: 'cancelled' }).then(() => {
-                              App.showAlert('success', 'Reservation cancelled.');
-                              loadQueue();
-                          });
-                      }
+                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
+                      if (result.isConfirmed) { Store.update('reservations', btn.dataset.id, { status: 'cancelled' }).then(() => { App.showAlert('success', 'Reservation cancelled.'); loadQueue(); updateStats(); }); }
                   });
               });
           });
       };
 
-      // ── Initial load for the default active tab ──
-      if (canReserve) {
-          // Reserve tab is active by default
-      } else {
-          loadMyReservations();
-      }
+      if (canReserve) { /* Reserve tab default */ } else { loadMyReservations(); }
   </script>
 </body>
 </html>

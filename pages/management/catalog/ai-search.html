@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Search Results - AklatBayon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] } } } }
+  </script>
+  <style>
+    .search-glow { box-shadow: 0 0 40px rgba(255,181,153,0.15); }
+    .search-glow:focus-within { box-shadow: 0 0 60px rgba(255,181,153,0.25); }
+    .ai-pulse { animation: ai-glow 2s ease-in-out infinite alternate; }
+    @keyframes ai-glow { from { opacity: 0.5; } to { opacity: 1; } }
+    .result-card { transition: all 0.2s ease; }
+    .result-card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .chip { transition: all 0.15s ease; }
+    .chip:hover { transform: scale(1.05); }
+    .chip.active { background: linear-gradient(135deg, #e17141, #ffb599); color: #370e00; border-color: transparent; }
+  </style>
+</head>
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
+    <!-- Back to Catalog -->
+    <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-1 text-sm text-orange-400 hover:text-orange-300 mb-6 transition-colors">
+      <span class="material-symbols-outlined text-lg">arrow_back</span>
+      Back to Discovery Engine
+    </a>
+
+    <!-- Search Bar -->
+    <div class="search-glow bg-[#1a1a2e] border border-orange-500/20 rounded-2xl p-1 mb-6 transition-all">
+      <div class="flex items-center">
+        <span class="material-symbols-outlined text-orange-400 pl-4 text-xl ai-pulse">auto_awesome</span>
+        <input type="text" id="ai-search-input" placeholder="Ask anything about the library collection..."
+               class="flex-1 bg-transparent py-4 px-4 text-white placeholder-slate-500 focus:outline-none text-lg">
+        <button id="btn-search" class="mr-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-xl hover:from-orange-400 hover:to-orange-500 transition-all">
+          Search
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="flex flex-wrap gap-2 mb-6" id="filter-chips">
+      <button class="chip active px-3 py-1.5 text-xs font-bold rounded-full border border-slate-700 bg-slate-800 text-slate-300" data-filter="all">All Results</button>
+      <button class="chip px-3 py-1.5 text-xs font-bold rounded-full border border-slate-700 bg-slate-800 text-slate-300" data-filter="available">Available Only</button>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+      <!-- LEFT: Results -->
+      <div class="col-span-12 lg:col-span-8 space-y-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-widest" id="result-count">0 Results</span>
+        </div>
+        <div id="results-container" class="space-y-4"></div>
+      </div>
+
+      <!-- RIGHT: AI Synthesis Panel -->
+      <div class="col-span-12 lg:col-span-4">
+        <div class="sticky top-8 bg-gradient-to-br from-[#1a1a2e] to-[#28283d] border border-orange-500/10 rounded-2xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400 text-sm ai-pulse">auto_awesome</span>
+            <span class="text-sm font-bold text-white">AI Synthesis</span>
+          </div>
+          <div class="p-6" id="ai-synthesis">
+            <div class="text-center py-8">
+              <span class="material-symbols-outlined text-4xl text-slate-600 mb-3 block">psychology</span>
+              <p class="text-sm text-slate-500">Enter a search query to get AI-powered insights about the results.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    const getAuthorName = (id) => { const a = Store.getById('authors', id); return a ? a.name : 'Unknown'; };
+    const getPublisherName = (id) => { const p = Store.getById('publishers', id); return p ? p.name : 'Unknown'; };
+    const getCategoryName = (id) => { const c = Store.getById('categories', id); return c ? c.name : 'Unknown'; };
+
+    let currentFilter = 'all';
+
+    // Populate category chips
+    const categories = Store.getAll('categories');
+    const chipContainer = document.getElementById('filter-chips');
+    categories.forEach(c => {
+      chipContainer.innerHTML += `<button class="chip px-3 py-1.5 text-xs font-bold rounded-full border border-slate-700 bg-slate-800 text-slate-300" data-filter="cat-${c.id}">${c.name}</button>`;
+    });
+
+    // Chip click
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentFilter = chip.dataset.filter;
+        doSearch();
+      });
+    });
+
+    // URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q') || '';
+    document.getElementById('ai-search-input').value = initialQuery;
+
+    document.getElementById('btn-search').addEventListener('click', doSearch);
+    document.getElementById('ai-search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+
+    function doSearch() {
+      const query = document.getElementById('ai-search-input').value.toLowerCase().trim();
+      let books = Store.getAll('books');
+
+      if (query) {
+        books = books.filter(b =>
+          b.title.toLowerCase().includes(query) ||
+          b.isbn.toLowerCase().includes(query) ||
+          getAuthorName(b.author_id).toLowerCase().includes(query) ||
+          getCategoryName(b.category_id).toLowerCase().includes(query)
+        );
+      }
+
+      if (currentFilter === 'available') {
+        books = books.filter(b => b.available > 0);
+      } else if (currentFilter.startsWith('cat-')) {
+        const catId = currentFilter.replace('cat-', '');
+        books = books.filter(b => b.category_id === catId);
+      }
+
+      document.getElementById('result-count').textContent = `${books.length} Results`;
+
+      const container = document.getElementById('results-container');
+      if (!books.length) {
+        container.innerHTML = `<div class="text-center py-16"><span class="material-symbols-outlined text-5xl text-slate-600 mb-3 block">search_off</span><p class="text-slate-500">No results found. Try a different search query.</p></div>`;
+        generateSynthesis(query, []);
+        return;
+      }
+
+      const txns = Store.getAll('transactions');
+      container.innerHTML = books.map((b, i) => {
+        const borrowCount = txns.filter(t => t.book_id === b.id).length;
+        const relevance = query ? calculateRelevance(b, query) : 85;
+        const isAvail = b.available > 0;
+
+        return `<div class="result-card bg-[#1a1a2e] border border-slate-800/50 rounded-2xl p-5">
+          <div class="flex gap-4">
+            <div class="w-16 h-20 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg, hsl(${(i*37)%360},30%,18%), hsl(${(i*37)%360},40%,28%))">
+              <span class="material-symbols-outlined text-2xl" style="color:hsl(${(i*37)%360},50%,60%);opacity:0.4">menu_book</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-3">
+                <h3 class="text-base font-bold text-white">${b.title}</h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${isAvail ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${isAvail ? 'Available' : 'Borrowed'}</span>
+              </div>
+              <p class="text-sm text-slate-400 mt-1">${getAuthorName(b.author_id)} · ${getPublisherName(b.publisher_id)} · ${b.year}</p>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">${getCategoryName(b.category_id)}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">ISBN: ${b.isbn}</span>
+                ${b.call_number ? `<span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">${b.call_number}</span>` : ''}
+              </div>
+              <!-- AI Insight Box -->
+              <div class="mt-3 p-3 bg-slate-900/50 rounded-xl border border-slate-800/50">
+                <div class="flex items-center gap-1 mb-1">
+                  <span class="material-symbols-outlined text-xs text-orange-400">auto_awesome</span>
+                  <span class="text-[10px] font-bold text-orange-400 uppercase">AI Insight</span>
+                </div>
+                <p class="text-xs text-slate-400">Relevance: <span class="font-bold text-white">${relevance}%</span> · Borrowed ${borrowCount} times · ${b.available} of ${b.copies} copies available</p>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      generateSynthesis(query, books);
+    }
+
+    function calculateRelevance(book, query) {
+      let score = 60;
+      if (book.title.toLowerCase().includes(query)) score += 25;
+      if (getAuthorName(book.author_id).toLowerCase().includes(query)) score += 10;
+      if (getCategoryName(book.category_id).toLowerCase().includes(query)) score += 5;
+      return Math.min(99, score);
+    }
+
+    function generateSynthesis(query, books) {
+      const panel = document.getElementById('ai-synthesis');
+      if (!query) {
+        panel.innerHTML = '<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-slate-600 mb-3 block">psychology</span><p class="text-sm text-slate-500">Enter a search query to get AI-powered insights.</p></div>';
+        return;
+      }
+
+      const catCounts = {};
+      books.forEach(b => {
+        const cat = getCategoryName(b.category_id);
+        catCounts[cat] = (catCounts[cat] || 0) + 1;
+      });
+      const topCat = Object.entries(catCounts).sort((a,b) => b[1]-a[1])[0];
+      const totalAvail = books.filter(b => b.available > 0).length;
+
+      panel.innerHTML = `
+        <div class="space-y-5">
+          <div>
+            <p class="text-xs font-bold text-orange-400 uppercase mb-2">Query Analysis</p>
+            <p class="text-sm text-slate-300">"${query}" matched <span class="font-bold text-white">${books.length}</span> volumes in the repository.</p>
+          </div>
+          <div class="h-px bg-slate-800"></div>
+          <div>
+            <p class="text-xs font-bold text-slate-500 uppercase mb-2">Availability</p>
+            <div class="flex items-center gap-3">
+              <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-green-500 rounded-full" style="width:${books.length ? Math.round(totalAvail/books.length*100) : 0}%"></div>
+              </div>
+              <span class="text-sm font-bold text-green-400">${totalAvail}/${books.length}</span>
+            </div>
+          </div>
+          ${topCat ? `<div>
+            <p class="text-xs font-bold text-slate-500 uppercase mb-2">Dominant Category</p>
+            <span class="text-sm font-bold text-orange-400">${topCat[0]}</span>
+            <span class="text-xs text-slate-500 ml-1">(${topCat[1]} volumes)</span>
+          </div>` : ''}
+          <div>
+            <p class="text-xs font-bold text-slate-500 uppercase mb-2">Suggestions</p>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 text-xs text-slate-400 hover:text-orange-400 cursor-pointer transition-colors" onclick="document.getElementById('ai-search-input').value='${query} available';doSearch()">
+                <span class="material-symbols-outlined text-xs">navigate_next</span>
+                Refine: "${query} available"
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-400 hover:text-orange-400 cursor-pointer transition-colors">
+                <span class="material-symbols-outlined text-xs">navigate_next</span>
+                <a href="/pages/management/catalog/catalog.html" class="hover:text-orange-400">Browse full catalog</a>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    if (initialQuery) doSearch();
+  </script>
+</body>
+</html>

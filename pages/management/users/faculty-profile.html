@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Portal - AklatBayon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] } } } }
+  </script>
+  <style>
+    .glass-panel { background: rgba(30,30,50,0.5); backdrop-filter: blur(16px); border: 1px solid rgba(255,181,153,0.08); }
+    .timeline-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #e17141; background: #111125; flex-shrink: 0; }
+    .timeline-line { width: 2px; background: linear-gradient(180deg, #e17141 0%, #333348 100%); }
+  </style>
+</head>
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="astral-main pb-12">
+      <div id="alert-container"></div>
+
+      <div class="max-w-6xl mx-auto space-y-8">
+        <!-- Cover Banner -->
+        <div class="relative h-48 rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #28283d 40%, #3a2a1e 100%)">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#111125] to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8 flex items-end gap-6">
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500/30 to-purple-500/30 border-2 border-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-4xl text-orange-400/60">school</span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-extrabold text-white" id="faculty-name">Faculty Member</h1>
+              <p class="text-sm text-slate-400" id="faculty-dept">Department of Computer Science · FEATI University</p>
+            </div>
+            <div class="ml-auto flex gap-3">
+              <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Active Faculty</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="glass-panel rounded-2xl p-5 text-center">
+            <div class="text-2xl font-extrabold text-white" id="stat-publications">3</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase mt-1">Publications</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 text-center">
+            <div class="text-2xl font-extrabold text-white" id="stat-grants">2</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase mt-1">Active Grants</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 text-center">
+            <div class="text-2xl font-extrabold text-white" id="stat-courses">4</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase mt-1">Course Reserves</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 text-center">
+            <div class="text-2xl font-extrabold text-orange-400" id="stat-borrowed">0</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase mt-1">Books Borrowed</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-6">
+          <!-- Left Column -->
+          <div class="col-span-12 lg:col-span-8 space-y-6">
+            <!-- Research Grants -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-orange-400 text-sm">science</span>
+                  <span class="text-sm font-bold text-white">Research Grants</span>
+                </div>
+              </div>
+              <div class="p-6 space-y-4">
+                <div class="bg-[#1a1a2e] rounded-xl p-5 border border-slate-800/50">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 class="text-sm font-bold text-white">Digital Library Accessibility Study</h4>
+                      <p class="text-xs text-slate-500 mt-1">CHED Research Grant · 2024-2026</p>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Active</span>
+                  </div>
+                  <div class="mt-3">
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1"><span>Progress</span><span>65%</span></div>
+                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style="width:65%"></div></div>
+                  </div>
+                </div>
+                <div class="bg-[#1a1a2e] rounded-xl p-5 border border-slate-800/50">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 class="text-sm font-bold text-white">AI-Assisted Classification Systems</h4>
+                      <p class="text-xs text-slate-500 mt-1">University Research Fund · 2025-2027</p>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">Pending</span>
+                  </div>
+                  <div class="mt-3">
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1"><span>Progress</span><span>15%</span></div>
+                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style="width:15%"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Course Reserve Management -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-400 text-sm">class</span>
+                <span class="text-sm font-bold text-white">Course Reserve Management</span>
+              </div>
+              <div class="p-6">
+                <div class="space-y-3" id="course-reserves"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="col-span-12 lg:col-span-4 space-y-6">
+            <!-- Publication Timeline -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-400 text-sm">history_edu</span>
+                <span class="text-sm font-bold text-white">Publication Timeline</span>
+              </div>
+              <div class="p-6">
+                <div class="space-y-6">
+                  <div class="flex gap-4">
+                    <div class="flex flex-col items-center">
+                      <div class="timeline-dot"></div>
+                      <div class="timeline-line flex-1 mt-1"></div>
+                    </div>
+                    <div class="pb-6">
+                      <span class="text-[10px] font-bold text-orange-400">2025</span>
+                      <h4 class="text-sm font-bold text-white mt-1">Integrating RFID Technology in Academic Libraries</h4>
+                      <p class="text-xs text-slate-500 mt-1">Philippine Journal of Library Science</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="flex flex-col items-center">
+                      <div class="timeline-dot"></div>
+                      <div class="timeline-line flex-1 mt-1"></div>
+                    </div>
+                    <div class="pb-6">
+                      <span class="text-[10px] font-bold text-orange-400">2024</span>
+                      <h4 class="text-sm font-bold text-white mt-1">Machine Learning for Automated Book Cataloging</h4>
+                      <p class="text-xs text-slate-500 mt-1">International Conference on Digital Libraries</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="flex flex-col items-center">
+                      <div class="timeline-dot"></div>
+                    </div>
+                    <div>
+                      <span class="text-[10px] font-bold text-orange-400">2023</span>
+                      <h4 class="text-sm font-bold text-white mt-1">Student Reading Habits in the Digital Age</h4>
+                      <p class="text-xs text-slate-500 mt-1">FEATI University Research Journal</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Department Overview -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-800/50 flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-400 text-sm">domain</span>
+                <span class="text-sm font-bold text-white">Department Overview</span>
+              </div>
+              <div class="p-6 space-y-4">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Department</span>
+                  <span class="text-white font-bold">Computer Science</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Faculty Count</span>
+                  <span class="text-white font-bold" id="dept-faculty">-</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Dept. Books</span>
+                  <span class="text-white font-bold" id="dept-books">-</span>
+                </div>
+                <hr class="border-slate-800">
+                <a href="/pages/operations/reading-history.html" class="flex items-center gap-2 text-sm text-orange-400 hover:text-orange-300 transition-colors">
+                  <span class="material-symbols-outlined text-sm">history</span>
+                  View Reading History
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
+    App.init();
+
+    const user = Auth.getCurrentUser();
+    document.getElementById('faculty-name').textContent = user.name || user.username;
+
+    // Load real stats from Store
+    const txns = Store.getAll('transactions');
+    const books = Store.getAll('books');
+    const categories = Store.getAll('categories');
+    const myBorrowed = txns.filter(t => t.student_id === user.student_id && t.status === 'borrowed').length;
+    document.getElementById('stat-borrowed').textContent = myBorrowed;
+
+    // Faculty and department counts
+    const allUsers = Store.getAll('users');
+    document.getElementById('dept-faculty').textContent = allUsers.length;
+    document.getElementById('dept-books').textContent = books.length;
+
+    // Course Reserves - show top categories with their books
+    const courseReservesContainer = document.getElementById('course-reserves');
+    const topCategories = categories.slice(0, 4);
+    topCategories.forEach(cat => {
+      const catBooks = books.filter(b => b.category_id === cat.id);
+      const courseHtml = `<div class="bg-[#1a1a2e] rounded-xl p-4 border border-slate-800/50 flex items-center gap-4">
+        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-orange-400 text-sm">book</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h4 class="text-sm font-bold text-white truncate">${cat.name}</h4>
+          <p class="text-xs text-slate-500">${catBooks.length} volumes assigned</p>
+        </div>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Reserved</span>
+      </div>`;
+      courseReservesContainer.innerHTML += courseHtml;
+    });
+  </script>
+</body>
+</html>

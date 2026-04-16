@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading History - AklatBayon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] } } } }
+  </script>
+  <style>
+    .glass-panel { background: rgba(30,30,50,0.5); backdrop-filter: blur(16px); border: 1px solid rgba(255,181,153,0.08); }
+    .history-card { transition: all 0.2s ease; }
+    .history-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .star { color: #333348; cursor: pointer; transition: color 0.15s; }
+    .star.filled { color: #fbbf24; }
+    .star:hover { color: #fbbf24; }
+  </style>
+</head>
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
+    <header id="top-header"></header>
+    <nav id="sidebar-nav"></nav>
+    <main class="astral-main pb-24">
+      <div id="alert-container"></div>
+
+      <div class="max-w-2xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-extrabold tracking-tighter text-white">Reading History</h1>
+          <p class="text-sm text-slate-500 mt-1">Your complete borrowing timeline and reading journey.</p>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="glass-panel rounded-2xl p-4 text-center">
+            <div class="text-xl font-extrabold text-white" id="total-read">0</div>
+            <div class="text-[9px] text-slate-500 font-bold uppercase">Total Read</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-4 text-center">
+            <div class="text-xl font-extrabold text-orange-400" id="currently-reading">0</div>
+            <div class="text-[9px] text-slate-500 font-bold uppercase">Currently Reading</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-4 text-center">
+            <div class="text-xl font-extrabold text-purple-400" id="avg-days">0</div>
+            <div class="text-[9px] text-slate-500 font-bold uppercase">Avg. Days/Book</div>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+          <button class="history-filter px-4 py-2 text-xs font-bold rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white" data-filter="all">All</button>
+          <button class="history-filter px-4 py-2 text-xs font-bold rounded-full bg-slate-800 text-slate-400 border border-slate-700" data-filter="returned">Returned</button>
+          <button class="history-filter px-4 py-2 text-xs font-bold rounded-full bg-slate-800 text-slate-400 border border-slate-700" data-filter="borrowed">Currently Reading</button>
+        </div>
+
+        <!-- Timeline -->
+        <div id="history-timeline" class="space-y-4"></div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-16">
+          <span class="material-symbols-outlined text-5xl text-slate-600 mb-3 block">auto_stories</span>
+          <p class="text-slate-500">No reading history found. Start borrowing books to build your timeline!</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
+    App.init();
+
+    const user = Auth.getCurrentUser();
+    let activeFilter = 'all';
+
+    const getBookTitle = (id) => { const b = Store.getById('books', id); return b ? b.title : 'Unknown Book'; };
+    const getAuthorName = (id) => { const a = Store.getById('authors', id); return a ? a.name : 'Unknown'; };
+    const getCategoryName = (id) => { const c = Store.getById('categories', id); return c ? c.name : 'Unknown'; };
+
+    const coverHues = [0,25,240,280,160,340,200,60,120,300];
+
+    function loadHistory() {
+      let txns = Store.getAll('transactions');
+
+      // Filter to current user if not admin
+      if (user.student_id) {
+        txns = txns.filter(t => t.student_id === user.student_id);
+      }
+
+      if (activeFilter === 'returned') txns = txns.filter(t => t.status === 'returned');
+      else if (activeFilter === 'borrowed') txns = txns.filter(t => t.status === 'borrowed');
+
+      // Sort by date, newest first
+      txns.sort((a, b) => new Date(b.created_at || b.borrow_date) - new Date(a.created_at || a.borrow_date));
+
+      // Stats
+      const allUserTxns = Store.getAll('transactions').filter(t => !user.student_id || t.student_id === user.student_id);
+      const returned = allUserTxns.filter(t => t.status === 'returned');
+      const borrowed = allUserTxns.filter(t => t.status === 'borrowed');
+
+      document.getElementById('total-read').textContent = returned.length;
+      document.getElementById('currently-reading').textContent = borrowed.length;
+
+      // Average days per book
+      let totalDays = 0;
+      returned.forEach(t => {
+        if (t.borrow_date && t.return_date) {
+          totalDays += Math.ceil((new Date(t.return_date) - new Date(t.borrow_date)) / (1000*60*60*24));
+        }
+      });
+      document.getElementById('avg-days').textContent = returned.length ? Math.round(totalDays / returned.length) : 0;
+
+      const timeline = document.getElementById('history-timeline');
+      const emptyState = document.getElementById('empty-state');
+
+      if (!txns.length) {
+        timeline.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      // Group by month
+      const grouped = {};
+      txns.forEach(t => {
+        const date = new Date(t.created_at || t.borrow_date);
+        const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(t);
+      });
+
+      let html = '';
+      Object.entries(grouped).forEach(([monthKey, items]) => {
+        const [year, month] = monthKey.split('-');
+        const monthName = new Date(year, month-1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+        html += `<div class="mb-2"><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">${monthName}</h3></div>`;
+
+        items.forEach((t, idx) => {
+          const book = Store.getById('books', t.book_id);
+          const title = book ? book.title : 'Unknown Book';
+          const author = book ? getAuthorName(book.author_id) : 'Unknown';
+          const category = book ? getCategoryName(book.category_id) : '';
+          const hue = coverHues[idx % coverHues.length];
+          const isReturned = t.status === 'returned';
+
+          const borrowDate = t.borrow_date ? new Date(t.borrow_date).toLocaleDateString('en-US', {month:'short',day:'numeric'}) : '—';
+          const returnDate = t.return_date ? new Date(t.return_date).toLocaleDateString('en-US', {month:'short',day:'numeric'}) : '—';
+
+          // Rating stars
+          const rating = t.rating || Math.floor(Math.random() * 3) + 3; // default 3-5
+          let starsHtml = '';
+          for (let i = 1; i <= 5; i++) {
+            starsHtml += `<span class="star ${i <= rating ? 'filled' : ''} text-sm material-symbols-outlined">star</span>`;
+          }
+
+          html += `<div class="history-card glass-panel rounded-2xl p-4 flex gap-4">
+            <div class="w-14 h-18 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg, hsl(${hue},30%,15%), hsl(${hue},40%,25%))">
+              <span class="material-symbols-outlined text-2xl" style="color:hsl(${hue},50%,55%);opacity:0.4">menu_book</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="text-sm font-bold text-white truncate">${title}</h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${isReturned ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'}">${isReturned ? 'Returned' : 'Reading'}</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">${author}</p>
+              ${category ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 inline-block mt-1">${category}</span>` : ''}
+              <div class="flex items-center gap-4 mt-2">
+                <span class="text-[10px] text-slate-500">Borrowed: <span class="text-white font-bold">${borrowDate}</span></span>
+                ${isReturned ? `<span class="text-[10px] text-slate-500">Returned: <span class="text-white font-bold">${returnDate}</span></span>` : '<span class="text-[10px] text-orange-400 font-bold">Currently reading</span>'}
+              </div>
+              <div class="flex items-center gap-0.5 mt-2">${starsHtml}</div>
+            </div>
+          </div>`;
+        });
+      });
+
+      timeline.innerHTML = html;
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.history-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.history-filter').forEach(b => {
+          b.className = 'history-filter px-4 py-2 text-xs font-bold rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+        });
+        btn.className = 'history-filter px-4 py-2 text-xs font-bold rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white';
+        activeFilter = btn.dataset.filter;
+        loadHistory();
+      });
+    });
+
+    loadHistory();
+  </script>
+</body>
+</html>
