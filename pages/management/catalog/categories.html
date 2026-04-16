@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categories - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -13,45 +12,45 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' }, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, /* colors removed - using astral CSS */, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-  <div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
 
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
         <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-3xl text-primary">sell</span>
+          <span class="material-symbols-outlined text-3xl text-[#ffb599]">sell</span>
           <h1 class="text-2xl font-black tracking-tight">Categories</h1>
         </div>
-        <button id="btn-add" class="inline-flex items-center gap-2 bg-primary text-white hover:bg-primary-800 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+        <button id="btn-add" class="inline-flex items-center gap-2 bg-[#ffb599] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors">
           <span class="material-symbols-outlined text-[18px]">add_circle</span>
           Add Category
         </button>
       </div>
 
       <!-- Table Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div class="astral-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm text-left">
-            <thead class="bg-slate-50 dark:bg-slate-800/50">
+            <thead class="bg-[#1a1a2e]">
               <tr>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Name</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Description</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Parent</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Books</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">#</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Name</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Description</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Parent</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Books</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Actions</th>
               </tr>
             </thead>
-            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+            <tbody id="data-table" class="divide-y divide-[#3a3a52]/50"></tbody>
           </table>
         </div>
       </div>
@@ -60,9 +59,9 @@
 
   <!-- Modal -->
   <div class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center" id="modal-form">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl animate-modal-in w-full max-w-lg mx-4">
+    <div class="astral-modal w-full max-w-lg mx-4">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#3a3a52]">
         <h3 id="modal-title" class="text-lg font-bold">Add Category</h3>
         <button class="modal-close text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
           <span class="material-symbols-outlined">close</span>
@@ -75,28 +74,28 @@
 
         <div>
           <label class="block text-sm font-semibold mb-1.5">Name</label>
-          <input id="f-name" type="text" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+          <input id="f-name" type="text" class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30 transition-colors">
         </div>
 
         <div>
           <label class="block text-sm font-semibold mb-1.5">Description</label>
-          <textarea id="f-desc" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"></textarea>
+          <textarea id="f-desc" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30 transition-colors resize-none"></textarea>
         </div>
 
         <div>
           <label class="block text-sm font-semibold mb-1.5">Parent Category</label>
-          <select id="f-parent" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+          <select id="f-parent" class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30 transition-colors">
             <option value="">None (Top Level)</option>
           </select>
         </div>
       </div>
 
       <!-- Modal Footer -->
-      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-800">
-        <button class="modal-close px-4 py-2.5 text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#3a3a52]">
+        <button class="modal-close px-4 py-2.5 text-sm font-semibold rounded-lg border border-[#3a3a52] text-[#e2e0fc] hover:bg-[#ffb599]/5 transition-colors">
           Cancel
         </button>
-        <button id="btn-save" class="inline-flex items-center gap-2 bg-primary text-white hover:bg-primary-800 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+        <button id="btn-save" class="inline-flex items-center gap-2 bg-[#ffb599] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors">
           <span class="material-symbols-outlined text-[18px]">save</span>
           Save
         </button>
@@ -127,14 +126,14 @@
       const tbody = document.getElementById('data-table');
 
       if (!items.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-10 text-center text-slate-400 dark:text-slate-500">No categories found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-10 text-center text-[#9b99b8]">No categories found.</td></tr>';
         return;
       }
 
       tbody.innerHTML = items.map((c, i) => {
-        const parent = c.parent_id ? App.getCategoryName(c.parent_id) : '<span class="text-slate-400">\u2014</span>';
+        const parent = c.parent_id ? App.getCategoryName(c.parent_id) : '<span class="text-[#9b99b8]">\u2014</span>';
         const cnt = books.filter((b) => b.category_id === c.id).length;
-        return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3 text-slate-500">${i + 1}</td><td class="px-5 py-3 font-semibold">${c.name}</td><td class="px-5 py-3 text-slate-500 dark:text-slate-400">${c.description || '<span class="text-slate-400">\u2014</span>'}</td><td class="px-5 py-3">${parent}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${cnt}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="${c.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button> <button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" data-id="${c.id}" data-name="${c.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td></tr>`;
+        return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-5 py-3 text-[#9b99b8]">${i + 1}</td><td class="px-5 py-3 font-semibold">${c.name}</td><td class="px-5 py-3 text-[#9b99b8]">${c.description || '<span class="text-[#9b99b8]">\u2014</span>'}</td><td class="px-5 py-3">${parent}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${cnt}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit inline-flex items-center justify-center w-8 h-8 rounded-lg text-[#ffb599] hover:bg-primary-50 dark:hover:bg-primary/10 transition-colors" data-id="${c.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button> <button class="btn-del inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" data-id="${c.id}" data-name="${c.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td></tr>`;
       }).join('');
 
       bind();
@@ -194,7 +193,7 @@
         App.closeModal('modal-form');
         load();
       }).catch((err) => {
-        Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
+        Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
       });
     });
 

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reading History - Student Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "astral-deep": "#0f172a",
+                        "astral-purple": "#4f46e5",
+                        "astral-glow": "#818cf8"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .astral-card-glow {
+            box-shadow: 0 0 20px -5px rgba(79, 70, 229, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 shadow-sm fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-400" data-icon="menu_book">menu_book</span>
+<h1 class="text-xl font-bold text-indigo-300">Student Library</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 transition-colors duration-200 hover:bg-slate-800 rounded-full">
+<span class="material-symbols-outlined text-slate-400" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="pt-20 px-4 max-w-md mx-auto">
+<header class="mb-8">
+<h2 class="text-2xl font-extrabold tracking-tight text-white mb-1">Reading History</h2>
+<p class="text-slate-400 text-sm">Your cosmic journey through literature.</p>
+</header>
+<!-- Timeline Section -->
+<div class="relative space-y-6">
+<!-- Decorative Timeline Line -->
+<div class="absolute left-6 top-4 bottom-4 w-px bg-gradient-to-b from-indigo-500/50 via-indigo-500/20 to-transparent"></div>
+<!-- History Entry 1: Nebula Bound -->
+<div class="relative pl-12">
+<div class="absolute left-4 top-2 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-slate-950 z-10"></div>
+<div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 astral-card-glow backdrop-blur-sm">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden shadow-lg border border-slate-700">
+<img alt="Book cover" class="w-full h-full object-cover" data-alt="Stunning sci-fi book cover with a swirling blue nebula and a lone spacecraft silhouette in deep space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAswD28W3MRZ6CNXdqbGXtefeUsMGfrNIZ1EAtpwxpTpr6Rs4iTAqHJviV5L6Y_J4QCWo3cIgdhPk2ymcTMWjywBzdU6sgP4JiHxeNIxghbHnUeYxuppZemfPJ1TUiknTZG83e_VLTsMk3K8BoHMABhXVSw1IaSJqCsgJZa-TfVAsIFawh8N5eSTKmLmuhyVkrGZqIVfSYZy3nG8mifMWJUB4Z6_ueXdFRKKE1ZUHE4xfPaRh4chHdFswk-IfsxxQLVOaWKxs8FQeOz"/>
+</div>
+<div class="flex-grow flex flex-col">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold text-slate-100 text-base leading-tight">Astral Cartography</h3>
+<p class="text-indigo-400 text-xs font-semibold uppercase tracking-wider mt-1">Dr. Elena Vance</p>
+</div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-slate-600 text-sm">star</span>
+</div>
+<p class="text-slate-500 text-[10px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="calendar_today">calendar_today</span>
+                                    Returned Oct 12, 2023
+                                </p>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2 bg-indigo-600/10 hover:bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-bold rounded-xl transition-all active:scale-95">
+                        Read Again
+                    </button>
+</div>
+</div>
+<!-- History Entry 2: Quantum Mechanics -->
+<div class="relative pl-12">
+<div class="absolute left-5 top-3 w-2 h-2 rounded-full bg-slate-600 ring-4 ring-slate-950 z-10"></div>
+<div class="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 backdrop-blur-sm opacity-80">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden border border-slate-800 grayscale">
+<img alt="Book cover" class="w-full h-full object-cover" data-alt="Minimalist book cover featuring high-tech fiber optic patterns and glowing data streams on a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACg8tFxPPaaRtbZasrp8AvzZ2tXwSTeeaMWR54icaWWSD27vu-eBseNfxeucaE9iuYTLdPTA3IxUmKhH6CZvVRrn1RrSU04oSbDLnQt1-XhHUilPzR41F3ADMjCjGeAE7FqYEKcr7sy2jiMSKJBVhy4V7v_kx_OSxUxYc8TNECD3NWXvVJ1SvYssJo28D17rH2cMzZs7eAtfZOhj13MJkipyFBk-08ap6CEjlGme0t9N-aIHI9KQyQyykjFRDnsLu12zpPm7GcHypk"/>
+</div>
+<div class="flex-grow flex flex-col">
+<div>
+<h3 class="font-bold text-slate-400 text-base leading-tight">Digital Synchronicity</h3>
+<p class="text-slate-500 text-xs mt-1">Marcus Thorne</p>
+</div>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-indigo-400/50 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-indigo-400/50 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-indigo-400/50 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-slate-700 text-sm">star</span>
+<span class="material-symbols-outlined text-slate-700 text-sm">star</span>
+</div>
+<p class="text-slate-600 text-[10px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="calendar_today">calendar_today</span>
+                                    Returned Sep 28, 2023
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- History Entry 3: Starlight -->
+<div class="relative pl-12">
+<div class="absolute left-5 top-3 w-2 h-2 rounded-full bg-slate-600 ring-4 ring-slate-950 z-10"></div>
+<div class="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 backdrop-blur-sm opacity-80">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden border border-slate-800 grayscale">
+<img alt="Book cover" class="w-full h-full object-cover" data-alt="Beautiful book cover showing a dense starry night sky with purple and magenta hues over a dark forest silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBELVHAXlg8rSl-HDDbDyqouiCs3HhnBsgsJwjaIu4AMWGU4cNVHOcDV_JkC4PKZEi7WT4WCQYnv6hH9B5tMcrUhtZq9uAAGK_nsmwfVe_10yYJV-6ZaDERcAqZR5m3xqISP3YSWmPsPrnOUh_Ypvzs1BQhikGcmGrEixJDGYrdkcG_D22KYK-zQSAech-vj78kltZFRhdpwxZygM_s_GIMp1QhlpMcNzkDtvB04gbZes3z-USlBHOcGyY2I4FaVOCry6dlhB3TQ0q"/>
+</div>
+<div class="flex-grow flex flex-col">
+<div>
+<h3 class="font-bold text-slate-400 text-base leading-tight">Beyond the Event Horizon</h3>
+<p class="text-slate-500 text-xs mt-1">S. J. Koral</p>
+</div>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-2 text-yellow-500/40">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-slate-600 text-[10px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="calendar_today">calendar_today</span>
+                                    Returned Aug 15, 2023
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Trigger (Hidden) -->
+<div class="mt-12 text-center py-8 px-6 bg-slate-900/20 border border-dashed border-slate-800 rounded-3xl">
+<span class="material-symbols-outlined text-slate-700 text-4xl mb-3" data-icon="auto_stories">auto_stories</span>
+<p class="text-slate-500 text-xs">Viewing previous 6 months of records.<br/>Load older history?</p>
+<button class="mt-4 text-indigo-400 font-bold text-xs">VIEW FULL ARCHIVE</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] z-50">
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 transition-transform duration-150 active:scale-95 hover:text-indigo-300" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark_manager">bookmark_manager</span>
+<span class="text-[11px] font-semibold tracking-tight mt-1">Reservations</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-indigo-900/40 text-indigo-200 rounded-xl px-3 py-1.5 transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="text-[11px] font-semibold tracking-tight mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 transition-transform duration-150 active:scale-95 hover:text-indigo-300" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[11px] font-semibold tracking-tight mt-1">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 transition-transform duration-150 active:scale-95 hover:text-indigo-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[11px] font-semibold tracking-tight mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

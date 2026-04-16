@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 30, 50, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 181, 153, 0.1);
+        }
+        .solar-gradient {
+            background: linear-gradient(135deg, #ffb599 0%, #e17141 100%);
+        }
+        .astral-glow {
+            box-shadow: 0 0 20px rgba(255, 181, 153, 0.15);
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0c1f; }
+        ::-webkit-scrollbar-thumb { background: #333348; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ffb599; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#1a1a2e",
+                      "on-background": "#e2e0fc",
+                      "secondary": "#ffb77d",
+                      "surface": "#111125",
+                      "error": "#ffb4ab",
+                      "on-secondary-container": "#ffad68",
+                      "secondary-fixed-dim": "#ffb77d",
+                      "inverse-primary": "#a04113",
+                      "primary-fixed-dim": "#ffb599",
+                      "surface-bright": "#37374d",
+                      "surface-container-highest": "#333348",
+                      "secondary-fixed": "#ffdcc3",
+                      "outline-variant": "#56423b",
+                      "on-primary-fixed-variant": "#7f2b00",
+                      "on-surface-variant": "#ddc0b6",
+                      "inverse-surface": "#e2e0fc",
+                      "surface-dim": "#111125",
+                      "on-tertiary-container": "#311f52",
+                      "background": "#111125",
+                      "on-primary": "#5a1c00",
+                      "surface-variant": "#333348",
+                      "tertiary-fixed-dim": "#d2bcfa",
+                      "on-tertiary-fixed": "#231043",
+                      "tertiary-fixed": "#ebddff",
+                      "on-secondary-fixed": "#2f1500",
+                      "on-secondary": "#4d2600",
+                      "primary": "#ffb599",
+                      "on-tertiary": "#38265a",
+                      "inverse-on-surface": "#2f2e43",
+                      "primary-fixed": "#ffdbce",
+                      "on-tertiary-fixed-variant": "#4f3d72",
+                      "on-primary-fixed": "#370e00",
+                      "secondary-container": "#783f00",
+                      "on-primary-container": "#4e1800",
+                      "surface-tint": "#ffb599",
+                      "error-container": "#93000a",
+                      "surface-container-lowest": "#0c0c1f",
+                      "outline": "#a58b82",
+                      "primary-container": "#e17141",
+                      "on-secondary-fixed-variant": "#6e3900",
+                      "on-surface": "#e2e0fc",
+                      "tertiary-container": "#9b87c1",
+                      "tertiary": "#d2bcfa",
+                      "surface-container-high": "#28283d",
+                      "on-error": "#690005",
+                      "surface-container": "#1e1e32",
+                      "on-error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Inter"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/30 min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl shadow-2xl shadow-orange-950/10 flex items-center justify-between px-8 py-4 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-orange-500">Astral Repository</span>
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-slate-900/50 border-none rounded-full py-2 pl-10 pr-4 text-sm w-80 focus:ring-1 focus:ring-orange-500/50 placeholder:text-slate-500" placeholder="Search the archives..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-slate-400 hover:text-orange-300 transition-colors duration-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-400 hover:text-orange-300 transition-colors duration-300">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-800">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface uppercase tracking-widest">Senior Archivist</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">System Node 01</p>
+</div>
+<img alt="Archivist Profile" class="w-10 h-10 rounded-full border-2 border-orange-500/20 object-cover" data-alt="portrait of a professional archivist in low dramatic lighting with soft blue and orange rim lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4n44xGM2B9t0gY3UlFCdGJqjxdhTH9FUEGrbRH2FGyFBX7FgnQHllep6UHJ9WLRCTQ2cxkGjx3v9qZtl2UJun-qaVTwRcqlLMD6S9YSKRqBZ4GLvvntETKOQabWrAAMbnjAYy61cZbe2CoZuLN0iyf1VwkYYcq2adwtqFcy6ylhJ5qFhSjc7yhyboNCqOMb4H3psIPtW3G-lT78q0yMH5l4bj1wrdHtSjwIl1XOqu1hB8OMwaVpvjPFwzRW58OZqNk1vuAYlrplEI"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-900/50 bg-slate-900/80 flex flex-col h-full pt-20 pb-8 px-4 z-40 hidden md:flex">
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-sans uppercase tracking-widest text-[10px]">Dashboard</span>
+</a>
+<!-- Discovery (ACTIVE) -->
+<a class="flex items-center gap-4 px-4 py-3 bg-orange-500/10 text-orange-400 border-r-2 border-orange-500 font-sans uppercase tracking-widest text-[10px] hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span>Discovery</span>
+</a>
+<!-- Collections -->
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="font-sans uppercase tracking-widest text-[10px]">Collections</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-sans uppercase tracking-widest text-[10px]">Analytics</span>
+</a>
+<!-- Archives -->
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-sans uppercase tracking-widest text-[10px]">Archives</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full py-3 solar-gradient rounded-xl text-on-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-950/20 active:scale-95 transition-transform">
+                Initialize Scan
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-4 px-4 py-2 text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span> Support
+                </a>
+<a class="flex items-center gap-4 px-4 py-2 text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">terminal</span> Terminal
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:pl-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Hero Section -->
+<section class="relative mb-16 overflow-hidden rounded-3xl bg-surface-container-lowest p-12 astral-glow">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,181,153,0.08),transparent_50%)]"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+<div class="max-w-xl">
+<div class="flex items-center gap-3 text-primary mb-4">
+<span class="material-symbols-outlined text-4xl animate-pulse">auto_awesome</span>
+<span class="text-sm font-bold uppercase tracking-[0.3em]">System Engine v4.2</span>
+</div>
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-6 leading-none">
+                        Astral <span class="text-primary">Discovery</span> Engine
+                    </h1>
+<p class="text-slate-400 text-lg leading-relaxed mb-8 max-w-md">
+                        Harnessing deep neural nodes to synthesize your intellectual path. Explore the next horizon of curated knowledge.
+                    </p>
+<div class="flex gap-4">
+<button class="px-8 py-3 solar-gradient rounded-full text-on-primary font-bold transition-transform hover:scale-105 active:scale-95">
+                            Synthesize Results
+                        </button>
+</div>
+</div>
+<div class="hidden lg:flex relative">
+<div class="w-64 h-64 rounded-full bg-gradient-to-br from-primary/20 to-tertiary/20 blur-3xl absolute -inset-4"></div>
+<div class="w-64 h-64 glass-panel rounded-full flex items-center justify-center border-2 border-primary/20 relative z-10">
+<span class="material-symbols-outlined text-8xl text-primary" style="font-variation-settings: 'FILL' 1;">blur_on</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Personalized for You -->
+<section class="mb-16">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Personalized for You</h2>
+<p class="text-slate-500 text-sm">Synchronized with your recent archive explorations</p>
+</div>
+<button class="text-xs font-bold text-primary uppercase tracking-widest hover:underline">View All Seeds</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Book Card 1 -->
+<div class="glass-panel rounded-3xl p-6 group hover:border-primary/40 transition-all duration-300">
+<div class="relative aspect-[3/4] rounded-2xl mb-6 overflow-hidden">
+<img alt="The Singularity Horizon" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="stylized sci-fi book cover with a bright white event horizon against a deep purple space background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIYAQxf53BFvseRgoIYmu-w2SELNmA-uQC_kfkTeTEvo9PJpHDCzQ0LEppBAIJ2C2rV8GmvedWPp8Z6WuD4VB9FxOSs2gb6m7rJOCikPWXpjFNvnps-Z1MiQVeVw1H-7Ww3F1iOUtqAsajUUapXRadw9MOqiY4gPaneY_rd0ZMWj4cwkHst83bm8EzcFbGUvyyO2IuysLUzpH79DMKXsIsQJ0driM94bpZ-Md6CSN9fdF0c86OqkkGFRvDxEFQwHZ3ymfvZP8NyTc_"/>
+<div class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full border border-green-500/30 flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+<span class="text-[10px] font-bold text-green-400">98% ASTRAL MATCH</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-on-surface mb-2">The Singularity Horizon</h3>
+<p class="text-slate-500 text-xs mb-6 uppercase tracking-widest">Ray Kurzweil • 2024</p>
+<div class="flex items-center justify-between">
+<button class="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                            Reserve <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<span class="material-symbols-outlined text-slate-600 hover:text-primary cursor-pointer">bookmark</span>
+</div>
+</div>
+<!-- Book Card 2 -->
+<div class="glass-panel rounded-3xl p-6 group hover:border-primary/40 transition-all duration-300">
+<div class="relative aspect-[3/4] rounded-2xl mb-6 overflow-hidden">
+<img alt="Cognitive Architecture" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="abstract architectural blueprint book cover with glowing blue neon lines on dark paper texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf5__f4djNWy51A9qRn0pQM7n6fVZFmkF9JJ5xAEGkrQs73FLu_MLn_nOjBsWQPz2k_usbV2vW2-q7zoE7rLuJazMMY5S0uRsOlhL29GpZF8d3BraLMZ33LOeF94RqlXhoDJ2evS0jdcch0jacvhmyDVj89iV8CLacjUOucK8imp40ggjP9YqplLNnrra7NyhJ4a9j7VFrPl4zcnLwb7mFNhabu0kDMRO7B24ZZsm9r9Iy7HcIjPQPxxYcDJyo5j1lHwi6ERZ0T85A"/>
+<div class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full border border-green-500/30 flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+<span class="text-[10px] font-bold text-green-400">92% ASTRAL MATCH</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-on-surface mb-2">Cognitive Architecture</h3>
+<p class="text-slate-500 text-xs mb-6 uppercase tracking-widest">Dr. Elena Vos • 2023</p>
+<div class="flex items-center justify-between">
+<button class="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                            Reserve <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<span class="material-symbols-outlined text-slate-600 hover:text-primary cursor-pointer">bookmark</span>
+</div>
+</div>
+<!-- Book Card 3 -->
+<div class="glass-panel rounded-3xl p-6 group hover:border-primary/40 transition-all duration-300">
+<div class="relative aspect-[3/4] rounded-2xl mb-6 overflow-hidden">
+<img alt="Quantum Entanglement" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="minimalist book cover with a single glowing orange circle split in half against a midnight blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANNWAsz_4GjUzBEprIFvSNnTE-ct1mFIIqFb4fBEU0aMpE5rqQmMdn_woEGiFA_jMCtymbC-egIH798vvXYUEK3i4T92OqHN4iWqtkhVMk30v6k4ONdiVDoS2Zcv1AjUHOzQ08wwtuRue0pZFydu_yNzXBltZJLhxYBrEFjyMTj_G7aZYjL2yAHJzz4nzVPmnT1QYNuRQXLnnShAJL9YbxfSZope3LgHigdVyVr1lyyxSePaBz0F4jEcqwIsx2OoA5CcQ6aBSFpyH_"/>
+<div class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full border border-green-500/30 flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+<span class="text-[10px] font-bold text-green-400">89% ASTRAL MATCH</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-on-surface mb-2">Quantum Entanglement</h3>
+<p class="text-slate-500 text-xs mb-6 uppercase tracking-widest">Julian Thorne • 2024</p>
+<div class="flex items-center justify-between">
+<button class="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                            Reserve <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<span class="material-symbols-outlined text-slate-600 hover:text-primary cursor-pointer">bookmark</span>
+</div>
+</div>
+</div>
+</section>
+<!-- The Oracle's Pick (Featured Section) -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold tracking-tight text-on-surface mb-8">The Oracle's Pick</h2>
+<div class="bg-surface-container rounded-[2rem] overflow-hidden flex flex-col lg:flex-row astral-glow">
+<div class="lg:w-1/3 aspect-[3/4] lg:aspect-auto relative">
+<img alt="The Weaver's Paradox" class="w-full h-full object-cover" data-alt="detailed close-up of a complex mechanical clockwork mechanism glowing with golden internal light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxUiDWKi1YMinyFGvLIBjPT9Pz3lj0ArRCyFWDvTsEpd48V4lXSGg06CAcBOQYeJmzuGO1x15S8yl_NVekMTTjrjSzptDg8Oujx8eCgl2dVvapHFIq9uS9LNPk57ONrKJyRekjRWPjCx2N3qcrXnrU1_KfOaRDqJXlOgzSPdAasE3ODuuQCzbglllWQgE8FaFzwvFLiMWmlY069kamFApsgi2rPvQ-daJerqq0sWe-wNUKKNgtv9I30PiktJeNFhQOHFBkaS0HRl8p"/>
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-surface-container"></div>
+</div>
+<div class="lg:w-2/3 p-10 lg:p-16 flex flex-col justify-center">
+<div class="flex items-center gap-2 text-tertiary mb-6">
+<span class="material-symbols-outlined">verified</span>
+<span class="text-xs font-bold uppercase tracking-[0.2em]">Featured Selection of the Week</span>
+</div>
+<h3 class="text-4xl lg:text-6xl font-black text-on-surface mb-6 leading-tight">The Weaver's Paradox</h3>
+<div class="flex gap-4 mb-8">
+<span class="bg-surface-container-high px-4 py-1.5 rounded-full text-[10px] font-bold border border-outline-variant/30 text-on-surface-variant uppercase tracking-widest">Philosophy</span>
+<span class="bg-surface-container-high px-4 py-1.5 rounded-full text-[10px] font-bold border border-outline-variant/30 text-on-surface-variant uppercase tracking-widest">Quantum Theory</span>
+</div>
+<p class="text-slate-400 text-lg leading-relaxed mb-8 italic">
+                        "An exploration of time-loops and mechanical fate in the 24th century."
+                    </p>
+<div class="bg-slate-900/40 p-6 rounded-2xl border-l-4 border-primary mb-10">
+<p class="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">psychology</span> Why it's recommended
+                        </p>
+<p class="text-slate-300 text-sm leading-relaxed">
+                            Based on your interest in 'Temporal Mechanics' and 'Ancient Cybernetics', this volume synthesizes the bridge between classical philosophy and future tech-determinism that you've been investigating in System Node 01.
+                        </p>
+</div>
+<div class="flex gap-4">
+<button class="px-10 py-4 solar-gradient rounded-full text-on-primary font-bold transition-all hover:shadow-xl hover:shadow-orange-500/20 active:scale-95">
+                            Synthesize Full Summary
+                        </button>
+<button class="px-10 py-4 border border-outline-variant rounded-full text-on-surface font-bold hover:bg-surface-variant transition-colors">
+                            Details
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Discover by Aura (Filters) -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold tracking-tight text-on-surface mb-8">Discover by Aura</h2>
+<div class="flex flex-wrap gap-4">
+<button class="flex items-center gap-3 px-6 py-3 rounded-2xl bg-primary text-on-primary font-bold transition-all">
+<span class="material-symbols-outlined">memory</span>
+<span class="text-xs uppercase tracking-widest">Digital Logic</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 rounded-2xl bg-surface-container-high hover:bg-surface-container-highest text-slate-300 font-bold transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="text-xs uppercase tracking-widest">Historical Echoes</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 rounded-2xl bg-surface-container-high hover:bg-surface-container-highest text-slate-300 font-bold transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined">cyclone</span>
+<span class="text-xs uppercase tracking-widest">Quantum Theory</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 rounded-2xl bg-surface-container-high hover:bg-surface-container-highest text-slate-300 font-bold transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined">architecture</span>
+<span class="text-xs uppercase tracking-widest">System Design</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 rounded-2xl bg-surface-container-high hover:bg-surface-container-highest text-slate-300 font-bold transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined">biotech</span>
+<span class="text-xs uppercase tracking-widest">Bio-Archives</span>
+</button>
+</div>
+</section>
+<!-- Trending in BSCS (Grid) -->
+<section>
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Trending in BSCS</h2>
+<p class="text-slate-500 text-sm">Popular among fellow computer science archivists</p>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+<!-- Trending Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4">
+<img alt="Deep Learning" class="w-full h-full object-cover" data-alt="abstract tech book cover with a web of glowing neural network lines on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPF2ZmFDbKBIRuHnBNigJzlg3G4T9bvnw4s5kYudHhcNc0xrQgnKoY33oLsQI71eV5tnd2Fx1fgzvCi2qOPHjt1OZZbPbQN1lFDTEBtBz5WOUAs1aGxYsOLXCB53mJvLc6bIAydHyALm-Bx0uDIXk2Y9E-7JLdHvtYFu8YU1wxpTQadqKIKxMhtcYFxvN9STbeHg_J_6VT8anZplQ4A_Q2QtZ9zf-kmM4bVX9BevnONcrt0AlbxlJfj3tTXD3dXjTz-4DeJvPkYO4m"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">Deep Learning</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Goodfellow et al.</p>
+</div>
+<!-- Trending Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4">
+<img alt="Quantum Algorithms" class="w-full h-full object-cover" data-alt="geometric patterns and mathematical equations glowing faintly in purple and blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB7diIKa_1ZUiP6BPfkWg56XMv_t7A2R8kCh4ZKC5llq-zWsp4GSbQ-I7vhamY6qvJy_YzmzS6t38st4OrX9oxgQR4E-WudUlS-WWe42pXTQpV-DjJzz8Exes_jfDwTpE9NumQRqFAi5G05Sv4xXR7B4gxPw-W04tza-B5JfFF03ODpEENXkZsPo1oCQyDZADT4TWuiZnDZC87nbtUSH7IMq8bNNIaj3G1cr6NmrfMmHhnxefzg3CASjV6qrbcylFTeUqfb7w4VmeL"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">Quantum Algorithms</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Nielsen &amp; Chuang</p>
+</div>
+<!-- Trending Card 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4">
+<img alt="Neural Networks" class="w-full h-full object-cover" data-alt="digital art of a glowing brain silhouette made of data points and circuits" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC7ERNXaFmLfk3bndIxIe7BT-6x5mWoFW0CabC3xu9r2WwZjkazMbFNJ0d-kzydK5xc0GwvNOrKalYg8JkauV7Y-_X3e-lV8EnrHgkOGrq3yUCrUntRxHD9TRhMxvE-kjxrGLSp7fssqipBB_LiAGAVnPrmhyC8WIrqhwbDJo2MmxRs7FtiJude9G9NKKh0GJ5J1-YN1ZHdftS7U6Cn8g-5dsAeJ-HSpLwBQ9GzovII2lnpAacZy8a7wOoLHuwgcugJx06qTyG_EkP"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">Neural Networks</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Simon Haykin</p>
+</div>
+<!-- Trending Card 4 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4">
+<img alt="The Rust Core" class="w-full h-full object-cover" data-alt="minimalist orange and dark grey graphic of a gear and bolt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNR791kBVtHxd9bXHzkT9SC4KsqkJMOVGKBV5rgmIOox9itoYG5qH_9KDB4HywFdffDYChXCUIeNUuz-mKaF7ue8EA2gkOWNw-icZeTJdehY2YjhXM6KJP_tBopTUn66Ao3dKs4EdRIEHQqTWETc_pGgEkUVxT7Lk6iZ5O9bK1aMphobORqwgQuTn379fMefdw3kkyyj1ixHl6q4iFGGMlAcSTuFNrDhpwrgZGCXVX7PcBHJoiO1M7-xayp2TD4rpm-o_4zNnvjk5N"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">The Rust Core</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Steve Klabnik</p>
+</div>
+<!-- Trending Card 5 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4">
+<img alt="Distributed Systems" class="w-full h-full object-cover" data-alt="abstract visualization of nodes connected by glowing fiber optic lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPxkKjy20fDUyVOSCg5Gwc5-WGz-O1r20LPlCIWAanup6sO4fyY3fVa76X1th0AnhEOYsbQgHs_ieKJUp7J9VyySLKXV3SuaiEHkBL-HyGBOKr_OVdn4u3YEHvat66v7eSQo_GKCUDeUwY0-3yB1zyV4IhR8JEEHUPYFC39Ukpxnb41k3jJwDNLYO7U83dEokauiehGo2Q5KRP-ItmVY5xsVVcv2U2MOxDKs5fJ1iKDtxn-OaT9OaXpTCiiT_-R8ms0QfiVCOQYFMF"/>
+</div>
+<h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">Distributed Systems</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">M. van Steen</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Status Bar (Signature Element) -->
+<footer class="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+<div class="glass-panel rounded-full h-16 flex items-center justify-between px-8 astral-glow border border-primary/20">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-green-400"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Engine Online</span>
+</div>
+<div class="h-4 w-px bg-slate-700"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg">database</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">8.2TB Processed</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="h-10 w-10 solar-gradient rounded-full flex items-center justify-center text-on-primary shadow-lg shadow-orange-500/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

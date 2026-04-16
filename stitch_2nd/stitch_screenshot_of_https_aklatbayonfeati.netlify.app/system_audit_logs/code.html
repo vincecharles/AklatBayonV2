@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LibraryAudit_v1.0 - Admin System Audit Logs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+                primary: "#f97316",
+                "on-primary": "#ffffff",
+                success: "#22c55e",
+                warning: "#f59e0b",
+                critical: "#ef4444",
+                security: "#a855f7"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            fontFamily: {
+              headline: ["Public Sans", "sans-serif"],
+              body: ["Public Sans", "sans-serif"],
+              label: ["Public Sans", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0c0c1f;
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-orange-500/30 selection:text-orange-200">
+<!-- TopNavBar -->
+<nav class="bg-slate-950 dark:bg-slate-950 flex justify-between items-center px-6 h-16 w-full docked full-width top-0 border-b border-orange-900/30 dark:border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.1)] fixed z-50">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-orange-500 dark:text-orange-400 font-mono">LibraryAudit_v1.0</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden md:flex items-center">
+<input class="bg-slate-900 border border-orange-900/50 text-orange-500 font-mono text-xs px-4 py-1.5 w-64 focus:outline-none focus:border-orange-500 transition-colors" placeholder="SEARCH_LOGS..." type="text"/>
+<span class="material-symbols-outlined absolute right-2 text-orange-500 text-sm">search</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:bg-orange-500/10 hover:text-orange-300 transition-colors p-2 rounded">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="text-slate-400 hover:bg-orange-500/10 hover:text-orange-300 transition-colors p-2 rounded">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 bg-slate-800 border border-orange-500/30 rounded flex items-center justify-center">
+<img alt="Admin Avatar" class="h-full w-full object-cover" data-alt="Cyberpunk style profile avatar of a system administrator with glowing orange neon accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDACRjQZ0sXZm_sFf31itBSDhhcwHHybEQZF3CcY5GjO7x56u_h035IiPEJcKdyqzvsBqtDsKIcatYq3a2K3em4JobSkvmy2d7el3fTaDe7QvvoEtM4eZxpglXUOUpaDq3hdJ3wmyEZPb6ACTntv-IgSbu9mJSL1XyLZ3K5U81h32BqMK5LD2vccANd8L-a6xsVVZOIaUU7jkWrNL6d6jlbN-hJHwGdFC1BDC79oUjTUebETgsCiowydO-wzWvwjU0_CYp75st7ZYGP"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-slate-950 dark:bg-slate-950 docked h-screen left-0 w-64 border-r border-orange-900/30 dark:border-orange-500/20 flat no shadows pt-16 font-mono text-sm tracking-tight">
+<div class="p-6 border-b border-orange-900/20">
+<div class="flex items-center gap-3">
+<div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+<div>
+<p class="text-orange-500 font-bold tracking-widest text-xs">ROOT_ADMIN</p>
+<p class="text-slate-500 text-[10px]">Terminal Access: Active</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 py-4">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:text-orange-300 hover:bg-slate-900/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-orange-500/10 text-orange-400 border-l-4 border-orange-500 px-4 py-3 translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="history_edu">history_edu</span>
+<span>Audit Logs</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:text-orange-300 hover:bg-slate-900/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="menu_book">menu_book</span>
+<span>Book Inventory</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:text-orange-300 hover:bg-slate-900/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="group">group</span>
+<span>Member Registry</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:text-orange-300 hover:bg-slate-900/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="analytics">analytics</span>
+<span>System Health</span>
+</a>
+</nav>
+<div class="p-4 flex flex-col gap-4">
+<button class="w-full py-2 bg-orange-500/20 border border-orange-500/50 text-orange-500 hover:bg-orange-500 hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+                Export Logs
+            </button>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:text-orange-300 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pl-64 pt-16 min-h-screen bg-[#0c0c1f] text-slate-300">
+<div class="p-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-8 border-b border-slate-800 pb-6">
+<div>
+<h1 class="text-3xl font-mono font-bold text-slate-100 flex items-center gap-3 uppercase tracking-tighter">
+<span class="text-orange-500">_</span>System Audit Logs
+                    </h1>
+<p class="text-slate-500 font-mono text-xs mt-1">REAL-TIME_EVENT_STREAM // ACCESS_LEVEL:0</p>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] text-slate-500 font-mono">DB_SYNC_STATUS</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-mono text-green-500">SYNCED</span>
+<div class="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+<div class="w-[98%] h-full bg-green-500"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Content: Filters and Table -->
+<div class="col-span-12 lg:col-span-9 space-y-6">
+<!-- Control Bar -->
+<div class="bg-slate-900/50 p-4 border border-slate-800 flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-slate-500 uppercase">Filters:</span>
+<button class="px-3 py-1 bg-slate-800 border border-slate-700 text-[10px] font-mono text-slate-300 hover:border-blue-500 transition-colors uppercase">INFO</button>
+<button class="px-3 py-1 bg-slate-800 border border-amber-900/50 text-[10px] font-mono text-amber-500 hover:bg-amber-950 transition-colors uppercase">WARNING</button>
+<button class="px-3 py-1 bg-red-950/30 border border-red-900 text-[10px] font-mono text-red-500 hover:bg-red-900/40 transition-colors uppercase">CRITICAL</button>
+<button class="px-3 py-1 bg-purple-950/30 border border-purple-900 text-[10px] font-mono text-purple-400 hover:bg-purple-900/40 transition-colors uppercase">SECURITY</button>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<span class="text-[10px] font-mono text-slate-500">SHOWING 24/1042 ENTRIES</span>
+</div>
+</div>
+<!-- Audit Log Table -->
+<div class="overflow-hidden border border-slate-800 bg-slate-900/30">
+<table class="w-full text-left font-mono text-sm border-collapse">
+<thead>
+<tr class="bg-slate-900/80 text-orange-500/70 border-b border-slate-800 uppercase text-[11px] tracking-widest">
+<th class="p-4 font-bold">Timestamp</th>
+<th class="p-4 font-bold">User</th>
+<th class="p-4 font-bold">Action</th>
+<th class="p-4 font-bold">Entity ID</th>
+<th class="p-4 font-bold text-center">Status</th>
+<th class="p-4 font-bold">IP Address</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/50">
+<tr class="hover:bg-orange-500/5 transition-colors group">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:22:01</td>
+<td class="p-4 text-orange-400 font-bold">USR_9921</td>
+<td class="p-4 text-slate-200">RFID SCAN</td>
+<td class="p-4 text-slate-400">BK-772-X</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-green-950/30 text-green-500 border border-green-900 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">192.168.1.104</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group bg-red-950/10">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:20:45</td>
+<td class="p-4 text-orange-400 font-bold">SYS_ROOT</td>
+<td class="p-4 text-slate-200">DB_WRITE_FAIL</td>
+<td class="p-4 text-slate-400">TABLE:RESERVATIONS</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-red-950 text-red-500 border border-red-500 px-2 py-0.5 rounded">FAIL</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">10.0.0.12</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:18:12</td>
+<td class="p-4 text-orange-400 font-bold">USR_4102</td>
+<td class="p-4 text-slate-200">RESERVE VOLUME</td>
+<td class="p-4 text-slate-400">BK-110-Q</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-green-950/30 text-green-500 border border-green-900 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">172.16.2.8</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group border-l-2 border-l-purple-500 bg-purple-950/5">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:15:30</td>
+<td class="p-4 text-orange-400 font-bold">EXT_GUEST</td>
+<td class="p-4 text-purple-400 font-bold">UNAUTH_ACCESS_ATTEMPT</td>
+<td class="p-4 text-slate-400">/admin/inventory</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-purple-950 text-purple-400 border border-purple-500 px-2 py-0.5 rounded">DENIED</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">88.21.144.12</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:10:05</td>
+<td class="p-4 text-orange-400 font-bold">USR_8820</td>
+<td class="p-4 text-slate-200">MEMBER_REGISTER</td>
+<td class="p-4 text-slate-400">MBR_552</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-green-950/30 text-green-500 border border-green-900 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">192.168.1.112</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group bg-amber-950/10 border-l-2 border-l-amber-500">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:05:22</td>
+<td class="p-4 text-orange-400 font-bold">SYS_DAEMON</td>
+<td class="p-4 text-amber-500">LATENCY_THRESHOLD_EXCEEDED</td>
+<td class="p-4 text-slate-400">SRV_CORE_02</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-amber-950 text-amber-500 border border-amber-500 px-2 py-0.5 rounded">WARNING</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">10.0.0.4</td>
+</tr>
+<tr class="hover:bg-orange-500/5 transition-colors group">
+<td class="p-4 text-slate-500 text-xs">2023-11-24 14:01:44</td>
+<td class="p-4 text-orange-400 font-bold">USR_1192</td>
+<td class="p-4 text-slate-200">RFID SCAN</td>
+<td class="p-4 text-slate-400">BK-902-A</td>
+<td class="p-4 text-center">
+<span class="text-[10px] bg-green-950/30 text-green-500 border border-green-900 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="p-4 text-slate-500 text-xs">192.168.1.109</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Status Footer -->
+<div class="flex justify-between items-center py-4 px-2">
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-slate-700 bg-slate-900 text-slate-500 hover:text-orange-500 hover:border-orange-500 transition-all">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-slate-700 bg-slate-900 text-slate-500 hover:text-orange-500 hover:border-orange-500 transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-slate-700 bg-slate-900 text-slate-500 hover:text-orange-500 hover:border-orange-500 transition-all">3</button>
+<span class="flex items-center px-2 text-slate-700">...</span>
+<button class="w-8 h-8 flex items-center justify-center border border-slate-700 bg-slate-900 text-slate-500 hover:text-orange-500 hover:border-orange-500 transition-all">44</button>
+</div>
+<div class="font-mono text-[10px] text-slate-600">
+                            LAST UPDATED: 2023-11-24T14:23:45Z
+                        </div>
+</div>
+</div>
+<!-- Right Content: System Health Sidebar -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<div class="bg-slate-900/50 border border-slate-800 p-6 rounded-lg backdrop-blur-sm">
+<h2 class="text-slate-100 font-mono font-bold text-xs uppercase mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500 text-sm">analytics</span>
+                            System Health
+                        </h2>
+<div class="space-y-6">
+<!-- CPU Usage -->
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span class="text-slate-500">CPU LOAD</span>
+<span class="text-orange-400">42%</span>
+</div>
+<div class="h-1 w-full bg-slate-800 rounded-full">
+<div class="h-full bg-orange-500 w-[42%]"></div>
+</div>
+</div>
+<!-- Memory -->
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span class="text-slate-500">RAM ALLOCATION</span>
+<span class="text-orange-400">6.8 GB / 16 GB</span>
+</div>
+<div class="h-1 w-full bg-slate-800 rounded-full">
+<div class="h-full bg-orange-500 w-[42%]"></div>
+</div>
+</div>
+<!-- Network -->
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span class="text-slate-500">NETWORK IO</span>
+<span class="text-green-500">OPTIMAL</span>
+</div>
+<div class="flex gap-1 h-8 items-end">
+<div class="flex-1 bg-slate-800 h-[20%]"></div>
+<div class="flex-1 bg-slate-800 h-[40%]"></div>
+<div class="flex-1 bg-orange-500 h-[60%]"></div>
+<div class="flex-1 bg-orange-500 h-[30%]"></div>
+<div class="flex-1 bg-orange-500 h-[80%]"></div>
+<div class="flex-1 bg-slate-800 h-[50%]"></div>
+<div class="flex-1 bg-orange-500 h-[70%]"></div>
+</div>
+</div>
+<hr class="border-slate-800"/>
+<!-- Server Info -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-slate-800/40 p-2 rounded border border-slate-800/50">
+<p class="text-[9px] text-slate-500 font-mono uppercase">Node ID</p>
+<p class="text-[10px] text-slate-300 font-mono">HKG-PROD-01</p>
+</div>
+<div class="bg-slate-800/40 p-2 rounded border border-slate-800/50">
+<p class="text-[9px] text-slate-500 font-mono uppercase">Uptime</p>
+<p class="text-[10px] text-slate-300 font-mono">12d 4h 12m</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Tech Visual Decoration -->
+<div class="relative h-48 rounded-lg overflow-hidden border border-orange-500/10 group">
+<div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
+<img alt="Server Rack" class="absolute inset-0 w-full h-full object-cover grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-40 transition-all duration-700" data-alt="High-tech server room with glowing blue and orange LED indicators and complex cable management in a dark data center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9s_2Oz_0nF_WEpuQfJPpY0py2L5CbutxPLAx1KzOwws6o1LbyDXir1AD5EPebjzFCKCdbv2lbq8kQzgISDBs7IgY8qadx9wzvJ7TxW6VYQ6do32VVHqm7L8kZHtlkOzvTW5rBTUk9MRTPvPe355G0_DaRtUkAmZ6eFc94FpuNEwhPVM9nr8KLTfxdi06xkudgCqUOl74pmRdd2tFAqcPEV5xg189GnelnHY_Qz3LUGAlr0F2BVNSrLq-hzWYT_9AOMOs5aliuBEe2"/>
+<div class="absolute bottom-4 left-4 z-20">
+<p class="text-[10px] font-mono text-orange-500/70 uppercase tracking-widest">Global Operations</p>
+<p class="text-xs font-mono text-slate-300">Live Infrastructure Map</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

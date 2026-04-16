@@ -11,15 +11,31 @@ const Sidebar = (() => {
         const nav = document.getElementById('sidebar-nav');
         if (!nav) return;
 
-        nav.className = 'hidden lg:flex fixed top-16 left-0 w-72 h-[calc(100vh-4rem)] flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-y-auto z-30';
+        nav.className = 'astral-sidebar';
 
-        let html = '<div class="p-4 space-y-1">';
+        let html = '';
+
+        // User info area
+        const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const avatarColors = ['#e17141','#9b87c1','#4ade80','#60a5fa','#fbbf24'];
+        const colorIdx = user.name.charCodeAt(0) % avatarColors.length;
+        html += `<div class="px-5 py-5 border-b border-[#3a3a52]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background:${avatarColors[colorIdx]}">${initials}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-bold text-[#e2e0fc] truncate">${user.name}</div>
+                    <div class="text-[10px] font-medium text-[#9b99b8] uppercase tracking-widest">${user.role_name}${user.faculty_subtype ? ' · ' + user.faculty_subtype : ''}</div>
+                </div>
+            </div>
+        </div>`;
+
+        html += '<div class="p-3 space-y-0.5 flex-1">';
 
         // General
         html += sectionLabel('General');
         html += navLink('/pages/general/dashboard.html', 'dashboard', 'Dashboard', page);
 
-        // User Management (Users & Students only)
+        // User Management
         if (Auth.hasAnyPermission(['can_manage_users', 'can_manage_students'])) {
             html += sectionLabel('Management');
             const userPages = ['/pages/management/users/users.html', '/pages/management/users/students.html'];
@@ -30,7 +46,7 @@ const Sidebar = (() => {
             html += '</div></div>';
         }
 
-        // Role Management (separate)
+        // Role Management
         if (Auth.hasPermission('can_manage_roles')) {
             if (!Auth.hasAnyPermission(['can_manage_users', 'can_manage_students'])) html += sectionLabel('Management');
             html += navLink('/pages/management/users/roles.html', 'admin_panel_settings', 'Role Management', page);
@@ -77,7 +93,7 @@ const Sidebar = (() => {
                     const allFines = Store.getAll('fines');
                     myFineCount = allFines.filter(f => f.student_id === currentUser.student_id && f.status === 'pending').length;
                 }
-                const badge = myFineCount > 0 ? ` <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">${myFineCount}</span>` : '';
+                const badge = myFineCount > 0 ? ` <span class="ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold" style="background:rgba(248,113,113,0.15);color:#f87171">${myFineCount}</span>` : '';
                 html += subNavLink('/pages/operations/my-fines.html', 'request_quote', `My Fines${badge}`, page);
             }
             html += '</div></div>';
@@ -112,40 +128,51 @@ const Sidebar = (() => {
         }
 
         html += '</div>';
+
+        // Bottom section
+        html += `<div class="mt-auto border-t border-[#3a3a52] p-3 space-y-0.5">
+            <a href="/pages/management/catalog/catalog.html" class="flex items-center gap-3 px-3 py-2 rounded-xl text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#ffb599] text-sm font-medium transition-colors">
+                <span class="material-symbols-outlined text-lg">search</span><span>Browse Catalog</span>
+            </a>
+            <button onclick="Auth.logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[#9b99b8] hover:bg-[rgba(248,113,113,0.08)] hover:text-[#f87171] text-sm font-medium transition-colors">
+                <span class="material-symbols-outlined text-lg">logout</span><span>Logout</span>
+            </button>
+        </div>`;
+
         nav.innerHTML = html;
         bindDropdowns();
     };
 
     const sectionLabel = (text) =>
-        `<p class="px-3 pt-5 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">${text}</p>`;
+        `<p class="px-3 pt-5 pb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-[#9b99b8]">${text}</p>`;
 
     const navLink = (href, icon, label, currentPage) => {
         const isActive = currentPage === href;
         const cls = isActive
-            ? 'flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white font-medium text-sm'
-            : 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-sm transition-colors';
+            ? 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.12)] border-l-[3px] border-[#ffb599]'
+            : 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
         return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-xl">${icon}</span><span>${label}</span></a>`;
     };
 
     const subNavLink = (href, icon, label, currentPage) => {
         const isActive = currentPage === href;
         const cls = isActive
-            ? 'flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary text-sm font-semibold'
-            : 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors';
+            ? 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.08)]'
+            : 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
         return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-lg">${icon}</span><span>${label}</span></a>`;
     };
 
     const dropdownToggle = (icon, label, pages, currentPage) => {
         const isOpen = isActiveGroup(pages, currentPage);
         const cls = isOpen
-            ? 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-primary text-white font-medium text-sm'
-            : 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm transition-colors';
+            ? 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.12)] border-l-[3px] border-[#ffb599]'
+            : 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
         return `<div class="nav-dropdown"><button type="button" class="${cls}" data-target="menu_${icon}" aria-expanded="${isOpen}"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">${icon}</span><span>${label}</span></div><span class="material-symbols-outlined text-sm menu-arrow transition-transform${isOpen ? ' rotate-180' : ''}">expand_more</span></button>`;
     };
 
     const submenuClass = (pages, currentPage) => {
         const isOpen = isActiveGroup(pages, currentPage);
-        return `${isOpen ? '' : 'hidden '}ml-5 mt-1 space-y-0.5 border-l border-slate-200 dark:border-slate-700 pl-3`;
+        return `${isOpen ? '' : 'hidden '}ml-5 mt-1 space-y-0.5 border-l border-[#3a3a52] pl-3`;
     };
 
     const isActiveGroup = (pages, currentPage) => pages.includes(currentPage);

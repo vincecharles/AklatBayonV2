@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Reservations - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -16,8 +15,7 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+          /* colors removed - using astral CSS */,
             accent: '#e94560',
             'bg-light': '#f6f6f8',
             'bg-dark': '#131022'
@@ -45,17 +43,17 @@
     .dark .nav-tab.active { background: #3211d4; color: #fff; }
   </style>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-  <div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
         <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary dark:text-primary-50">bookmark</span>
+          <span class="material-symbols-outlined text-[#ffb599] dark:text-primary-50">bookmark</span>
           Book Reservations
         </h1>
       </div>
@@ -65,27 +63,27 @@
 
       <!-- Tab 1: Reserve a Book -->
       <div class="tab-pane active" id="tab-reserve">
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+        <div class="astral-card overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">add_circle</span>
             Reserve a Book
           </div>
           <div class="p-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label class="block text-sm font-medium mb-1.5">Student</label>
-                <select class="h-10 w-full px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none" id="reserve-student">
+                <select class="h-10 w-full px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:border-[#ffb599] focus:ring-1 focus:ring-primary outline-none" id="reserve-student">
                   <option value="">-- Select Student --</option>
                 </select>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1.5">Book</label>
-                <select class="h-10 w-full px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none" id="reserve-book">
+                <select class="h-10 w-full px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:border-[#ffb599] focus:ring-1 focus:ring-primary outline-none" id="reserve-book">
                   <option value="">-- Select Book --</option>
                 </select>
               </div>
             </div>
-            <button class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors bg-emerald-600 hover:bg-emerald-700 text-white" id="btn-reserve">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)]" id="btn-reserve">
               <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
               Place Reservation
             </button>
@@ -95,25 +93,25 @@
 
       <!-- Tab 2: My Reservations -->
       <div class="tab-pane" id="tab-my">
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-primary text-[20px]">list</span>
+        <div class="astral-card overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">list</span>
             My Reservations
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left">
-              <thead class="bg-slate-50 dark:bg-slate-800/50">
+              <thead class="bg-[#1a1a2e]">
                 <tr>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">#</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Book</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Position in Queue</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reserved Date</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Expires At</th>
-                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Actions</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">#</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Book</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Status</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Position in Queue</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Reserved Date</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Expires At</th>
+                  <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Actions</th>
                 </tr>
               </thead>
-              <tbody id="my-reservations-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              <tbody id="my-reservations-table" class="divide-y divide-[#3a3a52]/50"></tbody>
             </table>
           </div>
         </div>
@@ -121,9 +119,9 @@
 
       <!-- Tab 3: Reservation Queue -->
       <div class="tab-pane" id="tab-queue">
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 text-sm font-semibold">
-            <span class="material-symbols-outlined text-primary text-[20px]">layers</span>
+        <div class="astral-card overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[#ffb599] text-[20px]">layers</span>
             Reservation Queue
           </div>
           <div id="queue-container"></div>
@@ -294,15 +292,15 @@
 
           const tbody = document.getElementById('my-reservations-table');
           if (!items.length) {
-              tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-sm text-slate-400">No reservations found.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-sm text-[#9b99b8]">No reservations found.</td></tr>';
               return;
           }
 
           const statusClasses = {
-              active: 'bg-primary-50 text-primary dark:bg-primary/20 dark:text-primary-50',
-              available: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-              claimed: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
-              expired: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+              active: 'bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50',
+              available: 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
+              claimed: '" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)',
+              expired: '" style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)',
               cancelled: 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300'
           };
 
@@ -328,10 +326,10 @@
               if (r.status === 'active' || r.status === 'available') {
                   actions = `<button class="btn-cancel-my inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
               } else {
-                  actions = '<span class="text-xs text-slate-400">No actions</span>';
+                  actions = '<span class="text-xs text-[#9b99b8]">No actions</span>';
               }
 
-              return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-4 py-3 text-sm text-slate-500">${i + 1}</td><td class="px-4 py-3 text-sm font-medium">${bookLabel}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm font-semibold">${position}</td><td class="px-4 py-3 text-sm text-slate-500">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-slate-500">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
+              return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-4 py-3 text-sm text-[#9b99b8]">${i + 1}</td><td class="px-4 py-3 text-sm font-medium">${bookLabel}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm font-semibold">${position}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
           }).join('');
 
           // Bind cancel buttons
@@ -343,7 +341,7 @@
                       text: 'Are you sure you want to cancel this reservation?',
                       icon: 'warning',
                       showCancelButton: true,
-                      confirmButtonColor: '#e94560',
+                      confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
                       cancelButtonColor: '#6c757d',
                       confirmButtonText: 'Yes, cancel it'
                   }).then((result) => {
@@ -368,7 +366,7 @@
 
           const container = document.getElementById('queue-container');
           if (!activeReservations.length) {
-              container.innerHTML = '<div class="px-4 py-8 text-center text-sm text-slate-400">No active reservations in queue.</div>';
+              container.innerHTML = '<div class="px-4 py-8 text-center text-sm text-[#9b99b8]">No active reservations in queue.</div>';
               return;
           }
 
@@ -385,8 +383,8 @@
           });
 
           const statusClasses = {
-              active: 'bg-primary-50 text-primary dark:bg-primary/20 dark:text-primary-50',
-              available: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+              active: 'bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50',
+              available: 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)'
           };
 
           let html = '';
@@ -396,9 +394,9 @@
               const availableLabel = book ? ` (Available copies: ${book.available})` : '';
               const queue = bookGroups[bookId];
 
-              html += '<div class="border-b border-slate-100 dark:border-slate-800 last:border-b-0">';
-              html += `<div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-primary text-[20px]">menu_book</span>${bookTitle}${availableLabel} <span class="inline-block ml-2 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary-50 text-primary dark:bg-primary/20 dark:text-primary-50">${queue.length} in queue</span></div>`;
-              html += '<table class="w-full text-left"><thead class="bg-slate-50 dark:bg-slate-800/50"><tr><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Queue #</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Student</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reserved Date</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Expires At</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Actions</th></tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-800">';
+              html += '<div class="border-b border-[#3a3a52]/50 last:border-b-0">';
+              html += `<div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-[#ffb599] text-[20px]">menu_book</span>${bookTitle}${availableLabel} <span class="inline-block ml-2 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary-50 text-[#ffb599] dark:bg-primary/20 dark:text-primary-50">${queue.length} in queue</span></div>`;
+              html += '<table class="w-full text-left"><thead class="bg-[#1a1a2e]"><tr><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Queue #</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Student</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Status</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Reserved Date</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Expires At</th><th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#9b99b8]">Actions</th></tr></thead><tbody class="divide-y divide-[#3a3a52]/50">';
 
               queue.forEach((r, idx) => {
                   const badgeClass = statusClasses[r.status] || 'bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300';
@@ -407,14 +405,14 @@
 
                   let actions = '';
                   if (r.status === 'active') {
-                      actions += `<button class="btn-notify inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-emerald-600 hover:bg-emerald-700 text-white mr-2" data-id="${r.id}" data-book="${r.book_id}"><span class="material-symbols-outlined text-[16px]">notifications</span>Notify Available</button>`;
+                      actions += `<button class="btn-notify inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] mr-2" data-id="${r.id}" data-book="${r.book_id}"><span class="material-symbols-outlined text-[16px]">notifications</span>Notify Available</button>`;
                       actions += `<button class="btn-cancel-queue inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
                   } else if (r.status === 'available') {
                       actions += `<button class="btn-claim inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-sky-600 hover:bg-sky-700 text-white mr-2" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">check_circle</span>Mark Claimed</button>`;
                       actions += `<button class="btn-cancel-queue inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white" data-id="${r.id}"><span class="material-symbols-outlined text-[16px]">close</span>Cancel</button>`;
                   }
 
-                  html += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-4 py-3 text-sm font-semibold text-slate-500">#${idx + 1}</td><td class="px-4 py-3 text-sm font-medium">${studentName}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm text-slate-500">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-slate-500">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
+                  html += `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-4 py-3 text-sm font-semibold text-[#9b99b8]">#${idx + 1}</td><td class="px-4 py-3 text-sm font-medium">${studentName}</td><td class="px-4 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${badgeClass}">${statusLabel}</span></td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDate(r.created_at)}</td><td class="px-4 py-3 text-sm text-[#9b99b8]">${App.formatDateTime(r.expires_at)}</td><td class="px-4 py-3">${actions}</td></tr>`;
               });
 
               html += '</tbody></table></div>';
@@ -481,7 +479,7 @@
                       text: 'Are you sure you want to cancel this reservation?',
                       icon: 'warning',
                       showCancelButton: true,
-                      confirmButtonColor: '#e94560',
+                      confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
                       cancelButtonColor: '#6c757d',
                       confirmButtonText: 'Yes, cancel it'
                   }).then((result) => {

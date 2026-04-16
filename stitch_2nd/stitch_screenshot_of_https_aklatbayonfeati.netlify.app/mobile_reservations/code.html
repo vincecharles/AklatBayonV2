@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            // Mapping astral theme colors using slate and indigo palettes
+            primary: {
+              container: '#312e81',
+              on: '#e0e7ff'
+            }
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Public Sans"],
+            "body": ["Public Sans"],
+            "label": ["Public Sans"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Public Sans', sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+      min-height: 100vh;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-slate-200 antialiased overflow-x-hidden pb-24">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none transition-colors duration-200 flex items-center justify-between px-4 h-16 w-full fixed top-0 z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-700 dark:text-indigo-300" data-icon="menu_book">menu_book</span>
+<h1 class="text-xl font-bold text-indigo-700 dark:text-indigo-300">Student Library</h1>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors duration-200" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<main class="mt-20 px-4 space-y-6">
+<!-- Header Section -->
+<header class="pt-4">
+<h2 class="text-2xl font-extrabold tracking-tight text-white mb-1">My Reservations</h2>
+<p class="text-slate-400 text-sm">Manage your current and upcoming book pickups.</p>
+</header>
+<!-- Astral Glow Decoration -->
+<div class="fixed top-20 right-0 -z-10 w-64 h-64 bg-indigo-500/10 blur-[100px] pointer-events-none"></div>
+<div class="fixed bottom-40 left-0 -z-10 w-64 h-64 bg-purple-500/10 blur-[100px] pointer-events-none"></div>
+<!-- Active Reservations (Grid Layout) -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-semibold uppercase tracking-wider text-indigo-400">Active Ready</h3>
+<span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2 py-0.5 rounded-full font-bold">1 BOOK</span>
+</div>
+<!-- Ready for Pickup Card - Glassmorphic Bento Style -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 relative overflow-hidden group">
+<!-- Shine effect -->
+<div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-transparent pointer-events-none"></div>
+<div class="w-24 h-32 flex-shrink-0 rounded-lg overflow-hidden shadow-lg shadow-black/40">
+<img class="w-full h-full object-cover" data-alt="dramatic book cover with cosmic nebulae and dark starlight patterns, minimalist typography in gold foil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ_0xlBmNQWLxVyHtztEOGRkCDluS7XJoWOh1Sf7TwdvmkQG6A8oSkYim5aAb1OhX3hNP3NnJ4irs2F1KV0g4E8kXgOdEEAAFPU4Q7xUhcL0zQEkJK9p2oNvXPhV3aRfRXLXCvjTw0s9SEWGdLfXJ5P_Lmvo1BZx2OOBi_rKbaZ5LUh4sTlyorVRRcCkDj8liDYduxok4uwi0S9Fek0meMrI9fmrtWSmd43Lucv0izOnLk_sQ1lkIX5D7Yo484CAP-zCSZhjvBkgoD"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<span class="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-lg font-bold border border-emerald-500/30">READY FOR PICKUP</span>
+</div>
+<h4 class="text-lg font-bold text-white mt-2 leading-tight">Astral Cartography</h4>
+<p class="text-xs text-slate-400 font-medium">Dr. Selene Voss</p>
+</div>
+<div class="flex items-center gap-2 mt-2 text-indigo-300">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_on">location_on</span>
+<span class="text-xs font-semibold">East Wing, Locker 42</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Pending Reservations -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Pending Requests</h3>
+<span class="bg-slate-500/20 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-bold">2 BOOKS</span>
+</div>
+<div class="space-y-4">
+<!-- Pending Item 1 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4">
+<div class="w-16 h-24 flex-shrink-0 rounded-md overflow-hidden grayscale-[0.5]">
+<img class="w-full h-full object-cover" data-alt="vintage leather book on dark wooden table with soft candle light and dust motes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdRQamqBKTPsz3FWywzskACOjAAhyzNRucdUkUscD_vigcQMYWzioazX_Ei-o-JXG8EB2gZJqw6X72fYt4Hb8PkIm0fDSxgmTta4Ls6NGf9014ThZPWTKy_QoqSIZCmLqCIhUAI25YyPQFzHzhWffRIFdq8PwFMkl0RMx8FNBp-JZ46xqNfDgXSRstyvycYb5Dbr_iKbZFWOkYpunARs2ukWh3a9BOdYzMWf-2xSrEJA4RCpx128uOUY3KB-XH-sDUCnPNv7vuwqoo"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-lg font-bold border border-amber-500/30 uppercase">Pending</span>
+<h4 class="text-base font-bold text-white mt-1">Stellar Mechanics</h4>
+<p class="text-[11px] text-slate-400">A. J. Orbit</p>
+</div>
+<div class="flex justify-end">
+<button class="text-red-400/80 hover:text-red-400 text-[11px] font-bold flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="cancel">cancel</span>
+                Cancel Reservation
+              </button>
+</div>
+</div>
+</div>
+<!-- Pending Item 2 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4">
+<div class="w-16 h-24 flex-shrink-0 rounded-md overflow-hidden grayscale-[0.5]">
+<img class="w-full h-full object-cover" data-alt="old library book open to a page with astronomical diagrams of planets and moon phases" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArvzeE3KAekR_5BkJkcsw3vxWwGMdn4Zn4Mgr6Gmz4QiWmV0lFcZbr9xEKYDNKdh54RWTYr9MLgYdDszRyv8_H2A7BGhD2yBiGttopmRsbJE3B4bPjoYe7kC7JJHAAOlBnzjk02mwTOh_MaaP9aVoVQ-LrPdZt1uxVXzpdF11rMQ8IRDux1JN13I_KPD4RktzAWjHV31d4cVTfY7XclJyflJVCaT7gojACe_BIKZPnMxQrFj_40elae4hDRuTXy6yOgHK69nDzB8KG"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-lg font-bold border border-amber-500/30 uppercase">Pending</span>
+<h4 class="text-base font-bold text-white mt-1">Deep Space Ethics</h4>
+<p class="text-[11px] text-slate-400">Professor Orion</p>
+</div>
+<div class="flex justify-end">
+<button class="text-red-400/80 hover:text-red-400 text-[11px] font-bold flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="cancel">cancel</span>
+                Cancel Reservation
+              </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recommendation Mini-Section (Bento) -->
+<section class="pb-10">
+<div class="glass-card rounded-3xl p-6 bg-gradient-to-br from-indigo-900/40 to-slate-900/40 overflow-hidden relative">
+<div class="relative z-10">
+<h4 class="text-indigo-200 font-bold text-lg">Next in your orbit?</h4>
+<p class="text-slate-400 text-xs mt-1 mb-4">Based on your astral history</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/40">
+<span class="material-symbols-outlined text-indigo-300" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">The Quantum Void</p>
+<p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Available Now</p>
+</div>
+</div>
+</div>
+<!-- Decorative abstract shape -->
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-600/20 rounded-full blur-2xl"></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-[0_-1px_3px_rgba(0,0,0,0.05)] flex justify-around items-center px-4 pb-4 pt-2">
+<!-- Active Tab: Reservations -->
+<a class="flex flex-col items-center justify-center bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-200 rounded-xl px-3 py-1.5 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="bookmark_manager" style="font-variation-settings: 'FILL' 1;">bookmark_manager</span>
+<span class="text-[11px] font-semibold tracking-tight">Reservations</span>
+</a>
+<!-- Inactive Tab: History -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-indigo-500 dark:hover:text-indigo-300 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="history">history</span>
+<span class="text-[11px] font-semibold tracking-tight">History</span>
+</a>
+<!-- Inactive Tab: Search -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-indigo-500 dark:hover:text-indigo-300 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="search">search</span>
+<span class="text-[11px] font-semibold tracking-tight">Search</span>
+</a>
+<!-- Inactive Tab: Profile -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-indigo-500 dark:hover:text-indigo-300 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="person">person</span>
+<span class="text-[11px] font-semibold tracking-tight">Profile</span>
+</a>
+</nav>
+</body></html>

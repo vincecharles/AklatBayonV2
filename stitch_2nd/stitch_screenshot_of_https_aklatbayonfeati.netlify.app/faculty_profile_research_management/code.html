@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ScholarNexus - Faculty Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            astral: "#111125",
+                            orange: "#e17141",
+                            tech: "#10b981"
+                        }
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Public Sans", "sans-serif"],
+                        "body": ["Public Sans", "sans-serif"],
+                        "label": ["Public Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 font-body text-slate-200">
+<!-- TopAppBar -->
+<header class="bg-slate-950 dark:bg-slate-950 text-slate-50 dark:text-slate-50 font-sans tracking-tight fixed top-0 left-0 w-full z-50 border-b border-slate-800 dark:border-slate-800 shadow-lg shadow-orange-500/5 h-16 flex justify-between items-center px-6">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-slate-50 dark:text-slate-50">ScholarNexus</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-400 dark:text-slate-500 hover:text-orange-300 dark:hover:text-orange-200 transition-colors duration-200 ease-in-out" href="#">Directory</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-orange-300 dark:hover:text-orange-200 transition-colors duration-200 ease-in-out" href="#">Resources</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-orange-300 dark:hover:text-orange-200 transition-colors duration-200 ease-in-out" href="#">Support</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<input class="bg-slate-900 border-slate-800 rounded-full py-1.5 px-4 text-sm w-64 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all" placeholder="Global search..." type="text"/>
+</div>
+<button class="text-slate-400 hover:text-orange-400"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="text-slate-400 hover:text-orange-400"><span class="material-symbols-outlined" data-icon="settings">settings</span></button>
+<img alt="Faculty profile avatar" class="w-8 h-8 rounded-full border border-orange-500/30" data-alt="Professional portrait of a female university faculty member with short dark hair in a professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKAt9D5AArfz_fW4cZKZrl6mmd4qtzc-cug_HP70iSsncylEhstVVtFwo3ySCLv12vb3QCwuCT3c5j0ry0MRgjOBVb6gilZEeO6bXwb8oHP4EOjvesyXukrO565OXXMCZW7zvFh4B2WGERZOO1h21gr4aT0w4LF4VfWRmT3o9jEpikK63blQjasayR9qgWzXb5Q8hbYbsRRr0vN0np7JpZOx62ITbGPzoMSdNGuBZ5NZfpQ84b_ez194u9UyAF6KNF9oIGEvdhHxly"/>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-800 flex flex-col font-sans text-sm font-medium z-40">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-1">
+<img alt="University Crest" class="w-10 h-10" data-alt="Gold and navy blue university crest with laurel leaves and open book symbol" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzpLNrCb_ExeShDtzY1FrrpEpirntbDOhKHCSORRGXdiK_bzorWZ2MWAg9NBaWmSC_QtnhcyeSHSs3o1UBz_7tXwfzWSZzbzsZX4hyrLG9cPCwzz14Pdp6G4vtdBhJ1xksorAhUsOMwHwfQP9rWoTjY8IhNj1yvblCeXcub7GQmNvNWW3G_J2rmU3ztozGKoXZTH2jWLGvWNdkYCL5TtXGOhm0s6Mw7HGLMZvReWhO_y7vvUor4JSubCnBAPUsfr-OfJXddJczAYGh"/>
+<div>
+<h2 class="text-lg font-bold text-slate-100">Faculty Portal</h2>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Research &amp; Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1">
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:bg-slate-800 dark:hover:bg-slate-900 hover:text-slate-100 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:bg-slate-800 dark:hover:bg-slate-900 hover:text-slate-100 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span> Publications
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:bg-slate-800 dark:hover:bg-slate-900 hover:text-slate-100 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span> Grants
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:bg-slate-800 dark:hover:bg-slate-900 hover:text-slate-100 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span> Mentorship
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 hover:bg-slate-800 dark:hover:bg-slate-900 hover:text-slate-100 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span> Analytics
+            </a>
+<!-- Active State Indication -->
+<a class="flex items-center gap-3 bg-orange-500/10 text-orange-500 border-r-4 border-orange-500 px-4 py-3 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span> Profile
+            </a>
+</nav>
+<div class="p-4">
+<button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span> Add New Research
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-[calc(100vh-64px)]">
+<!-- Faculty Identity Header -->
+<section class="mb-10 relative">
+<div class="h-48 rounded-xl overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-r from-brand-astral via-slate-900 to-orange-950/20"></div>
+<img class="w-full h-full object-cover opacity-40" data-alt="Futuristic academic research laboratory with digital displays and blueprint projections on glass surfaces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl1ktN16dyVKaluoKO0ibndDIVOEIqA3QQBOpqFXjS1A0V6NjitX65lijsp-ao_B2BThYXkbkLEaae7modzUXaN6YAOKVTTqzjUvDpcefyn_Tq_ejFYgqn1e8DZDEs7HK2vmvGRiylCBu1Bpv5gW95S6SbuqJtFsAdEGbC1ETD8hCVBRwUr8NEUoZGct7wuMg1A-EaVI2Nv8ya6TO_7jPsqYM__r7Tf-5dhShfC8LFxme5mUzuqDZAeVK6C4wqr9otRFCfBtMpZSnm"/>
+</div>
+<div class="absolute -bottom-6 left-10 flex items-end gap-6">
+<div class="relative">
+<img alt="Prof. Elena Vance" class="w-32 h-32 rounded-xl border-4 border-slate-950 shadow-2xl" data-alt="Close-up professional headshot of Professor Elena Vance, looking confident in an academic setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRbXQ3k5dnfbdKcj0h1AvNyf05cO_EJzeojxl1UP_V1qAoPpaaE4YjUXSumwHa7eqj1MtVYFAnfMo6xJvXV-jJ4933_Z0A2cmQtDXjSvl-W-2Z_2IPUX2lYoqdn21zDZdYwA7Y06OWjFMb5sdbpzstZNQu3-51oxtSwiJmSv3B-b7O_uwawKnf7t-y729GgD3CuwMWbuZFexOWaCbiWWpv9u-ZuyZc4Vma8WMvkrYerOvZQzVGsj9Lxkpx0bCKLcyIz8so4XmKEBxK"/>
+<div class="absolute -right-2 -bottom-2 bg-brand-tech text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Verified</div>
+</div>
+<div class="pb-2">
+<div class="flex items-center gap-3">
+<h1 class="text-3xl font-extrabold text-white">Prof. Elena Vance, PhD</h1>
+<span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3 py-0.5 rounded text-xs font-semibold uppercase tracking-wider">Authorization Level: Faculty</span>
+</div>
+<p class="text-slate-400 font-medium mt-1">Department of Aerospace Engineering • Senior Research Fellow</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Dashboard -->
+<div class="grid grid-cols-12 gap-6 mt-12">
+<!-- Active Grants Widget -->
+<div class="col-span-12 lg:col-span-8 glass-panel rounded-xl p-6 shadow-xl">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h3 class="text-lg font-bold text-slate-100">Active Grants &amp; Research</h3>
+</div>
+<button class="text-xs text-orange-400 hover:underline">View All Grants</button>
+</div>
+<div class="space-y-4">
+<div class="bg-slate-800/40 p-4 rounded-lg border border-slate-700 flex justify-between items-center">
+<div>
+<h4 class="font-semibold text-slate-200">Orbital Debris Mitigation (ODM-24)</h4>
+<p class="text-xs text-slate-500">NSF Grant • Expires Dec 2025</p>
+</div>
+<div class="text-right">
+<span class="text-brand-tech text-sm font-bold">$1.2M Allocated</span>
+<div class="w-32 h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
+<div class="bg-brand-tech h-full w-3/4"></div>
+</div>
+</div>
+</div>
+<div class="bg-slate-800/40 p-4 rounded-lg border border-slate-700 flex justify-between items-center">
+<div>
+<h4 class="font-semibold text-slate-200">Composite Heat Shields in Low Orbit</h4>
+<p class="text-xs text-slate-500">Library Research Pool • Ongoing</p>
+</div>
+<div class="text-right">
+<span class="text-orange-400 text-sm font-bold">140 Resources Active</span>
+<div class="w-32 h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
+<div class="bg-orange-500 h-full w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Publication Tracker -->
+<div class="col-span-12 lg:col-span-4 glass-panel rounded-xl p-6 shadow-xl">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-orange-500" data-icon="history_edu">history_edu</span>
+<h3 class="text-lg font-bold text-slate-100">Publication Tracker</h3>
+</div>
+<div class="space-y-5">
+<div class="relative pl-6 border-l-2 border-slate-700">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-orange-500 rounded-full ring-4 ring-slate-950"></div>
+<p class="text-xs text-slate-500 font-bold uppercase">Pending Review</p>
+<h4 class="text-sm font-medium mt-1">Next-Gen Propulsion Systems</h4>
+<p class="text-[11px] text-slate-400 mt-1 italic">Journal of Astral Mechanics</p>
+</div>
+<div class="relative pl-6 border-l-2 border-slate-700">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-brand-tech rounded-full ring-4 ring-slate-950"></div>
+<p class="text-xs text-slate-500 font-bold uppercase">Published</p>
+<h4 class="text-sm font-medium mt-1">Lunar Regolith Structures</h4>
+<div class="flex gap-2 mt-2">
+<button class="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-[10px] text-slate-300 transition-colors">Get Citation</button>
+<button class="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-[10px] text-slate-300 transition-colors">Library Link</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Departmental Overview -->
+<div class="col-span-12 lg:col-span-5 glass-panel rounded-xl p-6 shadow-xl">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500" data-icon="corporate_fare">corporate_fare</span>
+<h3 class="text-lg font-bold text-slate-100">Departmental Overview</h3>
+</div>
+<span class="bg-slate-800 text-slate-400 px-2 py-1 rounded text-[10px]">AERO-DPT</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-brand-astral/40 p-4 rounded-lg">
+<p class="text-slate-500 text-xs uppercase font-bold tracking-widest">Library Usage</p>
+<p class="text-2xl font-black text-slate-100 mt-1">84%</p>
+<p class="text-[10px] text-brand-tech mt-1">+12% vs last term</p>
+</div>
+<div class="bg-brand-astral/40 p-4 rounded-lg">
+<p class="text-slate-500 text-xs uppercase font-bold tracking-widest">Active Reserves</p>
+<p class="text-2xl font-black text-slate-100 mt-1">422</p>
+<p class="text-[10px] text-slate-400 mt-1">Across 18 courses</p>
+</div>
+</div>
+<div class="mt-6">
+<p class="text-xs text-slate-500 font-bold uppercase mb-3">Quick Actions</p>
+<div class="flex flex-wrap gap-2">
+<button class="bg-slate-800 hover:bg-slate-700 text-xs py-2 px-4 rounded-full border border-slate-700 transition-colors">Staff Access Audit</button>
+<button class="bg-slate-800 hover:bg-slate-700 text-xs py-2 px-4 rounded-full border border-slate-700 transition-colors">Budget Request</button>
+</div>
+</div>
+</div>
+<!-- Academic Settings Section -->
+<div class="col-span-12 lg:col-span-7 space-y-6">
+<!-- Course Reserve Management -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-orange-500/10 rounded-lg">
+<span class="material-symbols-outlined text-orange-500" data-icon="library_add">library_add</span>
+</div>
+<div>
+<h3 class="text-md font-bold text-slate-100">Course Reserve Management</h3>
+<p class="text-xs text-slate-500">Manage student access to physical and digital volumes</p>
+</div>
+</div>
+<div class="flex gap-4">
+<select class="bg-slate-800 border-slate-700 text-sm rounded-lg flex-1 focus:ring-orange-500 focus:border-orange-500">
+<option>AERO 402: Spacecraft Dynamics</option>
+<option>AERO 510: Thermal Systems</option>
+</select>
+<button class="bg-orange-500 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-orange-600 transition-colors">Add Book</button>
+</div>
+</div>
+<!-- Sync & Search Defaults -->
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+<h4 class="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-brand-tech text-sm" data-icon="sync">sync</span>
+                            Grant Repository Sync
+                        </h4>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs text-slate-400">ORCID iD</span>
+<span class="text-[10px] text-brand-tech font-bold uppercase">Connected</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-slate-400">Scopus API</span>
+<button class="text-[10px] text-orange-500 font-bold uppercase underline">Link Account</button>
+</div>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+<h4 class="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500 text-sm" data-icon="star">star</span>
+                            Search Defaults
+                        </h4>
+<div class="space-y-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-slate-700 bg-slate-800 text-orange-500 focus:ring-orange-500" type="checkbox"/>
+<span class="text-[11px] text-slate-300">Journal of Propulsion</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-slate-700 bg-slate-800 text-orange-500 focus:ring-orange-500" type="checkbox"/>
+<span class="text-[11px] text-slate-300">AIAA Database</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Integrated below content -->
+<footer class="w-full py-12 mt-12 flex justify-between items-center text-xs font-light text-slate-500 border-t border-slate-900">
+<div>
+<p>© 2024 University Library Systems - Digital Astral Framework</p>
+<div class="flex gap-4 mt-2">
+<a class="hover:text-slate-300" href="#">Privacy Policy</a>
+<a class="hover:text-slate-300" href="#">Terms of Service</a>
+<a class="hover:text-slate-300" href="#">Library Ethics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-slate-700 uppercase tracking-widest text-[10px] font-bold">Encrypted Connection</span>
+<span class="material-symbols-outlined text-brand-tech" data-icon="verified_user">verified_user</span>
+</div>
+</footer>
+</main>
+</body></html>

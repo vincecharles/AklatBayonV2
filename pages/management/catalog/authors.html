@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Authors - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -16,8 +15,7 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+          /* colors removed - using astral CSS */,
             accent: '#e94560',
             'bg-light': '#f6f6f8',
             'bg-dark': '#131022',
@@ -27,19 +25,19 @@
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-  <div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <h1 class="text-2xl font-bold flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">edit</span>Authors
+          <span class="material-symbols-outlined text-[#ffb599]">edit</span>Authors
         </h1>
-        <button id="btn-add" class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary-800 transition-colors shadow-sm">
+        <button id="btn-add" class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg bg-[#ffb599] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-colors shadow-sm">
           <span class="material-symbols-outlined text-base">add_circle</span> Add Author
         </button>
       </div>
@@ -48,24 +46,24 @@
       <div class="mb-5">
         <div class="relative max-w-sm">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-          <input type="text" id="search-input" placeholder="Search authors..." class="w-full h-11 pl-10 pr-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          <input type="text" id="search-input" placeholder="Search authors..." class="w-full h-11 pl-10 pr-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
         </div>
       </div>
 
       <!-- Table Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="astral-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm text-left">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60">
-                <th class="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">#</th>
-                <th class="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">Name</th>
-                <th class="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">Bio</th>
-                <th class="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">Books</th>
-                <th class="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">Actions</th>
+              <tr class="border-b border-[#3a3a52] bg-[#1a1a2e]">
+                <th class="px-5 py-3 font-semibold text-[#9b99b8]">#</th>
+                <th class="px-5 py-3 font-semibold text-[#9b99b8]">Name</th>
+                <th class="px-5 py-3 font-semibold text-[#9b99b8]">Bio</th>
+                <th class="px-5 py-3 font-semibold text-[#9b99b8]">Books</th>
+                <th class="px-5 py-3 font-semibold text-[#9b99b8]">Actions</th>
               </tr>
             </thead>
-            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+            <tbody id="data-table" class="divide-y divide-[#3a3a52]/50"></tbody>
           </table>
         </div>
       </div>
@@ -76,26 +74,26 @@
   <!-- Modal -->
   <div id="modal-form" class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center">
     <div class="bg-white dark:bg-slate-900 rounded-2xl w-[95%] max-w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl animate-modal-in">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#3a3a52]">
         <h3 id="modal-title" class="text-lg font-bold">Add Author</h3>
-        <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+        <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-[#333348] hover:bg-[#3a3a52] transition-colors">
           <span class="material-symbols-outlined text-base">close</span>
         </button>
       </div>
       <div class="p-6">
         <input type="hidden" id="edit-id">
         <div class="mb-4">
-          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Name</label>
-          <input type="text" id="f-name" class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          <label class="block text-sm font-semibold text-[#e2e0fc] mb-1.5">Name</label>
+          <input type="text" id="f-name" class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Bio</label>
-          <textarea id="f-bio" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"></textarea>
+          <label class="block text-sm font-semibold text-[#e2e0fc] mb-1.5">Bio</label>
+          <textarea id="f-bio" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30 resize-none"></textarea>
         </div>
       </div>
-      <div class="flex justify-end gap-2 px-6 py-4 border-t border-slate-200 dark:border-slate-800">
-        <button class="modal-close px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
-        <button id="btn-save" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary-800 transition-colors">
+      <div class="flex justify-end gap-2 px-6 py-4 border-t border-[#3a3a52]">
+        <button class="modal-close px-4 py-2 text-sm rounded-lg border border-[#3a3a52] hover:bg-[#ffb599]/5 transition-colors">Cancel</button>
+        <button id="btn-save" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-[#ffb599] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-colors">
           <span class="material-symbols-outlined text-base">save</span> Save
         </button>
       </div>
@@ -116,10 +114,10 @@
         const s = document.getElementById('search-input').value.toLowerCase();
         if (s) items = items.filter((i) => i.name.toLowerCase().includes(s));
         const tbody = document.getElementById('data-table');
-        if (!items.length) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-slate-400">No authors found.</td></tr>'; return; }
+        if (!items.length) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-[#9b99b8]">No authors found.</td></tr>'; return; }
         tbody.innerHTML = items.map((a, i) => {
             const bookCount = books.filter((b) => b.author_id === a.id).length;
-            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"><td class="px-5 py-3 text-slate-500">${i+1}</td><td class="px-5 py-3 font-semibold">${a.name}</td><td class="px-5 py-3 text-slate-500 max-w-xs truncate">${a.bio || '\u2014'}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">${bookCount}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg text-primary hover:bg-primary-50 dark:hover:bg-slate-800 transition-colors" data-id="${a.id}" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button><button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${a.id}" data-name="${a.name}" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button></div></td></tr>`;
+            return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-5 py-3 text-[#9b99b8]">${i+1}</td><td class="px-5 py-3 font-semibold">${a.name}</td><td class="px-5 py-3 text-slate-500 max-w-xs truncate">${a.bio || '\u2014'}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full " style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)">${bookCount}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg text-[#ffb599] hover:bg-primary-50 dark:hover:bg-slate-800 transition-colors" data-id="${a.id}" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button><button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-[#f87171]/10 transition-colors" data-id="${a.id}" data-name="${a.name}" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button></div></td></tr>`;
         }).join('');
         bind();
     };

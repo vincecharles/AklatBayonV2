@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AklatBayon | Digital Library Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#d2bcfa",
+              "surface-container": "#1e1e32",
+              "outline-variant": "#56423b",
+              "primary-fixed-dim": "#ffb599",
+              "tertiary": "#d2bcfa",
+              "tertiary-fixed": "#ebddff",
+              "surface-tint": "#ffb599",
+              "surface": "#111125",
+              "on-surface-variant": "#ddc0b6",
+              "error-container": "#93000a",
+              "surface-container-low": "#1a1a2e",
+              "on-primary-container": "#4e1800",
+              "on-secondary-fixed": "#2f1500",
+              "secondary-container": "#783f00",
+              "on-tertiary-fixed-variant": "#4f3d72",
+              "on-background": "#e2e0fc",
+              "surface-variant": "#333348",
+              "error": "#ffb4ab",
+              "on-tertiary-fixed": "#231043",
+              "on-secondary": "#4d2600",
+              "on-primary": "#5a1c00",
+              "on-error-container": "#ffdad6",
+              "inverse-surface": "#e2e0fc",
+              "inverse-primary": "#a04113",
+              "surface-container-lowest": "#0c0c1f",
+              "surface-dim": "#111125",
+              "surface-bright": "#37374d",
+              "surface-container-highest": "#333348",
+              "primary-container": "#e17141",
+              "outline": "#a58b82",
+              "on-tertiary": "#38265a",
+              "secondary-fixed-dim": "#ffb77d",
+              "on-primary-fixed": "#370e00",
+              "inverse-on-surface": "#2f2e43",
+              "surface-container-high": "#28283d",
+              "on-primary-fixed-variant": "#7f2b00",
+              "primary-fixed": "#ffdbce",
+              "on-surface": "#e2e0fc",
+              "on-error": "#690005",
+              "secondary-fixed": "#ffdcc3",
+              "secondary": "#ffb77d",
+              "on-secondary-container": "#ffad68",
+              "tertiary-container": "#9b87c1",
+              "primary": "#ffb599",
+              "on-tertiary-container": "#311f52",
+              "on-secondary-fixed-variant": "#6e3900",
+              "background": "#111125"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111125;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333348;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffb599;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 py-3 bg-slate-900/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(12,12,31,0.08)] font-['Inter'] tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-semibold tracking-tighter text-orange-500">AklatBayon</span>
+<div class="hidden md:flex items-center bg-slate-800/50 rounded-full px-4 py-1.5 gap-3 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 text-on-surface placeholder:text-slate-500" placeholder="Search the repository..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 rounded-full">
+<span class="material-symbols-outlined">tune</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="flex flex-col fixed left-0 top-0 h-full w-64 pt-20 border-r border-slate-800/30 bg-slate-950 z-40">
+<div class="px-6 py-4 mb-4">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800/50">
+<img alt="User profile" class="w-10 h-10 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlpiTj8zYGTPuPyd8lBHTdt9n3WbiQAiulnOzW36C4avmX36i4yLWwzfNTOnMcQrSJbV59vJPv2vTNuh8NwzZP29CY0cJNDXN7W8UWEJA_TfBwtpa-GL-_-iKznc9HYDenFTrtLLSRbRMpCMVo1IToIDVnCXKP7EH5h4x2gutwRv41zLyqXS8uh-Rk9r7QiibRLDl3ubOmu4vyUA3URlekY7Q7T-sPRQUtYDl9847HObiBZ6vD0yrnS3PbeEGRmjtp6r13hhlSerNU"/>
+<div>
+<h3 class="text-sm font-bold text-on-surface">The Archivist</h3>
+<p class="text-[10px] uppercase tracking-widest text-slate-500">Level 4 Access</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-4 px-4 py-3 text-orange-400 border-r-2 border-orange-500 bg-gradient-to-r from-orange-500/10 to-transparent font-['Inter'] text-xs uppercase tracking-widest font-bold hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+                Repository
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 font-['Inter'] text-xs uppercase tracking-widest font-bold hover:text-slate-200 hover:bg-slate-900/50 hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined">auto_awesome_motion</span>
+                Collections
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 font-['Inter'] text-xs uppercase tracking-widest font-bold hover:text-slate-200 hover:bg-slate-900/50 hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+                History
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 font-['Inter'] text-xs uppercase tracking-widest font-bold hover:text-slate-200 hover:bg-slate-900/50 hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+                Reserved
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 font-['Inter'] text-xs uppercase tracking-widest font-bold hover:text-slate-200 hover:bg-slate-900/50 hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="p-6">
+<button class="w-full py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl text-xs uppercase tracking-widest active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Dashboard Header & Filters -->
+<div class="flex flex-col gap-6 mb-10">
+<div class="flex items-end justify-between">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Central Repository</h1>
+<p class="text-on-surface-variant max-w-lg">Access the collective wisdom of the Bayon archives. Explore 12,403 indexed volumes and digital manuscripts.</p>
+</div>
+<div class="flex items-center bg-surface-container-high p-1 rounded-full border border-outline-variant/10">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary text-xs font-bold transition-all">GRID</button>
+<button class="px-4 py-2 rounded-full text-on-surface-variant text-xs font-bold hover:text-on-surface transition-all">LIST</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<span class="text-xs font-bold text-slate-500 uppercase tracking-widest mr-2">Quick Filters:</span>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-highest border border-outline-variant/30 text-xs font-medium text-on-surface flex items-center gap-2 hover:bg-primary/20 hover:border-primary/40 transition-all">
+                    Category: Philosophy <span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/10 text-xs font-medium text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-highest transition-all">
+                    Author <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/10 text-xs font-medium text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-highest transition-all">
+                    Availability <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="ml-auto text-primary text-xs font-bold uppercase tracking-widest hover:underline">Clear all</button>
+</div>
+</div>
+<!-- Catalog Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+<!-- Book Card 1 (Active/Selected State) -->
+<div class="group relative bg-surface-container-high rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] ring-2 ring-primary">
+<div class="aspect-[3/4] overflow-hidden relative">
+<img alt="Book Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJy5BN5eYd0LrBBBaVyuMygd3unOBvEy-ZyibcYTlaMvbUYfax_SH3vAz4Jj847bX0NKCSePz70GrrbO3Y63yZQak8AUqvPGhQp4qnH9JHZ2-UJ0P3HkjEvvfba3nO1DJLVD1aTdaQOuIbwnjxUjb8rG2VIjJoXzjiTFaVJneTA25GV81qHif-P5BWGve7d3jeARGZU8UMCJMZCSPvJk2k5x6Tlbe2bfAbX7ZXQ1OYgbeRcdU1I91gGLYMTjLA2N97CmBXeL8hv7Vh"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-4 right-4">
+<span class="px-3 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded-full border border-green-500/20 backdrop-blur-md shadow-[0_0_15px_rgba(74,222,128,0.2)]">AVAILABLE</span>
+</div>
+</div>
+<div class="p-5">
+<h3 class="text-lg font-bold text-on-surface group-hover:text-primary transition-colors leading-tight mb-1">Architectures of the Void</h3>
+<p class="text-sm text-on-surface-variant mb-4">Dr. Elara Vance</p>
+<div class="flex items-center justify-between text-[11px] font-medium text-slate-500 uppercase tracking-tighter">
+<span>Shelf 12-B</span>
+<span>Published 2024</span>
+</div>
+</div>
+</div>
+<!-- Book Card 2 -->
+<div class="group relative bg-surface-container-low rounded-2xl overflow-hidden transition-all duration-300 hover:bg-surface-container-high hover:-translate-y-2">
+<div class="aspect-[3/4] overflow-hidden relative">
+<img alt="Book Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgj3G4hJHVw0U0Ljkez6uFi-4yhFUF8ylmPfvc8jteglChnsKhNMwuJVz6HoPsrYmcjWUX-5vN9JeR_nac_FQnUXxn_cKCpWlHR45iW2dgnfqvKWkHA5cSYMGC1T1ET7h0jeC3hDsYKF9iEXCu4TZPUVBdzqRXWP4udRSp4AQRD_IsWYnE4EJGdGZCsICHiq_jANbgENApRlIVnH5WGw_KwPpVinxW0kvitoL6nWtPpnYDJKhfOjxy8W5ZikVauQHsU_msKwFPGYVO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-4 right-4">
+<span class="px-3 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-full border border-red-500/20 backdrop-blur-md">BORROWED</span>
+</div>
+</div>
+<div class="p-5">
+<h3 class="text-lg font-bold text-on-surface group-hover:text-primary transition-colors leading-tight mb-1">Neon Relics</h3>
+<p class="text-sm text-on-surface-variant mb-4">Marcus Thorne</p>
+<div class="flex items-center justify-between text-[11px] font-medium text-slate-500 uppercase tracking-tighter">
+<span>Shelf 04-A</span>
+<span>Published 2022</span>
+</div>
+</div>
+</div>
+<!-- More book cards following the same pattern -->
+<div class="group relative bg-surface-container-low rounded-2xl overflow-hidden transition-all duration-300 hover:bg-surface-container-high hover:-translate-y-2">
+<div class="aspect-[3/4] overflow-hidden relative">
+<img alt="Book Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMMyZXXaArX8pcUFlAZH64c6BsyahnfNj8Jx1GU48Johzz3fchsUFZ2gLgKlzqweF3gNIYRJnmTP43GYH6c3A2tq-BZbtd9M5zA8PGqnF3Hv2fEiTg14QTQrDQMcRrJvtUOjlnzJwXKzEVZsW1yq1RebsFLvhmwSZ_Y7R3Mo8LLNWLKQX_SRcYPKj9GSJRBfHvtV-dzME9aWfd1UdBrlsWcMqu57AeqKDZlf6Z_qfLCUN2pkPFZyNNZp7PonQOpPPv20joARHGlCss"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-4 right-4">
+<span class="px-3 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded-full border border-green-500/20 backdrop-blur-md">AVAILABLE</span>
+</div>
+</div>
+<div class="p-5">
+<h3 class="text-lg font-bold text-on-surface group-hover:text-primary transition-colors leading-tight mb-1">Synthesized Truths</h3>
+<p class="text-sm text-on-surface-variant mb-4">Aria Stark-Kovacs</p>
+<div class="flex items-center justify-between text-[11px] font-medium text-slate-500 uppercase tracking-tighter">
+<span>Shelf 09-C</span>
+<span>Published 2023</span>
+</div>
+</div>
+</div>
+<div class="group relative bg-surface-container-low rounded-2xl overflow-hidden transition-all duration-300 hover:bg-surface-container-high hover:-translate-y-2">
+<div class="aspect-[3/4] overflow-hidden relative">
+<img alt="Book Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPiqetlJGFJKAYblSA9B_Gy07jgfGGI2bOr6Ibcf6WKaXHYe0-U7tU7dHzL6IaeGrMjI0NtJkoP2smc_7GKvjnvCNUrOsvSE8Ke43JvS-Qv9XM6dT5EVUE2UhHyEse6TgcjbCFOrcOq8N90w6ZC4ZyhpgVNDHGitL7jAIfmOxsgR9cTaT4TOlfkgAUr5tQNTm5O93vXJ-gS4q3tUHj-LEKU2dTqDtxMslwWifAyDzJN0MAeNLGxhgT_XneJyghOcfe9MgDwh4D36wd"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-4 right-4">
+<span class="px-3 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded-full border border-green-500/20 backdrop-blur-md">AVAILABLE</span>
+</div>
+</div>
+<div class="p-5">
+<h3 class="text-lg font-bold text-on-surface group-hover:text-primary transition-colors leading-tight mb-1">The Last Algorithm</h3>
+<p class="text-sm text-on-surface-variant mb-4">Julian Vesper</p>
+<div class="flex items-center justify-between text-[11px] font-medium text-slate-500 uppercase tracking-tighter">
+<span>Shelf 21-F</span>
+<span>Published 2021</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Slide-over Panel (Book Details) -->
+<div class="fixed top-0 right-0 h-full w-[450px] bg-surface-container shadow-[-20px_0_60px_rgba(0,0,0,0.6)] z-[60] transform translate-x-0 transition-transform duration-500 ease-out border-l border-outline-variant/20">
+<div class="h-full flex flex-col overflow-y-auto">
+<!-- Header Image -->
+<div class="relative h-64 shrink-0">
+<img alt="Detailed Cover" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAlVgoIJkFUR-pMYq6AFxNUUzZqczQ2Xf4fVYK0HG0kZD6XqtAQ2YCTSWyIrd0YzBy99V3tslGYJ19_Zd3redmio8W3Sirz3WjoeN2woWz0qrwr1_X6IodTco5OC-sb8IwRue1wVMCKQNI2pUfM24QewaRk0fAQxD8csUpRO9v5yv1HbDasStgFV60CgZWAGivyAMbtDgW3u5eh99zGV4kZNeA9Kb7PzmH7fPuVTQawByOSdQa6Sivsh1c5Kc7BlxDFSrG8lz3a4E8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent"></div>
+<button class="absolute top-6 left-6 p-2 bg-slate-900/60 backdrop-blur-xl rounded-full text-on-surface hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="absolute top-6 right-6 p-2 bg-slate-900/60 backdrop-blur-xl rounded-full text-on-surface hover:text-primary transition-all">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<!-- Content -->
+<div class="px-8 pb-32 -mt-12 relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full border border-primary/20">PHILOSOPHY</span>
+<span class="px-3 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded-full border border-green-500/20 shadow-[0_0_15px_rgba(74,222,128,0.2)]">AVAILABLE</span>
+</div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Architectures of the Void</h2>
+<p class="text-lg text-primary font-medium mb-6">By Dr. Elara Vance</p>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest text-slate-500 mb-1">ISBN-13</p>
+<p class="text-sm font-mono text-on-surface">978-3-16-148410-0</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Shelf Location</p>
+<p class="text-sm font-bold text-on-surface">Wing B / Sec 12</p>
+</div>
+</div>
+<div class="mb-8">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Synopsis</h4>
+<p class="text-on-surface-variant leading-relaxed">
+                        An exploration into the metaphysical structures of non-being. Dr. Vance challenges traditional ontological frameworks by proposing that the "void" is not an absence, but a presence with its own geometric and architectural laws. This seminal work has redefined contemporary existential philosophy in the digital age.
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Metadata</h4>
+<div class="flex items-center justify-between py-3 border-b border-outline-variant/10">
+<span class="text-sm text-on-surface-variant">Pages</span>
+<span class="text-sm font-bold text-on-surface">432</span>
+</div>
+<div class="flex items-center justify-between py-3 border-b border-outline-variant/10">
+<span class="text-sm text-on-surface-variant">Publisher</span>
+<span class="text-sm font-bold text-on-surface">Astral Press</span>
+</div>
+<div class="flex items-center justify-between py-3 border-b border-outline-variant/10">
+<span class="text-sm text-on-surface-variant">Format</span>
+<span class="text-sm font-bold text-on-surface">Hardcover / Digital</span>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-surface-container via-surface-container to-transparent">
+<button class="w-full py-5 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-2xl text-sm uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 active:scale-95 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">bookmark_add</span>
+                    RESERVE NOW
+                </button>
+</div>
+</div>
+</div>
+<!-- Floating Status Bar -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-8 px-8 py-4 bg-slate-900/40 border border-outline-variant/10 glass-panel rounded-2xl z-50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-3 pr-8 border-r border-outline-variant/20">
+<div class="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">System Online</span>
+</div>
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-[9px] text-slate-500 uppercase tracking-tighter">Your Returns</span>
+<span class="text-xs font-bold text-tertiary">2 Items Due</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[9px] text-slate-500 uppercase tracking-tighter">Queue Pos</span>
+<span class="text-xs font-bold text-primary">#14</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[9px] text-slate-500 uppercase tracking-tighter">Account Cred</span>
+<span class="text-xs font-bold text-on-surface">A+ Rank</span>
+</div>
+</div>
+<div class="pl-8 border-l border-outline-variant/20">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</div>
+<!-- Dark Overlay for Slide Panel -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 pointer-events-none opacity-50"></div>
+</body></html>

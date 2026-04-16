@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .floating-label-input:focus-within label,
+        .floating-label-input input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #ffb599;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface": "#e2e0fc",
+                        "outline-variant": "#56423b",
+                        "on-background": "#e2e0fc",
+                        "surface-container-low": "#1a1a2e",
+                        "outline": "#a58b82",
+                        "on-secondary-fixed": "#2f1500",
+                        "error-container": "#93000a",
+                        "on-primary": "#5a1c00",
+                        "background": "#111125",
+                        "secondary-fixed": "#ffdcc3",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface-bright": "#37374d",
+                        "tertiary-container": "#9b87c1",
+                        "on-tertiary-fixed-variant": "#4f3d72",
+                        "surface-container": "#1e1e32",
+                        "surface-tint": "#ffb599",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "primary": "#ffb599",
+                        "surface": "#111125",
+                        "secondary": "#ffb77d",
+                        "on-tertiary-fixed": "#231043",
+                        "on-secondary-container": "#ffad68",
+                        "on-surface-variant": "#ddc0b6",
+                        "surface-container-high": "#28283d",
+                        "inverse-surface": "#e2e0fc",
+                        "surface-variant": "#333348",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "tertiary-fixed": "#ebddff",
+                        "secondary-container": "#783f00",
+                        "on-primary-fixed": "#370e00",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#ffdbce",
+                        "surface-dim": "#111125",
+                        "surface-container-highest": "#333348",
+                        "on-tertiary-container": "#311f52",
+                        "tertiary": "#d2bcfa",
+                        "on-primary-container": "#4e1800",
+                        "primary-container": "#e17141",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ffb599",
+                        "on-tertiary": "#38265a",
+                        "tertiary-fixed-dim": "#d2bcfa",
+                        "on-secondary": "#4d2600",
+                        "inverse-primary": "#a04113",
+                        "inverse-on-surface": "#2f2e43"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container/30 overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 w-full bg-transparent">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-bold tracking-tighter text-[#E07040]">AklatBayon</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-8 items-center">
+<span class="text-slate-400 font-['Inter'] tracking-tight font-semibold hover:text-orange-400 transition-colors cursor-pointer">Repository</span>
+<span class="text-slate-400 font-['Inter'] tracking-tight font-semibold hover:text-orange-400 transition-colors cursor-pointer">Systems</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 hover:text-orange-400 transition-colors cursor-pointer">help_outline</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-orange-400 transition-colors cursor-pointer">settings</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Suppressed for focused login task as per UX Goal, but provided as per explicit user request) -->
+<nav class="fixed left-0 top-0 h-full w-64 z-40 bg-[#1A1A2E]/80 backdrop-blur-xl flex flex-col h-full py-8 hidden lg:flex">
+<div class="px-8 mb-12">
+<h2 class="text-[#E07040] font-black italic text-xl">AklatBayon</h2>
+<p class="text-slate-500 font-['Inter'] uppercase tracking-widest text-[10px] font-medium mt-1">V0.8.2-ASTRAL</p>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex items-center gap-3 text-slate-500 py-3 px-6 hover:bg-[#111125] transition-all cursor-pointer">
+<span class="material-symbols-outlined">database</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] font-medium">Repository</span>
+</div>
+<div class="flex items-center gap-3 text-slate-500 py-3 px-6 hover:bg-[#111125] transition-all cursor-pointer">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] font-medium">Terminal</span>
+</div>
+<div class="flex items-center gap-3 text-slate-500 py-3 px-6 hover:bg-[#111125] transition-all cursor-pointer">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] font-medium">Archives</span>
+</div>
+<div class="flex items-center gap-3 text-slate-500 py-3 px-6 hover:bg-[#111125] transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] font-medium">Systems</span>
+</div>
+</div>
+<div class="mt-auto px-6 border-t border-white/5 pt-6">
+<div class="flex items-center gap-3 text-slate-500 py-3 px-6 hover:bg-[#111125] transition-all cursor-pointer">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] font-medium">Support</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative min-h-screen w-full flex items-center justify-center p-6 overflow-hidden bg-[#111125]">
+<!-- Astral Background Gradients -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-tertiary/5 rounded-full blur-[100px]"></div>
+<!-- Login Card -->
+<div class="relative z-10 w-full max-w-[420px] glass-panel rounded-[2rem] p-10 flex flex-col items-center">
+<!-- Header Section -->
+<div class="w-full mb-10 text-center">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary/20 mb-6 shadow-[0_0_20px_rgba(224,112,64,0.15)]">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h1 class="text-3xl font-headline font-bold tracking-tight text-white mb-2">System Authentication</h1>
+<p class="text-slate-400 text-sm font-label tracking-wide uppercase">Secure Astral Node Access</p>
+</div>
+<!-- Login Form -->
+<form class="w-full space-y-8">
+<!-- Username Field -->
+<div class="relative floating-label-input group w-full">
+<input class="w-full bg-surface-variant/40 border-0 rounded-xl px-4 py-4 text-on-surface focus:ring-1 focus:ring-primary/40 transition-all placeholder-transparent" id="username" placeholder=" " type="text"/>
+<label class="absolute left-4 top-4 text-slate-500 transition-all pointer-events-none font-label text-sm uppercase tracking-wider" for="username">
+                        Username
+                    </label>
+<div class="absolute right-4 top-4 text-slate-600 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">account_circle</span>
+</div>
+</div>
+<!-- Password Field -->
+<div class="relative floating-label-input group w-full">
+<input class="w-full bg-surface-variant/40 border-0 rounded-xl px-4 py-4 text-on-surface focus:ring-1 focus:ring-primary/40 transition-all placeholder-transparent" id="password" placeholder=" " type="password"/>
+<label class="absolute left-4 top-4 text-slate-500 transition-all pointer-events-none font-label text-sm uppercase tracking-wider" for="password">
+                        Terminal Key
+                    </label>
+<div class="absolute right-4 top-4 text-slate-600 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">vpn_key</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-end w-full">
+<a class="text-primary/70 hover:text-primary text-xs font-label uppercase tracking-widest transition-colors" href="#">Forgot Password?</a>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-full shadow-[0_0_15px_rgba(224,112,64,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-[0.2em] text-sm">
+                    Initiate Connection
+                </button>
+</form>
+<!-- Footer Links -->
+<div class="mt-10 pt-8 border-t border-white/5 w-full text-center">
+<p class="text-slate-500 text-sm">
+                    New here? 
+                    <a class="text-primary hover:underline font-semibold ml-1" href="#">Register Access</a>
+</p>
+</div>
+</div>
+<!-- System Status Bar (Signature Element) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-3 glass-panel rounded-full flex items-center gap-8 shadow-2xl">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse"></div>
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-medium">Node: Active</span>
+</div>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg">public</span>
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-medium">L-0428-B</span>
+</div>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg">lock_open</span>
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-medium">TLS 1.3</span>
+</div>
+</div>
+</main>
+<!-- Decorative Image Elements for Depth -->
+<div class="fixed top-0 right-0 w-full h-full pointer-events-none opacity-20 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="abstract cosmic data visualization with glowing orange lines and deep purple nebulous background with subtle grain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHqhgTtwVQxmbD__RxnnJAD30WBWk4i_gFgWvqdsa3XKy-APmJQsMmeaUrfMSmRpaUXxIi8IHxnPOzGxW4-Js-Ux5d-W8mdojb-ZPzZEuzNjiMIZ5-aY6smAXuzQTEe6RT21mVCmFYvyFJoipSXQSPsNByfxjiN13w87D7ROUesM3FZD5yrha-EU35ZCBDvu5fmFU3nwwfIwn8AUz7f5F_kUg0Plq-1ojaNcY4EptxuRRbz9sdbx2hFjOO1xzb7-zq5KlPHwpPAIJR"/>
+</div>
+</body></html>

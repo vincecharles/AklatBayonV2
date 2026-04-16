@@ -3,39 +3,16 @@ const App = (() => {
     const LEGACY_THEME_KEY = 'aklatbayon_dark_mode';
 
     const applyStoredTheme = () => {
-        let stored = localStorage.getItem(THEME_KEY);
-        if (!stored) {
-            const legacy = localStorage.getItem(LEGACY_THEME_KEY);
-            stored = legacy === 'true' ? 'dark' : 'light';
-            localStorage.setItem(THEME_KEY, stored);
-        }
-        const html = document.documentElement;
-        if (stored === 'dark') html.classList.add('dark');
-        else html.classList.remove('dark');
+        // Force dark mode for Astral theme
+        document.documentElement.classList.add('dark');
+        localStorage.setItem(THEME_KEY, 'dark');
     };
 
     const init = () => {
         applyStoredTheme();
         renderHeader();
         Sidebar.render();
-        updateToggleIcon();
-    };
-
-    const toggleDarkMode = () => {
-        const html = document.documentElement;
-        const isDark = html.classList.contains('dark');
-        html.classList.toggle('dark');
-        localStorage.setItem(THEME_KEY, isDark ? 'light' : 'dark');
-        localStorage.setItem(LEGACY_THEME_KEY, isDark ? 'false' : 'true');
-        updateToggleIcon();
-    };
-
-    const updateToggleIcon = () => {
-        const btn = document.getElementById('btn-dark-mode');
-        if (!btn) return;
-        const isDark = document.documentElement.classList.contains('dark');
-        btn.innerHTML = `<span class="material-symbols-outlined text-lg">${isDark ? 'light_mode' : 'dark_mode'}</span>`;
-        btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        renderStatusBar();
     };
 
     const renderHeader = () => {
@@ -43,45 +20,68 @@ const App = (() => {
         if (!user) return;
         const header = document.getElementById('top-header');
         if (!header) return;
-        const isDark = document.documentElement.classList.contains('dark');
 
-        header.className = 'fixed top-0 left-0 right-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-6';
+        header.className = 'astral-header';
+
+        const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
         header.innerHTML = `
             <div class="flex items-center gap-3">
-                <img src="/images/logo.png" alt="AklatBayon" class="w-8 h-8 object-contain rounded-full bg-primary/10 p-0.5">
-                <span class="text-lg font-bold tracking-tight text-primary">AklatBayon</span>
+                <img src="/images/logo.png" alt="AklatBayon" class="w-8 h-8 object-contain">
+                <span class="text-lg font-bold tracking-tight text-[#ffb599]">AklatBayon</span>
             </div>
             <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 pr-4 border-r border-slate-200 dark:border-slate-700">
+                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[rgba(255,181,153,0.08)] transition-colors text-[#9b99b8] hover:text-[#ffb599] relative" title="Notifications">
+                    <span class="material-symbols-outlined text-xl">notifications</span>
+                </button>
+                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[rgba(255,181,153,0.08)] transition-colors text-[#9b99b8] hover:text-[#ffb599]" title="Settings">
+                    <span class="material-symbols-outlined text-xl">settings</span>
+                </button>
+                <div class="h-8 w-px bg-[#3a3a52]"></div>
+                <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <div class="text-sm font-semibold text-slate-900 dark:text-slate-100">${user.name}</div>
-                        <div class="text-[11px] text-slate-500 dark:text-slate-400">${user.role_name}${user.faculty_subtype ? ` (${user.faculty_subtype})` : ''}</div>
+                        <div class="text-sm font-semibold text-[#e2e0fc]">${user.name}</div>
+                        <div class="text-[10px] text-[#9b99b8] uppercase tracking-wider">${user.role_name}</div>
                     </div>
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white bg-[#e17141]">${initials}</div>
                 </div>
-                <button id="btn-dark-mode" title="${isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}" class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
-                    <span class="material-symbols-outlined text-lg">${isDark ? 'light_mode' : 'dark_mode'}</span>
-                </button>
-                <button id="btn-logout" class="inline-flex items-center gap-1.5 rounded-lg bg-red-500 hover:bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors">
-                    <span class="material-symbols-outlined text-base">logout</span> Logout
-                </button>
             </div>`;
+    };
 
-        document.getElementById('btn-dark-mode').addEventListener('click', () => toggleDarkMode());
-        document.getElementById('btn-logout').addEventListener('click', () => Auth.logout());
+    const renderStatusBar = () => {
+        // Add status bar if not already present
+        if (document.getElementById('astral-status-bar')) return;
+        const bar = document.createElement('div');
+        bar.id = 'astral-status-bar';
+        bar.className = 'astral-status-bar';
+        bar.innerHTML = `
+            <div class="flex items-center gap-2">
+                <span class="status-dot"></span>
+                <span>System Online</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">shield</span>
+                <span>Firewall Active</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">speed</span>
+                <span>2.4 TB/s</span>
+            </div>`;
+        document.body.appendChild(bar);
     };
 
     const showAlert = (type, message) => {
         const container = document.getElementById('alert-container');
         if (!container) return;
         const styles = {
-            success: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
-            danger: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800',
-            info: 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+            success: 'background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
+            danger: 'background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.3)',
+            info: 'background:rgba(96,165,250,0.1);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)'
         };
         const icons = { success: 'check_circle', danger: 'error', info: 'info' };
         const div = document.createElement('div');
-        div.className = `flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 animate-fade-in ${styles[type] || styles.info}`;
+        div.className = 'flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-4 animate-fade-in';
+        div.style.cssText = styles[type] || styles.info;
         div.innerHTML = `<span class="material-symbols-outlined text-lg">${icons[type] || 'info'}</span> ${message}`;
         container.prepend(div);
         setTimeout(() => div.remove(), 4000);
@@ -92,9 +92,11 @@ const App = (() => {
         text: `Delete "${itemName}"? This cannot be undone.`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#e94560',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: '#e17141',
+        cancelButtonColor: '#3a3a52',
+        confirmButtonText: 'Yes, delete it!',
+        background: '#1e1e32',
+        color: '#e2e0fc'
     });
 
     const formatDate = (isoStr) => {

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOC Book Search - AklatBayon</title>
     <meta name="description" content="Search the Library of Congress catalog and import books into AklatBayon.">
-    <script src="/js/theme-init.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -16,8 +15,7 @@
         theme: {
             extend: {
                 fontFamily: { sans: ['Inter', 'sans-serif'] },
-                colors: {
-                    primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+                /* colors removed - using astral CSS */,
                     accent: '#e94560',
                     'bg-light': '#f6f6f8',
                     'bg-dark': '#131022'
@@ -29,11 +27,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-<div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
         <div id="alert-container"></div>
 
         <!-- Hero Banner -->
@@ -50,9 +48,9 @@
         <!-- Search Bar -->
         <div class="flex gap-3 mb-6">
             <input type="text" id="loc-query"
-                   class="flex-1 px-5 py-3 text-base border-2 border-slate-200 dark:border-slate-600 rounded-xl font-sans bg-white dark:bg-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-400"
+                   class="flex-1 px-5 py-3 text-base border-2 border-slate-200 dark:border-slate-600 rounded-xl font-sans bg-[#1e1e32] dark:text-slate-100 focus:outline-none focus:border-[#ffb599] focus:ring-4 focus:ring-primary/10 placeholder:text-[#9b99b8]"
                    placeholder="Search books by title, author, subject, or ISBN..." autofocus>
-            <button class="px-7 py-3 text-base font-semibold bg-primary hover:bg-primary-600 text-white rounded-xl transition-colors inline-flex items-center gap-2 shrink-0" id="btn-search">
+            <button class="px-7 py-3 text-base font-semibold bg-[#ffb599] hover:bg-primary-600 text-white rounded-xl transition-colors inline-flex items-center gap-2 shrink-0" id="btn-search">
                 <span class="material-symbols-outlined text-xl">search</span> Search LOC
             </button>
         </div>
@@ -67,11 +65,11 @@
             </div>
             <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5" id="loc-results"></div>
             <div class="flex justify-center items-center gap-4 mt-6" id="pagination-bar" style="display:none">
-                <button class="px-5 py-2 text-sm font-semibold border-2 border-primary text-primary dark:text-primary-200 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1" id="btn-prev">
+                <button class="px-5 py-2 text-sm font-semibold border-2 border-[#ffb599] text-[#ffb599] dark:text-primary-200 rounded-lg hover:bg-[#ffb599] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1" id="btn-prev">
                     <span class="material-symbols-outlined text-lg">chevron_left</span> Previous
                 </button>
-                <span class="text-sm text-slate-500 dark:text-slate-400 font-semibold" id="page-info"></span>
-                <button class="px-5 py-2 text-sm font-semibold border-2 border-primary text-primary dark:text-primary-200 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1" id="btn-next">
+                <span class="text-sm text-[#9b99b8] font-semibold" id="page-info"></span>
+                <button class="px-5 py-2 text-sm font-semibold border-2 border-[#ffb599] text-[#ffb599] dark:text-primary-200 rounded-lg hover:bg-[#ffb599] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1" id="btn-next">
                     Next <span class="material-symbols-outlined text-lg">chevron_right</span>
                 </button>
             </div>
@@ -80,12 +78,12 @@
         <!-- Loading Spinner -->
         <div id="loading" style="display:none">
             <div class="flex justify-center items-center py-16">
-                <div class="w-10 h-10 border-4 border-slate-200 dark:border-slate-700 border-t-accent rounded-full animate-spin"></div>
+                <div class="w-10 h-10 border-4 border-[#3a3a52] border-t-accent rounded-full animate-spin"></div>
             </div>
         </div>
 
         <!-- Empty State -->
-        <div id="empty-state" class="flex flex-col items-center justify-center py-20 text-slate-400" style="display:none">
+        <div id="empty-state" class="flex flex-col items-center justify-center py-20 text-[#9b99b8]" style="display:none">
             <span class="material-symbols-outlined text-6xl mb-4">search</span>
             <p class="text-base" id="empty-text">Enter a search term to browse the Library of Congress catalog.</p>
         </div>
@@ -173,25 +171,25 @@
                 let locUrl = r.url || r.id || '';
                 if (locUrl && !locUrl.startsWith('http')) locUrl = `https://www.loc.gov${locUrl.startsWith('/') ? '' : '/'}${locUrl}`;
 
-                html += '<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden relative">';
+                html += '<div class="astral-card shadow-sm overflow-hidden relative">';
                 html += '<div class="flex flex-col min-h-[220px] p-5">';
                 html += `<div class="text-[15px] font-bold text-primary-800 dark:text-slate-200 mb-2 leading-snug line-clamp-2" title="${title.replace(/"/g, '&quot;')}">${escHtml(title)}</div>`;
                 html += `<div class="text-xs text-slate-500 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-px shrink-0">person</span> ${escHtml(authorStr)}</div>`;
                 if (date && date !== '||||') html += `<div class="text-xs text-slate-500 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-px shrink-0">calendar_today</span> ${escHtml(date)}</div>`;
                 if (publisherStr) html += `<div class="text-xs text-slate-500 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-px shrink-0">business</span> ${escHtml(truncate(publisherStr, 60))}</div>`;
-                if (callNumber) html += `<div class="text-xs text-slate-500 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-px shrink-0">qr_code</span> <span class="inline-flex items-center gap-1 bg-primary-50 dark:bg-primary-900/20 text-primary dark:text-blue-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono">${escHtml(callNumber)}</span></div>`;
+                if (callNumber) html += `<div class="text-xs text-slate-500 mb-1 flex items-start gap-1.5"><span class="material-symbols-outlined text-sm mt-px shrink-0">qr_code</span> <span class="inline-flex items-center gap-1 bg-primary-50 dark:bg-primary-900/20 text-[#ffb599] dark:text-blue-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono">${escHtml(callNumber)}</span></div>`;
 
                 if (subjects.length > 0) {
                     html += '<div class="flex flex-wrap gap-1 mt-2">';
                     subjects.slice(0, 3).forEach((s) => {
                         html += `<span class="text-[10px] px-2 py-0.5 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 rounded-full font-medium">${escHtml(truncate(s.split('--')[0], 25))}</span>`;
                     });
-                    if (subjects.length > 3) html += `<span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full font-medium">+${subjects.length - 3}</span>`;
+                    if (subjects.length > 3) html += `<span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-[#9b99b8] rounded-full font-medium">+${subjects.length - 3}</span>`;
                     html += '</div>';
                 }
 
-                html += '<div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">';
-                if (locUrl) html += `<a href="${locUrl}" target="_blank" class="text-slate-400 hover:text-primary text-xs no-underline inline-flex items-center gap-1 transition-colors"><span class="material-symbols-outlined text-sm">open_in_new</span>LOC</a>`;
+                html += '<div class="mt-auto pt-3 border-t border-[#3a3a52] flex justify-between items-center">';
+                if (locUrl) html += `<a href="${locUrl}" target="_blank" class="text-slate-400 hover:text-[#ffb599] text-xs no-underline inline-flex items-center gap-1 transition-colors"><span class="material-symbols-outlined text-sm">open_in_new</span>LOC</a>`;
                 else html += '<span></span>';
                 html += `<button class="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-none px-3.5 py-1.5 rounded-md text-xs font-semibold cursor-pointer inline-flex items-center gap-1 transition-opacity hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed" onclick="importBook(this)" data-title="${escAttr(title)}" data-author="${escAttr(authorStr)}" data-year="${escAttr(date)}" data-call="${escAttr(callNumber)}" data-publisher="${escAttr(publisherStr)}" data-subject="${escAttr(subjects.length > 0 ? subjects[0].split('--')[0] : '')}"><span class="material-symbols-outlined text-sm">download</span> Import</button>`;
                 html += '</div></div></div>';
@@ -226,7 +224,7 @@
                     icon: 'warning',
                     title: 'Book Already Exists',
                     text: `"${title}" is already in your local catalog.`,
-                    confirmButtonColor: '#e94560'
+                    confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc'
                 });
                 return;
             }

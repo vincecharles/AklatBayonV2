@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Management - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -13,29 +12,29 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' }, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, /* colors removed - using astral CSS */, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
 
-  <div class="flex min-h-screen">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
 
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
         <div>
           <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-3xl">school</span>
+            <span class="material-symbols-outlined text-[#ffb599] text-3xl">school</span>
             Student Management
           </h1>
           <p class="text-sm text-slate-500 mt-1">Manage enrolled student records</p>
         </div>
-        <button id="btn-add" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-800 transition-colors">
+        <button id="btn-add" class="inline-flex items-center gap-2 rounded-lg bg-[#ffb599] px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-800 transition-colors">
           <span class="material-symbols-outlined text-[20px]">add_circle</span>
           Add Student
         </button>
@@ -46,7 +45,7 @@
         <div class="relative">
           <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
           <input type="text" id="search-input" placeholder="Search students by name, ID, program, or section..."
-            class="h-12 w-full pl-12 pr-20 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+            class="h-12 w-full pl-12 pr-20 text-sm rounded-xl border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-2 focus:ring-primary/20 shadow-sm"
             autocomplete="off">
           <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
             <select id="filter-status" class="h-7 px-2 text-[11px] rounded-md border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:outline-none">
@@ -58,7 +57,7 @@
           </div>
         </div>
         <!-- Search dropdown -->
-        <div id="search-dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl max-h-80 overflow-y-auto hidden">
+        <div id="search-dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-900 rounded-xl border border-[#3a3a52] shadow-xl max-h-80 overflow-y-auto hidden">
           <div id="search-results" class="py-1"></div>
         </div>
       </div>
@@ -67,9 +66,9 @@
       <div class="flex gap-6">
         <!-- Left: Category Sidebar -->
         <div class="w-60 shrink-0 hidden lg:block">
-          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden sticky top-24">
-            <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Categories</p>
+          <div class="astral-card overflow-hidden sticky top-24">
+            <div class="px-4 py-3 border-b border-[#3a3a52]">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#9b99b8]">Categories</p>
             </div>
             <div class="py-1" id="category-sidebar"></div>
           </div>
@@ -79,20 +78,20 @@
         <div class="flex-1 min-w-0">
           <!-- Mobile category select (hidden on lg) -->
           <div class="lg:hidden mb-3">
-            <select id="mobile-category" class="w-full h-10 px-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"></select>
+            <select id="mobile-category" class="w-full h-10 px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30"></select>
           </div>
 
           <!-- Active filter + result count -->
           <div class="flex items-center justify-between mb-4">
-            <p class="text-xs text-slate-400" id="result-info"></p>
+            <p class="text-xs text-[#9b99b8]" id="result-info"></p>
             <div id="active-filter-badge"></div>
           </div>
 
           <!-- Student Table -->
-          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="astral-card overflow-hidden">
             <table class="w-full text-sm text-left">
-              <thead class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700">
-                <tr class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
+              <thead class="bg-[#1a1a2e] border-b border-[#3a3a52]">
+                <tr class="text-[11px] uppercase tracking-wider text-[#9b99b8] font-semibold">
                   <th class="pl-5 pr-2 py-3.5 w-10">#</th>
                   <th class="px-4 py-3.5">Student</th>
                   <th class="px-4 py-3.5">Program</th>
@@ -101,7 +100,7 @@
                   <th class="pr-5 pl-4 py-3.5 text-right w-28">Actions</th>
                 </tr>
               </thead>
-              <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800/50"></tbody>
+              <tbody id="data-table" class="divide-y divide-[#3a3a52]/50/50"></tbody>
             </table>
           </div>
         </div>
@@ -111,8 +110,8 @@
 
   <!-- Modal -->
   <div class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center" id="modal-form">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-modal-in border border-slate-200 dark:border-slate-700">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-modal-in border border-[#3a3a52]">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#3a3a52]">
         <h3 id="modal-title" class="text-lg font-semibold">Add Student</h3>
         <button class="modal-close text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
           <span class="material-symbols-outlined">close</span>
@@ -123,11 +122,11 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Student ID</label>
-            <input id="f-student-id" placeholder="e.g. 2024-0001" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-student-id" placeholder="e.g. 2024-0001" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Status</label>
-            <select id="f-status" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-status" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
@@ -135,22 +134,22 @@
         </div>
         <div>
           <label class="block text-sm font-medium mb-1.5">Full Name</label>
-          <input id="f-name" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+          <input id="f-name" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Email</label>
-            <input id="f-email" type="email" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-email" type="email" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Contact</label>
-            <input id="f-contact" placeholder="09XXXXXXXXX" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-contact" placeholder="09XXXXXXXXX" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
           </div>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1.5">Grade Level</label>
-            <select id="f-grade" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-grade" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
               <option value="College">College</option>
               <option value="Senior High">Senior High</option>
               <option value="Junior High">Junior High</option>
@@ -158,7 +157,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Program</label>
-            <select id="f-program" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <select id="f-program" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
               <option value="">-- Select --</option>
               <optgroup label="College of Engineering">
                 <option value="BSCE">BSCE - Civil Engineering</option>
@@ -198,12 +197,12 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5">Section</label>
-            <input id="f-section" placeholder="e.g. 3A" class="h-11 w-full px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            <input id="f-section" placeholder="e.g. 3A" class="h-11 w-full px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
           </div>
         </div>
       </div>
-      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-700">
-        <button class="modal-close inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-5 py-2.5 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#3a3a52]">
+        <button class="modal-close inline-flex items-center gap-2 rounded-lg border border-[#3a3a52] px-5 py-2.5 text-sm font-semibold hover:bg-[#ffb599]/5 transition-colors">Cancel</button>
         <button id="btn-save" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
           <span class="material-symbols-outlined text-[20px]">save</span> Save
         </button>
@@ -275,7 +274,7 @@
 
                 // "All" option
                 const allActive = !activeCategory && !activeProgram;
-                let html = `<button class="sidebar-cat w-full flex items-center justify-between px-4 py-3 text-left text-[13px] transition-colors ${allActive ? 'bg-primary/10 text-primary font-bold border-r-2 border-primary' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}" data-cat="" data-prog="">
+                let html = `<button class="sidebar-cat w-full flex items-center justify-between px-4 py-3 text-left text-[13px] transition-colors ${allActive ? 'bg-[#ffb599]/10 text-[#ffb599] font-bold border-r-2 border-[#ffb599]' : 'text-[#9b99b8] hover:bg-[#ffb599]/5'}" data-cat="" data-prog="">
                     <span class="flex items-center gap-2.5"><span class="material-symbols-outlined text-[18px]">apps</span>All Students</span>
                     <span class="text-[11px] opacity-50">${allItems.length}</span>
                 </button>`;
@@ -288,7 +287,7 @@
                     const isCatActive = activeCategory === col.name;
 
                     // College header
-                    html += `<button class="sidebar-cat w-full flex items-center justify-between px-4 py-3 text-left text-[13px] transition-colors ${isCatActive && !activeProgram ? 'bg-primary/10 text-primary font-bold border-r-2 border-primary' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}" data-cat="${col.name}" data-prog="">
+                    html += `<button class="sidebar-cat w-full flex items-center justify-between px-4 py-3 text-left text-[13px] transition-colors ${isCatActive && !activeProgram ? 'bg-[#ffb599]/10 text-[#ffb599] font-bold border-r-2 border-[#ffb599]' : 'text-[#9b99b8] hover:bg-[#ffb599]/5'}" data-cat="${col.name}" data-prog="">
                         <span class="flex items-center gap-2.5"><span class="material-symbols-outlined text-[18px]">${col.icon}</span>${col.name}</span>
                         <span class="text-[11px] opacity-50">${colCount}</span>
                     </button>`;
@@ -300,7 +299,7 @@
                         colProgs.forEach((p) => {
                             const pCount = allItems.filter((i) => i.program === p).length;
                             const isProgActive = activeProgram === p;
-                            html += `<button class="sidebar-cat w-full flex items-center justify-between pl-11 pr-4 py-2 text-left text-[12px] transition-colors ${isProgActive ? 'text-primary font-bold bg-primary/5' : 'text-slate-500 dark:text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800/50'}" data-cat="${col.name}" data-prog="${p}">
+                            html += `<button class="sidebar-cat w-full flex items-center justify-between pl-11 pr-4 py-2 text-left text-[12px] transition-colors ${isProgActive ? 'text-[#ffb599] font-bold bg-primary/5' : 'text-[#9b99b8] hover:text-[#ffb599] hover:bg-[#ffb599]/5'}" data-cat="${col.name}" data-prog="${p}">
                                 <span>${p}</span>
                                 <span class="text-[10px] opacity-50">${pCount}</span>
                             </button>`;
@@ -345,24 +344,24 @@
                 ).slice(0, 8);
 
                 if (!matches.length) {
-                    searchResults.innerHTML = `<div class="px-4 py-6 text-center text-sm text-slate-400"><span class="material-symbols-outlined text-2xl mb-1 block">search_off</span>No results for "${query}"</div>`;
+                    searchResults.innerHTML = `<div class="px-4 py-6 text-center text-sm text-[#9b99b8]"><span class="material-symbols-outlined text-2xl mb-1 block">search_off</span>No results for "${query}"</div>`;
                     searchDropdown.classList.remove('hidden');
                     return;
                 }
 
                 searchResults.innerHTML = matches.map((i) => {
-                    const badge = progBadge[i.program] || 'bg-slate-100 text-slate-500';
+                    const badge = progBadge[i.program] || 'bg-slate-100 text-[#9b99b8]';
                     const dot = i.status === 'active' ? 'bg-emerald-500' : 'bg-red-400';
-                    return `<button class="search-item w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left" data-id="${i.id}">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">${i.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}</div>
+                    return `<button class="search-item w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#ffb599]/5 transition-colors text-left" data-id="${i.id}">
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[#ffb599] font-bold text-xs shrink-0">${i.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}</div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold truncate">${highlight(i.name, query)}</p>
-                            <p class="text-[11px] text-slate-400">${highlight(i.student_id, query)} <span class="inline-block px-1.5 py-0 rounded text-[10px] font-bold ${badge} ml-1">${highlight(i.program || '', query)}</span> ${i.section ? highlight(i.section, query) : ''}</p>
+                            <p class="text-[11px] text-[#9b99b8]">${highlight(i.student_id, query)} <span class="inline-block px-1.5 py-0 rounded text-[10px] font-bold ${badge} ml-1">${highlight(i.program || '', query)}</span> ${i.section ? highlight(i.section, query) : ''}</p>
                         </div>
                         <span class="w-1.5 h-1.5 rounded-full ${dot} shrink-0"></span>
                     </button>`;
                 }).join('');
-                searchResults.innerHTML += `<div class="px-4 py-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">${matches.length} result${matches.length !== 1 ? 's' : ''}</div>`;
+                searchResults.innerHTML += `<div class="px-4 py-2 border-t border-[#3a3a52]/50 text-[11px] text-[#9b99b8]">${matches.length} result${matches.length !== 1 ? 's' : ''}</div>`;
                 searchDropdown.classList.remove('hidden');
 
                 searchResults.querySelectorAll('.search-item').forEach((el) => {
@@ -415,7 +414,7 @@
                 const badgeEl = document.getElementById('active-filter-badge');
                 if (activeCategory || activeProgram) {
                     const label = activeProgram || activeCategory;
-                    badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary/10 text-primary"><span class="material-symbols-outlined text-[14px]">filter_list</span>${label}<button id="clear-filter" class="ml-1 hover:text-red-500"><span class="material-symbols-outlined text-[14px]">close</span></button></span>`;
+                    badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#ffb599]/10 text-[#ffb599]"><span class="material-symbols-outlined text-[14px]">filter_list</span>${label}<button id="clear-filter" class="ml-1 hover:text-red-500"><span class="material-symbols-outlined text-[14px]">close</span></button></span>`;
                     document.getElementById('clear-filter').addEventListener('click', () => { activeCategory = ''; activeProgram = ''; load(); });
                 } else {
                     badgeEl.innerHTML = '';
@@ -429,10 +428,10 @@
 
                 const query = s;
                 tbody.innerHTML = items.map((i, idx) => {
-                    const badge = progBadge[i.program] || 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+                    const badge = progBadge[i.program] || 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-[#9b99b8]';
                     const dot = i.status === 'active' ? 'bg-emerald-500' : 'bg-red-400';
                     return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="pl-5 pr-2 py-3.5 text-xs text-slate-400">${idx + 1}</td>
+                        <td class="pl-5 pr-2 py-3.5 text-xs text-[#9b99b8]">${idx + 1}</td>
                         <td class="px-4 py-3.5">
                             <p class="font-semibold text-[13px]">${highlight(i.name, query)}</p>
                             <p class="text-[11px] text-slate-400 mt-0.5">${highlight(i.student_id, query)}</p>
@@ -442,12 +441,12 @@
                             <span class="text-[11px] text-slate-400 ml-1.5">${i.section || ''}</span>
                         </td>
                         <td class="px-4 py-3.5 text-xs text-slate-500 hidden md:table-cell">${i.contact || '\u2014'}</td>
-                        <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 text-[11px] text-slate-500"><span class="w-1.5 h-1.5 rounded-full ${dot}"></span>${i.status}</span></td>
+                        <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 text-[11px] text-[#9b99b8]"><span class="w-1.5 h-1.5 rounded-full ${dot}"></span>${i.status}</span></td>
                         <td class="pr-5 pl-4 py-3.5 text-right">
                             <div class="inline-flex items-center gap-1">
                                 <a href="/pages/operations/borrower-profile.html?id=${i.id}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-colors" title="View"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
-                                <button class="btn-edit w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                                <button class="btn-del w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                                <button class="btn-edit w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-[#ffb599] hover:bg-primary/10 transition-colors" data-id="${i.id}" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button class="btn-del w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-[#f87171]/10 transition-colors" data-id="${i.id}" data-name="${i.name}" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button>
                             </div>
                         </td>
                     </tr>`;
@@ -503,7 +502,7 @@
                     App.showAlert('success', eid ? 'Student updated.' : 'Student created.');
                     App.closeModal('modal-form'); load();
                 }).catch((err) => {
-                    Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e94560' });
+                    Swal.fire({ icon: 'error', title: 'Not Allowed', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
                 });
             });
 

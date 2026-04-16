@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Settings | Astral Repository</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#ffb599",
+                    "on-tertiary-container": "#311f52",
+                    "background": "#111125",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#2f1500",
+                    "secondary": "#ffb77d",
+                    "tertiary-fixed-dim": "#d2bcfa",
+                    "on-surface": "#e2e0fc",
+                    "on-background": "#e2e0fc",
+                    "surface-bright": "#37374d",
+                    "secondary-fixed": "#ffdcc3",
+                    "surface-container-highest": "#333348",
+                    "on-tertiary-fixed": "#231043",
+                    "on-surface-variant": "#ddc0b6",
+                    "primary": "#ffb599",
+                    "surface": "#111125",
+                    "on-tertiary": "#38265a",
+                    "on-primary-fixed-variant": "#7f2b00",
+                    "outline-variant": "#56423b",
+                    "surface-tint": "#ffb599",
+                    "on-primary-fixed": "#370e00",
+                    "inverse-surface": "#e2e0fc",
+                    "tertiary-container": "#9b87c1",
+                    "primary-fixed": "#ffdbce",
+                    "on-primary": "#5a1c00",
+                    "on-error": "#690005",
+                    "primary-container": "#e17141",
+                    "tertiary-fixed": "#ebddff",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#1a1a2e",
+                    "secondary-fixed-dim": "#ffb77d",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#d2bcfa",
+                    "surface-container-lowest": "#0c0c1f",
+                    "on-secondary": "#4d2600",
+                    "surface-container-high": "#28283d",
+                    "surface-container": "#1e1e32",
+                    "inverse-primary": "#a04113",
+                    "on-secondary-container": "#ffad68",
+                    "surface-dim": "#111125",
+                    "surface-variant": "#333348",
+                    "outline": "#a58b82",
+                    "on-secondary-fixed-variant": "#6e3900",
+                    "secondary-container": "#783f00",
+                    "inverse-on-surface": "#2f2e43",
+                    "on-tertiary-fixed-variant": "#4f3d72",
+                    "on-primary-container": "#4e1800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #111125; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(30, 30, 50, 0.6); backdrop-filter: blur(12px); }
+        .solar-glow { box-shadow: 0 0 20px rgba(225, 113, 65, 0.15); }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl shadow-2xl shadow-orange-900/10 flex justify-between items-center px-8 h-16 w-full max-w-none transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-semibold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-orange-300 to-orange-600 font-sans">Astral Repository</span>
+</div>
+<nav class="hidden md:flex items-center space-x-8 font-sans tracking-tight">
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Dashboard</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Inventory</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Archive</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Analytics</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-slate-900/50 border-none rounded-full py-1.5 pl-10 pr-4 text-sm focus:ring-1 focus:ring-orange-500 w-64 transition-all" placeholder="Search data points..." type="text"/>
+</div>
+<div class="flex gap-4 items-center">
+<button class="material-symbols-outlined text-slate-400 hover:bg-slate-800/50 p-2 rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-orange-400 font-semibold border-b-2 border-orange-500 pb-1 p-2 rounded-full transition-all">settings</button>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full ring-2 ring-orange-500/30 object-cover" data-alt="close up portrait of a young professional man with dark hair smiling slightly in soft moody studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tA4gSCb0ytgWX1kqq9tOxHaRWEETggRVVOQBOZcuTTFfmaa7b-hrfe4_tc5tT8eeqd0YIH9aFqnbCweD5RsUZ8IxSxaDCuvCeP_6-i5zwOHbkfWqOEUPa6sInwub8P7MsWA_OjNxl4F4BmBM2tbGxs2XNYKo-4NmjSeauYl0SZFqUzQOhlYE62_9OYDvrXZ-cu_Ix7AAsizr6JOAiyBIxJOyxKPwQWIiyCw50yGtX5zjrtYDv1annzRR2HaZqD2VAtYcfcV6oy7P"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-900 flex flex-col h-full py-6 z-40 hidden md:flex">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+<div>
+<h2 class="text-lg font-bold text-orange-500">Librarian Terminal</h2>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500">Level 4 Access</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<div class="text-slate-500 text-[10px] font-bold tracking-widest uppercase px-2 mb-2">Main Systems</div>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-all text-sm font-medium tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined group-hover:text-orange-500">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-all text-sm font-medium tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined group-hover:text-orange-500">group</span> User Metrics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-all text-sm font-medium tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined group-hover:text-orange-500">analytics</span> Resource Flow
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-all text-sm font-medium tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined group-hover:text-orange-500">shield</span> Security
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-all text-sm font-medium tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined group-hover:text-orange-500">terminal</span> System Logs
+            </a>
+</nav>
+<div class="px-6 mt-auto space-y-4">
+<button class="w-full bg-slate-800/50 text-orange-500 border border-orange-500/20 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-orange-500 hover:text-on-primary transition-all active:scale-95">Generate Report</button>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-2 py-2 text-slate-500 hover:text-slate-200 text-xs font-medium uppercase transition-all" href="#">
+<span class="material-symbols-outlined text-sm">help</span> Help
+                </a>
+<a class="flex items-center gap-3 px-2 py-2 text-slate-500 hover:text-slate-200 text-xs font-medium uppercase transition-all" href="#">
+<span class="material-symbols-outlined text-sm">logout</span> Logout
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 pb-12 px-6 lg:px-12">
+<div class="max-w-6xl mx-auto">
+<!-- Header Section -->
+<div class="mb-10">
+<h1 class="text-4xl font-extrabold tracking-tighter mb-2 text-on-surface">Configuration <span class="text-orange-400">&amp;</span> Identity</h1>
+<p class="text-on-surface-variant max-w-xl">Manage your astral access points, notification matrix, and personnel credentials.</p>
+</div>
+<!-- Bento Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Profile Section (Primary Card) -->
+<div class="lg:col-span-8 glass-card rounded-3xl p-8 solar-glow relative overflow-hidden group border border-outline-variant/10">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="flex flex-col md:flex-row gap-8 items-start relative z-10">
+<div class="relative group/avatar">
+<img alt="User profile avatar" class="w-32 h-32 rounded-3xl object-cover ring-4 ring-primary/20 group-hover/avatar:ring-primary/40 transition-all" data-alt="close up of a professional young man with dark hair and a confident expression against a dark blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP4vU3Ik_WNZc-9YfZjCCyKR7t5rh_pCLYpLeQ8GWYY0RgUMkpC3ZifUStSdouMwryHgcjFHXVApKOvFQxFbCnh5CubrUld3jdluk1ONhI2_4TK1UVaZU7rJ1ptseqrbMrursFE0P57folGaOZD4yIRw8NFRQ4M4CXIjObNDi8_Z66pQdWmzYa395i5y7iCc7f_Y8hk5hUBXv2yert2qwlfCIR2czpRoU7wfAk7ogxhb-2wYvQXRR1n0Y4QBVipGoDAoNA1NphAUEG"/>
+<button class="absolute -bottom-2 -right-2 bg-primary text-on-primary p-2 rounded-xl shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">upload</span>
+</button>
+</div>
+<div class="flex-1 space-y-6">
+<div>
+<h3 class="text-2xl font-bold tracking-tight text-on-surface">Juan Dela Cruz</h3>
+<div class="flex flex-wrap gap-3 mt-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20">ID: 2024-00129</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-tertiary text-[10px] font-bold uppercase tracking-widest border border-tertiary/20">University Student</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+<div class="bg-surface-container-lowest/50 px-4 py-3 rounded-xl border border-outline-variant/10 text-on-surface-variant text-sm italic">
+                                        juan.delacruz@astral.uni.edu
+                                    </div>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Department</label>
+<select class="w-full bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/10 text-on-surface text-sm focus:ring-1 focus:ring-primary/50 transition-all appearance-none cursor-pointer">
+<option selected="">BSCS - Computer Science</option>
+<option>BSIT - Info Tech</option>
+<option>BSIS - Info Systems</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Account Status Card -->
+<div class="lg:col-span-4 glass-card rounded-3xl p-8 border border-outline-variant/10 flex flex-col justify-between group">
+<div class="space-y-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">token</span>
+<div class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Active</div>
+</div>
+<div>
+<h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Authorization Tier</h4>
+<p class="text-3xl font-extrabold tracking-tighter text-on-surface">Level 1 Access</p>
+<p class="text-xs text-on-surface-variant mt-2">Standard student repository privileges active.</p>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-outline-variant/10">
+<div class="flex justify-between text-xs mb-2">
+<span class="text-slate-500">Repository Usage</span>
+<span class="text-primary font-bold">64%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-orange-400 to-orange-600 w-[64%]"></div>
+</div>
+</div>
+</div>
+<!-- Personal Information -->
+<div class="lg:col-span-6 glass-card rounded-3xl p-8 border border-outline-variant/10 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">contact_page</span>
+<h3 class="text-lg font-bold tracking-tight">Contact Information</h3>
+</div>
+<div class="space-y-4">
+<div class="space-y-1 group">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 group-focus-within:text-primary transition-colors">Contact Number</label>
+<input class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all" type="text" value="+63 917 123 4567"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Timezone</label>
+<select class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all">
+<option>GMT+8 (Manila)</option>
+<option>GMT+0 (London)</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Mailing Address</label>
+<textarea class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all resize-none" rows="2">123 Astral Street, Quezon City, Metro Manila</textarea>
+</div>
+</div>
+</div>
+<!-- Security Settings -->
+<div class="lg:col-span-6 glass-card rounded-3xl p-8 border border-outline-variant/10 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">encrypted</span>
+<h3 class="text-lg font-bold tracking-tight">Security Protocol</h3>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Current Password</label>
+<input class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all" placeholder="••••••••••••" type="password"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">New Password</label>
+<input class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all" placeholder="New Secret" type="password"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Confirm Password</label>
+<input class="w-full bg-surface-container-low/50 px-4 py-3 rounded-xl border border-outline-variant/20 text-on-surface focus:border-primary/50 focus:ring-0 transition-all" placeholder="Repeat Secret" type="password"/>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5">info</span>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">Password must contain at least 12 characters, including one special symbol from the astral spectrum.</p>
+</div>
+</div>
+</div>
+<!-- Notification Preferences -->
+<div class="lg:col-span-12 glass-card rounded-3xl p-8 border border-outline-variant/10 group overflow-hidden relative">
+<div class="absolute right-0 bottom-0 opacity-[0.03] scale-150 rotate-12 pointer-events-none">
+<span class="material-symbols-outlined text-[300px]">hub</span>
+</div>
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-xl font-bold tracking-tight">Notification Matrix</h3>
+<p class="text-sm text-on-surface-variant">Calibrate how the repository communicates with your terminal.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/5 hover:border-primary/20 transition-all group/toggle">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">alternate_email</span>
+</div>
+<div>
+<p class="text-sm font-bold">Email Alerts</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Global Comms</p>
+</div>
+</div>
+<button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-primary transition-colors duration-200 ease-in-out focus:outline-none ring-2 ring-offset-2 ring-offset-background ring-primary/20">
+<span class="translate-x-5 inline-block h-5 w-5 transform rounded-full bg-on-primary shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/5 hover:border-primary/20 transition-all group/toggle">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">event_busy</span>
+</div>
+<div>
+<p class="text-sm font-bold">Overdue Reminders</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Urgent Only</p>
+</div>
+</div>
+<button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-primary transition-colors duration-200 ease-in-out focus:outline-none ring-2 ring-offset-2 ring-offset-background ring-primary/20">
+<span class="translate-x-5 inline-block h-5 w-5 transform rounded-full bg-on-primary shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/5 hover:border-primary/20 transition-all group/toggle">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">library_add</span>
+</div>
+<div>
+<p class="text-sm font-bold">New Book Arrivals</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Discoveries</p>
+</div>
+</div>
+<button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-800 transition-colors duration-200 ease-in-out focus:outline-none">
+<span class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-slate-400 shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Action Bar -->
+<div class="mt-12 flex flex-col md:flex-row gap-4 items-center justify-between p-6 glass-card rounded-3xl border border-primary/20 solar-glow">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center"><span class="material-symbols-outlined text-xs">shield</span></div>
+<div class="w-8 h-8 rounded-full bg-tertiary/20 border-2 border-background flex items-center justify-center"><span class="material-symbols-outlined text-xs">history</span></div>
+</div>
+<p class="text-xs text-on-surface-variant font-medium">Profile last synchronized: 2 minutes ago</p>
+</div>
+<div class="flex gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-8 py-3 rounded-full text-sm font-bold text-on-surface hover:bg-surface-container-highest transition-all">Cancel</button>
+<button class="flex-1 md:flex-none px-10 py-3 rounded-full text-sm font-bold bg-gradient-to-r from-orange-400 to-orange-600 text-on-primary shadow-xl shadow-orange-900/30 hover:scale-105 active:scale-95 transition-all">Save Changes</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Mobile NavBar (Hidden on desktop) -->
+<nav class="md:hidden fixed bottom-6 left-6 right-6 h-16 glass-card rounded-2xl flex items-center justify-around px-4 shadow-2xl z-50 border border-outline-variant/10">
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[8px] uppercase tracking-tighter">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="text-[8px] uppercase tracking-tighter">Books</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[8px] uppercase tracking-tighter font-bold">Profile</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">hub</span>
+<span class="text-[8px] uppercase tracking-tighter">Network</span>
+</button>
+</nav>
+</body></html>

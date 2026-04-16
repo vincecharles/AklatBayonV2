@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AklatBayon | Librarian Advanced Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffdcc3",
+                        "tertiary-fixed-dim": "#d2bcfa",
+                        "surface-container": "#1e1e32",
+                        "on-surface": "#e2e0fc",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1a1a2e",
+                        "primary-fixed": "#ffdbce",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "on-primary-fixed": "#370e00",
+                        "on-secondary": "#4d2600",
+                        "primary-container": "#e17141",
+                        "tertiary-fixed": "#ebddff",
+                        "on-secondary-fixed": "#2f1500",
+                        "on-secondary-container": "#ffad68",
+                        "on-primary-container": "#4e1800",
+                        "tertiary": "#d2bcfa",
+                        "surface-container-highest": "#333348",
+                        "surface": "#111125",
+                        "tertiary-container": "#9b87c1",
+                        "inverse-primary": "#a04113",
+                        "secondary": "#ffb77d",
+                        "on-tertiary": "#38265a",
+                        "primary": "#ffb599",
+                        "inverse-on-surface": "#2f2e43",
+                        "on-primary": "#5a1c00",
+                        "secondary-container": "#783f00",
+                        "surface-variant": "#333348",
+                        "on-tertiary-fixed-variant": "#4f3d72",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "inverse-surface": "#e2e0fc",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface-dim": "#111125",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#37374d",
+                        "on-background": "#e2e0fc",
+                        "background": "#111125",
+                        "on-tertiary-container": "#311f52",
+                        "surface-tint": "#ffb599",
+                        "on-surface-variant": "#ddc0b6",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#a58b82",
+                        "surface-container-high": "#28283d",
+                        "primary-fixed-dim": "#ffb599",
+                        "outline-variant": "#56423b",
+                        "on-tertiary-fixed": "#231043"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-line {
+            filter: drop-shadow(0 0 8px rgba(225, 113, 65, 0.4));
+        }
+        .glass-card {
+            backdrop-filter: blur(12px);
+            background: rgba(30, 30, 50, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl shadow-2xl shadow-indigo-950/20 flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-semibold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-orange-600 font-['Inter']">AklatBayon</span>
+<div class="hidden md:flex items-center gap-1 bg-slate-900/50 rounded-full px-3 py-1 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface-variant placeholder:text-slate-500 w-64" placeholder="Search system logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-800/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-800/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-primary/20">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional librarian with a friendly expression in a modern workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpObahUhuCB5FAXZrfsjupWFssJd8YBg2fAso6b1acigtq0oZqugqDNuyefxtmVum20uOC3W58Wz6ZjjnRexIMrS1qIMUF70HDb3QS4nb-IY0BEI7UGACPXEpyuts99KgqK6fGcsHmNeDuQhe2EYmme7L1szC5nU5qDSZmhLwtdcXC6Tw2aHp6rocSS78F0pMfJROdnKQnP5kMtJX7y3Hf3rBKJ5GsgpmHjjknZAbWZEc5w8qSr7RirTfEuqEy7UbLjh5aV30ldOr5"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-slate-900 flex flex-col h-full pt-20 pb-6 px-4 hidden md:flex">
+<div class="mb-8 px-2">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center shadow-lg shadow-orange-950/40">
+<span class="material-symbols-outlined text-on-primary">local_library</span>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface uppercase tracking-wider">The Repository</h3>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest font-medium">System Administrator</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out text-slate-500 hover:bg-slate-800 hover:text-slate-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out bg-slate-800/80 text-orange-400 shadow-[inset_4px_0_0_0_#e17141]" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out text-slate-500 hover:bg-slate-800 hover:text-slate-200" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Repository</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out text-slate-500 hover:bg-slate-800 hover:text-slate-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out text-slate-500 hover:bg-slate-800 hover:text-slate-200" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 border-t border-slate-800 pt-4">
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-slate-800 text-orange-400 text-xs font-bold uppercase tracking-widest hover:bg-slate-700 transition-colors mb-4">
+<span class="material-symbols-outlined text-sm">search</span>
+                Advanced Search
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="text-sm uppercase tracking-wide">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm uppercase tracking-wide">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-20 px-6 pb-12 min-h-screen">
+<!-- Header Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface mb-1">Advanced Analytics</h1>
+<p class="text-slate-400 font-medium">Deep insights into AklatBayon's circulation and user engagement.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex bg-surface-container rounded-full p-1 border border-outline-variant/10">
+<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-on-primary shadow-lg shadow-primary/20">Last 30 Days</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold text-slate-400 hover:text-on-surface transition-colors">Quarterly</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold text-slate-400 hover:text-on-surface transition-colors">Yearly</button>
+</div>
+<div class="flex gap-2">
+<button class="p-2.5 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors border border-outline-variant/5">
+<span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+</button>
+<button class="p-2.5 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors border border-outline-variant/5">
+<span class="material-symbols-outlined text-xl">csv</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- High Level Stats Row -->
+<div class="md:col-span-3 glass-card rounded-3xl p-6 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Total Circulation</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">sync_alt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-black text-on-surface">12,842</span>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-green-400 text-sm">trending_up</span>
+<span class="text-xs font-bold text-green-400">+12.5%</span>
+<span class="text-xs text-slate-500 ml-1">vs last month</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-3 glass-card rounded-3xl p-6 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Active Borrowers</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-black text-on-surface">3,104</span>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-green-400 text-sm">trending_up</span>
+<span class="text-xs font-bold text-green-400">+4.2%</span>
+<span class="text-xs text-slate-500 ml-1">vs last month</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-3 glass-card rounded-3xl p-6 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Collection Growth</span>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">library_add</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-black text-on-surface">842</span>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">horizontal_rule</span>
+<span class="text-xs font-bold text-slate-400">Stable</span>
+<span class="text-xs text-slate-500 ml-1">new acquisitions</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-3 glass-card rounded-3xl p-6 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Overdue Rate</span>
+<span class="material-symbols-outlined text-red-400" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-black text-on-surface">1.8%</span>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-green-400 text-sm">trending_down</span>
+<span class="text-xs font-bold text-green-400">-0.5%</span>
+<span class="text-xs text-slate-500 ml-1">excellent</span>
+</div>
+</div>
+</div>
+<!-- Large Chart Area: Monthly Circulation Trends -->
+<div class="md:col-span-8 glass-card rounded-3xl p-8 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-xl font-bold text-on-surface">Monthly Circulation Trends</h2>
+<p class="text-sm text-slate-500">Comparing total borrowings vs. returns</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_#ffb599]"></div>
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Borrowing</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_#d2bcfa]"></div>
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Returning</span>
+</div>
+</div>
+</div>
+<!-- Mock Chart Visual -->
+<div class="h-64 flex items-end justify-between gap-4 px-2 relative">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="w-full border-t border-slate-800/50"></div>
+<div class="w-full border-t border-slate-800/50"></div>
+<div class="w-full border-t border-slate-800/50"></div>
+<div class="w-full border-t border-slate-800/50"></div>
+</div>
+<!-- Chart Lines/Paths Sim (SVG Overlay) -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none">
+<!-- Borrowing Line -->
+<path class="glow-line" d="M 0 180 Q 150 140, 300 160 T 600 80 T 900 100" fill="none" stroke="#ffb599" stroke-linecap="round" stroke-width="3"></path>
+<!-- Returning Line -->
+<path class="glow-line" d="M 0 200 Q 150 180, 300 190 T 600 120 T 900 130" fill="none" opacity="0.6" stroke="#d2bcfa" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<!-- Data Tooltip Sample -->
+<div class="absolute left-[65%] top-[15%] glass-card border border-primary/20 p-3 rounded-xl z-10 shadow-2xl">
+<p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Oct 15 - Oct 22</p>
+<div class="flex items-center justify-between gap-4">
+<span class="text-xs text-on-surface">Borrow: <b class="text-primary">2,410</b></span>
+<span class="text-xs text-on-surface">Return: <b class="text-tertiary">1,980</b></span>
+</div>
+</div>
+</div>
+<div class="flex justify-between mt-6 px-2">
+<span class="text-[10px] font-bold text-slate-600 uppercase">Week 1</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">Week 2</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">Week 3</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">Week 4</span>
+</div>
+</div>
+<!-- Popular Categories Donut -->
+<div class="md:col-span-4 glass-card rounded-3xl p-8 border border-outline-variant/5">
+<h2 class="text-xl font-bold text-on-surface mb-1">Top Categories</h2>
+<p class="text-sm text-slate-500 mb-8">Highest engagement by genre</p>
+<div class="relative flex justify-center items-center h-48 mb-8">
+<!-- Donut SVG -->
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="50%" cy="50%" fill="transparent" r="70" stroke="#1e1e32" stroke-width="20"></circle>
+<circle class="glow-line" cx="50%" cy="50%" fill="transparent" r="70" stroke="#ffb599" stroke-dasharray="440" stroke-dashoffset="120" stroke-linecap="round" stroke-width="20"></circle>
+<circle class="glow-line" cx="50%" cy="50%" fill="transparent" r="70" stroke="#d2bcfa" stroke-dasharray="440" stroke-dashoffset="350" stroke-linecap="round" stroke-width="20"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-black text-on-surface">1.2k</span>
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Books</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-sm font-medium text-slate-300">Sci-Fi &amp; Fantasy</span>
+</div>
+<span class="text-sm font-bold text-on-surface">42%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<span class="text-sm font-medium text-slate-300">Academic / Journals</span>
+</div>
+<span class="text-sm font-bold text-on-surface">28%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-sm font-medium text-slate-300">Literature</span>
+</div>
+<span class="text-sm font-bold text-on-surface">18%</span>
+</div>
+</div>
+</div>
+<!-- Peak Activity Hours -->
+<div class="md:col-span-7 glass-card rounded-3xl p-8 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-xl font-bold text-on-surface">Peak Activity Hours</h2>
+<p class="text-sm text-slate-500">Kiosk usage intensity by hour</p>
+</div>
+<span class="px-3 py-1 bg-surface-container-highest/50 rounded-lg text-[10px] font-bold text-tertiary uppercase tracking-widest">Live Feed</span>
+</div>
+<div class="flex items-end justify-between h-48 gap-1">
+<!-- Hourly Bars -->
+<div class="flex-1 bg-primary/20 rounded-t-lg h-[40%] transition-all hover:bg-primary/40 relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-slate-800 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">08:00</div>
+</div>
+<div class="flex-1 bg-primary/20 rounded-t-lg h-[35%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/40 rounded-t-lg h-[65%] transition-all hover:bg-primary/60"></div>
+<div class="flex-1 bg-primary/60 rounded-t-lg h-[85%] transition-all hover:bg-primary shadow-[0_0_15px_#ffb599]"></div>
+<div class="flex-1 bg-primary/40 rounded-t-lg h-[60%] transition-all hover:bg-primary/60"></div>
+<div class="flex-1 bg-primary/20 rounded-t-lg h-[45%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/30 rounded-t-lg h-[55%] transition-all hover:bg-primary/50"></div>
+<div class="flex-1 bg-primary/70 rounded-t-lg h-[95%] transition-all hover:bg-primary shadow-[0_0_15px_#ffb599]"></div>
+<div class="flex-1 bg-primary/50 rounded-t-lg h-[75%] transition-all hover:bg-primary/70"></div>
+<div class="flex-1 bg-primary/20 rounded-t-lg h-[30%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[15%] transition-all hover:bg-primary/30"></div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[10%] transition-all hover:bg-primary/30"></div>
+</div>
+<div class="flex justify-between mt-4">
+<span class="text-[10px] font-bold text-slate-600 uppercase">08 AM</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">12 PM</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">04 PM</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">08 PM</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase">12 AM</span>
+</div>
+</div>
+<!-- Top Borrowers Leaderboard -->
+<div class="md:col-span-5 glass-card rounded-3xl p-8 border border-outline-variant/5">
+<h2 class="text-xl font-bold text-on-surface mb-1">Elite Readers</h2>
+<p class="text-sm text-slate-500 mb-6">Users with highest monthly circulation</p>
+<div class="space-y-4">
+<!-- Rank 1 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-low/50 hover:bg-surface-container/50 transition-colors">
+<div class="relative">
+<img class="w-10 h-10 rounded-xl object-cover grayscale hover:grayscale-0 transition-all" data-alt="close-up portrait of a young man with glasses smiling, neutral background, studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Bp-cMx7uVub-xeZ56fhv9UZyKULCRh5Of9K90PcU0ORPOD3L_rOO0-LMcBvPQjFWA3S6Wzsh0Cilx4HXvlbD_gncNYeEiMiSFn1GjT2dPSlaiJPPQKdHaCx0B1RKK5nU5HhUYAgMVe_HoYudZpn-EDw6V6pkZ-udFe5rqabYV6R0JPrX02QSB4AEtvmJBNH0XFzvBUnAmCSBRwvTnycQdeogVBb2B_3uspx3g_qzpo9lqkYAeUWHIaAr8sj4ntu0p43ZWSOIWVWF"/>
+<div class="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center border-2 border-slate-900 shadow-lg">
+<span class="text-[10px] font-black text-white">1</span>
+</div>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-on-surface">Julian Dela Cruz</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Member Since 2022</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-primary">48</span>
+<p class="text-[10px] text-slate-500 uppercase">Books</p>
+</div>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-low/50 hover:bg-surface-container/50 transition-colors">
+<div class="relative">
+<img class="w-10 h-10 rounded-xl object-cover grayscale hover:grayscale-0 transition-all" data-alt="portrait of a confident professional woman smiling against a soft blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4GRCNDtJSMToz9png_Jn5xgOz2hm0WEBfjICS1iUPE2JrKkSIeakMOZK_IgtxAkztKGAfrCc0ngsIKx-Ll8Tq7j5uO4e0ZjJD5ZKGosoNK0MaoMfEyO3bCSHc1X0AmBa8ks0GcF3E2C1FYa0AitANnRs29Pb5MqZ0MXLO4TDOk1PL-Ljf8bQ1z9krNJI_Un8KH2tsG2jXLU-xVHGp_wh34yyxoGZ6pRS75BiH2UMWg76xyqtQ6l29JFc2oF6w85XP0Wa9H3p3_ED3"/>
+<div class="absolute -top-2 -left-2 w-5 h-5 bg-slate-400 rounded-full flex items-center justify-center border-2 border-slate-900 shadow-lg">
+<span class="text-[10px] font-black text-white">2</span>
+</div>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-on-surface">Maria Santos</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Academic Researcher</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-tertiary">35</span>
+<p class="text-[10px] text-slate-500 uppercase">Books</p>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-low/50 hover:bg-surface-container/50 transition-colors">
+<div class="relative">
+<img class="w-10 h-10 rounded-xl object-cover grayscale hover:grayscale-0 transition-all" data-alt="headshot of a man with a beard looking forward, cinematic low key lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuSsuxgHCdx6TPjy39ClBCpHVM12eg1ni2RiCpY5jA0XN47xybys2CVlE9hzWc6gTJ1TrL0P-aoUrSulMcOLEcWobfU_p1vK7jK0VFCwuvLRrGgtWZfwgbDcIG7eF8qiRyE9JJ_U1rKUIu8jNKnAxTOkcC_krDv8nUNIksS4MkJClc0VzNjhl39CF49dI-6qCaDVrEPZdQJQUFBy6oa7zmxbEbsglxqdUjWqE9ijyXISN8xIyYW0UgK-Jl4VU3SIbSBHEMy6VFgM3Y"/>
+<div class="absolute -top-2 -left-2 w-5 h-5 bg-orange-800 rounded-full flex items-center justify-center border-2 border-slate-900 shadow-lg">
+<span class="text-[10px] font-black text-white">3</span>
+</div>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-on-surface">Ricardo Reyes</h4>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Literature Enthusiast</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-secondary">29</span>
+<p class="text-[10px] text-slate-500 uppercase">Books</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-outline-variant/20 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:bg-slate-800 transition-colors">View Full Leaderboard</button>
+</div>
+</div>
+<!-- Floating Action Button (Suppressed on analytics detail, but contextually relevant for quick search) -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-primary-container flex items-center justify-center shadow-[0_8px_32px_rgba(225,113,65,0.4)] hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-on-primary text-3xl">add</span>
+</button>
+</div>
+<!-- Floating Status Bar -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-8 py-3 glass-card rounded-full border border-white/5 shadow-2xl flex items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-[10px] font-bold text-on-surface uppercase tracking-widest">System Online</span>
+</div>
+<div class="h-4 w-px bg-slate-800"></div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-sm">dns</span>
+<span class="text-[10px] font-medium text-slate-400 uppercase">Server-01</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-sm">wifi</span>
+<span class="text-[10px] font-medium text-slate-400 uppercase">98 ms</span>
+</div>
+</div>
+<div class="h-4 w-px bg-slate-800"></div>
+<span class="text-[10px] font-bold text-slate-500 uppercase">v2.4.0-ASTRA</span>
+</div>
+</main>
+</body></html>

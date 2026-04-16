@@ -1,96 +1,581 @@
 /* ============================================================
-   AklatBayon - Custom CSS (animations & keyframes only)
-   Everything else is handled by Tailwind utility classes.
+   AklatBayon — Astral Dark Theme Design System
    ============================================================ */
 
-/* Modal entrance animation */
+/* ── Color Tokens ────────────────────────────────────────────── */
+:root {
+    --astral-bg:               #111125;
+    --astral-surface:          #1e1e32;
+    --astral-surface-low:      #1a1a2e;
+    --astral-surface-high:     #28283d;
+    --astral-surface-highest:  #333348;
+    --astral-surface-lowest:   #0c0c1f;
+    --astral-primary:          #ffb599;
+    --astral-primary-container:#e17141;
+    --astral-on-surface:       #e2e0fc;
+    --astral-on-surface-dim:   #9b99b8;
+    --astral-outline:          #56423b;
+    --astral-outline-dim:      #3a3a52;
+    --astral-success:          #4ade80;
+    --astral-warning:          #fbbf24;
+    --astral-error:            #f87171;
+    --astral-info:             #60a5fa;
+    --astral-secondary:        #ffb77d;
+    --astral-tertiary:         #d2bcfa;
+    --astral-sidebar-w:        230px;
+    --astral-header-h:         60px;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+html { background: var(--astral-bg); }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--astral-bg);
+    color: var(--astral-on-surface);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Force dark mode for tailwind classes */
+html { color-scheme: dark; }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--astral-surface-lowest); }
+::-webkit-scrollbar-thumb { background: var(--astral-outline-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--astral-primary); }
+
+/* ── Layout Shell ───────────────────────────────────────────── */
+.astral-layout {
+    display: flex;
+    min-height: 100vh;
+}
+.astral-sidebar {
+    position: fixed;
+    top: var(--astral-header-h);
+    left: 0;
+    width: var(--astral-sidebar-w);
+    height: calc(100vh - var(--astral-header-h));
+    background: var(--astral-surface-low);
+    border-right: 1px solid var(--astral-outline-dim);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 30;
+}
+.astral-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--astral-header-h);
+    background: rgba(17,17,37,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--astral-outline-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 40;
+}
+.astral-main {
+    margin-left: var(--astral-sidebar-w);
+    margin-top: var(--astral-header-h);
+    flex: 1;
+    padding: 28px 32px;
+    min-height: calc(100vh - var(--astral-header-h));
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.astral-card {
+    background: var(--astral-surface);
+    border: 1px solid var(--astral-outline-dim);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.astral-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--astral-outline-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.astral-card-body {
+    padding: 20px;
+}
+
+/* Stat cards */
+.astral-stat-card {
+    background: var(--astral-surface);
+    border: 1px solid var(--astral-outline-dim);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.astral-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.astral-stat-card .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+.astral-stat-card .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--astral-on-surface-dim);
+    margin-bottom: 4px;
+}
+.astral-stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--astral-on-surface);
+    line-height: 1.2;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.astral-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.astral-btn-primary {
+    background: linear-gradient(135deg, var(--astral-primary), var(--astral-primary-container));
+    color: #370e00;
+}
+.astral-btn-primary:hover {
+    box-shadow: 0 4px 20px rgba(255,181,153,0.3);
+    transform: translateY(-1px);
+}
+.astral-btn-outline {
+    background: transparent;
+    border: 1px solid var(--astral-outline-dim);
+    color: var(--astral-on-surface);
+}
+.astral-btn-outline:hover {
+    border-color: var(--astral-primary);
+    color: var(--astral-primary);
+    background: rgba(255,181,153,0.05);
+}
+.astral-btn-danger {
+    background: rgba(248,113,113,0.15);
+    border: 1px solid rgba(248,113,113,0.3);
+    color: var(--astral-error);
+}
+.astral-btn-danger:hover {
+    background: rgba(248,113,113,0.25);
+}
+
+/* ── Inputs ─────────────────────────────────────────────────── */
+.astral-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--astral-surface);
+    border: 1px solid var(--astral-outline-dim);
+    border-radius: 12px;
+    color: var(--astral-on-surface);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.astral-input::placeholder { color: var(--astral-on-surface-dim); }
+.astral-input:focus {
+    outline: none;
+    border-color: var(--astral-primary);
+    box-shadow: 0 0 0 3px rgba(255,181,153,0.15);
+}
+.astral-input-icon {
+    position: relative;
+}
+.astral-input-icon .material-symbols-outlined {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--astral-on-surface-dim);
+    font-size: 20px;
+}
+.astral-input-icon input { padding-left: 44px; }
+
+.astral-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--astral-surface);
+    border: 1px solid var(--astral-outline-dim);
+    border-radius: 12px;
+    color: var(--astral-on-surface);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239b99b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+.astral-select:focus {
+    outline: none;
+    border-color: var(--astral-primary);
+    box-shadow: 0 0 0 3px rgba(255,181,153,0.15);
+}
+.astral-select option {
+    background: var(--astral-surface);
+    color: var(--astral-on-surface);
+}
+
+.astral-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--astral-on-surface-dim);
+    margin-bottom: 8px;
+}
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.astral-table {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.astral-table thead th {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--astral-on-surface-dim);
+    border-bottom: 1px solid var(--astral-outline-dim);
+    background: var(--astral-surface-low);
+}
+.astral-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(58,58,82,0.4);
+    color: var(--astral-on-surface);
+}
+.astral-table tbody tr:hover {
+    background: rgba(255,181,153,0.03);
+}
+.astral-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.astral-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.astral-badge-active {
+    background: rgba(74,222,128,0.15);
+    color: var(--astral-success);
+    border: 1px solid rgba(74,222,128,0.3);
+}
+.astral-badge-overdue,.astral-badge-suspended {
+    background: rgba(248,113,113,0.15);
+    color: var(--astral-error);
+    border: 1px solid rgba(248,113,113,0.3);
+}
+.astral-badge-borrowed {
+    background: rgba(96,165,250,0.15);
+    color: var(--astral-info);
+    border: 1px solid rgba(96,165,250,0.3);
+}
+.astral-badge-returned,.astral-badge-available {
+    background: rgba(74,222,128,0.15);
+    color: var(--astral-success);
+    border: 1px solid rgba(74,222,128,0.3);
+}
+.astral-badge-reserved,.astral-badge-pending {
+    background: rgba(251,191,36,0.15);
+    color: var(--astral-warning);
+    border: 1px solid rgba(251,191,36,0.3);
+}
+.astral-badge-primary {
+    background: rgba(255,181,153,0.15);
+    color: var(--astral-primary);
+    border: 1px solid rgba(255,181,153,0.3);
+}
+
+/* ── Status Bar ─────────────────────────────────────────────── */
+.astral-status-bar {
+    position: fixed;
+    bottom: 0; left: var(--astral-sidebar-w); right: 0;
+    height: 36px;
+    background: var(--astral-surface-low);
+    border-top: 1px solid var(--astral-outline-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--astral-on-surface-dim);
+    z-index: 30;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.astral-status-bar .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--astral-success);
+    animation: pulse-dot 2s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--astral-success);
+}
+
+/* ── Avatar ─────────────────────────────────────────────────── */
+.astral-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.astral-avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+.astral-avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+
+/* ── Pagination ─────────────────────────────────────────────── */
+.astral-pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.astral-pagination button, .astral-pagination a {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--astral-on-surface-dim);
+    background: transparent;
+    border: 1px solid var(--astral-outline-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.astral-pagination button:hover, .astral-pagination a:hover {
+    border-color: var(--astral-primary);
+    color: var(--astral-primary);
+}
+.astral-pagination .active {
+    background: var(--astral-primary);
+    color: #370e00;
+    border-color: var(--astral-primary);
+}
+
+/* ── Modal ──────────────────────────────────────────────────── */
+.modal-overlay { display: none; }
+.modal-overlay.active { display: flex; }
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+.astral-modal {
+    background: var(--astral-surface);
+    border: 1px solid var(--astral-outline-dim);
+    border-radius: 20px;
+    max-width: 560px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.25s ease;
+}
+.astral-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--astral-outline-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.astral-modal-body { padding: 24px; }
+.astral-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--astral-outline-dim);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ── Tab pane visibility ────────────────────────────────────── */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Toggle switch ──────────────────────────────────────────── */
+.toggle-switch { position: relative; width: 48px; height: 26px; display: inline-block; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background-color: var(--astral-outline-dim);
+    transition: 0.3s; border-radius: 26px;
+}
+.toggle-slider:before {
+    content: ""; position: absolute;
+    height: 20px; width: 20px;
+    left: 3px; bottom: 3px;
+    background: #fff; transition: 0.3s; border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle-switch input:checked + .toggle-slider { background-color: var(--astral-primary); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+/* ── Chip/Filter Tabs ───────────────────────────────────────── */
+.astral-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--astral-outline-dim);
+    color: var(--astral-on-surface-dim);
+    background: transparent;
+}
+.astral-chip:hover { border-color: var(--astral-primary); color: var(--astral-primary); }
+.astral-chip.active {
+    background: var(--astral-primary);
+    color: #370e00;
+    border-color: var(--astral-primary);
+}
+
+/* ── Section Label ──────────────────────────────────────────── */
+.astral-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--astral-on-surface-dim);
+    padding: 16px 0 8px 0;
+}
+
+/* ── Page Title ─────────────────────────────────────────────── */
+.astral-page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--astral-on-surface);
+    line-height: 1.2;
+}
+.astral-page-subtitle {
+    font-size: 14px;
+    color: var(--astral-on-surface-dim);
+    margin-top: 4px;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.95) translateY(10px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-.animate-modal-in { animation: modalIn 0.25s ease; }
-
-/* Modal visibility toggle (used by App.openModal / closeModal) */
-.modal-overlay { display: none; }
-.modal-overlay.active { display: flex; }
-
-/* Tab pane visibility */
-.tab-pane { display: none; }
-.tab-pane.active { display: block; }
-
-/* Scan ring pulse (index.html RFID kiosk) */
-@keyframes scan-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
-    50%      { box-shadow: 0 0 0 20px rgba(233,69,96,0); }
-}
-.animate-scan-pulse { animation: scan-pulse 2s infinite; }
-
-/* Scan line sweep (index.html) */
-@keyframes scan-sweep {
-    0%   { top: 0; opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-}
-.animate-scan-sweep { animation: scan-sweep 2s linear infinite; }
-
-/* Glow pulse (index.html logo) */
-@keyframes glow-pulse {
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(233,69,96,0.3)); }
-    50%      { filter: drop-shadow(0 0 20px rgba(233,69,96,0.6)); }
-}
-.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
-
-/* Float up (particles) */
-@keyframes float-up {
-    0%   { transform: translateY(0) scale(1); opacity: 0.6; }
-    100% { transform: translateY(-100vh) scale(0); opacity: 0; }
-}
-.animate-float-up { animation: float-up linear forwards; }
-
-/* Progress bar fill (welcome.html) */
-@keyframes fill-bar {
-    from { width: 0; }
-    to   { width: 100%; }
-}
-.animate-fill-bar { animation: fill-bar 3s ease-in-out forwards; }
-
-/* Spinner rotation */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-.animate-spin-custom { animation: spin 0.8s linear infinite; }
-
-/* Fade in */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in { animation: fadeIn 0.3s ease; }
 
-/* Toggle switch component */
-.toggle-switch { position: relative; width: 48px; height: 26px; display: inline-block; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background-color: #cbd5e1;
-    transition: 0.3s;
-    border-radius: 26px;
+@keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.4; }
 }
-.toggle-slider:before {
-    content: "";
-    position: absolute;
-    height: 20px; width: 20px;
-    left: 3px; bottom: 3px;
-    background: #fff;
-    transition: 0.3s;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.toggle-switch input:checked + .toggle-slider { background-color: #22c55e; }
-.toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
 
-/* Dark mode toggle slider */
-.dark .toggle-slider { background-color: #475569; }
+@keyframes rfid-breathe {
+    0%,100% { transform: scale(1); box-shadow: 0 0 20px rgba(224,112,64,0.2); }
+    50%     { transform: scale(1.05); box-shadow: 0 0 40px rgba(224,112,64,0.4); }
+}
+
+@keyframes scanning-pulse {
+    0%,100% { transform: scale(1.02); box-shadow: 0 0 30px rgba(255,181,153,0.4); }
+    50%     { transform: scale(1.08); box-shadow: 0 0 60px rgba(255,181,153,0.6); }
+}
+
+@keyframes scan-line {
+    0%   { top: 0%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes scan-pulse {
+    0%   { width: 200px; height: 200px; opacity: 0.8; }
+    100% { width: 320px; height: 320px; opacity: 0; }
+}
+
+@keyframes scan-sweep {
+    0%   { top: 15px; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 200px; opacity: 0; }
+}
+
+@keyframes glow-pulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+    50%     { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+}
+
+@keyframes float-up {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+.particle {
+    position: absolute; border-radius: 50%;
+    background: rgba(224,230,240,0.15);
+    animation: float-up linear infinite;
+}
+
+@keyframes slide-up {
+    from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+    to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@keyframes fade-out {
+    to { opacity: 0; pointer-events: none; }
+}
+.toast-anim { animation: slide-up 0.5s ease-out, fade-out 0.5s ease-in 4.5s forwards; }
+
+@keyframes fill-bar {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+.animate-fill-bar { animation: fill-bar 3s ease-in-out forwards; }
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.animate-spin-custom { animation: spin 0.8s linear infinite; }
+
+.rfid-idle { animation: rfid-breathe 4s ease-in-out infinite; }
+.rfid-scanning { animation: scanning-pulse 0.8s ease-in-out infinite !important; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .astral-sidebar { display: none; }
+    .astral-main { margin-left: 0; }
+    .astral-status-bar { left: 0; }
+}

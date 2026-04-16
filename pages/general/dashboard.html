@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -14,153 +13,179 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
-            accent: '#e94560',
-            'bg-light': '#f6f6f8',
-            'bg-dark': '#131022'
-          }
-        }
-      }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-<div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<div class="astral-layout">
   <header id="top-header"></header>
   <nav id="sidebar-nav"></nav>
-  <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+  <main class="astral-main pb-12">
     <div id="alert-container"></div>
 
     <!-- Page Header -->
-    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
       <div>
-        <h1 class="text-2xl font-black tracking-tight">Dashboard</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="welcome-text"></p>
+        <h1 class="astral-page-title flex items-center gap-3">
+          <span class="material-symbols-outlined text-[#ffb599]" style="font-size:28px">dashboard</span> Dashboard
+        </h1>
+        <p class="astral-page-subtitle" id="welcome-text"></p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="astral-input-icon">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" placeholder="Search archives..." class="astral-input text-sm" style="width:280px;padding-left:44px">
+        </div>
       </div>
     </div>
 
     <!-- Stat Cards Row 1 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-primary">
-            <span class="material-symbols-outlined text-xl">menu_book</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Books</p>
+      <div class="astral-stat-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="stat-icon bg-[#ffb599]/15 text-[#ffb599]"><span class="material-symbols-outlined">auto_stories</span></div>
+          <span class="text-xs text-emerald-400 font-semibold">+2.4% ↗</span>
         </div>
-        <p class="text-2xl font-bold" id="stat-books">0</p>
+        <p class="stat-label">Total Volumes Indexed</p>
+        <p class="stat-value" id="stat-books">0</p>
       </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-emerald-600">
-            <span class="material-symbols-outlined text-xl">school</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Active Students</p>
+      <div class="astral-stat-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="stat-icon bg-[#e17141]/15 text-[#e17141]"><span class="material-symbols-outlined">folder_open</span></div>
+          <span class="text-xs text-[#9b99b8]">Stable</span>
         </div>
-        <p class="text-2xl font-bold" id="stat-students">0</p>
+        <p class="stat-label">Active Loans</p>
+        <p class="stat-value" id="stat-issued">0</p>
       </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-amber-500">
-            <span class="material-symbols-outlined text-xl">volunteer_activism</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Books Issued</p>
+      <div class="astral-stat-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="stat-icon bg-[#f87171]/15 text-[#f87171]"><span class="material-symbols-outlined">warning</span></div>
+          <span class="text-xs text-amber-400 font-semibold">High ⚠</span>
         </div>
-        <p class="text-2xl font-bold" id="stat-issued">0</p>
+        <p class="stat-label">Overdue Items</p>
+        <p class="stat-value text-[#f87171]" id="stat-overdue">0</p>
       </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-red-600">
-            <span class="material-symbols-outlined text-xl">warning</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Overdue Books</p>
+      <div class="astral-stat-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="stat-icon bg-[#d2bcfa]/15 text-[#d2bcfa]"><span class="material-symbols-outlined">bookmark</span></div>
+          <span class="text-xs text-emerald-400 font-semibold" id="stat-new-res">+8 new</span>
         </div>
-        <p class="text-2xl font-bold" id="stat-overdue">0</p>
+        <p class="stat-label">Pending Reservations</p>
+        <p class="stat-value" id="stat-reservations">0</p>
       </div>
     </div>
 
-    <!-- Stat Cards Row 2 (3 cards: Due Today, Reservations, Fines combined) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-cyan-600">
-            <span class="material-symbols-outlined text-xl">calendar_today</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Due Today</p>
+    <!-- Urgent Actions + Live Circulation Feed -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- Urgent Actions -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="flex items-center gap-2 text-lg font-bold text-[#ffb599]">
+            <span class="material-symbols-outlined">bolt</span> Urgent Actions
+          </h3>
+          <span class="astral-badge astral-badge-primary">System Priority</span>
         </div>
-        <p class="text-2xl font-bold" id="stat-due-today">0</p>
-      </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-violet-600">
-            <span class="material-symbols-outlined text-xl">bookmark</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Active Reservations</p>
-        </div>
-        <p class="text-2xl font-bold" id="stat-reservations">0</p>
-      </div>
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-11 h-11 rounded-lg flex items-center justify-center text-white bg-accent">
-            <span class="material-symbols-outlined text-xl">receipt_long</span>
-          </div>
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Pending Fines</p>
-        </div>
-        <div class="flex items-end justify-between">
-          <p class="text-2xl font-bold" id="stat-pending-fines">0</p>
-          <p class="text-sm font-semibold text-accent" id="stat-fine-total">&#8369;0</p>
+        <div class="space-y-3" id="urgent-actions">
+          <!-- Filled by JS -->
         </div>
       </div>
-    </div>
 
-    <!-- Overdue / Due-Today Alert Area -->
-    <div id="overdue-alert-area" class="mb-6"></div>
-
-    <!-- Activity Table + Collection Chart -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      <!-- Recent Activity -->
-      <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
-          <span class="material-symbols-outlined text-lg text-primary">schedule</span>
-          <h3 class="text-sm font-bold uppercase tracking-wider">Recent Activity</h3>
+      <!-- Live Circulation Feed -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="flex items-center gap-2 text-lg font-bold text-[#9b99b8]">
+            <span class="material-symbols-outlined">autorenew</span> Live Circulation Feed
+          </h3>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#4ade80]"></span>
+            <span class="text-xs text-emerald-400 uppercase tracking-wider font-semibold">Real-Time Sync</span>
+          </div>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
+        <div class="astral-card">
+          <table class="astral-table">
             <thead>
-              <tr class="bg-slate-50 dark:bg-slate-800/50 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                <th class="px-6 py-3">Date</th>
-                <th class="px-6 py-3">User</th>
-                <th class="px-6 py-3">Action</th>
-                <th class="px-6 py-3">Details</th>
+              <tr>
+                <th>Activity</th>
+                <th>Patron</th>
+                <th>Asset</th>
+                <th>Time</th>
               </tr>
             </thead>
-            <tbody id="activity-table" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+            <tbody id="activity-table"></tbody>
           </table>
         </div>
       </div>
-      <!-- Collection Overview Chart -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
-        <h3 class="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined text-lg text-primary">donut_large</span>Collection Overview
-        </h3>
-        <canvas id="chart-categories" height="250"></canvas>
+    </div>
+
+    <!-- Stat Cards Row 2 -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="astral-stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon bg-cyan-500/15 text-cyan-400"><span class="material-symbols-outlined">school</span></div>
+        </div>
+        <p class="stat-label">Active Students</p>
+        <p class="stat-value" id="stat-students">0</p>
+      </div>
+      <div class="astral-stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon bg-cyan-500/15 text-cyan-400"><span class="material-symbols-outlined">calendar_today</span></div>
+        </div>
+        <p class="stat-label">Due Today</p>
+        <p class="stat-value" id="stat-due-today">0</p>
+      </div>
+      <div class="astral-stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon bg-[#f87171]/15 text-[#f87171]"><span class="material-symbols-outlined">receipt_long</span></div>
+        </div>
+        <p class="stat-label">Pending Fines</p>
+        <div class="flex items-end justify-between">
+          <p class="stat-value" id="stat-pending-fines">0</p>
+          <p class="text-sm font-semibold text-[#ffb599]" id="stat-fine-total">&#8369;0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart + Collection Overview -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="lg:col-span-2 astral-card">
+        <div class="astral-card-header">
+          <h3 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg text-[#ffb599]">schedule</span> Collection Overview
+          </h3>
+        </div>
+        <div class="astral-card-body">
+          <canvas id="chart-categories" height="250"></canvas>
+        </div>
+      </div>
+
+      <!-- Overdue Alert Area -->
+      <div>
+        <div id="overdue-alert-area" class="space-y-3"></div>
+
+        <div class="astral-card mt-4 overflow-hidden">
+          <div class="relative h-[180px] overflow-hidden rounded-t-2xl">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#1e1e32] via-[#1e1e32]/60 to-transparent z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#e17141]/20 to-[#ffb599]/10"></div>
+            <div class="absolute bottom-4 left-5 z-20">
+              <p class="text-lg font-bold text-white">Preserving History,</p>
+              <p class="text-lg font-bold text-[#ffb599]">Digitizing Knowledge.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Attendance by Program -->
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
-      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+    <div class="astral-card mb-6">
+      <div class="astral-card-header">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-lg text-primary">groups</span>
+          <span class="material-symbols-outlined text-lg text-[#ffb599]">groups</span>
           <h3 class="text-sm font-bold uppercase tracking-wider">Attendance by Program</h3>
         </div>
-        <span class="text-xs text-slate-400" id="att-total-label"></span>
+        <span class="text-xs text-[#9b99b8]" id="att-total-label"></span>
       </div>
-      <div class="p-5">
+      <div class="astral-card-body">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" id="attendance-grid"></div>
       </div>
     </div>
@@ -178,9 +203,9 @@
   else { (() => {
   App.init();
   const user = Auth.getCurrentUser();
-  document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}!`;
-  document.getElementById('stat-books').textContent = Store.count('books');
-  document.getElementById('stat-students').textContent = Store.count('students');
+  document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}! System Terminal V4.0`;
+  document.getElementById('stat-books').textContent = Store.count('books').toLocaleString();
+  document.getElementById('stat-students').textContent = Store.count('students').toLocaleString();
   const txns = Store.getAll('transactions');
   const issued = txns.filter((t) => t.status === 'borrowed').length;
   const todayStr = new Date().toISOString().split('T')[0];
@@ -190,117 +215,114 @@
   const dueToday = txns.filter((t) => {
       return t.status === 'borrowed' && t.date_due === todayStr;
   }).length;
-  document.getElementById('stat-issued').textContent = issued;
+  document.getElementById('stat-issued').textContent = issued.toLocaleString();
   document.getElementById('stat-overdue').textContent = overdue;
   document.getElementById('stat-due-today').textContent = dueToday;
 
-  // Active reservations count
   const activeReservations = Store.getAll('reservations').filter((r) => {
       return r.status === 'active' || r.status === 'available';
   }).length;
   document.getElementById('stat-reservations').textContent = activeReservations;
 
-  // Expire stale reservations
   Store.expireReservations();
-
-  // Process overdue fines automatically
   const newFinesCount = Store.processOverdueFines();
 
-  // Pending fines stats (combined card)
   const allFines = Store.getAll('fines');
   const pendingFines = allFines.filter((f) => f.status === 'pending');
   const pendingTotal = pendingFines.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
   document.getElementById('stat-pending-fines').textContent = pendingFines.length;
   document.getElementById('stat-fine-total').textContent = `\u20B1${pendingTotal.toFixed(0)}`;
 
-  // Show overdue alert if there are new auto-generated fines
-  const alertArea = document.getElementById('overdue-alert-area');
-  if (newFinesCount > 0) {
-      alertArea.innerHTML = `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">\
-<span class="material-symbols-outlined text-lg">warning</span>\
-<strong>${newFinesCount} new fine(s)</strong> auto-generated for overdue books. \
-<a href="/pages/operations/fines.html" class="font-semibold underline">View Fines</a></div>`;
-  } else if (overdue > 0) {
-      alertArea.innerHTML = `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">\
-<span class="material-symbols-outlined text-lg">warning</span>\
-<strong>${overdue} book(s)</strong> are currently overdue. \
-<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>`;
+  // Urgent Actions
+  const urgentArea = document.getElementById('urgent-actions');
+  let urgentHtml = '';
+  if (overdue > 0) {
+      urgentHtml += `<div class="astral-card p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#f87171]/15 flex items-center justify-center text-[#f87171]"><span class="material-symbols-outlined">warning</span></div>
+              <div><p class="font-bold text-sm">${overdue} Books Severely Overdue</p><p class="text-xs text-[#9b99b8]">Patron notification required</p></div>
+          </div>
+          <a href="/pages/operations/circulation.html" class="astral-btn-primary px-4 py-2 rounded-xl text-xs font-bold">Send Notice</a>
+      </div>`;
   }
-  if (dueToday > 0) {
-      alertArea.innerHTML += `<div class="flex items-center gap-2 px-4 py-3 rounded-lg border text-sm mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">\
-<span class="material-symbols-outlined text-lg">calendar_today</span>\
-<strong>${dueToday} book(s)</strong> are due today. \
-<a href="/pages/operations/circulation.html" class="font-semibold underline">View Circulation</a></div>`;
+  if (activeReservations > 0) {
+      urgentHtml += `<div class="astral-card p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#ffb599]/15 flex items-center justify-center text-[#ffb599]"><span class="material-symbols-outlined">inventory_2</span></div>
+              <div><p class="font-bold text-sm">${activeReservations} Active Reservations</p><p class="text-xs text-[#9b99b8]">Pending pick-up processing</p></div>
+          </div>
+          <a href="/pages/operations/reservations.html" class="astral-btn-primary px-4 py-2 rounded-xl text-xs font-bold">Review</a>
+      </div>`;
+  }
+  if (newFinesCount > 0) {
+      urgentHtml += `<div class="astral-card p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-400/15 flex items-center justify-center text-emerald-400"><span class="material-symbols-outlined">verified</span></div>
+              <div><p class="font-bold text-sm">${newFinesCount} New Fine(s) Generated</p><p class="text-xs text-[#9b99b8]">Pending identity verification</p></div>
+          </div>
+          <a href="/pages/operations/fines.html" class="px-4 py-2 rounded-xl text-xs font-bold border border-[#3a3a52] text-[#e2e0fc] hover:border-[#ffb599] transition-colors">Review Docs</a>
+      </div>`;
+  }
+  if (!urgentHtml) urgentHtml = `<div class="astral-card p-6 text-center text-[#9b99b8] text-sm">No urgent actions at this time.</div>`;
+  urgentArea.innerHTML = urgentHtml;
+
+  // Overdue alert
+  const alertArea = document.getElementById('overdue-alert-area');
+  if (overdue > 0) {
+      alertArea.innerHTML = `<div class="flex items-center gap-2 px-4 py-3 rounded-xl text-sm" style="background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.3)">
+<span class="material-symbols-outlined text-lg">warning</span>
+<strong>${overdue} book(s)</strong> are currently overdue.
+<a href="/pages/operations/circulation.html" class="font-semibold underline ml-1">View</a></div>`;
   }
 
-  // Recent Activity table
+  // Activity table
   const allLogs = Store.getAll('audit_logs');
   const privilegedRoles = ['r1', 'r2', 'r3'];
   let logs;
-  if (privilegedRoles.includes(user.role_id)) {
-      logs = allLogs.slice(0, 10);
-  } else {
-      logs = allLogs.filter((l) => l.user === user.name).slice(0, 10);
-  }
+  if (privilegedRoles.includes(user.role_id)) { logs = allLogs.slice(0, 8); }
+  else { logs = allLogs.filter((l) => l.user === user.name).slice(0, 8); }
   const tbody = document.getElementById('activity-table');
   if (logs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-slate-400 py-8">No recent activity found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-[#9b99b8] py-8">No recent activity found.</td></tr>`;
   } else {
+      const actionColors = { 'Issue': '#60a5fa', 'Return': '#4ade80', 'Reserve': '#fbbf24', 'Create': '#d2bcfa', 'Update': '#ffb599', 'Delete': '#f87171' };
       logs.forEach((log) => {
-          tbody.innerHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">\
-<td class="px-6 py-3 whitespace-nowrap text-slate-600 dark:text-slate-400">${App.formatDateTime(log.created_at)}</td>\
-<td class="px-6 py-3 whitespace-nowrap font-medium">${log.user}</td>\
-<td class="px-6 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-indigo-300">${log.action}</span></td>\
-<td class="px-6 py-3 text-slate-600 dark:text-slate-400">${log.details}</td></tr>`;
+          const action = log.action || '';
+          const actionKey = Object.keys(actionColors).find(k => action.includes(k)) || '';
+          const color = actionColors[actionKey] || '#9b99b8';
+          const icon = action.includes('Return') ? '← RETURNED' : action.includes('Issue') ? '→ BORROWED' : action.includes('Reserve') ? '🔖 RESERVED' : action;
+          const initials = (log.user || '??').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+          tbody.innerHTML += `<tr>
+<td class="whitespace-nowrap"><span style="color:${color}" class="font-semibold text-xs uppercase">${icon}</span></td>
+<td class="whitespace-nowrap"><div class="flex items-center gap-2"><div class="astral-avatar-sm bg-[#333348] text-[#9b99b8] rounded-full flex items-center justify-center" style="width:28px;height:28px;font-size:10px">${initials}</div><span class="font-medium text-sm">${log.user}</span></div></td>
+<td class="text-[#9b99b8] text-sm">${log.details ? log.details.substring(0,30) : '—'}</td>
+<td class="text-[#9b99b8] text-xs whitespace-nowrap">${App.formatDateTime(log.created_at)}</td></tr>`;
       });
   }
 
-  // Collection Overview chart
+  // Chart
   const categories = Store.getAll('categories');
   const books = Store.getAll('books');
   const catLabels = categories.map((c) => c.name);
-  const catCounts = categories.map((c) => {
-      return books.filter((b) => b.category_id === c.id).length;
-  });
+  const catCounts = categories.map((c) => books.filter((b) => b.category_id === c.id).length);
   new Chart(document.getElementById('chart-categories'), {
       type: 'doughnut',
       data: {
           labels: catLabels,
-          datasets: [{ data: catCounts, backgroundColor: ['#e94560','#3211d4','#28a745','#ffc107','#17a2b8','#6f42c1'] }]
+          datasets: [{ data: catCounts, backgroundColor: ['#ffb599','#e17141','#d2bcfa','#4ade80','#60a5fa','#fbbf24'], borderWidth: 0, borderRadius: 4 }]
       },
       options: {
           responsive: true,
+          cutout: '65%',
           plugins: {
-              legend: {
-                  position: 'bottom',
-                  labels: {
-                      font: { size: 12 },
-                      color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
-                  }
-              }
+              legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: '#9b99b8', padding: 16 } }
           }
       }
   });
 
-  // ── Attendance by Program ──────────────────────────────────
-  const featiPrograms = [
-      'BSCE', 'BSEE', 'BSME', 'BSEcE', 'BSAeE', 'BSRE', 'BSGE', 'BSAMT',
-      'BSIT', 'BSCS', 'BSMarE', 'BSMT', 'BSArch',
-      'BSBA', 'BSTM', 'BSCA', 'BFA', 'BAComm', 'SHS', 'JHS'
-  ];
-  const progBg = {
-      'BSCE': 'from-amber-500 to-amber-600', 'BSEE': 'from-yellow-500 to-yellow-600',
-      'BSME': 'from-orange-500 to-orange-600', 'BSEcE': 'from-lime-500 to-lime-600',
-      'BSAeE': 'from-sky-500 to-sky-600', 'BSRE': 'from-stone-500 to-stone-600',
-      'BSGE': 'from-emerald-500 to-emerald-600', 'BSAMT': 'from-slate-500 to-slate-600',
-      'BSIT': 'from-blue-500 to-blue-600', 'BSCS': 'from-indigo-500 to-indigo-600',
-      'BSMarE': 'from-cyan-500 to-cyan-600', 'BSMT': 'from-teal-500 to-teal-600',
-      'BSArch': 'from-pink-500 to-pink-600',
-      'BSBA': 'from-violet-500 to-violet-600', 'BSTM': 'from-fuchsia-500 to-fuchsia-600',
-      'BSCA': 'from-purple-500 to-purple-600',
-      'BFA': 'from-rose-500 to-rose-600', 'BAComm': 'from-red-500 to-red-600',
-      'SHS': 'from-green-500 to-green-600', 'JHS': 'from-green-600 to-green-700'
-  };
+  // Attendance
+  const featiPrograms = ['BSCE','BSEE','BSME','BSEcE','BSAeE','BSRE','BSGE','BSAMT','BSIT','BSCS','BSMarE','BSMT','BSArch','BSBA','BSTM','BSCA','BFA','BAComm','SHS','JHS'];
+  const progColors = ['#e17141','#fbbf24','#ffb599','#84cc16','#06b6d4','#8b5cf6','#10b981','#64748b','#3b82f6','#6366f1','#14b8a6','#0d9488','#ec4899','#7c3aed','#d946ef','#a855f7','#f43f5e','#ef4444','#22c55e','#16a34a'];
 
   const attendance = Store.getAll('attendance') || [];
   const allStudents = Store.getAll('students') || [];
@@ -308,21 +330,15 @@
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  const programStats = featiPrograms.map((prog) => {
+  const programStats = featiPrograms.map((prog, i) => {
       const progRecords = attendance.filter((a) => {
           const student = allStudents.find((s) => s.name === a.name);
           return student && student.program && student.program.toUpperCase() === prog.toUpperCase();
       });
       const todayCount = progRecords.filter((a) => a.date === todayStr).length;
-      const monthCount = progRecords.filter((a) => {
-          const d = new Date(a.date || a.created_at);
-          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-      }).length;
-      const yearCount = progRecords.filter((a) => {
-          const d = new Date(a.date || a.created_at);
-          return d.getFullYear() === currentYear;
-      }).length;
-      return { program: prog, today: todayCount, month: monthCount, year: yearCount };
+      const monthCount = progRecords.filter((a) => { const d = new Date(a.date || a.created_at); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; }).length;
+      const yearCount = progRecords.filter((a) => { const d = new Date(a.date || a.created_at); return d.getFullYear() === currentYear; }).length;
+      return { program: prog, today: todayCount, month: monthCount, year: yearCount, color: progColors[i] };
   });
 
   const totalToday = programStats.reduce((s, p) => s + p.today, 0);
@@ -330,30 +346,20 @@
 
   const attGrid = document.getElementById('attendance-grid');
   programStats.forEach((ps) => {
-      const gradient = progBg[ps.program] || 'from-slate-500 to-slate-600';
-      attGrid.innerHTML += `<div class="rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden hover:shadow-md transition-shadow">
-          <div class="bg-gradient-to-r ${gradient} px-4 py-2.5 flex items-center justify-between">
-              <span class="text-white font-bold text-sm">${ps.program}</span>
-              <span class="text-white/70 text-[11px] font-medium">${ps.year} this year</span>
+      attGrid.innerHTML += `<div class="astral-card overflow-hidden">
+          <div class="px-4 py-2.5 flex items-center justify-between" style="background:${ps.color}20;border-bottom:1px solid ${ps.color}30">
+              <span class="font-bold text-sm" style="color:${ps.color}">${ps.program}</span>
+              <span class="text-[11px] font-medium text-[#9b99b8]">${ps.year} this year</span>
           </div>
-          <div class="grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
-              <div class="px-3 py-2.5 text-center">
-                  <p class="text-lg font-bold">${ps.today}</p>
-                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Today</p>
-              </div>
-              <div class="px-3 py-2.5 text-center">
-                  <p class="text-lg font-bold">${ps.month}</p>
-                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Month</p>
-              </div>
-              <div class="px-3 py-2.5 text-center">
-                  <p class="text-lg font-bold">${ps.year}</p>
-                  <p class="text-[10px] text-slate-400 uppercase tracking-wide">Year</p>
-              </div>
+          <div class="grid grid-cols-3 divide-x divide-[#3a3a52]">
+              <div class="px-3 py-2.5 text-center"><p class="text-lg font-bold">${ps.today}</p><p class="text-[10px] text-[#9b99b8] uppercase tracking-wide">Today</p></div>
+              <div class="px-3 py-2.5 text-center"><p class="text-lg font-bold">${ps.month}</p><p class="text-[10px] text-[#9b99b8] uppercase tracking-wide">Month</p></div>
+              <div class="px-3 py-2.5 text-center"><p class="text-lg font-bold">${ps.year}</p><p class="text-[10px] text-[#9b99b8] uppercase tracking-wide">Year</p></div>
           </div>
       </div>`;
   });
 
-  })(); } // end auth else block
+  })(); }
 </script>
 </body>
 </html>

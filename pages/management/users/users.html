@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - AklatBayon</title>
-    <script src="/js/theme-init.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -15,8 +14,7 @@
         theme: {
             extend: {
                 fontFamily: { sans: ['Inter', 'sans-serif'] },
-                colors: {
-                    primary: { DEFAULT: '#3211d4', 50: '#ede9ff', 100: '#d9d0ff', 200: '#b3a1ff', 300: '#8d72ff', 400: '#6744ff', 500: '#3211d4', 600: '#280db0', 700: '#1e0a8c', 800: '#140668', 900: '#0a0344' },
+                /* colors removed - using astral CSS */,
                     accent: '#e94560',
                     'bg-light': '#f6f6f8',
                     'bg-dark': '#131022'
@@ -27,21 +25,21 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-<div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
         <div id="alert-container"></div>
 
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
             <div>
                 <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">manage_accounts</span> User Management
+                    <span class="material-symbols-outlined text-[#ffb599]">manage_accounts</span> User Management
                 </h1>
                 <p class="text-sm text-slate-500 mt-1">Manage system user accounts and roles</p>
             </div>
-            <button class="inline-flex items-center gap-2 rounded-lg bg-primary text-white px-5 py-2.5 text-sm font-semibold hover:bg-primary-600 transition-colors" id="btn-add">
+            <button class="inline-flex items-center gap-2 rounded-lg bg-[#ffb599] text-white px-5 py-2.5 text-sm font-semibold hover:bg-primary-600 transition-colors" id="btn-add">
                 <span class="material-symbols-outlined text-base">add_circle</span> Add User
             </button>
         </div>
@@ -49,30 +47,30 @@
         <div class="flex flex-col sm:flex-row gap-3 mb-6">
             <div class="relative flex-1">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-                <input type="text" id="search-input" placeholder="Search users..." class="w-full h-11 pl-10 pr-4 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" id="search-input" placeholder="Search users..." class="w-full h-11 pl-10 pr-4 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30">
             </div>
-            <select class="h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary sm:w-52" id="filter-role">
+            <select class="h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30 sm:w-52" id="filter-role">
                 <option value="">All Roles</option>
             </select>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="astral-card overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-800/50">
+                    <thead class="bg-[#1a1a2e]">
                         <tr>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">#</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Name</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Username</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Email</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Role</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Subtype</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">RFID</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
-                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">#</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Name</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Username</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Email</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Role</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Subtype</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">RFID</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Status</th>
+                            <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="user-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+                    <tbody id="user-table" class="divide-y divide-[#3a3a52]/50 text-sm"></tbody>
                 </table>
             </div>
         </div>
@@ -80,10 +78,10 @@
 </div>
 
 <div class="modal-overlay fixed inset-0 bg-black/50 z-[2000] items-center justify-center" id="modal-user">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl animate-modal-in w-full max-w-lg mx-4">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+    <div class="astral-modal w-full max-w-lg mx-4">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-[#3a3a52]">
             <h3 class="text-lg font-bold" id="modal-title">Add User</h3>
-            <button class="modal-close w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400">
+            <button class="modal-close w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#ffb599]/5 text-[#9b99b8]">
                 <span class="material-symbols-outlined text-lg">close</span>
             </button>
         </div>
@@ -91,27 +89,27 @@
             <input type="hidden" id="edit-id">
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Full Name</label>
-                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-name" required>
+                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-name" required>
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Username</label>
-                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-username" required>
+                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-username" required>
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Email</label>
-                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-email" type="email" required>
+                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-email" type="email" required>
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Password</label>
-                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-password" type="password" placeholder="Leave blank to keep current">
+                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-password" type="password" placeholder="Leave blank to keep current">
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Role</label>
-                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-role"></select>
+                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-role"></select>
             </div>
             <div id="f-subtype-group" style="display:none">
                 <label class="block text-sm font-semibold mb-1.5">Faculty Subtype</label>
-                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-subtype">
+                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-subtype">
                     <option value="Teaching">Teaching</option>
                     <option value="Non-Teaching">Non-Teaching</option>
                     <option value="Department Chair">Department Chair</option>
@@ -120,22 +118,22 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">RFID ID</label>
-                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-rfid" placeholder="e.g. RFID-STU-001">
+                <input class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-rfid" placeholder="e.g. RFID-STU-001">
             </div>
             <div id="f-student-group">
                 <label class="block text-sm font-semibold mb-1.5">Linked Student Record</label>
-                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-student"><option value="">— None —</option></select>
+                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-student"><option value="">— None —</option></select>
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1.5">Status</label>
-                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="f-status">
+                <select class="w-full h-11 px-3.5 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:outline-none focus:border-[#ffb599] focus:ring-1 focus:ring-[#ffb599]/30" id="f-status">
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                 </select>
             </div>
         </div>
-        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-800">
-            <button class="modal-close px-5 py-2.5 text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#3a3a52]">
+            <button class="modal-close px-5 py-2.5 text-sm font-semibold rounded-lg border border-[#3a3a52] hover:bg-[#ffb599]/5 transition-colors">Cancel</button>
             <button class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-emerald-700 transition-colors" id="btn-save">
                 <span class="material-symbols-outlined text-base">save</span> Save
             </button>
@@ -178,13 +176,13 @@
         if (search) users = users.filter((u) => u.name.toLowerCase().includes(search) || u.username.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
         if (roleFilter) users = users.filter((u) => u.role_id === roleFilter);
         const tbody = document.getElementById('user-table');
-        if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-10 text-center text-slate-400 dark:text-slate-500">No users found.</td></tr>'; return; }
+        if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-10 text-center text-[#9b99b8]">No users found.</td></tr>'; return; }
         tbody.innerHTML = users.map((u, i) => {
             const roleName = App.getRoleName(u.role_id);
             const statusCls = u.status === 'active'
-                ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 text-slate-500">${i+1}</td><td class="px-5 py-3 font-semibold">${u.name}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${u.username}</td><td class="px-5 py-3 text-slate-600 dark:text-slate-400">${u.email}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">${roleName}</span></td><td class="px-5 py-3 text-slate-500">${u.faculty_subtype || '\u2014'}</td><td class="px-5 py-3"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${u.rfid_id || '\u2014'}</code></td><td class="px-5 py-3"><span class="${statusCls}">${u.status}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary/10 transition-colors" data-id="${u.id}"><span class="material-symbols-outlined text-lg">edit</span></button><button class="btn-del w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" data-id="${u.id}" data-name="${u.name}"><span class="material-symbols-outlined text-lg">delete</span></button></div></td></tr>`;
+                ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)'
+                : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold " style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)';
+            return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-5 py-3 text-[#9b99b8]">${i+1}</td><td class="px-5 py-3 font-semibold">${u.name}</td><td class="px-5 py-3 text-[#9b99b8]">${u.username}</td><td class="px-5 py-3 text-[#9b99b8]">${u.email}</td><td class="px-5 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#ffb599]/10 text-[#ffb599]">${roleName}</span></td><td class="px-5 py-3 text-[#9b99b8]">${u.faculty_subtype || '\u2014'}</td><td class="px-5 py-3"><code class="text-xs bg-[#333348] px-2 py-0.5 rounded">${u.rfid_id || '\u2014'}</code></td><td class="px-5 py-3"><span class="${statusCls}">${u.status}</span></td><td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg text-[#ffb599] hover:bg-primary/10 transition-colors" data-id="${u.id}"><span class="material-symbols-outlined text-lg">edit</span></button><button class="btn-del w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-[#f87171]/10 transition-colors" data-id="${u.id}" data-name="${u.name}"><span class="material-symbols-outlined text-lg">delete</span></button></div></td></tr>`;
         }).join('');
         bindActions();
     };

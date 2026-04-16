@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Settings - AklatBayon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#ffdcc3",
+                    "tertiary-fixed-dim": "#d2bcfa",
+                    "surface-container": "#1e1e32",
+                    "on-surface": "#e2e0fc",
+                    "error-container": "#93000a",
+                    "surface-container-low": "#1a1a2e",
+                    "primary-fixed": "#ffdbce",
+                    "on-primary-fixed-variant": "#7f2b00",
+                    "on-primary-fixed": "#370e00",
+                    "on-secondary": "#4d2600",
+                    "primary-container": "#e17141",
+                    "tertiary-fixed": "#ebddff",
+                    "on-secondary-fixed": "#2f1500",
+                    "on-secondary-container": "#ffad68",
+                    "on-primary-container": "#4e1800",
+                    "tertiary": "#d2bcfa",
+                    "surface-container-highest": "#333348",
+                    "surface": "#111125",
+                    "tertiary-container": "#9b87c1",
+                    "inverse-primary": "#a04113",
+                    "secondary": "#ffb77d",
+                    "on-tertiary": "#38265a",
+                    "primary": "#ffb599",
+                    "inverse-on-surface": "#2f2e43",
+                    "on-surface-variant": "#ddc0b6",
+                    "on-error": "#690005",
+                    "error": "#ffb4ab",
+                    "surface-bright": "#37374d",
+                    "on-background": "#e2e0fc",
+                    "background": "#111125",
+                    "on-tertiary-container": "#311f52",
+                    "surface-tint": "#ffb599",
+                    "on-surface-variant": "#ddc0b6",
+                    "on-error-container": "#ffdad6",
+                    "outline": "#a58b82",
+                    "surface-container-high": "#28283d",
+                    "primary-fixed-dim": "#ffb599",
+                    "outline-variant": "#56423b",
+                    "on-tertiary-fixed": "#231043"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-astral {
+            background: radial-gradient(circle at 0% 0%, #1e1e32 0%, #111125 100%);
+        }
+        .glow-input:focus {
+            box-shadow: 0 0 15px rgba(255, 181, 153, 0.1);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111125; }
+        ::-webkit-scrollbar-thumb { background: #333348; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="bg-slate-950/80 backdrop-blur-xl text-orange-400 font-['Inter'] tracking-tight fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full shadow-2xl shadow-indigo-950/20">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-semibold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-orange-600">AklatBayon</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-orange-400 font-bold border-b-2 border-orange-500 py-1" href="#">Repository</a>
+<a class="text-slate-400 font-medium hover:bg-slate-800/50 transition-colors px-3 py-1 rounded-lg" href="#">Dashboard</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-800/50 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-800/50 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close up portrait of a young man with a friendly expression, soft cinematic indoor lighting, warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk0Jf8xAmXkPU70eadXPvneqCg5fnNipOAPD63LHzo4aoxsDETO0Jc_S_tfDAR6H5pVQgewGCp3fFcHrkPXw6Q3XDHO0_qm1B-lNKCPgQs_TYwPpEmv-wsvunwXITSwOBbLPI0Gn_zqj8EOaUoiIycTJSI0sboNLKTjgeVi2ljiCxVfaq6ghu2fyA5t5rO31mftXViZ_ubc6vDlPOW0k5gV9UBpdL3goW5dLQBqcleahIDnYTzj3Bxhfwi7UllAneIIOPB7b3P6ixJ"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="bg-slate-900 fixed left-0 top-0 h-full w-64 z-40 bg-slate-950 contrast flat-no-borders flex flex-col h-full pt-20 pb-6 px-4 hidden md:flex">
+<div class="mb-10 px-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">library_books</span>
+</div>
+<div>
+<h2 class="text-sm font-['Inter'] tracking-wide uppercase text-orange-400 font-black">The Repository</h2>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest">Student Portal</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Repository</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800/80 text-orange-400 shadow-[inset_4px_0_0_0_#e17141] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 pt-6 border-t border-slate-800/50">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-['Inter'] tracking-wide uppercase">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="md:ml-64 pt-24 pb-12 px-6 lg:px-12 bg-astral min-h-screen">
+<div class="max-w-6xl mx-auto space-y-8">
+<!-- Profile Header -->
+<section class="relative overflow-hidden rounded-3xl bg-surface-container-low p-8 shadow-xl">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -mr-20 -mt-20"></div>
+<div class="relative flex flex-col md:flex-row items-center gap-8">
+<div class="relative">
+<div class="h-32 w-32 rounded-full p-1 bg-gradient-to-tr from-primary to-tertiary">
+<div class="h-full w-full rounded-full overflow-hidden bg-surface-container-lowest">
+<img alt="Student Avatar" class="w-full h-full object-cover" data-alt="Professional studio portrait of a college student with a friendly smile, neutral background, sharp focus, high-end photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc8zZgr63eMC8VdOGIpXy-k5RhFNC1Kvmf_p3n6lvqlITqN5DYmBvp_RWmVYG-LsQeeeOL2KDBF4uvV8CHuRCOdG_qRAm4Zdsoo6XgtYama8pge5zvq0BeMT2GMxCq8T4MM-6l7N9b7VVx8qAJ-PD_dodSjyhB-dbpphWeqhbkrr6WgiNAwqzGIj_aUf-9MF9XDfCM_tUhawa4qgPET3ypy_Sauu1VPX1Eo--Z3m8MTIwhK1YXRCMIKf6As4ItU5z3tguVDsFt_Vwa"/>
+</div>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary-container text-on-primary-container p-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="text-center md:text-left">
+<h1 class="text-4xl font-extrabold tracking-tight mb-2">Juan Dela Cruz</h1>
+<div class="flex flex-wrap justify-center md:justify-start gap-4">
+<span class="bg-surface-container-high px-4 py-1.5 rounded-full text-sm font-medium border border-outline-variant/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">badge</span>
+                                2021-00432-MN-0
+                            </span>
+<span class="bg-surface-container-high px-4 py-1.5 rounded-full text-sm font-medium border border-outline-variant/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg">school</span>
+                                BS Computer Science
+                            </span>
+</div>
+</div>
+<div class="md:ml-auto">
+<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold px-8 py-3 rounded-full hover:shadow-[0_0_20px_rgba(225,113,65,0.4)] transition-all">
+                            Save Changes
+                        </button>
+</div>
+</div>
+</section>
+<!-- Settings Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Personal & Security -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Personal Information -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="text-xl font-bold">Personal Information</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
+<input class="w-full bg-surface-variant/40 border-none rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary glow-input transition-all" type="email" value="juan.delacruz@student.edu.ph"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Contact Number</label>
+<input class="w-full bg-surface-variant/40 border-none rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary glow-input transition-all" type="tel" value="+63 917 123 4567"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Academic Status</label>
+<div class="bg-surface-container-high rounded-xl px-4 py-3 text-slate-400 italic">
+                                    Enrolled - 3rd Year, 2nd Semester
+                                </div>
+</div>
+</div>
+</div>
+<!-- Security -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">security</span>
+<h3 class="text-xl font-bold">Security</h3>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Current Password</label>
+<input class="w-full bg-surface-variant/40 border-none rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary glow-input transition-all" placeholder="••••••••••••" type="password"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">New Password</label>
+<input class="w-full bg-surface-variant/40 border-none rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary glow-input transition-all" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500">Password Strength</span>
+<span class="text-xs font-bold text-green-400 uppercase">Strong</span>
+</div>
+<div class="flex gap-1 h-1.5">
+<div class="flex-1 bg-green-500 rounded-full"></div>
+<div class="flex-1 bg-green-500 rounded-full"></div>
+<div class="flex-1 bg-green-500 rounded-full"></div>
+<div class="flex-1 bg-green-500/20 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Notifications & Preferences -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Notifications -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-tertiary">notifications_active</span>
+<h3 class="text-xl font-bold">Notifications</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-semibold">Due Date Reminders</p>
+<p class="text-xs text-slate-500">Get alerted 2 days before return</p>
+</div>
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-semibold">Reservation Alerts</p>
+<p class="text-xs text-slate-500">Notify when books are ready</p>
+</div>
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-semibold">Announcements</p>
+<p class="text-xs text-slate-500">Library hours and news</p>
+</div>
+<button class="w-12 h-6 bg-surface-container-highest rounded-full relative transition-colors">
+<div class="absolute left-1 top-1 w-4 h-4 bg-slate-500 rounded-full"></div>
+</button>
+</div>
+</div>
+</div>
+<!-- Preferences -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-tertiary">tune</span>
+<h3 class="text-xl font-bold">Preferences</h3>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Appearance</label>
+<div class="grid grid-cols-2 gap-2 p-1 bg-surface-container-high rounded-xl">
+<button class="bg-slate-800 text-primary py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+                                        Dark
+                                    </button>
+<button class="text-slate-500 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-slate-800/50 transition-all">
+<span class="material-symbols-outlined text-sm">light_mode</span>
+                                        Light
+                                    </button>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Language</label>
+<select class="w-full bg-surface-variant/40 border-none rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary appearance-none">
+<option>English (US)</option>
+<option>Filipino</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Warning Area -->
+<div class="p-8 rounded-3xl bg-error-container/10 border border-error/20 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-4 text-center md:text-left">
+<div class="h-12 w-12 rounded-full bg-error/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">delete_forever</span>
+</div>
+<div>
+<h4 class="font-bold text-error">Deactivate Account</h4>
+<p class="text-sm text-slate-400">Permanently remove your student access and library history.</p>
+</div>
+</div>
+<button class="border border-error text-error hover:bg-error hover:text-on-error transition-all px-6 py-2 rounded-full font-bold text-sm">
+                    Request Deactivation
+                </button>
+</div>
+</div>
+</main>
+<!-- Floating Status Bar (Signature Element) -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-surface-container/60 backdrop-blur-2xl border border-outline-variant/10 h-16 rounded-full flex items-center justify-between px-8 shadow-2xl z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-400" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="text-xs font-bold uppercase tracking-widest">System Active</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-medium">Synced 2m ago</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<button class="text-primary hover:scale-105 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">refresh</span>
+<span class="text-xs font-bold uppercase tracking-widest">Check Updates</span>
+</button>
+</div>
+</div>
+</body></html>

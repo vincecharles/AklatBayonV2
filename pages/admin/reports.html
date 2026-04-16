@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reports - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -13,22 +12,22 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' }, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, /* colors removed - using astral CSS */, accent: '#e94560', 'bg-light': '#f6f6f8', 'bg-dark': '#131022' } } }
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-  <div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
         <div>
           <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">description</span>
+            <span class="material-symbols-outlined text-[#ffb599]">description</span>
             Reports
           </h1>
           <p class="text-sm text-slate-500 mt-1">Library statistics and analytics overview</p>
@@ -38,7 +37,7 @@
       <!-- Stat Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Total Books -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <div class="astral-card p-5">
           <div class="flex items-center gap-4">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-900 text-white">
               <span class="material-symbols-outlined text-2xl">menu_book</span>
@@ -50,7 +49,7 @@
           </div>
         </div>
         <!-- Total Students -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <div class="astral-card p-5">
           <div class="flex items-center gap-4">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white">
               <span class="material-symbols-outlined text-2xl">group</span>
@@ -62,7 +61,7 @@
           </div>
         </div>
         <!-- Total Transactions -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <div class="astral-card p-5">
           <div class="flex items-center gap-4">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500 text-white">
               <span class="material-symbols-outlined text-2xl">swap_horiz</span>
@@ -74,7 +73,7 @@
           </div>
         </div>
         <!-- Pending Fines -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <div class="astral-card p-5">
           <div class="flex items-center gap-4">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-red-600 text-white">
               <span class="material-symbols-outlined text-2xl">payments</span>
@@ -90,17 +89,17 @@
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Books by Category -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+        <div class="astral-card p-6">
           <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">bar_chart</span>
+            <span class="material-symbols-outlined text-[#ffb599]">bar_chart</span>
             Books by Category
           </h3>
           <canvas id="chart-cat" height="250"></canvas>
         </div>
         <!-- Transaction Status -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+        <div class="astral-card p-6">
           <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">pie_chart</span>
+            <span class="material-symbols-outlined text-[#ffb599]">pie_chart</span>
             Transaction Status
           </h3>
           <canvas id="chart-txn" height="250"></canvas>

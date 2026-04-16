@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -15,8 +14,7 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 100: '#e0e3ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+          /* colors removed - using astral CSS */,
             accent: '#e94560',
             'bg-light': '#f6f6f8',
             'bg-dark': '#131022',
@@ -50,7 +48,7 @@
     }
   </style>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans min-h-screen antialiased">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
 
   <!-- Full-screen gradient backdrop -->
   <div class="fixed inset-0 bg-gradient-to-br from-[#1a1a2e] to-[#0f3460] flex items-center justify-center overflow-hidden">

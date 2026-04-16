@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AklatBayon - Circulation Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#1e1e32",
+                        "primary-fixed": "#ffdbce",
+                        "secondary-fixed": "#ffdcc3",
+                        "inverse-on-surface": "#2f2e43",
+                        "surface-container-lowest": "#0c0c1f",
+                        "primary-container": "#e17141",
+                        "error": "#ffb4ab",
+                        "surface": "#111125",
+                        "tertiary": "#d2bcfa",
+                        "inverse-primary": "#a04113",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "outline": "#a58b82",
+                        "on-background": "#e2e0fc",
+                        "on-surface": "#e2e0fc",
+                        "tertiary-container": "#9b87c1",
+                        "secondary": "#ffb77d",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-bright": "#37374d",
+                        "on-tertiary-fixed": "#231043",
+                        "primary": "#ffb599",
+                        "primary-fixed-dim": "#ffb599",
+                        "on-primary-container": "#4e1800",
+                        "secondary-container": "#783f00",
+                        "on-error": "#690005",
+                        "surface-dim": "#111125",
+                        "on-tertiary-container": "#311f52",
+                        "surface-variant": "#333348",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "on-tertiary": "#38265a",
+                        "error-container": "#93000a",
+                        "outline-variant": "#56423b",
+                        "on-secondary-fixed": "#2f1500",
+                        "on-tertiary-fixed-variant": "#4f3d72",
+                        "surface-tint": "#ffb599",
+                        "on-primary": "#5a1c00",
+                        "on-secondary": "#4d2600",
+                        "tertiary-fixed-dim": "#d2bcfa",
+                        "on-surface-variant": "#ddc0b6",
+                        "on-primary-fixed": "#370e00",
+                        "tertiary-fixed": "#ebddff",
+                        "on-secondary-container": "#ffad68",
+                        "surface-container-highest": "#333348",
+                        "surface-container-low": "#1a1a2e",
+                        "surface-container-high": "#28283d",
+                        "inverse-surface": "#e2e0fc",
+                        "background": "#111125"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-border-tonal-shift { border: none !important; }
+        .glass-panel {
+            background: rgba(30, 30, 50, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1A1A2E] bg-opacity-95 backdrop-blur-xl flex flex-col h-full py-8 shadow-2xl shadow-[#0c0c1f]/40 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-lg font-black text-slate-100 tracking-wide uppercase">The Repository</h1>
+<p class="text-xs text-slate-500 font-medium tracking-widest uppercase">Terminal Access</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-500 hover:text-slate-200 flex items-center px-6 py-4 gap-4 hover:bg-[#333348] transition-all translate-x-1 duration-200 font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Active Tab: Circulation -->
+<a class="text-orange-400 bg-orange-500/10 border-r-4 border-orange-500 flex items-center px-6 py-4 gap-4 font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+<span>Circulation</span>
+</a>
+<a class="text-slate-500 hover:text-slate-200 flex items-center px-6 py-4 gap-4 hover:bg-[#333348] transition-all translate-x-1 duration-200 font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span>Catalog</span>
+</a>
+<a class="text-slate-500 hover:text-slate-200 flex items-center px-6 py-4 gap-4 hover:bg-[#333348] transition-all translate-x-1 duration-200 font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Patrons</span>
+</a>
+<a class="text-slate-500 hover:text-slate-200 flex items-center px-6 py-4 gap-4 hover:bg-[#333348] transition-all translate-x-1 duration-200 font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Reports</span>
+</a>
+</nav>
+<div class="mt-auto px-6">
+<a class="text-slate-500 hover:text-slate-200 flex items-center py-4 gap-4 hover:bg-[#333348] transition-all font-sans text-sm tracking-wide uppercase font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Viewport -->
+<main class="ml-64 flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="w-full h-16 sticky top-0 z-40 bg-[#1A1A2E] flex items-center justify-between px-6 w-full no-border-tonal-shift flat-no-shadows">
+<div class="flex items-center flex-1 max-w-2xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="w-full bg-[#111125] border-none rounded-xl py-2 pl-10 pr-4 text-slate-200 text-sm focus:ring-1 focus:ring-orange-500/50 transition-all placeholder:text-slate-600" placeholder="Search members, ISBNs, or book titles..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6 ml-6">
+<button class="relative text-slate-400 hover:bg-slate-800/50 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full"></span>
+</button>
+<button class="text-slate-400 hover:bg-slate-800/50 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-800">
+<div class="text-right">
+<p class="text-xs font-bold text-slate-200">A. Vance</p>
+<p class="text-[10px] text-orange-400/80 tracking-tighter uppercase font-semibold">Chief Librarian</p>
+</div>
+<img alt="Librarian profile" class="w-10 h-10 rounded-full border border-orange-500/20 object-cover" data-alt="close-up portrait of a professional librarian in a modern workspace with soft cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRml1bMNhc7iypHsRWmYKv-xdvdgpwt2mLmFQtM6M1zYe5lcU3aevSBRUQFbmQyczoOy9qPV5ucFSGAUe-aWSUIfqB5mOHISJJdb8px1yhmyYOhDBtPLrPw07NadIh-wF6UGIm04bDlgRdmyyFpnUSl-ciEGzjZ3LCdG8oPvfLqDwFiAAWAQn6G2UsRu9xHIxeC0X66Q7Y9_2xJJdFTqTMOpK_xJDX2m3_192pSA59zz92Ai7RCMQF5sCufuakW7cjfoyzPxoWK9b-"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8 bg-[#111125]">
+<!-- Header & Summary Stats -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-background mb-2">Circulation Management</h2>
+<p class="text-on-surface-variant text-sm max-w-lg">Manage real-time logistics of the terminal's repository. Scan assets to initiate synchronous movement.</p>
+</div>
+<div class="grid grid-cols-3 gap-4 w-full md:w-auto">
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col min-w-[140px] border-l-2 border-primary">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Total Out</span>
+<span class="text-2xl font-black text-on-surface mt-1">1,284</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col min-w-[140px] border-l-2 border-tertiary">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Returns Today</span>
+<span class="text-2xl font-black text-tertiary mt-1">42</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col min-w-[140px] border-l-2 border-error">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Overdue Alerts</span>
+<span class="text-2xl font-black text-error mt-1">18</span>
+</div>
+</div>
+</section>
+<!-- Quick Actions Bar (The "Soul" Element) -->
+<section class="glass-panel p-1 rounded-full border border-outline-variant/10 flex items-center gap-2 pr-2">
+<div class="flex-1 flex items-center px-6 relative">
+<span class="material-symbols-outlined text-primary text-xl mr-4" data-icon="sensors">sensors</span>
+<input class="bg-transparent border-none focus:ring-0 text-primary placeholder:text-primary/30 w-full text-lg font-medium tracking-tight" placeholder="Awaiting RFID/Barcode input signal..." type="text"/>
+<div class="absolute right-4 animate-pulse flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4ade80]"></span>
+<span class="text-[10px] font-bold text-[#4ade80] uppercase tracking-widest">Scanner Ready</span>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container px-8 py-3 rounded-full font-bold text-sm hover:scale-95 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="output">output</span>
+                    CHECK-OUT
+                </button>
+<button class="bg-surface-variant text-on-surface-variant px-8 py-3 rounded-full font-bold text-sm hover:bg-surface-bright transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="input">input</span>
+                    CHECK-IN
+                </button>
+</section>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Active Transactions Table (Bento Style) -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl overflow-hidden">
+<div class="p-6 flex justify-between items-center bg-surface-container-high/30">
+<h3 class="text-sm font-bold tracking-widest uppercase text-on-surface">Active Transactions</h3>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-surface-variant text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-variant text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-on-surface-variant bg-surface-container-high/10">
+<th class="px-6 py-4 font-bold">Patron Entity</th>
+<th class="px-6 py-4 font-bold">Asset Details</th>
+<th class="px-6 py-4 font-bold">Timeline</th>
+<th class="px-6 py-4 font-bold text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-high/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary font-bold text-xs">EK</div>
+<div>
+<p class="text-sm font-semibold">Elena Kross</p>
+<p class="text-[10px] text-on-surface-variant">ID: #4092-A</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm font-semibold truncate max-w-[200px]">The Astral Navigation Manual</p>
+<p class="text-[10px] text-on-surface-variant font-mono">ISBN: 978-3-16-148410-0</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant">Out: Oct 12</span>
+<span class="text-xs font-bold text-on-surface">Due: Oct 26</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20">ACTIVE</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-xs">JD</div>
+<div>
+<p class="text-sm font-semibold">Jared Dorn</p>
+<p class="text-[10px] text-on-surface-variant">ID: #2215-C</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm font-semibold truncate max-w-[200px]">Quantum Mechanics Vol. II</p>
+<p class="text-[10px] text-on-surface-variant font-mono">ISBN: 978-0-12-374415-0</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant">Out: Sep 30</span>
+<span class="text-xs font-bold text-error">Due: Oct 14</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-error/10 text-error border border-error/20">OVERDUE</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary font-bold text-xs">SM</div>
+<div>
+<p class="text-sm font-semibold">Sara Miller</p>
+<p class="text-[10px] text-on-surface-variant">ID: #8831-X</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm font-semibold truncate max-w-[200px]">Historical Archives: Era 4</p>
+<p class="text-[10px] text-on-surface-variant font-mono">ISBN: 978-1-56-619909-4</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant">Out: Oct 18</span>
+<span class="text-xs font-bold text-on-surface">Due: Nov 01</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20">ACTIVE</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-on-surface-variant/20 flex items-center justify-center text-on-surface-variant font-bold text-xs">TB</div>
+<div>
+<p class="text-sm font-semibold">Toby Black</p>
+<p class="text-[10px] text-on-surface-variant">ID: #1029-D</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm font-semibold truncate max-w-[200px]">Algorithms of the Void</p>
+<p class="text-[10px] text-on-surface-variant font-mono">ISBN: 978-0-26-203384-8</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant">Out: Oct 05</span>
+<span class="text-xs font-bold text-on-surface">Returned: Oct 20</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-surface-variant text-on-surface-variant border border-outline-variant/30">RETURNED</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/10 flex justify-between items-center">
+<p class="text-[10px] text-on-surface-variant font-medium">SHOWING 4 OF 1,284 TRANSACTIONS</p>
+<div class="flex gap-4">
+<button class="text-xs font-bold text-primary hover:underline">VIEW ALL RECORDS</button>
+</div>
+</div>
+</div>
+<!-- Secondary View: Reservation Queue -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-surface-container-low rounded-xl overflow-hidden p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-bold tracking-widest uppercase text-on-surface">Pending Pickups</h3>
+<span class="text-xs bg-tertiary/20 text-tertiary px-2 py-0.5 rounded font-black">09</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 bg-surface-container-high/40 rounded-xl border-l-4 border-tertiary group hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-widest">Priority 1</span>
+<span class="text-[10px] text-on-surface-variant">Reserved 2h ago</span>
+</div>
+<h4 class="text-sm font-bold text-on-surface mb-1">Introduction to Robotics</h4>
+<div class="flex items-center gap-2">
+<img alt="User" class="w-4 h-4 rounded-full" data-alt="minimalist avatar of a male user in dark theme icon style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMcRbI0XGova7xHVTNEtBNfNznycNgb38gYD9Z1plubL25XfFuClrc_GGe0KWCmNivKdkCSHmruH5L24sGpgl0xMegzacBo76abdv23shZ-OPVQVPuVtVC_ZzNrsoKsvO1BpDoYBG6K9S7idJ5HOLngk8Bkz11RtslcSgKSVbzXsaWQegpIiMlXp_QEb_JiYG5a_T06qtQSwf3XVt5jLTMI9YUa9BF21DADQTTMls0SvnTbdQDDO4CEUz0YUf3uo3_2dZqZ60VzALe"/>
+<span class="text-xs text-on-surface-variant">Lukas Graham</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high/40 rounded-xl border-l-4 border-outline-variant group hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Standard</span>
+<span class="text-[10px] text-on-surface-variant">Reserved 5h ago</span>
+</div>
+<h4 class="text-sm font-bold text-on-surface mb-1">Deep Learning Fundamentals</h4>
+<div class="flex items-center gap-2">
+<img alt="User" class="w-4 h-4 rounded-full" data-alt="minimalist avatar of a female user in dark theme icon style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo6DNfSqX_WInAlcCPve6KOxX6nHCe-n32BorGYyB-Xlr4sIjaSAzXhzqoWDUposu7azeDPxmhwbjVcXRW5ofYNZz84B4cdKwpTyxsOPPgKNfBAnI03k0z9l_QB2I4IpQ_nW99WhipkE2pFGEH_RhiEXiJCVgxT_MHyPI1nrdB6mAqqjwy_7blIpJDLP1Q9HhOZeJD6hWVHeCa3fKjcyH1YeIIX-xc6R-_O5wOhJN1HSCI_vW29-EP6INm_A22wDjkoZjg_uepGb6O"/>
+<span class="text-xs text-on-surface-variant">Maria Santos</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high/40 rounded-xl border-l-4 border-outline-variant group hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Standard</span>
+<span class="text-[10px] text-on-surface-variant">Reserved 8h ago</span>
+</div>
+<h4 class="text-sm font-bold text-on-surface mb-1">Neurobiology of Memory</h4>
+<div class="flex items-center gap-2">
+<img alt="User" class="w-4 h-4 rounded-full" data-alt="minimalist avatar of a user in dark theme icon style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXGj3tI4B5rIXKyNMrmefzB2_yvPGLQ2wAVQk1GwJmyhEpeaZw7cwcHbSxFHJblVYU_lkrT6jtwfJLboijqdBm8IEtZXc6p1nqMcRbklLVOhr-_jGRQpR6fjRQ01IQmPzBbtGXdKhOvOKu9jgEo-ILg4ug0A73HWgpFCFtFa09t8V63TNPwIg958_RodBAXcIG6qW0fCXR-00jKHOXeRKPmdfxgYS1kqGUmTswa-BJP_bIfYyvaWak1qyC9JVKVzNACB6YNBJgJZsl"/>
+<span class="text-xs text-on-surface-variant">Arthur Dent</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-outline-variant/30 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all uppercase tracking-widest">
+                            Manager Queue (9+)
+                        </button>
+</div>
+<!-- System Health/Logs Card -->
+<div class="bg-surface-container-low rounded-xl p-6">
+<h3 class="text-sm font-bold tracking-widest uppercase text-on-surface mb-4">Live Circulation Feed</h3>
+<div class="space-y-3 font-mono text-[10px]">
+<div class="flex gap-3 text-on-surface-variant">
+<span class="text-[#4ade80]">[14:22:01]</span>
+<span>RFID_CHECKIN: Success Asset #8821</span>
+</div>
+<div class="flex gap-3 text-on-surface-variant">
+<span class="text-tertiary">[14:18:45]</span>
+<span>SYSCAL: Reservation alert sent to @lukas_g</span>
+</div>
+<div class="flex gap-3 text-on-surface-variant">
+<span class="text-error">[14:05:12]</span>
+<span>ALERT: Overdue threshold reached #2215-C</span>
+</div>
+<div class="flex gap-3 text-on-surface-variant">
+<span class="text-[#4ade80]">[13:58:33]</span>
+<span>RFID_CHECKOUT: Success Asset #1029</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Status Bar (Signature Element) -->
+<footer class="h-14 mx-8 mb-6 glass-panel rounded-xl flex items-center justify-between px-8 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4ade80]"></span>
+<span>System Online</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="router">router</span>
+<span>Server: Astral-Main-01</span>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="cloud_done">cloud_done</span>
+<span>Data Synced: 2 min ago</span>
+</div>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span>
+<span>Shift Status: Active</span>
+</div>
+</div>
+</footer>
+</main>
+</body></html>

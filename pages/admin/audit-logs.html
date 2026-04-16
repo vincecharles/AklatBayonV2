@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Audit Logs - AklatBayon</title>
-  <script src="/js/theme-init.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -15,8 +14,7 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: { DEFAULT: '#3211d4', 50: '#eef0ff', 100: '#e0e3ff', 700: '#3211d4', 800: '#2e14a8', 900: '#281689' },
+          /* colors removed - using astral CSS */,
             accent: '#e94560',
             'bg-light': '#f6f6f8',
             'bg-dark': '#131022',
@@ -26,18 +24,18 @@
     }
   </script>
 </head>
-<body class="bg-bg-light dark:bg-bg-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen antialiased">
-  <div class="flex min-h-screen">
+<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+  <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
-    <main class="lg:ml-72 mt-16 flex-1 p-6 md:p-8">
+    <main class="astral-main pb-12">
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
         <div>
           <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">checklist</span>
+            <span class="material-symbols-outlined text-[#ffb599]">checklist</span>
             Audit Logs
           </h1>
           <p class="text-sm text-slate-500 mt-1">Track all system activity and user actions</p>
@@ -45,12 +43,12 @@
       </div>
 
       <!-- Filter Bar -->
-      <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-5">
+      <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-[#3a3a52] mb-5">
         <div class="relative flex-1 max-w-xs">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-          <input type="text" id="search-input" placeholder="Search logs..." class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+          <input type="text" id="search-input" placeholder="Search logs..." class="h-10 w-full pl-10 pr-4 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:border-[#ffb599] focus:ring-1 focus:ring-primary outline-none">
         </div>
-        <select id="filter-action" class="h-10 px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-primary focus:border-primary">
+        <select id="filter-action" class="h-10 px-3 text-sm rounded-lg border border-[#3a3a52] bg-[#1e1e32] focus:ring-primary focus:border-[#ffb599]">
           <option value="">All Actions</option>
           <option value="CREATE">Create</option>
           <option value="UPDATE">Update</option>
@@ -61,20 +59,20 @@
       </div>
 
       <!-- Table -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div class="astral-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead>
-              <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Date/Time</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">User</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Action</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Entity</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Details</th>
+              <tr class="bg-[#1a1a2e] border-b border-[#3a3a52]">
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">#</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Date/Time</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">User</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Action</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Entity</th>
+                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Details</th>
               </tr>
             </thead>
-            <tbody id="data-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></tbody>
+            <tbody id="data-table" class="divide-y divide-[#3a3a52]/50 text-sm"></tbody>
           </table>
         </div>
       </div>
@@ -96,19 +94,19 @@
         if (s) logs = logs.filter((l) => l.user.toLowerCase().includes(s) || l.details.toLowerCase().includes(s) || l.entity.toLowerCase().includes(s));
         if (af) logs = logs.filter((l) => l.action === af);
         const tbody = document.getElementById('data-table');
-        if (!logs.length) { tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">No logs found.</td></tr>'; return; }
+        if (!logs.length) { tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-8 text-center text-[#9b99b8]">No logs found.</td></tr>'; return; }
         const colorMap = {
-            CREATE: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+            CREATE: 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
             UPDATE: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-            DELETE: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-            LOGIN: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
-            LOGOUT: 'bg-slate-100 text-slate-600 dark:bg-slate-700/30 dark:text-slate-400',
+            DELETE: '" style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)',
+            LOGIN: '" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)',
+            LOGOUT: 'bg-slate-100 text-slate-600 dark:bg-slate-700/30 dark:text-[#9b99b8]',
             SEED: 'bg-slate-800 text-slate-100 dark:bg-slate-200/20 dark:text-slate-300',
-            RFID_LOGIN: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
+            RFID_LOGIN: '" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)'
         };
-        const defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-700/30 dark:text-slate-400';
+        const defaultBadge = 'bg-slate-100 text-slate-600 dark:bg-slate-700/30 dark:text-[#9b99b8]';
         tbody.innerHTML = logs.map((l, i) => {
-            return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"><td class="px-5 py-3 text-slate-400">${i+1}</td><td class="px-5 py-3 whitespace-nowrap">${App.formatDateTime(l.created_at)}</td><td class="px-5 py-3 font-semibold">${l.user}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${colorMap[l.action] || defaultBadge}">${l.action}</span></td><td class="px-5 py-3">${l.entity}</td><td class="px-5 py-3 text-slate-500 dark:text-slate-400 max-w-xs truncate">${l.details}</td></tr>`;
+            return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-5 py-3 text-[#9b99b8]">${i+1}</td><td class="px-5 py-3 whitespace-nowrap">${App.formatDateTime(l.created_at)}</td><td class="px-5 py-3 font-semibold">${l.user}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${colorMap[l.action] || defaultBadge}">${l.action}</span></td><td class="px-5 py-3">${l.entity}</td><td class="px-5 py-3 text-[#9b99b8] max-w-xs truncate">${l.details}</td></tr>`;
         }).join('');
     };
     document.getElementById('search-input').addEventListener('input', load);

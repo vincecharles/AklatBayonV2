@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "tertiary-fixed": "#ebddff",
+                "primary-fixed-dim": "#ffb599",
+                "on-surface-variant": "#ddc0b6",
+                "on-primary-fixed-variant": "#7f2b00",
+                "on-primary": "#5a1c00",
+                "surface-tint": "#ffb599",
+                "surface-bright": "#37374d",
+                "on-background": "#e2e0fc",
+                "surface-container-low": "#1a1a2e",
+                "inverse-on-surface": "#2f2e43",
+                "on-secondary-fixed": "#2f1500",
+                "tertiary-container": "#9b87c1",
+                "surface-container-lowest": "#0c0c1f",
+                "surface-container": "#1e1e32",
+                "secondary-fixed": "#ffdcc3",
+                "surface-variant": "#333348",
+                "on-error": "#690005",
+                "outline": "#a58b82",
+                "on-primary-container": "#4e1800",
+                "on-tertiary-container": "#311f52",
+                "surface-container-high": "#28283d",
+                "tertiary": "#d2bcfa",
+                "on-primary-fixed": "#370e00",
+                "error": "#ffb4ab",
+                "primary-fixed": "#ffdbce",
+                "error-container": "#93000a",
+                "background": "#111125",
+                "on-secondary-fixed-variant": "#6e3900",
+                "on-tertiary-fixed": "#231043",
+                "surface-container-highest": "#333348",
+                "on-tertiary-fixed-variant": "#4f3d72",
+                "secondary": "#ffb77d",
+                "inverse-surface": "#e2e0fc",
+                "secondary-fixed-dim": "#ffb77d",
+                "on-tertiary": "#38265a",
+                "surface-dim": "#111125",
+                "primary-container": "#e17141",
+                "primary": "#ffb599",
+                "tertiary-fixed-dim": "#d2bcfa",
+                "outline-variant": "#56423b",
+                "secondary-container": "#783f00",
+                "on-surface": "#e2e0fc",
+                "on-error-container": "#ffdad6",
+                "on-secondary": "#4d2600",
+                "inverse-primary": "#a04113",
+                "surface": "#111125",
+                "on-secondary-container": "#ffad68"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Inter"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .glass-panel {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        .astral-gradient {
+            background: linear-gradient(135deg, #ffb599 0%, #e17141 100%);
+        }
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(255, 181, 153, 0.15);
+        }
+        body {
+            background-color: #111125;
+            color: #e2e0fc;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- TopNavBar Implementation -->
+<header class="bg-[#111125] dark:bg-[#111125] w-full border-none font-inter tracking-tight sticky top-0 z-40">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1920px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-semibold tracking-tighter text-[#ffb599]">ASTRALIS</span>
+<!-- Desktop Navigation Links from BottomNavBar labels to maintain consistency -->
+<nav class="hidden md:flex gap-6">
+<a class="text-[#ffb599] font-bold transition-colors" href="#">Search</a>
+<a class="text-slate-400 hover:text-[#e17141] transition-colors" href="#">Repository</a>
+<a class="text-slate-400 hover:text-[#e17141] transition-colors" href="#">Insights</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:text-[#e17141] transition-colors scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-400 hover:text-[#e17141] transition-colors scale-95 duration-150">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-row">
+<!-- SideNavBar Implementation (Only visible on large screens) -->
+<aside class="hidden lg:flex fixed left-0 top-0 h-full w-72 bg-[#1A1A2E] dark:bg-[#1A1A2E] flex-col py-8 px-4 z-30 transition-all ease-in-out duration-200">
+<div class="mb-10 pl-2">
+<h2 class="text-lg font-bold text-[#ffb599] tracking-tighter">Library Repository</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-500">The Digital Astral</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-4 py-3 px-4 text-[#ffb599] border-r-2 border-[#ffb599] font-inter text-sm tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span>Aura Scan</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-500 hover:bg-[#333348] transition-all font-inter text-sm tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span>Departments</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-500 hover:bg-[#333348] transition-all font-inter text-sm tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span>Availability</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-500 hover:bg-[#333348] transition-all font-inter text-sm tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>AI Synthesis</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-500 hover:bg-[#333348] transition-all font-inter text-sm tracking-wide uppercase group" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>History</span>
+</a>
+</nav>
+<div class="mt-auto p-4 rounded-xl bg-surface-container-highest/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div>
+<p class="text-sm font-medium text-on-surface">Archive Master</p>
+<p class="text-[10px] text-slate-500">LEVEL 4 ACCESS</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 lg:ml-72 p-6 md:p-12 max-w-[1400px] mx-auto pb-32">
+<!-- Search Section -->
+<section class="mb-12">
+<div class="relative group">
+<div class="absolute -inset-0.5 astral-gradient rounded-full opacity-20 blur group-focus-within:opacity-40 transition duration-1000"></div>
+<div class="relative bg-surface-container-low rounded-full px-8 py-5 flex items-center gap-4 border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-lg text-on-surface placeholder-slate-500 font-medium" type="text" value="Looking for introductory physics books with a focus on quantum mechanics"/>
+<button class="astral-gradient px-6 py-2 rounded-full text-on-primary text-sm font-bold shadow-lg">SYNTHESIZE</button>
+</div>
+</div>
+<!-- Chips/Filters Row -->
+<div class="flex flex-wrap gap-3 mt-6">
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/20 text-xs font-semibold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">temp_preferences_custom</span>
+                        Aura: Technical
+                    </div>
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/20 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                        Availability: Digital
+                    </div>
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/20 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                        Dept: Science
+                    </div>
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary uppercase tracking-wider">
+                        Sort: Relevance
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+</section>
+<!-- AI Synthesis Area -->
+<section class="mb-16">
+<div class="relative overflow-hidden p-8 rounded-3xl bg-surface-container-low border border-primary/10 glow-primary">
+<div class="absolute top-0 right-0 p-12 opacity-10">
+<span class="material-symbols-outlined text-[120px] text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row gap-8 items-start">
+<div class="p-3 bg-primary/10 rounded-2xl">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold text-on-surface mb-3 tracking-tight">AI Synthesis</h3>
+<p class="text-on-surface-variant text-lg leading-relaxed max-w-3xl">
+                                I found <span class="text-primary font-bold">12 volumes</span> matching your request for beginner-friendly quantum physics. These titles are prioritized based on their 'readability' score for 1st-year students and clarity of non-linear algebraic concepts.
+                            </p>
+<div class="mt-6 flex items-center gap-4">
+<span class="h-1 w-12 astral-gradient rounded-full"></span>
+<span class="text-xs uppercase tracking-[0.2em] font-bold text-primary">Astralis Core Neural Engine Active</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Results Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="group bg-surface-container-low rounded-[2rem] overflow-hidden flex flex-col hover:bg-surface-container-high transition-colors duration-300">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="abstract visualization of quantum entanglement with glowing particles and dark cinematic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTKXu_grshhM1yfODxLwkRA45VOiThcDjCSG-3VxsYDItxguaawf5SiHYtvAicz2RIb5RDNG8VrSSObmnnJj1ZwR8VV4TVD6j7khCe-BYjBj-AMIGSDpCtdgSxuM4zAoiBXj9deMmAsrt6wot1Stl0Wm40Rqk1lM3y1wXj6RDXikd2Nmaj_Ort1G2H61MROk8u1xNjjHE5ay9hxuQzvfKyuS01tieOtlqusj5zFPR3g8XAjUCuNu0zd2hZkixcodcragyU4KmCYD7O"/>
+<div class="absolute top-4 right-4 bg-primary/90 text-on-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            98% MATCH
+                        </div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold text-on-surface tracking-widest uppercase border border-outline-variant/30">TECHNICAL</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold text-on-surface leading-tight">Quantum Foundations: A First Approach</h4>
+<span class="material-symbols-outlined text-slate-500 hover:text-primary transition-colors cursor-pointer">bookmark</span>
+</div>
+<p class="text-sm text-slate-400 mb-6 italic">Dr. Elena Thorne, 2023</p>
+<div class="mt-auto">
+<div class="bg-primary/5 rounded-xl p-3 border border-primary/10 mb-6">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[16px]">info</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter">AI INSIGHT</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Covers Core Concepts with 24 interactive visual simulations. Ideal for first-year intuition building.</p>
+</div>
+<button class="w-full py-3 rounded-xl bg-surface-container-highest text-on-surface text-sm font-bold hover:bg-primary hover:text-on-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+                                Access Repository
+                                <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-low rounded-[2rem] overflow-hidden flex flex-col hover:bg-surface-container-high transition-colors duration-300">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="digital nebula of data connections in dark blue and orange nebula colors futuristic concept" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCgl0-ZR1PfoQJ1nGLwzzLOJKBCrQHD7B5tbpSONjfTO7zs8uzPkRqUplvYG3mN-xEaOo7EWsuwBtpumvDebvZKPwME_7dQlM69Uw36UACXN9JUpwvLH6ItnH-olFWfJwuK8DxXQl9LTMVvZ_H-LEdw5925VU9XRpn_x0qC-4ED-A0-uZy8r8-fzHzw1nQzjlt5Io3n4TC8HetRfvR-_NCBarDMQtFG9r0ZD4nYbhxFR24uXfSKQGN0YPhEi_QubRHNXhku9ADSYM1"/>
+<div class="absolute top-4 right-4 bg-primary/90 text-on-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            94% MATCH
+                        </div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold text-on-surface tracking-widest uppercase border border-outline-variant/30">THEORETICAL</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold text-on-surface leading-tight">The Fabric of Reality: Wave Functions</h4>
+<span class="material-symbols-outlined text-slate-500 hover:text-primary transition-colors cursor-pointer">bookmark</span>
+</div>
+<p class="text-sm text-slate-400 mb-6 italic">Prof. Marcus H. Bell, 2022</p>
+<div class="mt-auto">
+<div class="bg-primary/5 rounded-xl p-3 border border-primary/10 mb-6">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[16px]">info</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter">AI INSIGHT</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Highly Recommended for students with a strong background in Classical Mechanics. Focuses on duality.</p>
+</div>
+<button class="w-full py-3 rounded-xl bg-surface-container-highest text-on-surface text-sm font-bold hover:bg-primary hover:text-on-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+                                Access Repository
+                                <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-low rounded-[2rem] overflow-hidden flex flex-col hover:bg-surface-container-high transition-colors duration-300">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="scientific laboratory equipment with glowing orange laser light through a prism on dark table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1dQKthVcs2fmlgwEwriPl8WLTrrqUytLtDjZBmyKVnAHFlWA_9PcEXGTqCZa9WxHa-afEydhlT2Ye6x3cmk8UiHfMmFuigCneCgDqGzgeoe7fsOA7BlN8mY4Li3kMI6ntIMfxEtujN5QiPEfXlkBzFlPQ2lx7_f--n3FZ5-1AeRJMKdiCEdMmqyhhrD29OxpeM82tjaXI9QZyAUxVxioXDRDG8gSp8V9GVGQpj5IvToXu6qa4fOb_qnNdGbev_g4L5m12EsV5J7rQ"/>
+<div class="absolute top-4 right-4 bg-primary/90 text-on-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            89% MATCH
+                        </div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold text-on-surface tracking-widest uppercase border border-outline-variant/30">HISTORICAL</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold text-on-surface leading-tight">Astral Mechanics: Origin of Atoms</h4>
+<span class="material-symbols-outlined text-slate-500 hover:text-primary transition-colors cursor-pointer">bookmark</span>
+</div>
+<p class="text-sm text-slate-400 mb-6 italic">A. J. Rutherford, 1925 (Digitized 2024)</p>
+<div class="mt-auto">
+<div class="bg-primary/5 rounded-xl p-3 border border-primary/10 mb-6">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[16px]">info</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter">AI INSIGHT</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Unique historical perspective. Excellent conceptual foundation before diving into modern math.</p>
+</div>
+<button class="w-full py-3 rounded-xl bg-surface-container-highest text-on-surface text-sm font-bold hover:bg-primary hover:text-on-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+                                Access Repository
+                                <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar Implementation (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-6 pt-3 bg-[#1A1A2E]/80 backdrop-blur-xl shadow-[0_-4px_32px_rgba(12,12,31,0.08)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center bg-[#ffb599]/10 text-[#ffb599] rounded-xl px-4 py-1 scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#ffb599] scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">book_2</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase">Repository</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#ffb599] scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase">Insights</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#ffb599] scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button for AI Help -->
+<div class="fixed bottom-10 right-10 z-40 hidden md:block">
+<button class="w-14 h-14 rounded-full astral-gradient flex items-center justify-center shadow-2xl glow-primary group">
+<span class="material-symbols-outlined text-on-primary text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="absolute right-full mr-4 px-4 py-2 bg-surface-container-high rounded-lg text-on-surface text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                Refine Synthesis
+            </div>
+</button>
+</div>
+</body></html>

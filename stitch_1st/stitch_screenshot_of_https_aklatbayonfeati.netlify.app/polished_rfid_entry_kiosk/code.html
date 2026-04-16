@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FEATI ASTRAL REPOSITORY - Entry Kiosk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#9b87c1",
+              "on-primary-fixed": "#370e00",
+              "primary-container": "#e17141",
+              "outline": "#a58b82",
+              "on-primary-container": "#4e1800",
+              "surface": "#111125",
+              "secondary-fixed-dim": "#ffb77d",
+              "on-surface-variant": "#ddc0b6",
+              "on-primary": "#5a1c00",
+              "surface-bright": "#37374d",
+              "outline-variant": "#56423b",
+              "on-primary-fixed-variant": "#7f2b00",
+              "secondary": "#ffb77d",
+              "primary-fixed": "#ffdbce",
+              "error": "#ffb4ab",
+              "on-tertiary-fixed": "#231043",
+              "primary-fixed-dim": "#ffb599",
+              "tertiary-fixed-dim": "#d2bcfa",
+              "on-secondary": "#4d2600",
+              "inverse-primary": "#a04113",
+              "surface-container": "#1e1e32",
+              "on-tertiary-fixed-variant": "#4f3d72",
+              "on-tertiary-container": "#311f52",
+              "tertiary": "#d2bcfa",
+              "error-container": "#93000a",
+              "on-error-container": "#ffdad6",
+              "surface-variant": "#333348",
+              "on-secondary-fixed": "#2f1500",
+              "background": "#111125",
+              "surface-tint": "#ffb599",
+              "secondary-container": "#783f00",
+              "surface-container-low": "#1a1a2e",
+              "secondary-fixed": "#ffdcc3",
+              "on-error": "#690005",
+              "on-tertiary": "#38265a",
+              "surface-container-highest": "#333348",
+              "primary": "#ffb599",
+              "on-secondary-container": "#ffad68",
+              "inverse-surface": "#e2e0fc",
+              "on-secondary-fixed-variant": "#6e3900",
+              "surface-dim": "#111125",
+              "surface-container-lowest": "#0c0c1f",
+              "inverse-on-surface": "#2f2e43",
+              "on-background": "#e2e0fc",
+              "on-surface": "#e2e0fc",
+              "tertiary-fixed": "#ebddff",
+              "surface-container-high": "#28283d"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-astral-gradient {
+            background: radial-gradient(circle at 50% 50%, #1e1e32 0%, #111125 100%);
+        }
+        
+        @keyframes rfid-breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(224, 112, 64, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(224, 112, 64, 0.4); }
+        }
+        
+        @keyframes scanning-pulse {
+            0%, 100% { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 181, 153, 0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 60px rgba(255, 181, 153, 0.6); }
+        }
+
+        @keyframes scan-line {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .rfid-idle {
+            animation: rfid-breathe 4s ease-in-out infinite;
+        }
+
+        .rfid-scanning {
+            animation: scanning-pulse 0.8s ease-in-out infinite !important;
+        }
+
+        .scan-effect {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ffb599, transparent);
+            box-shadow: 0 0 15px #ffb599;
+            z-index: 10;
+            display: none;
+            animation: scan-line 1.5s linear infinite;
+        }
+
+        .state-success {
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.4) !important;
+        }
+        
+        .success-bg {
+            background: linear-gradient(to bottom right, #4ade80, #22c55e) !important;
+        }
+
+        .text-success {
+            color: #4ade80 !important;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30 min-h-screen overflow-hidden flex flex-col items-center justify-center bg-astral-gradient">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full h-16 flex justify-between items-center px-8 z-50 bg-gradient-to-b from-[#111125] to-transparent backdrop-blur-xl">
+<div class="flex items-center gap-4">
+<div class="text-xl font-bold tracking-tighter text-[#ffb599] drop-shadow-[0_0_8px_rgba(255,181,153,0.4)]">
+                FEATI ASTRAL REPOSITORY
+            </div>
+<div class="h-4 w-px bg-outline-variant/30"></div>
+<div class="flex items-center gap-2" id="system-status">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#4ade80]" id="status-light"></span>
+<span class="font-['Inter'] text-xs font-medium uppercase tracking-widest text-emerald-400" id="status-text">SYSTEM ONLINE</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="font-['Inter'] tracking-tight font-semibold uppercase text-xs text-orange-400">STATION ID</span>
+<span class="font-mono text-[10px] text-slate-400">FEATI-LMS STATION 01</span>
+</div>
+<div class="flex gap-4">
+<button class="text-slate-400 hover:text-[#ffb599] transition-colors duration-300 scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+</button>
+<button class="text-slate-400 hover:text-[#ffb599] transition-colors duration-300 scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Side Navigation -->
+<aside class="fixed left-0 top-16 bottom-0 flex flex-col items-center py-8 z-40 h-[calc(100vh-80px)] w-20 m-4 rounded-3xl bg-[#1A1A2E]/80 backdrop-blur-2xl shadow-[0_32px_48px_rgba(12,12,31,0.08)] hidden md:flex">
+<nav class="flex flex-col gap-8">
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-[#ffb599] brightness-125 bg-[#e17141]/20 rounded-xl p-3 border-r-2 border-[#ffb599] shadow-[0_0_15px_rgba(255,181,153,0.2)]">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest">Terminal</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all duration-300 p-3 rounded-xl">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest">Archives</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all duration-300 p-3 rounded-xl">
+<span class="material-symbols-outlined" data-icon="contactless">contactless</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest">RFID Link</span>
+</div>
+</nav>
+<div class="mt-auto flex flex-col items-center gap-6">
+<span class="material-symbols-outlined text-slate-500" data-icon="help_outline">help_outline</span>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full px-6 text-center">
+<!-- HUD Clock & Header -->
+<div class="mb-12 space-y-2">
+<h2 class="text-6xl font-bold tracking-tighter text-on-background/90 font-headline">
+                12:00:00 <span class="text-2xl text-primary font-medium uppercase tracking-widest ml-2">PM</span>
+</h2>
+<p class="text-primary font-mono tracking-[0.3em] uppercase text-sm opacity-80" id="protocol-status">Synchronization Protocol Active</p>
+</div>
+<!-- Central Scanner Interaction -->
+<div class="relative group cursor-pointer mb-16" id="rfid-container" onclick="startScanning()">
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-125 opacity-20 group-hover:opacity-40 transition-opacity"></div>
+<div class="relative w-64 h-64 rounded-full border-2 border-primary/20 flex items-center justify-center bg-surface-container-low/40 backdrop-blur-md rfid-idle overflow-hidden" id="rfid-circle">
+<!-- Scanning line effect -->
+<div class="scan-effect" id="scanner-line"></div>
+<div class="flex flex-col items-center gap-4 relative z-20">
+<div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary shadow-xl transition-all duration-500" id="icon-container">
+<span class="material-symbols-outlined text-5xl" data-icon="contactless" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
+</div>
+<div class="space-y-1">
+<span class="block text-primary font-bold uppercase tracking-widest text-lg transition-colors duration-500" id="main-text">TAP RFID TO ENTER</span>
+<span class="block text-slate-400 font-mono text-[10px] uppercase transition-colors duration-500" id="sub-text">Awaiting Transmission...</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RFID Search / Manual Input Bar -->
+<div class="w-full max-w-lg mb-12">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-slate-500" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low/60 border-none rounded-full py-5 pl-14 pr-6 text-on-surface placeholder:text-slate-500 focus:ring-2 focus:ring-primary/40 backdrop-blur-xl transition-all font-mono tracking-widest text-sm uppercase" placeholder="OR INPUT SYSTEM ID MANUALLY" type="text"/>
+</div>
+</div>
+<!-- Primary Action Cluster -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
+<button class="group flex items-center justify-between p-6 bg-surface-container/50 border border-white/5 rounded-3xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex flex-col items-start">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter mb-1">Explore</span>
+<span class="text-on-surface text-xl font-semibold">Browse Catalog</span>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+</div>
+</button>
+<button class="group flex items-center justify-between p-6 bg-surface-container/50 border border-white/5 rounded-3xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex flex-col items-start">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter mb-1">Secure Access</span>
+<span class="text-on-surface text-xl font-semibold">Manual Login</span>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="login">login</span>
+</div>
+</button>
+</div>
+</main>
+<!-- Decorative Background Image -->
+<div class="fixed inset-0 -z-10 pointer-events-none opacity-20 grayscale brightness-50">
+<img alt="Background Atmosphere" class="w-full h-full object-cover" data-alt="abstract architectural geometry with leading lines and moody cosmic lighting reflecting off polished dark surfaces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzyMtWuAFbl2R1QgwURJQFfCumQm4KMhJ5hBJcu9pkFwPY18LwrU2HaAFXkkOj3SLoY5ijxbOKQLrszpUtklTnikEa3F2Qw3anboxENAC7o5H6PfTU_1fkdC_Nm2JDiskSYZX7vM2iDu5nPWH9B1vhsXLUhzc2TJJKcwmtfJwB-ebRPsTWsqyLR1sw9yNGsZ8sVYLm5fZl90OKdMr7Smm2xCOP5HlYwG5Dy9lBQJpT_Rkqr1-sG0RZI4sxbl_16tsXcvM6EVuWkLtU"/>
+</div>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50 bg-[#1A1A2E]/60 backdrop-blur-lg px-6 py-3 rounded-full border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-wider">Quick Search</span>
+</div>
+<div class="flex flex-col items-center bg-gradient-to-br from-[#ffb599] to-[#e17141] text-white rounded-full px-6 py-2 shadow-lg shadow-primary/20 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-wider">Active Session</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-wider">Emergency</span>
+</div>
+</nav>
+<!-- HUD Background Overlays -->
+<div class="fixed top-20 right-8 pointer-events-none text-slate-700/30 font-mono text-[8px] space-y-1">
+<div>CORE_TEMP: 34°C</div>
+<div>UPLINK_STABILITY: 99.8%</div>
+<div>ACTIVE_USERS: 1,204</div>
+<div>ENCRYPTION: AES-256</div>
+</div>
+<div class="fixed bottom-24 left-8 pointer-events-none">
+<div class="w-32 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-2/3 h-full bg-primary/40 rounded-full"></div>
+</div>
+<span class="text-[8px] font-mono text-slate-600 uppercase tracking-widest mt-1 block">Storage Matrix Capacity</span>
+</div>
+<script>
+        function startScanning() {
+            const circle = document.getElementById('rfid-circle');
+            const mainText = document.getElementById('main-text');
+            const subText = document.getElementById('sub-text');
+            const scannerLine = document.getElementById('scanner-line');
+            const iconContainer = document.getElementById('icon-container');
+            const rfidIcon = document.getElementById('rfid-icon');
+            const statusLight = document.getElementById('status-light');
+            const statusText = document.getElementById('status-text');
+
+            // Reset logic in case called during success
+            if (circle.classList.contains('state-success')) return;
+
+            // Step 1: Scanning State
+            circle.classList.remove('rfid-idle');
+            circle.classList.add('rfid-scanning');
+            mainText.innerText = 'AUTHENTICATING...';
+            subText.innerText = 'READING ENCRYPTED DATA...';
+            scannerLine.style.display = 'block';
+
+            // Step 2: Transition to Success
+            setTimeout(() => {
+                circle.classList.remove('rfid-scanning');
+                circle.classList.add('state-success');
+                scannerLine.style.display = 'none';
+                
+                mainText.innerText = 'ACCESS GRANTED';
+                mainText.classList.add('text-success');
+                subText.innerText = 'WELCOME, JUAN';
+                subText.classList.add('text-success');
+                
+                iconContainer.classList.add('success-bg');
+                rfidIcon.innerText = 'verified';
+                
+                // Update System Status
+                statusText.innerText = 'USER AUTHENTICATED';
+                statusLight.classList.remove('bg-emerald-400');
+                statusLight.classList.add('bg-[#4ade80]');
+                statusLight.style.boxShadow = '0 0 12px #4ade80';
+
+                document.getElementById('protocol-status').innerText = 'SESSION SECURED - HANDSHAKE COMPLETE';
+                document.getElementById('protocol-status').classList.add('text-success');
+            }, 1500);
+        }
+    </script>
+</body></html>

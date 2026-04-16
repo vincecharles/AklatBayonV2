@@ -1,157 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FEATI-LMS | AklatBayon</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        primary: { DEFAULT: '#3211d4', 700: '#3211d4', 800: '#2e14a8' },
-                        accent: '#e94560',
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="/css/custom.css" rel="stylesheet">
     <style>
-        /* Time-based background gradients */
-        body.time-night     { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f3460 100%); }
-        body.time-dawn      { background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 30%, #e07040 70%, #f4a460 100%); }
-        body.time-morning   { background: linear-gradient(135deg, #1565c0 0%, #42a5f5 50%, #90caf9 100%); }
-        body.time-afternoon { background: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #64b5f6 100%); }
-        body.time-dusk      { background: linear-gradient(135deg, #1a1a2e 0%, #4a1942 30%, #c0392b 70%, #e67e22 100%); }
-
-        /* Morning mode - dark text overrides */
-        body.time-morning .text-hero { color: #0d2137; text-shadow: 0 0 30px rgba(13,33,55,0.2); }
-        body.time-morning .text-sub  { color: rgba(13,33,55,0.6); }
-        body.time-morning .text-dim  { color: rgba(13,33,55,0.5); }
-        body.time-morning .ring-scan { border-color: rgba(13,33,55,0.3); }
-        body.time-morning .line-scan { background: linear-gradient(90deg, transparent, rgba(13,33,55,0.6), transparent); box-shadow: 0 0 15px rgba(13,33,55,0.3); }
-        body.time-morning .particle  { background: rgba(255,255,255,0.25); }
-        body.time-afternoon .particle { background: rgba(255,255,255,0.25); }
-
-        /* Scan ring pulse */
-        @keyframes scan-pulse { 0% { width: 200px; height: 200px; opacity: 0.8; } 100% { width: 320px; height: 320px; opacity: 0; } }
-        .ring-scan { animation: scan-pulse 2.5s ease-out infinite; }
-        .ring-scan:nth-child(2) { animation-delay: 0.5s; }
-        .ring-scan:nth-child(3) { animation-delay: 1s; }
-
-        /* Scan line sweep */
-        @keyframes scan-sweep { 0% { top: 15px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 200px; opacity: 0; } }
-        .line-scan { animation: scan-sweep 2.5s ease-in-out infinite; }
-
-        /* Glow pulse */
-        @keyframes glow-pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; } }
-
-        /* Floating particles */
-        @keyframes float-up { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
-        .particle { position: absolute; border-radius: 50%; background: rgba(224,230,240,0.2); animation: float-up linear infinite; }
-
-        /* Status dot pulse */
-        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* Welcome toast animations */
-        @keyframes slide-up { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
-        @keyframes fade-out { to { opacity: 0; pointer-events: none; } }
-        .toast-anim { animation: slide-up 0.5s ease-out, fade-out 0.5s ease-in 4.5s forwards; }
-
-        /* Fade in */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Faculty sub toggle */
+        .bg-astral-gradient { background: radial-gradient(circle at 50% 50%, #1e1e32 0%, #111125 100%); }
+        .scan-effect {
+            position: absolute; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to right, transparent, #ffb599, transparent);
+            box-shadow: 0 0 15px #ffb599; z-index: 10; display: none;
+            animation: scan-line 1.5s linear infinite;
+        }
+        .state-success { border-color: #4ade80 !important; box-shadow: 0 0 30px rgba(74,222,128,0.4) !important; }
+        .success-bg { background: linear-gradient(to bottom right, #4ade80, #22c55e) !important; }
+        .text-success-glow { color: #4ade80 !important; }
         .faculty-sub { display: none; }
         .faculty-sub.visible { display: block; }
     </style>
 </head>
-<body class="time-night font-sans min-h-screen flex flex-col overflow-hidden text-white transition-[background] duration-1000">
+<body class="font-sans min-h-screen overflow-hidden flex flex-col items-center justify-center bg-astral-gradient text-[#e2e0fc]">
     <!-- Particles -->
     <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
-    <!-- Status Bar -->
-    <div class="flex justify-between items-center px-8 py-4 absolute top-0 left-0 right-0 z-10">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[1.5px] text-white/70">
-            <div class="w-2 h-2 rounded-full bg-emerald-500" style="animation: pulse-dot 2s ease-in-out infinite"></div>
-            SYSTEM ONLINE
-        </div>
-        <div class="text-right">
-            <div id="clock" class="text-2xl font-bold tracking-wide text-white/90">12:00:00 PM</div>
-            <div class="text-[11px] text-white/50 tracking-wide text-dim">FEATI-LMS STATION 01</div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col items-center justify-center px-5 z-[1]">
-        <!-- Logo Container -->
-        <div class="relative w-[220px] h-[220px] mb-8">
-            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
-            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
-            <div class="ring-scan absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white/30"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full z-[1]" style="background: radial-gradient(circle, rgba(224,230,240,0.1) 0%, transparent 70%); animation: glow-pulse 3s ease-in-out infinite"></div>
-            <div class="line-scan absolute left-1/2 -translate-x-1/2 w-[180px] h-[3px] rounded z-[4] bg-gradient-to-r from-transparent via-white/70 to-transparent shadow-[0_0_15px_rgba(224,230,240,0.3)]"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[3] flex items-center justify-center">
-                <img src="images/logo.png" alt="AklatBayon" class="w-[140px] h-[140px] object-contain drop-shadow-[0_0_20px_rgba(224,230,240,0.3)]">
+    <!-- Top Navigation Shell -->
+    <header class="fixed top-0 w-full h-16 flex justify-between items-center px-8 z-50 bg-gradient-to-b from-[#111125] to-transparent backdrop-blur-xl">
+        <div class="flex items-center gap-4">
+            <div class="text-xl font-bold tracking-tighter text-[#ffb599] drop-shadow-[0_0_8px_rgba(255,181,153,0.4)]">
+                FEATI ASTRAL REPOSITORY
+            </div>
+            <div class="h-4 w-px bg-[#56423b]/30"></div>
+            <div class="flex items-center gap-2" id="system-status">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#4ade80]" id="status-light"></span>
+                <span class="text-xs font-medium uppercase tracking-widest text-emerald-400" id="status-text">SYSTEM ONLINE</span>
             </div>
         </div>
+        <div class="flex items-center gap-6">
+            <div class="flex flex-col items-end">
+                <span class="tracking-tight font-semibold uppercase text-xs text-[#ffb599]">STATION ID</span>
+                <span class="font-mono text-[10px] text-slate-400">FEATI-LMS STATION 01</span>
+            </div>
+            <div class="flex gap-4">
+                <button class="text-slate-400 hover:text-[#ffb599] transition-colors"><span class="material-symbols-outlined">sensors</span></button>
+                <button class="text-slate-400 hover:text-[#ffb599] transition-colors"><span class="material-symbols-outlined">schedule</span></button>
+            </div>
+        </div>
+    </header>
 
-        <!-- Tap Section -->
+    <!-- Side Navigation -->
+    <aside class="fixed left-0 top-16 bottom-0 flex-col items-center py-8 z-40 h-[calc(100vh-80px)] w-20 m-4 rounded-3xl bg-[#1A1A2E]/80 backdrop-blur-2xl shadow-[0_32px_48px_rgba(12,12,31,0.08)] hidden md:flex">
+        <nav class="flex flex-col gap-8">
+            <div class="flex flex-col items-center gap-1 text-[#ffb599] bg-[#e17141]/20 rounded-xl p-3 border-r-2 border-[#ffb599] shadow-[0_0_15px_rgba(255,181,153,0.2)]">
+                <span class="material-symbols-outlined">terminal</span>
+                <span class="text-[8px] font-medium uppercase tracking-widest">Terminal</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all p-3 rounded-xl cursor-pointer">
+                <span class="material-symbols-outlined">library_books</span>
+                <span class="text-[8px] font-medium uppercase tracking-widest">Archives</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all p-3 rounded-xl cursor-pointer">
+                <span class="material-symbols-outlined">contactless</span>
+                <span class="text-[8px] font-medium uppercase tracking-widest">RFID Link</span>
+            </div>
+        </nav>
+        <div class="mt-auto flex flex-col items-center gap-6">
+            <span class="material-symbols-outlined text-slate-500">help_outline</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Canvas -->
+    <main class="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full px-6 text-center">
         <div id="tap-section">
-            <h1 class="text-5xl font-black uppercase tracking-[3px] text-center mb-0 text-hero text-[#e0e6f0]" style="text-shadow: 0 0 30px rgba(224,230,240,0.2)">TAP RFID</h1>
-            <h2 class="text-[42px] font-black uppercase tracking-[3px] text-center text-hero text-[#e0e6f0] mb-4" style="text-shadow: 0 0 30px rgba(224,230,240,0.2)">TO ENTER</h2>
-            <div class="flex items-center gap-2.5 text-base text-white/60 mb-6 tracking-wide justify-center text-sub">
-                <span class="material-symbols-outlined">auto_stories</span> Welcome to FEATI University Library
+            <!-- HUD Clock -->
+            <div class="mb-12 space-y-2">
+                <h2 class="text-6xl font-bold tracking-tighter text-[#e2e0fc]/90">
+                    <span id="clock">12:00:00</span> <span class="text-2xl text-[#ffb599] font-medium uppercase tracking-widest ml-2" id="clock-ampm">PM</span>
+                </h2>
+                <p class="text-[#ffb599] font-mono tracking-[0.3em] uppercase text-sm opacity-80" id="protocol-status">Synchronization Protocol Active</p>
             </div>
-            <div class="relative mb-6 flex justify-center">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg text-white/50 z-10">badge</span>
-                <input type="text" id="rfid-input" placeholder="Scan or type RFID" autofocus
-                    class="w-[340px] py-3.5 px-5 pl-12 text-lg font-semibold tracking-[2px] border-2 border-white/30 rounded-xl bg-white/10 text-white text-center transition-all backdrop-blur-lg placeholder:text-white/40 placeholder:tracking-wide placeholder:font-normal focus:outline-none focus:border-white/70 focus:bg-white/15 focus:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+
+            <!-- Central Scanner -->
+            <div class="relative group cursor-pointer mb-12" id="rfid-container">
+                <div class="absolute inset-0 bg-[#ffb599]/20 rounded-full blur-3xl scale-125 opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                <div class="relative w-64 h-64 rounded-full border-2 border-[#ffb599]/20 flex items-center justify-center bg-[#1a1a2e]/40 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
+                    <div class="scan-effect" id="scanner-line"></div>
+                    <div class="flex flex-col items-center gap-4 relative z-20">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-[#ffb599] to-[#e17141] flex items-center justify-center text-[#370e00] shadow-xl" id="icon-container">
+                            <span class="material-symbols-outlined text-5xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="block text-[#ffb599] font-bold uppercase tracking-widest text-lg" id="main-text">TAP RFID TO ENTER</span>
+                            <span class="block text-slate-400 font-mono text-[10px] uppercase" id="sub-text">Awaiting Transmission...</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex gap-8 mt-3 justify-center">
-                <a href="/pages/auth/login.html" class="flex items-center gap-1.5 text-white/50 text-[13px] font-semibold uppercase tracking-wide hover:text-white transition-colors">
-                    <span class="material-symbols-outlined text-base">login</span> Manual Login
+
+            <!-- Manual Input Bar -->
+            <div class="w-full max-w-lg mb-12 mx-auto">
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-4 text-slate-500">search</span>
+                    <input type="text" id="rfid-input" autofocus
+                        class="w-full bg-[#1a1a2e]/60 border-none rounded-full py-5 pl-14 pr-6 text-[#e2e0fc] placeholder:text-slate-500 focus:ring-2 focus:ring-[#ffb599]/40 backdrop-blur-xl transition-all font-mono tracking-widest text-sm uppercase"
+                        placeholder="OR INPUT SYSTEM ID MANUALLY">
+                </div>
+            </div>
+
+            <!-- Action Cluster -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
+                <a href="/pages/management/catalog/catalog.html" class="group flex items-center justify-between p-6 bg-[#1e1e32]/50 border border-white/5 rounded-3xl hover:bg-[#28283d] transition-all">
+                    <div class="flex flex-col items-start">
+                        <span class="text-[#ffb599] text-xs font-bold uppercase tracking-tighter mb-1">Explore</span>
+                        <span class="text-[#e2e0fc] text-xl font-semibold">Browse Catalog</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
+                        <span class="material-symbols-outlined">menu_book</span>
+                    </div>
                 </a>
-                <a href="/pages/management/catalog/catalog.html" class="flex items-center gap-1.5 text-white/50 text-[13px] font-semibold uppercase tracking-wide hover:text-white transition-colors">
-                    <span class="material-symbols-outlined text-base">search</span> Browse Catalog
+                <a href="/pages/auth/login.html" class="group flex items-center justify-between p-6 bg-[#1e1e32]/50 border border-white/5 rounded-3xl hover:bg-[#28283d] transition-all">
+                    <div class="flex flex-col items-start">
+                        <span class="text-[#ffb599] text-xs font-bold uppercase tracking-tighter mb-1">Secure Access</span>
+                        <span class="text-[#e2e0fc] text-xl font-semibold">Manual Login</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
+                        <span class="material-symbols-outlined">login</span>
+                    </div>
                 </a>
             </div>
         </div>
 
         <!-- Register Section -->
         <div id="register-section" style="display:none">
-            <div class="bg-white/[.08] border border-white/20 rounded-2xl p-7 w-[380px] backdrop-blur-xl" style="animation: fadeIn 0.3s ease">
-                <h4 class="text-lg font-bold mb-4 text-center flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined">person_add</span>New User Registration
-                </h4>
-                <div class="mb-3">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Full Name</label>
-                    <input type="text" id="reg-name" placeholder="e.g. Juan Dela Cruz"
-                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
+            <div class="bg-[#1e1e32]/80 border border-[#3a3a52] rounded-3xl p-8 w-[420px] backdrop-blur-xl animate-fade-in">
+                <h4 class="text-xl font-bold mb-1 text-center text-[#ffb599]">System Registration</h4>
+                <p class="text-sm text-[#9b99b8] text-center mb-6">Enter your credentials to gain access</p>
+                <div class="mb-4">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">person</span>
+                        <input type="text" id="reg-name" placeholder="Full Name" class="astral-input pl-12">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Email</label>
-                    <input type="email" id="reg-email" placeholder="email@aklatbayon.edu"
-                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
+                <div class="mb-4">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">mail</span>
+                        <input type="email" id="reg-email" placeholder="Email Address" class="astral-input pl-12">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Username</label>
-                    <input type="text" id="reg-username" placeholder="Choose a username"
-                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">account_circle</span>
+                        <input type="text" id="reg-username" placeholder="Username" class="astral-input pl-12">
+                    </div>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">lock</span>
+                        <input type="password" id="reg-password" placeholder="Password" class="astral-input pl-12">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Password</label>
-                    <input type="password" id="reg-password" placeholder="Choose a password"
-                        class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50">
-                </div>
-                <div class="mb-3">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Role</label>
-                    <select id="reg-role" class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50 [&>option]:text-gray-800 [&>option]:bg-white">
+                <div class="mb-4">
+                    <select id="reg-role" class="astral-select">
                         <option value="">Select Role</option>
                         <option value="r5">Student</option>
                         <option value="r4">Faculty</option>
@@ -159,77 +168,74 @@
                         <option value="r7">Guest</option>
                     </select>
                 </div>
-                <div class="faculty-sub mb-3" id="faculty-sub-group">
-                    <label class="block text-xs font-semibold mb-1 text-white/70 uppercase tracking-wide">Faculty Subtype</label>
-                    <select id="reg-faculty-sub" class="w-full py-2.5 px-3.5 border border-white/25 rounded-lg bg-white/[.08] text-white text-sm font-sans focus:outline-none focus:border-white/50 [&>option]:text-gray-800 [&>option]:bg-white">
+                <div class="faculty-sub mb-4" id="faculty-sub-group">
+                    <select id="reg-faculty-sub" class="astral-select">
                         <option value="Teaching">Teaching</option>
                         <option value="Non-Teaching">Non-Teaching</option>
                         <option value="Department Chair">Department Chair</option>
                         <option value="Department Head">Department Head</option>
                     </select>
                 </div>
-                <div id="reg-rfid-display" class="text-center text-xs text-white/50 mb-2"></div>
-                <button id="btn-register" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 border-none rounded-lg text-white text-[15px] font-bold cursor-pointer mt-2 transition-colors flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-base">check_circle</span> Register & Enter
+                <div id="reg-rfid-display" class="text-center text-xs text-[#9b99b8] mb-3"></div>
+                <button id="btn-register" class="w-full py-4 rounded-full text-[15px] font-bold cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-all">
+                    Register & Enter <span class="material-symbols-outlined text-base">login</span>
                 </button>
-                <button id="btn-reg-cancel" class="w-full py-2.5 bg-transparent border border-white/30 rounded-lg text-white/70 text-[13px] cursor-pointer mt-2 hover:border-white hover:text-white transition-all">
+                <button id="btn-reg-cancel" class="w-full py-3 bg-transparent border border-[#3a3a52] rounded-full text-[#9b99b8] text-[13px] cursor-pointer mt-3 hover:border-[#ffb599] hover:text-[#ffb599] transition-all uppercase tracking-wider">
                     Cancel
                 </button>
+                <p class="text-center text-[10px] text-[#9b99b8]/50 mt-4 font-mono uppercase tracking-widest">AklatBayon Terminal V2.04</p>
             </div>
         </div>
+    </main>
+
+    <!-- HUD Background Overlays -->
+    <div class="fixed top-20 right-8 pointer-events-none text-slate-700/30 font-mono text-[8px] space-y-1 z-0">
+        <div>CORE_TEMP: 34°C</div>
+        <div>UPLINK_STABILITY: 99.8%</div>
+        <div>ACTIVE_USERS: 1,204</div>
+        <div>ENCRYPTION: AES-256</div>
+    </div>
+    <div class="fixed bottom-24 left-28 pointer-events-none z-0">
+        <div class="w-32 h-1 bg-[#28283d] rounded-full overflow-hidden">
+            <div class="w-2/3 h-full bg-[#ffb599]/40 rounded-full"></div>
+        </div>
+        <span class="text-[8px] font-mono text-slate-600 uppercase tracking-widest mt-1 block">Storage Matrix Capacity</span>
     </div>
 
-    <!-- Time Indicator -->
-    <div class="absolute bottom-5 right-8 z-10 text-xs text-white/40 tracking-wide flex items-center gap-1.5 text-dim">
-        <span class="material-symbols-outlined text-sm" id="time-icon">dark_mode</span>
-        <span id="time-label">Night</span>
-    </div>
-
-    <!-- Welcome Toast -->
-    <div class="toast-anim fixed bottom-3 left-1/2 -translate-x-1/2 max-w-[460px] w-[90%] bg-[rgba(15,52,96,0.95)] border border-emerald-500/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] py-4 px-5 flex items-center gap-3.5 z-[100]">
-        <div class="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-emerald-500 text-lg">check_circle</span>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50 bg-[#1A1A2E]/60 backdrop-blur-lg px-6 py-3 rounded-full border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+        <div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
+            <span class="material-symbols-outlined">search</span>
+            <span class="text-[10px] uppercase tracking-wider">Quick Search</span>
         </div>
-        <div class="flex-1">
-            <div class="text-[11px] font-bold text-emerald-500 tracking-[1.5px] uppercase mb-0.5">SYSTEM READY</div>
-            <div class="text-[15px] font-bold text-white">Welcome to FEATI-LMS</div>
-            <div class="text-xs text-white/50">System <span class="text-emerald-500 font-bold">ONLINE</span></div>
+        <div class="flex flex-col items-center bg-gradient-to-br from-[#ffb599] to-[#e17141] text-white rounded-full px-6 py-2 shadow-lg shadow-[#ffb599]/20 cursor-pointer">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+            <span class="text-[10px] uppercase tracking-wider">Active Session</span>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-            <img src="images/logo.png" alt="" class="w-8 h-8 object-contain">
+        <div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
+            <span class="material-symbols-outlined">emergency</span>
+            <span class="text-[10px] uppercase tracking-wider">Emergency</span>
         </div>
-    </div>
+    </nav>
 
     <script src="js/api.js"></script>
     <script src="js/store.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        let scannedRfid = '';
-
+        // Clock
         const updateClock = () => {
             const now = new Date();
             let h = now.getHours();
             const m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
             const ampm = h >= 12 ? 'PM' : 'AM';
             h = h % 12 || 12;
-            document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+            document.getElementById('clock-ampm').textContent = ampm;
         };
         updateClock();
         setInterval(updateClock, 1000);
 
-        const updateBackground = () => {
-            const hour = new Date().getHours();
-            const body = document.body, icon = document.getElementById('time-icon'), label = document.getElementById('time-label');
-            body.classList.remove('time-night','time-dawn','time-morning','time-afternoon','time-dusk');
-            if (hour >= 5 && hour < 7) { body.classList.add('time-dawn'); icon.textContent='partly_cloudy_day'; label.textContent='Dawn'; }
-            else if (hour >= 7 && hour < 12) { body.classList.add('time-morning'); icon.textContent='light_mode'; label.textContent='Morning'; }
-            else if (hour >= 12 && hour < 17) { body.classList.add('time-afternoon'); icon.textContent='light_mode'; label.textContent='Afternoon'; }
-            else if (hour >= 17 && hour < 19) { body.classList.add('time-dusk'); icon.textContent='partly_cloudy_day'; label.textContent='Dusk'; }
-            else { body.classList.add('time-night'); icon.textContent='dark_mode'; label.textContent='Night'; }
-        };
-        updateBackground();
-        setInterval(updateBackground, 60000);
-
+        // Particles
         (() => {
             const container = document.getElementById('particles');
             for (let i = 0; i < 30; i++) {
@@ -243,35 +249,72 @@
             }
         })();
 
+        let scannedRfid = '';
+
+        // RFID Input
         document.getElementById('rfid-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const rfid = e.target.value.trim();
                 if (!rfid) return;
-                const result = Auth.loginByRfid(rfid);
-                if (result.success) {
-                    Store.create('attendance', {
-                        user_id: result.user.id,
-                        user_name: result.user.name,
-                        role_name: result.user.role_name,
-                        rfid_id: result.user.rfid_id,
-                        tap_time: new Date().toISOString()
-                    });
-                    window.location.href = '/pages/auth/welcome.html';
-                } else {
-                    scannedRfid = rfid;
-                    document.getElementById('tap-section').style.display = 'none';
-                    document.getElementById('register-section').style.display = 'block';
-                    document.getElementById('reg-rfid-display').textContent = `RFID: ${rfid}`;
-                }
+
+                // Show scanning animation
+                const circle = document.getElementById('rfid-circle');
+                const mainText = document.getElementById('main-text');
+                const subText = document.getElementById('sub-text');
+                const scannerLine = document.getElementById('scanner-line');
+                const iconContainer = document.getElementById('icon-container');
+                const rfidIcon = document.getElementById('rfid-icon');
+
+                circle.classList.remove('rfid-idle');
+                circle.classList.add('rfid-scanning');
+                mainText.innerText = 'AUTHENTICATING...';
+                subText.innerText = 'READING ENCRYPTED DATA...';
+                scannerLine.style.display = 'block';
+
+                setTimeout(() => {
+                    const result = Auth.loginByRfid(rfid);
+                    scannerLine.style.display = 'none';
+                    circle.classList.remove('rfid-scanning');
+
+                    if (result.success) {
+                        circle.classList.add('state-success');
+                        mainText.innerText = 'ACCESS GRANTED';
+                        mainText.classList.add('text-success-glow');
+                        subText.innerText = `WELCOME, ${result.user.name.toUpperCase()}`;
+                        subText.classList.add('text-success-glow');
+                        iconContainer.classList.add('success-bg');
+                        rfidIcon.innerText = 'verified';
+                        document.getElementById('status-text').innerText = 'USER AUTHENTICATED';
+                        document.getElementById('protocol-status').innerText = 'SESSION SECURED - HANDSHAKE COMPLETE';
+                        document.getElementById('protocol-status').classList.add('text-success-glow');
+
+                        Store.create('attendance', {
+                            user_id: result.user.id,
+                            user_name: result.user.name,
+                            role_name: result.user.role_name,
+                            rfid_id: result.user.rfid_id,
+                            tap_time: new Date().toISOString()
+                        });
+                        setTimeout(() => { window.location.href = '/pages/auth/welcome.html'; }, 1200);
+                    } else {
+                        circle.classList.add('rfid-idle');
+                        scannedRfid = rfid;
+                        document.getElementById('tap-section').style.display = 'none';
+                        document.getElementById('register-section').style.display = 'block';
+                        document.getElementById('reg-rfid-display').textContent = `RFID: ${rfid}`;
+                    }
+                }, 1500);
             }
         });
 
+        // Faculty subtype toggle
         document.getElementById('reg-role').addEventListener('change', (e) => {
             const group = document.getElementById('faculty-sub-group');
             if (e.target.value === 'r4') { group.classList.add('visible'); }
             else { group.classList.remove('visible'); }
         });
 
+        // Register
         document.getElementById('btn-register').addEventListener('click', () => {
             const name = document.getElementById('reg-name').value.trim();
             const email = document.getElementById('reg-email').value.trim();
@@ -290,16 +333,15 @@
             const regUser = loginResult.success ? loginResult.user : Auth.login(username, password).user;
             if (regUser) {
                 Store.create('attendance', {
-                    user_id: regUser.id,
-                    user_name: regUser.name,
-                    role_name: regUser.role_name,
-                    rfid_id: regUser.rfid_id,
+                    user_id: regUser.id, user_name: regUser.name,
+                    role_name: regUser.role_name, rfid_id: regUser.rfid_id,
                     tap_time: new Date().toISOString()
                 });
             }
             window.location.href = '/pages/auth/welcome.html';
         });
 
+        // Cancel registration
         document.getElementById('btn-reg-cancel').addEventListener('click', () => {
             document.getElementById('register-section').style.display = 'none';
             document.getElementById('tap-section').style.display = 'block';
