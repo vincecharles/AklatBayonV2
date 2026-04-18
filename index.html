@@ -80,7 +80,7 @@
         }
     </style>
 </head>
-<body class="font-sans min-h-screen overflow-hidden flex flex-col items-center justify-center bg-astral-gradient text-[#e2e0fc]">
+<body class="font-sans min-h-screen flex flex-col items-center justify-center bg-astral-gradient text-[#e2e0fc]" style="overflow-y: auto;">
     <!-- Particles -->
     <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
@@ -95,7 +95,7 @@
             </button>
             <div class="text-base md:text-xl font-bold tracking-tighter text-[#ffb599] drop-shadow-[0_0_8px_rgba(255,181,153,0.4)]">
                 <span class="hidden sm:inline">FEATI ASTRAL REPOSITORY</span>
-                <span class="sm:hidden">FEATI ASTRAL</span>
+                <span class="sm:hidden">FEATI AKLAT BAYON</span>
             </div>
             <div class="h-4 w-px bg-[#56423b]/30 hidden md:block"></div>
             <div class="flex items-center gap-2 hidden md:flex" id="system-status">
@@ -150,61 +150,61 @@
     </aside>
 
     <!-- Main Content Canvas -->
-    <main class="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full px-6 text-center">
+    <main class="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full px-4 md:px-6 text-center pt-20 md:pt-0 pb-28 md:pb-0">
         <div id="tap-section">
             <!-- HUD Clock -->
-            <div class="mb-12 space-y-2">
-                <h2 class="text-6xl font-bold tracking-tighter text-[#e2e0fc]/90">
-                    <span id="clock">12:00:00</span> <span class="text-2xl text-[#ffb599] font-medium uppercase tracking-widest ml-2" id="clock-ampm">PM</span>
+            <div class="mb-6 md:mb-12 space-y-1 md:space-y-2">
+                <h2 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tighter text-[#e2e0fc]/90">
+                    <span id="clock">12:00:00</span> <span class="text-lg sm:text-xl md:text-2xl text-[#ffb599] font-medium uppercase tracking-widest ml-1 md:ml-2" id="clock-ampm">PM</span>
                 </h2>
-                <p class="text-[#ffb599] font-mono tracking-[0.3em] uppercase text-sm opacity-80" id="protocol-status">Synchronization Protocol Active</p>
+                <p class="text-[#ffb599] font-mono tracking-[0.15em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm opacity-80" id="protocol-status">Synchronization Protocol Active</p>
             </div>
 
             <!-- Central Scanner -->
-            <div class="relative group cursor-pointer mb-12" id="rfid-container">
+            <div class="relative group cursor-pointer mb-6 md:mb-12" id="rfid-container">
                 <div class="absolute inset-0 bg-[#ffb599]/20 rounded-full blur-3xl scale-125 opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                <div class="relative w-64 h-64 rounded-full border-2 border-[#ffb599]/20 flex items-center justify-center bg-[#1a1a2e]/40 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
+                <div class="relative w-44 h-44 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-full border-2 border-[#ffb599]/20 flex items-center justify-center bg-[#1a1a2e]/40 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
                     <div class="scan-effect" id="scanner-line"></div>
-                    <div class="flex flex-col items-center gap-4 relative z-20">
-                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-[#ffb599] to-[#e17141] flex items-center justify-center text-[#370e00] shadow-xl" id="icon-container">
-                            <span class="material-symbols-outlined text-5xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
+                    <div class="flex flex-col items-center gap-2 md:gap-4 relative z-20">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-[#ffb599] to-[#e17141] flex items-center justify-center text-[#370e00] shadow-xl" id="icon-container">
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl md:text-5xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
                         </div>
                         <div class="space-y-1">
-                            <span class="block text-[#ffb599] font-bold uppercase tracking-widest text-lg" id="main-text">TAP RFID TO ENTER</span>
-                            <span class="block text-slate-400 font-mono text-[10px] uppercase" id="sub-text">Awaiting Transmission...</span>
+                            <span class="block text-[#ffb599] font-bold uppercase tracking-widest text-xs sm:text-sm md:text-lg" id="main-text">TAP RFID TO ENTER</span>
+                            <span class="block text-slate-400 font-mono text-[9px] md:text-[10px] uppercase" id="sub-text">Awaiting Transmission...</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Manual Input Bar -->
-            <div class="w-full max-w-lg mb-12 mx-auto">
+            <div class="w-full max-w-lg mb-6 md:mb-12 mx-auto">
                 <div class="relative flex items-center">
                     <span class="material-symbols-outlined absolute left-4 text-slate-500">search</span>
                     <input type="text" id="rfid-input" autofocus
-                        class="group flex items-center w-full bg-[#1a1a2e]/60 border-none rounded-full py-5 pl-14 pr-6 text-[#e2e0fc] placeholder:text-slate-500 focus:ring-2 focus:ring-[#ffb599]/40 backdrop-blur-xl transition-all font-mono tracking-widest text-sm uppercase"
+                        class="group flex items-center w-full bg-[#1a1a2e]/60 border-none rounded-full py-3 md:py-5 pl-12 md:pl-14 pr-4 md:pr-6 text-[#e2e0fc] placeholder:text-slate-500 focus:ring-2 focus:ring-[#ffb599]/40 backdrop-blur-xl transition-all font-mono tracking-widest text-xs md:text-sm uppercase"
                         placeholder="OR INPUT SYSTEM ID MANUALLY">
                 </div>
             </div>
 
             <!-- Action Cluster -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
-                <a href="/pages/management/catalog/catalog.html" class="group flex items-center justify-between p-6 bg-[#1e1e32]/50 border border-white/5 rounded-3xl hover:bg-[#28283d] transition-all">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 w-full max-w-2xl mx-auto">
+                <a href="/pages/management/catalog/catalog.html" class="group flex items-center justify-between p-4 md:p-6 bg-[#1e1e32]/50 border border-white/5 rounded-2xl md:rounded-3xl hover:bg-[#28283d] transition-all">
                     <div class="flex flex-col items-start">
-                        <span class="text-[#ffb599] text-xs font-bold uppercase tracking-tighter mb-1">Explore</span>
-                        <span class="text-[#e2e0fc] text-xl font-semibold">Browse Catalog</span>
+                        <span class="text-[#ffb599] text-[10px] md:text-xs font-bold uppercase tracking-tighter mb-1">Explore</span>
+                        <span class="text-[#e2e0fc] text-base md:text-xl font-semibold">Browse Catalog</span>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
-                        <span class="material-symbols-outlined">menu_book</span>
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
+                        <span class="material-symbols-outlined text-xl md:text-2xl">menu_book</span>
                     </div>
                 </a>
-                <a href="/pages/auth/login.html" class="group flex items-center justify-between p-6 bg-[#1e1e32]/50 border border-white/5 rounded-3xl hover:bg-[#28283d] transition-all">
+                <a href="/pages/auth/login.html" class="group flex items-center justify-between p-4 md:p-6 bg-[#1e1e32]/50 border border-white/5 rounded-2xl md:rounded-3xl hover:bg-[#28283d] transition-all">
                     <div class="flex flex-col items-start">
-                        <span class="text-[#ffb599] text-xs font-bold uppercase tracking-tighter mb-1">Secure Access</span>
-                        <span class="text-[#e2e0fc] text-xl font-semibold">Manual Login</span>
+                        <span class="text-[#ffb599] text-[10px] md:text-xs font-bold uppercase tracking-tighter mb-1">Secure Access</span>
+                        <span class="text-[#e2e0fc] text-base md:text-xl font-semibold">Manual Login</span>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
-                        <span class="material-symbols-outlined">login</span>
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
+                        <span class="material-symbols-outlined text-xl md:text-2xl">login</span>
                     </div>
                 </a>
             </div>
@@ -212,7 +212,7 @@
 
         <!-- Register Section -->
         <div id="register-section" style="display:none">
-            <div class="bg-[#1e1e32]/80 border border-[#3a3a52] rounded-3xl p-8 w-[420px] backdrop-blur-xl animate-fade-in">
+            <div class="bg-[#1e1e32]/80 border border-[#3a3a52] rounded-3xl p-5 md:p-8 w-full max-w-[420px] backdrop-blur-xl animate-fade-in">
                 <h4 class="text-xl font-bold mb-1 text-center text-[#ffb599]">System Registration</h4>
                 <p class="text-sm text-[#9b99b8] text-center mb-6">Enter your credentials to gain access</p>
                 <div class="mb-4">
@@ -227,7 +227,7 @@
                         <input type="email" id="reg-email" placeholder="Email Address" class="astral-input pl-12">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">account_circle</span>
                         <input type="text" id="reg-username" placeholder="Username" class="astral-input pl-12">
@@ -267,13 +267,13 @@
     </main>
 
     <!-- HUD Background Overlays -->
-    <div class="fixed top-20 right-8 pointer-events-none text-slate-700/30 font-mono text-[8px] space-y-1 z-0">
+    <div class="fixed top-20 right-8 pointer-events-none text-slate-700/30 font-mono text-[8px] space-y-1 z-0 hidden md:block">
         <div>CORE_TEMP: 34°C</div>
         <div>UPLINK_STABILITY: 99.8%</div>
         <div>ACTIVE_USERS: 1,204</div>
         <div>ENCRYPTION: AES-256</div>
     </div>
-    <div class="fixed bottom-24 left-28 pointer-events-none z-0">
+    <div class="fixed bottom-24 left-28 pointer-events-none z-0 hidden md:block">
         <div class="w-32 h-1 bg-[#28283d] rounded-full overflow-hidden">
             <div class="w-2/3 h-full bg-[#ffb599]/40 rounded-full"></div>
         </div>
@@ -281,18 +281,18 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50 bg-[#1A1A2E]/60 backdrop-blur-lg px-6 py-3 rounded-full border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-        <div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
-            <span class="material-symbols-outlined">search</span>
-            <span class="text-[10px] uppercase tracking-wider">Quick Search</span>
+    <nav class="fixed bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 z-50 bg-[#1A1A2E]/80 md:bg-[#1A1A2E]/60 backdrop-blur-lg px-3 md:px-6 py-2 md:py-3 rounded-full border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+        <div class="flex flex-col items-center text-slate-400 px-2 md:px-4 py-1 md:py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-xl md:text-2xl">search</span>
+            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Search</span>
         </div>
-        <div class="flex flex-col items-center bg-gradient-to-br from-[#ffb599] to-[#e17141] text-white rounded-full px-6 py-2 shadow-lg shadow-[#ffb599]/20 cursor-pointer">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
-            <span class="text-[10px] uppercase tracking-wider">Active Session</span>
+        <div class="flex flex-col items-center bg-gradient-to-br from-[#ffb599] to-[#e17141] text-white rounded-full px-3 md:px-6 py-1 md:py-2 shadow-lg shadow-[#ffb599]/20 cursor-pointer">
+            <span class="material-symbols-outlined text-xl md:text-2xl" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Session</span>
         </div>
-        <div class="flex flex-col items-center text-slate-400 px-4 py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
-            <span class="material-symbols-outlined">emergency</span>
-            <span class="text-[10px] uppercase tracking-wider">Emergency</span>
+        <div class="flex flex-col items-center text-slate-400 px-2 md:px-4 py-1 md:py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-xl md:text-2xl">emergency</span>
+            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Emergency</span>
         </div>
     </nav>
 
