@@ -203,7 +203,7 @@
   else { (() => {
   App.init();
   const user = Auth.getCurrentUser();
-  document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}! System Terminal V4.0`;
+  document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}!`;
   document.getElementById('stat-books').textContent = Store.count('books').toLocaleString();
   document.getElementById('stat-students').textContent = Store.count('students').toLocaleString();
   const txns = Store.getAll('transactions');
