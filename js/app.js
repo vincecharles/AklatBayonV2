@@ -27,6 +27,11 @@ const App = (() => {
 
         header.innerHTML = `
             <div class="flex items-center gap-3">
+                <button id="mobile-menu-btn" class="md-sidebar-toggle flex flex-col gap-[5px] p-2 rounded-lg hover:bg-white/5 transition-colors" aria-label="Toggle menu" style="display:none">
+                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
+                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
+                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
+                </button>
                 <img src="/images/logo.png" alt="AklatBayon" class="w-8 h-8 object-contain">
                 <span class="text-lg font-bold tracking-tight text-[#ffb599]">AklatBayon</span>
             </div>
@@ -37,15 +42,18 @@ const App = (() => {
                 <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[rgba(255,181,153,0.08)] transition-colors text-[#9b99b8] hover:text-[#ffb599]" title="Settings">
                     <span class="material-symbols-outlined text-xl">settings</span>
                 </button>
-                <div class="h-8 w-px bg-[#3a3a52]"></div>
+                <div class="h-8 w-px bg-[#3a3a52] hidden sm:block"></div>
                 <div class="flex items-center gap-3">
-                    <div class="text-right">
+                    <div class="text-right hidden sm:block">
                         <div class="text-sm font-semibold text-[#e2e0fc]">${user.name}</div>
                         <div class="text-[10px] text-[#9b99b8] uppercase tracking-wider">${user.role_name}</div>
                     </div>
                     <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white bg-[#e17141]">${initials}</div>
                 </div>
             </div>`;
+
+        // Mobile sidebar toggle
+        setupMobileSidebar();
     };
 
     const renderStatusBar = () => {
@@ -68,6 +76,35 @@ const App = (() => {
                 <span>2.4 TB/s</span>
             </div>`;
         document.body.appendChild(bar);
+    };
+
+    const setupMobileSidebar = () => {
+        const btn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar-nav');
+        if (!btn || !sidebar) return;
+
+        // Show hamburger on mobile
+        const mql = window.matchMedia('(max-width: 1024px)');
+        const updateBtn = () => { btn.style.display = mql.matches ? 'flex' : 'none'; };
+        updateBtn();
+        mql.addEventListener('change', updateBtn);
+
+        // Create overlay
+        let overlay = document.getElementById('sidebar-mobile-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'sidebar-mobile-overlay';
+            overlay.className = 'sidebar-mobile-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        const toggle = () => {
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('active');
+        };
+
+        btn.addEventListener('click', toggle);
+        overlay.addEventListener('click', toggle);
     };
 
     const showAlert = (type, message) => {
