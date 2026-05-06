@@ -1,401 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AklatBayon | FEATI University Library</title>
-    <meta name="description" content="AklatBayon - FEATI University's integrated library management system. Browse catalogs, manage borrowing, and access library services.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link href="/css/custom.css" rel="stylesheet">
-    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
-    <style>
-        .scan-effect {
-            position: absolute; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to right, transparent, #a78bfa, transparent);
-            box-shadow: 0 0 15px #a78bfa; z-index: 10; display: none;
-            animation: scan-line 1.5s linear infinite;
-        }
-        .state-success { border-color: #10b981 !important; box-shadow: 0 0 30px rgba(16,185,129,0.3) !important; }
-        .success-bg { background: linear-gradient(to bottom right, #10b981, #059669) !important; }
-        .text-success-glow { color: #10b981 !important; }
-
-        @keyframes float-shape {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes slide-in-left {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slide-in-right {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .anim-slide-left { animation: slide-in-left 0.8s ease-out both; }
-        .anim-slide-right { animation: slide-in-right 0.8s ease-out 0.15s both; }
-        .anim-fade-up { animation: fade-in-up 0.6s ease-out both; }
-        .anim-delay-1 { animation-delay: 0.1s; }
-        .anim-delay-2 { animation-delay: 0.2s; }
-        .anim-delay-3 { animation-delay: 0.35s; }
-        .anim-delay-4 { animation-delay: 0.5s; }
-
-        .rfid-ring {
-            position: absolute;
-            border: 2px solid rgba(124,58,237,0.15);
-            border-radius: 50%;
-            animation: rfid-breathe 4s ease-in-out infinite;
-        }
-
-        .login-card-glow {
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(167,139,250,0.1), transparent, rgba(124,58,237,0.1));
-            border-radius: 26px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .welcome-card:hover .login-card-glow { opacity: 1; }
-
-        /* Feature cards */
-        .feature-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s;
-            cursor: default;
-        }
-        .feature-card:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateY(-4px);
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AklatBayon | FEATI University Library</title>
+  <meta name="description" content="AklatBayon - FEATI University's integrated library management system.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <style>
+    .hero-bg { background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%); min-height:100vh; }
+    @keyframes float1 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-25px) rotate(3deg)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-15px) rotate(-2deg)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .anim-up { animation:fadeUp .7s ease-out both; }
+    .d1{animation-delay:.1s} .d2{animation-delay:.2s} .d3{animation-delay:.35s} .d4{animation-delay:.5s} .d5{animation-delay:.65s}
+    .feat-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(8px); border-radius:16px; padding:28px 24px; transition:all .3s; }
+    .feat-card:hover { background:rgba(255,255,255,.12); transform:translateY(-6px); border-color:rgba(255,255,255,.2); }
+    .stat-pill { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:16px 20px; text-align:center; }
+    .login-glass { background:rgba(255,255,255,.07); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,.12); border-radius:24px; }
+    .scan-effect { position:absolute; left:0; width:100%; height:2px; background:linear-gradient(to right,transparent,#a78bfa,transparent); box-shadow:0 0 15px #a78bfa; z-index:10; display:none; animation:scan-line 1.5s linear infinite; }
+    .state-success { border-color:#10b981!important; box-shadow:0 0 30px rgba(16,185,129,.3)!important; }
+    .success-bg { background:linear-gradient(135deg,#10b981,#059669)!important; }
+    .glow-text { color:#10b981!important; }
+    .login-input { width:100%; padding:14px 16px 14px 48px; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.1); border-radius:14px; color:#fff; font-size:14px; font-family:'Inter',sans-serif; transition:all .25s; }
+    .login-input::placeholder { color:rgba(255,255,255,.35); }
+    .login-input:focus { outline:none; border-color:#a78bfa; box-shadow:0 0 0 3px rgba(167,139,250,.15); background:rgba(255,255,255,.1); }
+    .login-btn { width:100%; padding:15px; border-radius:14px; font-size:15px; font-weight:700; border:none; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; box-shadow:0 4px 20px rgba(124,58,237,.4); }
+    .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,58,237,.5); }
+    .rfid-ring { position:absolute; border:2px solid rgba(124,58,237,.12); border-radius:50%; }
+  </style>
 </head>
 <body class="font-sans min-h-screen antialiased overflow-x-hidden">
-    <!-- Background -->
-    <div class="welcome-gradient">
-        <!-- Floating Particles -->
-        <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+<div class="hero-bg relative">
+  <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+  <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" style="animation:float1 8s ease-in-out infinite"></div>
+  <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" style="animation:float2 10s ease-in-out infinite"></div>
 
-        <!-- Decorative shapes -->
-        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" style="animation: float-shape 8s ease-in-out infinite"></div>
-        <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" style="animation: float-shape 10s ease-in-out infinite; animation-delay: 2s"></div>
-        <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" style="animation: float-shape 6s ease-in-out infinite; animation-delay: 4s"></div>
+  <!-- Top Nav -->
+  <header class="fixed top-0 w-full h-14 flex justify-between items-center px-6 md:px-10 z-50">
+    <div class="flex items-center gap-3">
+      <img src="/images/logo.png" alt="" class="w-8 h-8 object-contain">
+      <span class="text-white font-bold text-lg tracking-tight">AklatBayon</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="/pages/management/catalog/catalog.html" class="hidden sm:flex items-center gap-2 text-white/60 hover:text-white/90 text-sm font-medium transition-colors">
+        <span class="material-symbols-outlined text-lg">search</span> Browse Catalog
+      </a>
+      <div class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-emerald-400/80 text-xs font-medium">Online</span>
+      </div>
+    </div>
+  </header>
 
-        <!-- Top Navigation -->
-        <header class="fixed top-0 w-full h-16 flex justify-between items-center px-6 md:px-10 z-50 bg-gradient-to-b from-[#1e1b4b]/80 to-transparent backdrop-blur-sm">
-            <div class="flex items-center gap-3">
-                <img src="/images/logo.png" alt="AklatBayon" class="w-9 h-9 object-contain drop-shadow-lg">
-                <div>
-                    <span class="text-white font-bold text-lg tracking-tight">AklatBayon</span>
-                    <span class="hidden sm:inline text-purple-300/60 text-xs ml-2 font-medium">FEATI University Library</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10b981]"></span>
-                    <span class="text-xs font-medium text-emerald-400/80">System Online</span>
-                </div>
-                <div class="text-white/40 text-sm font-medium hidden sm:block">
-                    <span id="header-time">12:00</span>
-                </div>
-            </div>
-        </header>
+  <!-- Main Content -->
+  <main class="relative z-10 flex min-h-screen pt-14">
 
-        <!-- Main Content -->
-        <main class="relative z-10 flex min-h-screen">
-            <!-- Left Side: Hero Content -->
-            <div class="hidden lg:flex flex-1 flex-col justify-center px-12 xl:px-20 max-w-2xl">
-                <div class="anim-slide-left">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/10 mb-8">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span class="text-white/70 text-sm font-medium">RFID-Integrated Kiosk Ready</span>
-                    </div>
-                    <h1 class="text-5xl xl:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-                        Your Library,<br>
-                        <span class="bg-gradient-to-r from-purple-300 via-violet-300 to-indigo-300 bg-clip-text text-transparent">Reimagined.</span>
-                    </h1>
-                    <p class="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
-                        Browse the catalog, manage borrowing requests, track returns, and access real-time library data — all from one unified platform.
-                    </p>
-                </div>
+    <!-- Left: Hero -->
+    <div class="hidden lg:flex flex-1 flex-col justify-center px-12 xl:px-20 max-w-2xl">
+      <div class="anim-up">
+        <p class="text-purple-300/70 text-sm font-semibold uppercase tracking-[3px] mb-4">FEATI University Library System</p>
+        <h1 class="text-5xl xl:text-[56px] font-black text-white leading-[1.08] mb-5 tracking-tight">
+          Discover, Borrow,<br><span class="bg-gradient-to-r from-purple-300 via-violet-300 to-indigo-300 bg-clip-text text-transparent">Learn.</span>
+        </h1>
+        <p class="text-lg text-white/40 leading-relaxed mb-10 max-w-lg">
+          Access the entire FEATI library collection, manage borrowing, and get real-time availability — all in one place.
+        </p>
+      </div>
 
-                <!-- Feature Cards -->
-                <div class="grid grid-cols-3 gap-4 anim-fade-up anim-delay-3">
-                    <div class="feature-card">
-                        <span class="material-symbols-outlined text-purple-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">auto_stories</span>
-                        <p class="text-white/90 font-semibold text-sm">Digital Catalog</p>
-                        <p class="text-white/40 text-xs mt-1">Browse & search books</p>
-                    </div>
-                    <div class="feature-card">
-                        <span class="material-symbols-outlined text-emerald-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">contactless</span>
-                        <p class="text-white/90 font-semibold text-sm">RFID Access</p>
-                        <p class="text-white/40 text-xs mt-1">Tap to enter</p>
-                    </div>
-                    <div class="feature-card">
-                        <span class="material-symbols-outlined text-amber-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">analytics</span>
-                        <p class="text-white/90 font-semibold text-sm">Live Analytics</p>
-                        <p class="text-white/40 text-xs mt-1">Real-time insights</p>
-                    </div>
-                </div>
+      <!-- Stats Row -->
+      <div class="grid grid-cols-3 gap-4 mb-8 anim-up d3" id="hero-stats">
+        <div class="stat-pill"><p class="text-2xl font-black text-white" id="hero-books">0</p><p class="text-[11px] text-white/40 uppercase tracking-wider mt-1">Books</p></div>
+        <div class="stat-pill"><p class="text-2xl font-black text-white" id="hero-students">0</p><p class="text-[11px] text-white/40 uppercase tracking-wider mt-1">Students</p></div>
+        <div class="stat-pill"><p class="text-2xl font-black text-white" id="hero-available">0</p><p class="text-[11px] text-white/40 uppercase tracking-wider mt-1">Available</p></div>
+      </div>
 
-                <!-- Catalog Quick Link -->
-                <div class="mt-8 anim-fade-up anim-delay-4">
-                    <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl transition-all group">
-                        <span class="material-symbols-outlined text-purple-300 text-xl group-hover:scale-110 transition-transform">search</span>
-                        <span class="text-white/80 font-semibold text-sm">Browse Public Catalog</span>
-                        <span class="material-symbols-outlined text-white/30 text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right Side: Login Card -->
-            <div class="flex-1 flex items-center justify-center px-6 py-20 lg:py-0">
-                <div id="tap-section" class="w-full max-w-[420px] anim-slide-right">
-                    <!-- RFID Scanner Area -->
-                    <div class="text-center mb-8 lg:hidden">
-                        <h2 class="text-3xl font-black text-white tracking-tight mb-2">AklatBayon</h2>
-                        <p class="text-white/50 text-sm">FEATI University Library System</p>
-                    </div>
-
-                    <!-- RFID Circle -->
-                    <div class="relative group cursor-pointer mb-8" id="rfid-container">
-                        <div class="rfid-ring w-32 h-32 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-                        <div class="rfid-ring w-44 h-44 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="animation-delay: 0.5s"></div>
-                        <div class="relative w-28 h-28 rounded-full border-2 border-purple-400/20 flex items-center justify-center bg-purple-500/10 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
-                            <div class="scan-effect" id="scanner-line"></div>
-                            <div class="flex flex-col items-center gap-1 relative z-20">
-                                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30" id="icon-container">
-                                    <span class="material-symbols-outlined text-2xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-center text-white/50 text-xs mt-3 font-medium uppercase tracking-widest" id="main-text">Tap RFID to enter</p>
-                        <p class="text-center text-white/30 text-[10px] mt-1 font-mono" id="sub-text">Awaiting transmission...</p>
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="flex items-center gap-4 mb-8">
-                        <div class="flex-1 h-px bg-white/10"></div>
-                        <span class="text-white/30 text-xs font-medium uppercase tracking-wider">or sign in manually</span>
-                        <div class="flex-1 h-px bg-white/10"></div>
-                    </div>
-
-                    <!-- Login Card -->
-                    <div class="welcome-card p-8 relative">
-                        <div class="login-card-glow"></div>
-                        <div class="text-center mb-6">
-                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/20">
-                                <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1">lock</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-900">Welcome Back</h3>
-                            <p class="text-gray-500 text-sm mt-1">Sign in to access the library system</p>
-                        </div>
-
-                        <!-- RFID Hidden Input -->
-                        <input type="text" id="rfid-input" autofocus class="sr-only" tabindex="-1">
-
-                        <form id="login-form" class="space-y-4">
-                            <div>
-                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Username</label>
-                                <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                                    <input type="text" id="login-username" placeholder="Enter your username" class="welcome-input" required>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Password</label>
-                                <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
-                                    <input type="password" id="login-password" placeholder="Enter your password" class="welcome-input" required>
-                                    <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                                        <span class="material-symbols-outlined text-xl">visibility_off</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="login-error" class="hidden text-sm text-red-500 font-medium flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg">
-                                <span class="material-symbols-outlined text-base">error</span>
-                                <span id="login-error-text">Invalid credentials</span>
-                            </div>
-                            <button type="submit" class="welcome-btn welcome-btn-primary mt-2">
-                                <span class="material-symbols-outlined text-lg">login</span>
-                                Sign In
-                            </button>
-                        </form>
-
-                        <p class="text-center text-[11px] text-gray-400 mt-5 font-medium">AklatBayon v2.04 · FEATI University</p>
-                    </div>
-
-                    <!-- Mobile Catalog Link -->
-                    <div class="lg:hidden mt-6 text-center">
-                        <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors text-sm font-medium">
-                            <span class="material-symbols-outlined text-lg">menu_book</span>
-                            Browse Public Catalog
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Bottom Info -->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 z-20">
-            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
-                <span class="material-symbols-outlined text-purple-300/60 text-sm">schedule</span>
-                <span class="text-white/40 text-xs font-medium" id="clock">12:00:00 PM</span>
-            </div>
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-3 gap-4 anim-up d4">
+        <div class="feat-card">
+          <span class="material-symbols-outlined text-purple-300 text-2xl mb-3 block" style="font-variation-settings:'FILL' 1">auto_stories</span>
+          <p class="text-white/90 font-semibold text-sm">Digital Catalog</p>
+          <p class="text-white/35 text-xs mt-1">Browse & search books instantly</p>
         </div>
+        <div class="feat-card">
+          <span class="material-symbols-outlined text-emerald-300 text-2xl mb-3 block" style="font-variation-settings:'FILL' 1">contactless</span>
+          <p class="text-white/90 font-semibold text-sm">RFID Access</p>
+          <p class="text-white/35 text-xs mt-1">Tap your card to enter</p>
+        </div>
+        <div class="feat-card">
+          <span class="material-symbols-outlined text-amber-300 text-2xl mb-3 block" style="font-variation-settings:'FILL' 1">analytics</span>
+          <p class="text-white/90 font-semibold text-sm">Live Analytics</p>
+          <p class="text-white/35 text-xs mt-1">Real-time insights & reports</p>
+        </div>
+      </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/store.js"></script>
-    <script src="js/auth.js"></script>
-    <script>
-        // Clock
-        const updateClock = () => {
-            const now = new Date();
-            let h = now.getHours();
-            const m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
-            document.getElementById('header-time').textContent = `${h}:${m} ${ampm}`;
-        };
-        updateClock();
-        setInterval(updateClock, 1000);
+    <!-- Right: Login -->
+    <div class="flex-1 flex items-center justify-center px-6 py-16">
+      <div class="w-full max-w-[400px]">
 
-        // Particles
-        (() => {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 25; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = `${Math.random()*100}%`;
-                p.style.animationDuration = `${10+Math.random()*15}s`;
-                p.style.animationDelay = `${Math.random()*10}s`;
-                p.style.width = p.style.height = `${1+Math.random()*3}px`;
-                container.appendChild(p);
-            }
-        })();
+        <!-- Mobile hero -->
+        <div class="lg:hidden text-center mb-8 anim-up">
+          <h2 class="text-3xl font-black text-white tracking-tight mb-2">AklatBayon</h2>
+          <p class="text-white/40 text-sm">FEATI University Library</p>
+        </div>
 
-        let scannedRfid = '';
+        <!-- RFID Scanner -->
+        <div class="relative flex flex-col items-center mb-8 anim-up d2" id="rfid-area">
+          <div class="rfid-ring w-32 h-32" style="top:50%;left:50%;transform:translate(-50%,-50%);animation:rfid-breathe 4s ease-in-out infinite"></div>
+          <div class="rfid-ring w-44 h-44" style="top:50%;left:50%;transform:translate(-50%,-50%);animation:rfid-breathe 4s ease-in-out infinite .5s"></div>
+          <div class="relative w-24 h-24 rounded-full border-2 border-purple-400/20 flex items-center justify-center bg-purple-500/10 backdrop-blur-md rfid-idle overflow-hidden" id="rfid-circle">
+            <div class="scan-effect" id="scanner-line"></div>
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30 relative z-20" id="icon-container">
+              <span class="material-symbols-outlined text-xl" id="rfid-icon" style="font-variation-settings:'FILL' 1">contactless</span>
+            </div>
+          </div>
+          <p class="text-white/40 text-xs mt-3 font-medium uppercase tracking-[2px]" id="rfid-text">Tap RFID to enter</p>
+          <p class="text-white/20 text-[10px] mt-1 font-mono" id="rfid-sub">Awaiting signal...</p>
+        </div>
 
-        // RFID Input (hidden but functional)
-        document.getElementById('rfid-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const rfid = e.target.value.trim();
-                if (!rfid) return;
+        <!-- Divider -->
+        <div class="flex items-center gap-4 mb-6 anim-up d3">
+          <div class="flex-1 h-px bg-white/10"></div>
+          <span class="text-white/25 text-xs font-medium uppercase tracking-wider">or sign in</span>
+          <div class="flex-1 h-px bg-white/10"></div>
+        </div>
 
-                const circle = document.getElementById('rfid-circle');
-                const mainText = document.getElementById('main-text');
-                const subText = document.getElementById('sub-text');
-                const scannerLine = document.getElementById('scanner-line');
-                const iconContainer = document.getElementById('icon-container');
-                const rfidIcon = document.getElementById('rfid-icon');
+        <!-- Login Form -->
+        <div class="login-glass p-7 anim-up d4">
+          <input type="text" id="rfid-input" autofocus class="sr-only" tabindex="-1">
+          <form id="login-form" class="space-y-4">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-xl">person</span>
+              <input type="text" id="login-username" placeholder="Username" class="login-input" required>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-xl">lock</span>
+              <input type="password" id="login-password" placeholder="Password" class="login-input" required>
+              <button type="button" id="toggle-pw" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                <span class="material-symbols-outlined text-xl">visibility_off</span>
+              </button>
+            </div>
+            <div id="login-error" class="hidden text-sm text-red-400 font-medium flex items-center gap-2 px-3 py-2 bg-red-500/10 rounded-xl border border-red-500/20">
+              <span class="material-symbols-outlined text-base">error</span>
+              <span id="login-error-text"></span>
+            </div>
+            <button type="submit" class="login-btn mt-1">
+              <span class="material-symbols-outlined text-lg">login</span> Sign In
+            </button>
+          </form>
+          <p class="text-center text-[11px] text-white/20 mt-5">AklatBayon v2 · FEATI University</p>
+        </div>
 
-                circle.classList.remove('rfid-idle');
-                circle.classList.add('rfid-scanning');
-                mainText.innerText = 'AUTHENTICATING...';
-                subText.innerText = 'READING ENCRYPTED DATA...';
-                scannerLine.style.display = 'block';
+        <div class="lg:hidden mt-6 text-center">
+          <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-2 text-white/50 hover:text-white/80 text-sm font-medium transition-colors">
+            <span class="material-symbols-outlined text-lg">menu_book</span> Browse Public Catalog
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
 
-                setTimeout(() => {
-                    const result = Auth.loginByRfid(rfid);
-                    scannerLine.style.display = 'none';
-                    circle.classList.remove('rfid-scanning');
+  <!-- Bottom Clock -->
+  <div class="fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/8 rounded-full backdrop-blur-sm z-20">
+    <span class="material-symbols-outlined text-purple-300/50 text-sm">schedule</span>
+    <span class="text-white/35 text-xs font-medium" id="clock"></span>
+  </div>
+</div>
 
-                    if (result.success) {
-                        circle.classList.add('state-success');
-                        mainText.innerText = 'ACCESS GRANTED';
-                        mainText.classList.add('text-success-glow');
-                        subText.innerText = `WELCOME, ${result.user.name.toUpperCase()}`;
-                        subText.classList.add('text-success-glow');
-                        iconContainer.classList.add('success-bg');
-                        rfidIcon.innerText = 'verified';
+<script src="js/api.js"></script>
+<script src="js/store.js"></script>
+<script src="js/auth.js"></script>
+<script>
+// Clock
+const tick = () => { const n=new Date(); let h=n.getHours(); const m=String(n.getMinutes()).padStart(2,'0'), s=String(n.getSeconds()).padStart(2,'0'), ap=h>=12?'PM':'AM'; h=h%12||12; document.getElementById('clock').textContent=`${h}:${m}:${s} ${ap}`; };
+tick(); setInterval(tick,1000);
 
-                        Store.create('attendance', {
-                            user_id: result.user.id,
-                            user_name: result.user.name,
-                            role_name: result.user.role_name,
-                            rfid_id: result.user.rfid_id,
-                            tap_time: new Date().toISOString()
-                        });
-                        setTimeout(() => { window.location.href = '/pages/auth/welcome.html'; }, 1200);
-                    } else {
-                        circle.classList.add('rfid-idle');
-                        mainText.innerText = 'RFID NOT RECOGNIZED';
-                        mainText.style.color = '#ef4444';
-                        subText.innerText = 'Please use manual login instead';
-                        setTimeout(() => {
-                            mainText.innerText = 'TAP RFID TO ENTER';
-                            mainText.style.color = '';
-                            subText.innerText = 'Awaiting transmission...';
-                        }, 3000);
-                        e.target.value = '';
-                    }
-                }, 1500);
-            }
-        });
+// Particles
+(()=>{const c=document.getElementById('particles');for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${10+Math.random()*15}s`;p.style.animationDelay=`${Math.random()*10}s`;p.style.width=p.style.height=`${1+Math.random()*3}px`;c.appendChild(p);}})();
 
-        // Manual Login
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value.trim();
-            const errorDiv = document.getElementById('login-error');
-            const errorText = document.getElementById('login-error-text');
+// Hero stats
+const books=Store.getAll('books');let avail=0;books.forEach(b=>{avail+=b.available||0;});
+document.getElementById('hero-books').textContent=books.length;
+document.getElementById('hero-students').textContent=Store.count('students');
+document.getElementById('hero-available').textContent=avail;
 
-            if (!username || !password) {
-                errorDiv.classList.remove('hidden');
-                errorText.textContent = 'Please enter both username and password.';
-                return;
-            }
+// RFID
+document.getElementById('rfid-input').addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;const rfid=e.target.value.trim();if(!rfid)return;
+  const circle=document.getElementById('rfid-circle'),txt=document.getElementById('rfid-text'),sub=document.getElementById('rfid-sub'),line=document.getElementById('scanner-line'),ic=document.getElementById('icon-container'),icon=document.getElementById('rfid-icon');
+  circle.classList.remove('rfid-idle');circle.classList.add('rfid-scanning');txt.innerText='AUTHENTICATING...';sub.innerText='READING DATA...';line.style.display='block';
+  setTimeout(()=>{
+    const r=Auth.loginByRfid(rfid);line.style.display='none';circle.classList.remove('rfid-scanning');
+    if(r.success){circle.classList.add('state-success');txt.innerText='ACCESS GRANTED';txt.classList.add('glow-text');sub.innerText=`WELCOME, ${r.user.name.toUpperCase()}`;sub.classList.add('glow-text');ic.classList.add('success-bg');icon.innerText='verified';
+    Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
+    setTimeout(()=>{window.location.href='/pages/auth/welcome.html';},1200);
+    }else{circle.classList.add('rfid-idle');txt.innerText='RFID NOT RECOGNIZED';txt.style.color='#ef4444';sub.innerText='Use manual login';setTimeout(()=>{txt.innerText='TAP RFID TO ENTER';txt.style.color='';sub.innerText='Awaiting signal...';},3000);e.target.value='';}
+  },1500);
+});
 
-            const result = Auth.login(username, password);
-            if (result.success) {
-                errorDiv.classList.add('hidden');
-                Store.create('attendance', {
-                    user_id: result.user.id,
-                    user_name: result.user.name,
-                    role_name: result.user.role_name,
-                    rfid_id: result.user.rfid_id,
-                    tap_time: new Date().toISOString()
-                });
-                window.location.href = '/pages/auth/welcome.html';
-            } else {
-                errorDiv.classList.remove('hidden');
-                errorText.textContent = result.message || 'Invalid credentials or inactive account.';
-            }
-        });
+// Login
+document.getElementById('login-form').addEventListener('submit',e=>{
+  e.preventDefault();const u=document.getElementById('login-username').value.trim(),p=document.getElementById('login-password').value.trim(),err=document.getElementById('login-error'),et=document.getElementById('login-error-text');
+  if(!u||!p){err.classList.remove('hidden');et.textContent='Please enter both fields.';return;}
+  const r=Auth.login(u,p);
+  if(r.success){err.classList.add('hidden');Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});window.location.href='/pages/auth/welcome.html';}
+  else{err.classList.remove('hidden');et.textContent=r.message||'Invalid credentials.';}
+});
 
-        // Toggle password visibility
-        document.getElementById('toggle-password').addEventListener('click', () => {
-            const input = document.getElementById('login-password');
-            const icon = document.getElementById('toggle-password').querySelector('span');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.textContent = 'visibility';
-            } else {
-                input.type = 'password';
-                icon.textContent = 'visibility_off';
-            }
-        });
+// Toggle password
+document.getElementById('toggle-pw').addEventListener('click',()=>{const i=document.getElementById('login-password'),s=document.getElementById('toggle-pw').querySelector('span');if(i.type==='password'){i.type='text';s.textContent='visibility';}else{i.type='password';s.textContent='visibility_off';}});
 
-        // Keep RFID input focused when clicking outside form
-        document.addEventListener('click', (e) => {
-            const loginCard = document.querySelector('.welcome-card');
-            if (!loginCard.contains(e.target)) {
-                document.getElementById('rfid-input').focus();
-            }
-        });
-    </script>
+// RFID auto-focus
+document.addEventListener('click',e=>{if(!e.target.closest('.login-glass'))document.getElementById('rfid-input').focus();});
+</script>
 </body>
 </html>

@@ -2,8 +2,19 @@ const App = (() => {
     const THEME_KEY = 'aklatbayon_theme';
 
     const applyStoredTheme = () => {
-        // BorrowBox style uses light theme
-        document.documentElement.classList.remove('dark');
+        const saved = localStorage.getItem(THEME_KEY) || 'light';
+        if (saved === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    };
+
+    const toggleTheme = () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
     };
 
     const init = () => {
@@ -19,69 +30,171 @@ const App = (() => {
         if (!header) return;
 
         header.className = 'astral-header';
-
         const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const pageTitle = document.title.split(' - ')[0] || 'Dashboard';
+        const isDark = document.documentElement.classList.contains('dark');
 
         header.innerHTML = `
-            <div class="flex items-center gap-3">
-                <button id="mobile-menu-btn" class="md-sidebar-toggle flex flex-col gap-[5px] p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle menu" style="display:none">
-                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
-                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
-                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn" class="sidebar-toggle-btn" aria-label="Toggle menu" style="display:none">
+                    <span class="material-symbols-outlined text-xl">menu</span>
                 </button>
-                <div class="hidden lg:block">
-                    <h2 class="text-sm font-bold text-gray-900" id="header-page-title"></h2>
+                <div class="header-brand">
+                    <img src="/images/logo.png" alt="" class="header-logo">
+                    <span class="header-app-name">AklatBayon</span>
                 </div>
+                <span class="header-page-title">${pageTitle}</span>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-400 hover:text-purple-600 relative" title="Notifications" id="header-notif-btn">
-                        <span class="material-symbols-outlined text-xl">notifications</span>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" id="notif-dot" style="display:none"></span>
-                    </button>
+            <div class="flex items-center gap-2">
+                <div class="header-search" id="header-search-trigger">
+                    <span class="material-symbols-outlined header-search-icon">search</span>
+                    <span class="header-search-text">Search records...</span>
+                    <kbd class="header-search-kbd">⌘K</kbd>
                 </div>
-                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-400 hover:text-purple-600" title="Search">
-                    <span class="material-symbols-outlined text-xl">search</span>
+                <button class="header-icon-btn" title="Notifications" id="header-notif-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="header-notif-dot" id="notif-dot" style="display:none"></span>
                 </button>
-                <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
-                <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-xl px-2 py-1.5 transition-colors">
-                    <div class="text-right hidden sm:block">
-                        <div class="text-sm font-semibold text-gray-900">${user.name}</div>
-                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">${user.role_name}</div>
+                <button class="header-icon-btn" title="Toggle theme" id="theme-toggle-btn">
+                    <span class="material-symbols-outlined" id="theme-toggle-icon">${isDark ? 'light_mode' : 'dark_mode'}</span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="header-user">
+                    <div class="header-user-info">
+                        <span class="header-user-name">${user.name}</span>
+                        <span class="header-user-role">${user.role_name}</span>
                     </div>
-                    <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-purple-500 to-violet-600 shadow-md shadow-purple-500/20">${initials}</div>
+                    <div class="header-avatar">${initials}</div>
                 </div>
             </div>`;
 
-        // Set page title from document title
-        const pageTitle = document.getElementById('header-page-title');
-        if (pageTitle) {
-            const title = document.title.split(' - ')[0] || 'Dashboard';
-            pageTitle.textContent = title;
-        }
-
-        // Show notification dot if there are pending items
+        // Notification dot
         const txns = Store.getAll('transactions');
         const overdue = txns.filter(t => t.status === 'borrowed' && new Date(t.date_due) < new Date()).length;
-        const notifDot = document.getElementById('notif-dot');
-        if (notifDot && overdue > 0) notifDot.style.display = '';
+        if (document.getElementById('notif-dot') && overdue > 0) document.getElementById('notif-dot').style.display = '';
 
-        // Mobile sidebar toggle
+        // Theme toggle
+        document.getElementById('theme-toggle-btn')?.addEventListener('click', toggleTheme);
+
+        // Search modal trigger
+        document.getElementById('header-search-trigger')?.addEventListener('click', openSearchModal);
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearchModal(); }
+            if (e.key === 'Escape') closeSearchModal();
+        });
+
         setupMobileSidebar();
     };
 
+    // ── Algolia-style Search Modal ───────────────────────────────
+    const openSearchModal = () => {
+        let modal = document.getElementById('search-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'search-modal';
+            modal.className = 'search-modal-overlay';
+            modal.innerHTML = `
+                <div class="search-modal-container">
+                    <div class="search-modal-header">
+                        <span class="material-symbols-outlined search-modal-icon">search</span>
+                        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Search books, students, transactions..." autofocus>
+                        <kbd class="search-modal-esc">ESC</kbd>
+                    </div>
+                    <div class="search-modal-body" id="search-modal-results">
+                        <div class="search-modal-empty">
+                            <span class="material-symbols-outlined" style="font-size:48px;color:var(--ab-on-surface-faint)">manage_search</span>
+                            <p class="search-empty-title">Search AklatBayon</p>
+                            <p class="search-empty-sub">Search across books, students, users, and transactions</p>
+                        </div>
+                    </div>
+                    <div class="search-modal-footer">
+                        <div class="search-footer-hints">
+                            <span><kbd>↵</kbd> to select</span>
+                            <span><kbd>↑↓</kbd> to navigate</span>
+                            <span><kbd>esc</kbd> to close</span>
+                        </div>
+                        <span class="search-footer-brand">Powered by AklatBayon</span>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', e => { if (e.target === modal) closeSearchModal(); });
+
+            const input = modal.querySelector('#search-modal-input');
+            input.addEventListener('input', () => performSearch(input.value));
+        }
+        modal.classList.add('active');
+        setTimeout(() => modal.querySelector('#search-modal-input')?.focus(), 100);
+    };
+
+    const closeSearchModal = () => {
+        const modal = document.getElementById('search-modal');
+        if (modal) modal.classList.remove('active');
+    };
+
+    const performSearch = (query) => {
+        const results = document.getElementById('search-modal-results');
+        if (!results) return;
+        const q = query.trim().toLowerCase();
+        if (!q) {
+            results.innerHTML = `<div class="search-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:var(--ab-on-surface-faint)">manage_search</span><p class="search-empty-title">Search AklatBayon</p><p class="search-empty-sub">Search across books, students, users, and transactions</p></div>`;
+            return;
+        }
+
+        let html = '';
+        // Books
+        const books = Store.getAll('books').filter(b => b.title.toLowerCase().includes(q) || (b.isbn && b.isbn.toLowerCase().includes(q)));
+        if (books.length) {
+            html += `<div class="search-section-label">Books</div>`;
+            books.slice(0, 5).forEach(b => {
+                html += `<a href="/pages/management/catalog/books.html" class="search-result-item">
+                    <div class="search-result-icon" style="background:rgba(124,58,237,0.1);color:#7c3aed"><span class="material-symbols-outlined">auto_stories</span></div>
+                    <div class="search-result-text"><span class="search-result-title">${highlight(b.title, q)}</span><span class="search-result-sub">${b.isbn || 'No ISBN'} · ${b.available}/${b.copies} available</span></div>
+                    <span class="material-symbols-outlined search-result-arrow">arrow_forward</span></a>`;
+            });
+        }
+        // Students
+        const students = Store.getAll('students').filter(s => s.name.toLowerCase().includes(q) || (s.student_id && s.student_id.toLowerCase().includes(q)));
+        if (students.length) {
+            html += `<div class="search-section-label">Students</div>`;
+            students.slice(0, 5).forEach(s => {
+                html += `<a href="/pages/management/users/students.html" class="search-result-item">
+                    <div class="search-result-icon" style="background:rgba(59,130,246,0.1);color:#3b82f6"><span class="material-symbols-outlined">school</span></div>
+                    <div class="search-result-text"><span class="search-result-title">${highlight(s.name, q)}</span><span class="search-result-sub">${s.student_id || ''} · ${s.program || ''}</span></div>
+                    <span class="material-symbols-outlined search-result-arrow">arrow_forward</span></a>`;
+            });
+        }
+        // Users
+        const users = Store.getAll('users').filter(u => u.name.toLowerCase().includes(q) || (u.username && u.username.toLowerCase().includes(q)));
+        if (users.length) {
+            html += `<div class="search-section-label">Users</div>`;
+            users.slice(0, 3).forEach(u => {
+                html += `<a href="/pages/management/users/users.html" class="search-result-item">
+                    <div class="search-result-icon" style="background:rgba(16,185,129,0.1);color:#10b981"><span class="material-symbols-outlined">person</span></div>
+                    <div class="search-result-text"><span class="search-result-title">${highlight(u.name, q)}</span><span class="search-result-sub">${u.username} · ${App.getRoleName(u.role_id)}</span></div>
+                    <span class="material-symbols-outlined search-result-arrow">arrow_forward</span></a>`;
+            });
+        }
+
+        if (!html) html = `<div class="search-modal-empty"><span class="material-symbols-outlined" style="font-size:40px;color:var(--ab-on-surface-faint)">search_off</span><p class="search-empty-title">No results for "${q}"</p><p class="search-empty-sub">Try a different search term</p></div>`;
+        results.innerHTML = html;
+    };
+
+    const highlight = (text, query) => {
+        const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(re, '<mark class="search-highlight">$1</mark>');
+    };
+
+    // ── Mobile Sidebar ────────────────────────────────────────
     const setupMobileSidebar = () => {
         const btn = document.getElementById('mobile-menu-btn');
         const sidebar = document.getElementById('sidebar-nav');
         if (!btn || !sidebar) return;
-
-        // Show hamburger on mobile
         const mql = window.matchMedia('(max-width: 1024px)');
         const updateBtn = () => { btn.style.display = mql.matches ? 'flex' : 'none'; };
         updateBtn();
         mql.addEventListener('change', updateBtn);
 
-        // Create overlay
         let overlay = document.getElementById('sidebar-mobile-overlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -89,12 +202,7 @@ const App = (() => {
             overlay.className = 'sidebar-mobile-overlay';
             document.body.appendChild(overlay);
         }
-
-        const toggle = () => {
-            sidebar.classList.toggle('sidebar-open');
-            overlay.classList.toggle('active');
-        };
-
+        const toggle = () => { sidebar.classList.toggle('sidebar-open'); overlay.classList.toggle('active'); };
         btn.addEventListener('click', toggle);
         overlay.addEventListener('click', toggle);
     };
@@ -117,15 +225,9 @@ const App = (() => {
     };
 
     const confirmDelete = (itemName) => Swal.fire({
-        title: 'Are you sure?',
-        text: `Delete "${itemName}"? This cannot be undone.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#7c3aed',
-        cancelButtonColor: '#e2e8f0',
-        confirmButtonText: 'Yes, delete it!',
-        background: '#ffffff',
-        color: '#1e293b'
+        title: 'Are you sure?', text: `Delete "${itemName}"? This cannot be undone.`, icon: 'warning',
+        showCancelButton: true, confirmButtonColor: '#7c3aed', cancelButtonColor: '#e2e8f0',
+        confirmButtonText: 'Yes, delete it!', background: '#ffffff', color: '#1e293b'
     });
 
     const formatDate = (isoStr) => {
@@ -139,33 +241,15 @@ const App = (() => {
         if (!isoStr) return '\u2014';
         const d = new Date(isoStr);
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let h = d.getHours();
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
+        let h = d.getHours(); const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
         return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${h}:${String(d.getMinutes()).padStart(2, '0')} ${ampm}`;
     };
 
-    const openModal = (id) => {
-        const modal = document.getElementById(id);
-        if (modal) modal.classList.add('active');
-    };
-
-    const closeModal = (id) => {
-        const modal = document.getElementById(id);
-        if (modal) modal.classList.remove('active');
-    };
-
+    const openModal = (id) => { const m = document.getElementById(id); if (m) m.classList.add('active'); };
+    const closeModal = (id) => { const m = document.getElementById(id); if (m) m.classList.remove('active'); };
     const bindModalCloses = () => {
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.closest('.modal-overlay').classList.remove('active');
-            });
-        });
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('active');
-            });
-        });
+        document.querySelectorAll('.modal-close').forEach(btn => { btn.addEventListener('click', function() { this.closest('.modal-overlay').classList.remove('active'); }); });
+        document.querySelectorAll('.modal-overlay').forEach(o => { o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); }); });
     };
 
     const getRoleName = (roleId) => { const r = Store.getById('roles', roleId); return r ? r.name : 'Unknown'; };
@@ -176,16 +260,13 @@ const App = (() => {
     const getBookTitle = (bookId) => { const b = Store.getById('books', bookId); return b ? b.title : 'Unknown'; };
 
     return {
-        init, showAlert, confirmDelete, formatDate, formatDateTime,
+        init, showAlert, confirmDelete, formatDate, formatDateTime, toggleTheme,
         openModal, closeModal, bindModalCloses,
         getRoleName, getAuthorName, getPublisherName, getCategoryName, getStudentName, getBookTitle
     };
 })();
 
-// ── Global error suppression ──────────────────────────────────
-// Suppress unhandled promise rejections from failed API calls
 window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
-// Suppress empty throws used by auth guards (throw '')
 window.onerror = (msg, src, line, col, err) => {
     if (err === '' || msg === 'Script error.' || msg === 'Uncaught ') return true;
     if (typeof msg === 'string' && msg.includes('Uncaught ')) return true;
