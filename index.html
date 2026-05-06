@@ -1,300 +1,259 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FEATI-LMS | AklatBayon</title>
+    <title>AklatBayon | FEATI University Library</title>
+    <meta name="description" content="AklatBayon - FEATI University's integrated library management system. Browse catalogs, manage borrowing, and access library services.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
-    <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
     <style>
-        .bg-astral-gradient { background: radial-gradient(circle at 50% 50%, #1e1e32 0%, #111125 100%); }
         .scan-effect {
             position: absolute; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to right, transparent, #ffb599, transparent);
-            box-shadow: 0 0 15px #ffb599; z-index: 10; display: none;
+            background: linear-gradient(to right, transparent, #a78bfa, transparent);
+            box-shadow: 0 0 15px #a78bfa; z-index: 10; display: none;
             animation: scan-line 1.5s linear infinite;
         }
-        .state-success { border-color: #4ade80 !important; box-shadow: 0 0 30px rgba(74,222,128,0.4) !important; }
-        .success-bg { background: linear-gradient(to bottom right, #4ade80, #22c55e) !important; }
-        .text-success-glow { color: #4ade80 !important; }
-        .faculty-sub { display: none; }
-        .faculty-sub.visible { display: block; }
+        .state-success { border-color: #10b981 !important; box-shadow: 0 0 30px rgba(16,185,129,0.3) !important; }
+        .success-bg { background: linear-gradient(to bottom right, #10b981, #059669) !important; }
+        .text-success-glow { color: #10b981 !important; }
 
-        /* ── Mobile Sidebar ────────────────────────────── */
-        .mobile-sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 45;
+        @keyframes float-shape {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes slide-in-left {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .anim-slide-left { animation: slide-in-left 0.8s ease-out both; }
+        .anim-slide-right { animation: slide-in-right 0.8s ease-out 0.15s both; }
+        .anim-fade-up { animation: fade-in-up 0.6s ease-out both; }
+        .anim-delay-1 { animation-delay: 0.1s; }
+        .anim-delay-2 { animation-delay: 0.2s; }
+        .anim-delay-3 { animation-delay: 0.35s; }
+        .anim-delay-4 { animation-delay: 0.5s; }
+
+        .rfid-ring {
+            position: absolute;
+            border: 2px solid rgba(124,58,237,0.15);
+            border-radius: 50%;
+            animation: rfid-breathe 4s ease-in-out infinite;
+        }
+
+        .login-card-glow {
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(167,139,250,0.1), transparent, rgba(124,58,237,0.1));
+            border-radius: 26px;
+            z-index: -1;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
         }
-        .mobile-sidebar-overlay.active {
-            display: block;
-            opacity: 1;
+        .welcome-card:hover .login-card-glow { opacity: 1; }
+
+        /* Feature cards */
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: default;
         }
-        @media (max-width: 767px) {
-            .mobile-sidebar {
-                position: fixed !important;
-                left: 0; top: 0; bottom: 0;
-                width: 260px;
-                margin: 0 !important;
-                border-radius: 0 !important;
-                transform: translateX(-100%);
-                transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-                display: flex !important;
-                flex-direction: column;
-                z-index: 50 !important;
-                height: 100vh !important;
-                padding-top: 80px;
-                background: rgba(26,26,46,0.97) !important;
-                backdrop-filter: blur(24px) !important;
-                border-right: 1px solid rgba(255,181,153,0.1);
-            }
-            .mobile-sidebar.open {
-                transform: translateX(0);
-            }
-        }
-        /* Hamburger icon animation */
-        .hamburger-bar {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #ffb599;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-        .hamburger.active .hamburger-bar:nth-child(1) {
-            transform: rotate(45deg) translate(4px, 4px);
-        }
-        .hamburger.active .hamburger-bar:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger.active .hamburger-bar:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
+        .feature-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
         }
     </style>
 </head>
-<body class="font-sans min-h-screen flex flex-col items-center justify-center bg-astral-gradient text-[#e2e0fc]" style="overflow-y: auto;">
-    <!-- Particles -->
-    <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+<body class="font-sans min-h-screen antialiased overflow-x-hidden">
+    <!-- Background -->
+    <div class="welcome-gradient">
+        <!-- Floating Particles -->
+        <div id="particles" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
-    <!-- Top Navigation Shell -->
-    <header class="fixed top-0 w-full h-16 flex justify-between items-center px-4 md:px-8 z-50 bg-gradient-to-b from-[#111125] to-transparent backdrop-blur-xl">
-        <div class="flex items-center gap-3 md:gap-4">
-            <!-- Hamburger Button (mobile only) -->
-            <button id="hamburger-btn" class="hamburger flex flex-col gap-[5px] p-2 rounded-lg hover:bg-white/5 transition-colors md:hidden" aria-label="Toggle menu">
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-            </button>
-            <div class="text-base md:text-xl font-bold tracking-tighter text-[#ffb599] drop-shadow-[0_0_8px_rgba(255,181,153,0.4)]">
-                <span class="hidden sm:inline">FEATI ASTRAL REPOSITORY</span>
-                <span class="sm:hidden">FEATI AKLAT BAYON</span>
-            </div>
-            <div class="h-4 w-px bg-[#56423b]/30 hidden md:block"></div>
-            <div class="flex items-center gap-2 hidden md:flex" id="system-status">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#4ade80]" id="status-light"></span>
-                <span class="text-xs font-medium uppercase tracking-widest text-emerald-400" id="status-text">SYSTEM ONLINE</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-4 md:gap-6">
-            <div class="flex flex-col items-end hidden sm:flex">
-                <span class="tracking-tight font-semibold uppercase text-xs text-[#ffb599]">STATION ID</span>
-                <span class="font-mono text-[10px] text-slate-400">FEATI-LMS STATION 01</span>
-            </div>
-            <div class="flex gap-3 md:gap-4">
-                <button class="text-slate-400 hover:text-[#ffb599] transition-colors"><span class="material-symbols-outlined">sensors</span></button>
-                <button class="text-slate-400 hover:text-[#ffb599] transition-colors"><span class="material-symbols-outlined">schedule</span></button>
-            </div>
-        </div>
-    </header>
+        <!-- Decorative shapes -->
+        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" style="animation: float-shape 8s ease-in-out infinite"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" style="animation: float-shape 10s ease-in-out infinite; animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" style="animation: float-shape 6s ease-in-out infinite; animation-delay: 4s"></div>
 
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" class="mobile-sidebar-overlay"></div>
+        <!-- Top Navigation -->
+        <header class="fixed top-0 w-full h-16 flex justify-between items-center px-6 md:px-10 z-50 bg-gradient-to-b from-[#1e1b4b]/80 to-transparent backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+                <img src="/images/logo.png" alt="AklatBayon" class="w-9 h-9 object-contain drop-shadow-lg">
+                <div>
+                    <span class="text-white font-bold text-lg tracking-tight">AklatBayon</span>
+                    <span class="hidden sm:inline text-purple-300/60 text-xs ml-2 font-medium">FEATI University Library</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                    <span class="text-xs font-medium text-emerald-400/80">System Online</span>
+                </div>
+                <div class="text-white/40 text-sm font-medium hidden sm:block">
+                    <span id="header-time">12:00</span>
+                </div>
+            </div>
+        </header>
 
-    <!-- Side Navigation -->
-    <aside id="sidebar-nav" class="mobile-sidebar fixed left-0 top-16 bottom-0 flex-col items-center py-8 z-40 h-[calc(100vh-80px)] w-20 m-4 rounded-3xl bg-[#1A1A2E]/80 backdrop-blur-2xl shadow-[0_32px_48px_rgba(12,12,31,0.08)] hidden md:flex">
-        <!-- Mobile header inside sidebar -->
-        <div class="md:hidden flex items-center gap-3 px-6 pb-6 mb-4 border-b border-white/5 w-full">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#ffb599] to-[#e17141] flex items-center justify-center text-[#370e00]">
-                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
-            </div>
-            <div>
-                <div class="text-sm font-bold text-[#ffb599] tracking-tight">AklatBayon</div>
-                <div class="text-[10px] text-slate-400 font-mono uppercase">Navigation</div>
-            </div>
-        </div>
-        <nav class="flex flex-col gap-4 md:gap-8 w-full md:w-auto px-4 md:px-0">
-            <div class="flex md:flex-col items-center gap-3 md:gap-1 text-[#ffb599] bg-[#e17141]/20 rounded-xl p-3 border-r-2 border-[#ffb599] shadow-[0_0_15px_rgba(255,181,153,0.2)]">
-                <span class="material-symbols-outlined">terminal</span>
-                <span class="text-xs md:text-[8px] font-medium uppercase tracking-widest">Terminal</span>
-            </div>
-            <div class="flex md:flex-col items-center gap-3 md:gap-1 text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all p-3 rounded-xl cursor-pointer">
-                <span class="material-symbols-outlined">library_books</span>
-                <span class="text-xs md:text-[8px] font-medium uppercase tracking-widest">Archives</span>
-            </div>
-            <div class="flex md:flex-col items-center gap-3 md:gap-1 text-slate-500 opacity-60 hover:bg-white/5 hover:opacity-100 transition-all p-3 rounded-xl cursor-pointer">
-                <span class="material-symbols-outlined">contactless</span>
-                <span class="text-xs md:text-[8px] font-medium uppercase tracking-widest">RFID Link</span>
-            </div>
-        </nav>
-        <div class="mt-auto flex flex-col items-center gap-6">
-            <span class="material-symbols-outlined text-slate-500">help_outline</span>
-        </div>
-    </aside>
+        <!-- Main Content -->
+        <main class="relative z-10 flex min-h-screen">
+            <!-- Left Side: Hero Content -->
+            <div class="hidden lg:flex flex-1 flex-col justify-center px-12 xl:px-20 max-w-2xl">
+                <div class="anim-slide-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/10 mb-8">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-white/70 text-sm font-medium">RFID-Integrated Kiosk Ready</span>
+                    </div>
+                    <h1 class="text-5xl xl:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tight">
+                        Your Library,<br>
+                        <span class="bg-gradient-to-r from-purple-300 via-violet-300 to-indigo-300 bg-clip-text text-transparent">Reimagined.</span>
+                    </h1>
+                    <p class="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
+                        Browse the catalog, manage borrowing requests, track returns, and access real-time library data — all from one unified platform.
+                    </p>
+                </div>
 
-    <!-- Main Content Canvas -->
-    <main class="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full px-4 md:px-6 text-center pt-20 md:pt-0 pb-28 md:pb-0">
-        <div id="tap-section">
-            <!-- HUD Clock -->
-            <div class="mb-6 md:mb-12 space-y-1 md:space-y-2">
-                <h2 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tighter text-[#e2e0fc]/90">
-                    <span id="clock">12:00:00</span> <span class="text-lg sm:text-xl md:text-2xl text-[#ffb599] font-medium uppercase tracking-widest ml-1 md:ml-2" id="clock-ampm">PM</span>
-                </h2>
-                <p class="text-[#ffb599] font-mono tracking-[0.15em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm opacity-80" id="protocol-status">Synchronization Protocol Active</p>
+                <!-- Feature Cards -->
+                <div class="grid grid-cols-3 gap-4 anim-fade-up anim-delay-3">
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined text-purple-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">auto_stories</span>
+                        <p class="text-white/90 font-semibold text-sm">Digital Catalog</p>
+                        <p class="text-white/40 text-xs mt-1">Browse & search books</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined text-emerald-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">contactless</span>
+                        <p class="text-white/90 font-semibold text-sm">RFID Access</p>
+                        <p class="text-white/40 text-xs mt-1">Tap to enter</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined text-amber-300 text-2xl mb-3 block" style="font-variation-settings: 'FILL' 1">analytics</span>
+                        <p class="text-white/90 font-semibold text-sm">Live Analytics</p>
+                        <p class="text-white/40 text-xs mt-1">Real-time insights</p>
+                    </div>
+                </div>
+
+                <!-- Catalog Quick Link -->
+                <div class="mt-8 anim-fade-up anim-delay-4">
+                    <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl transition-all group">
+                        <span class="material-symbols-outlined text-purple-300 text-xl group-hover:scale-110 transition-transform">search</span>
+                        <span class="text-white/80 font-semibold text-sm">Browse Public Catalog</span>
+                        <span class="material-symbols-outlined text-white/30 text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </a>
+                </div>
             </div>
 
-            <!-- Central Scanner -->
-            <div class="relative group cursor-pointer mb-6 md:mb-12" id="rfid-container">
-                <div class="absolute inset-0 bg-[#ffb599]/20 rounded-full blur-3xl scale-125 opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                <div class="relative w-44 h-44 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-full border-2 border-[#ffb599]/20 flex items-center justify-center bg-[#1a1a2e]/40 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
-                    <div class="scan-effect" id="scanner-line"></div>
-                    <div class="flex flex-col items-center gap-2 md:gap-4 relative z-20">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-[#ffb599] to-[#e17141] flex items-center justify-center text-[#370e00] shadow-xl" id="icon-container">
-                            <span class="material-symbols-outlined text-3xl sm:text-4xl md:text-5xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
+            <!-- Right Side: Login Card -->
+            <div class="flex-1 flex items-center justify-center px-6 py-20 lg:py-0">
+                <div id="tap-section" class="w-full max-w-[420px] anim-slide-right">
+                    <!-- RFID Scanner Area -->
+                    <div class="text-center mb-8 lg:hidden">
+                        <h2 class="text-3xl font-black text-white tracking-tight mb-2">AklatBayon</h2>
+                        <p class="text-white/50 text-sm">FEATI University Library System</p>
+                    </div>
+
+                    <!-- RFID Circle -->
+                    <div class="relative group cursor-pointer mb-8" id="rfid-container">
+                        <div class="rfid-ring w-32 h-32 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                        <div class="rfid-ring w-44 h-44 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="animation-delay: 0.5s"></div>
+                        <div class="relative w-28 h-28 rounded-full border-2 border-purple-400/20 flex items-center justify-center bg-purple-500/10 backdrop-blur-md rfid-idle overflow-hidden mx-auto" id="rfid-circle">
+                            <div class="scan-effect" id="scanner-line"></div>
+                            <div class="flex flex-col items-center gap-1 relative z-20">
+                                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30" id="icon-container">
+                                    <span class="material-symbols-outlined text-2xl" id="rfid-icon" style="font-variation-settings: 'FILL' 1;">contactless</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="space-y-1">
-                            <span class="block text-[#ffb599] font-bold uppercase tracking-widest text-xs sm:text-sm md:text-lg" id="main-text">TAP RFID TO ENTER</span>
-                            <span class="block text-slate-400 font-mono text-[9px] md:text-[10px] uppercase" id="sub-text">Awaiting Transmission...</span>
+                        <p class="text-center text-white/50 text-xs mt-3 font-medium uppercase tracking-widest" id="main-text">Tap RFID to enter</p>
+                        <p class="text-center text-white/30 text-[10px] mt-1 font-mono" id="sub-text">Awaiting transmission...</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="flex-1 h-px bg-white/10"></div>
+                        <span class="text-white/30 text-xs font-medium uppercase tracking-wider">or sign in manually</span>
+                        <div class="flex-1 h-px bg-white/10"></div>
+                    </div>
+
+                    <!-- Login Card -->
+                    <div class="welcome-card p-8 relative">
+                        <div class="login-card-glow"></div>
+                        <div class="text-center mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/20">
+                                <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1">lock</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">Welcome Back</h3>
+                            <p class="text-gray-500 text-sm mt-1">Sign in to access the library system</p>
                         </div>
+
+                        <!-- RFID Hidden Input -->
+                        <input type="text" id="rfid-input" autofocus class="sr-only" tabindex="-1">
+
+                        <form id="login-form" class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Username</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
+                                    <input type="text" id="login-username" placeholder="Enter your username" class="welcome-input" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Password</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
+                                    <input type="password" id="login-password" placeholder="Enter your password" class="welcome-input" required>
+                                    <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                        <span class="material-symbols-outlined text-xl">visibility_off</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="login-error" class="hidden text-sm text-red-500 font-medium flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg">
+                                <span class="material-symbols-outlined text-base">error</span>
+                                <span id="login-error-text">Invalid credentials</span>
+                            </div>
+                            <button type="submit" class="welcome-btn welcome-btn-primary mt-2">
+                                <span class="material-symbols-outlined text-lg">login</span>
+                                Sign In
+                            </button>
+                        </form>
+
+                        <p class="text-center text-[11px] text-gray-400 mt-5 font-medium">AklatBayon v2.04 · FEATI University</p>
+                    </div>
+
+                    <!-- Mobile Catalog Link -->
+                    <div class="lg:hidden mt-6 text-center">
+                        <a href="/pages/management/catalog/catalog.html" class="inline-flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors text-sm font-medium">
+                            <span class="material-symbols-outlined text-lg">menu_book</span>
+                            Browse Public Catalog
+                        </a>
                     </div>
                 </div>
             </div>
+        </main>
 
-            <!-- Manual Input Bar -->
-            <div class="w-full max-w-lg mb-6 md:mb-12 mx-auto">
-                <div class="relative flex items-center">
-                    <span class="material-symbols-outlined absolute left-4 text-slate-500">search</span>
-                    <input type="text" id="rfid-input" autofocus
-                        class="group flex items-center w-full bg-[#1a1a2e]/60 border-none rounded-full py-3 md:py-5 pl-12 md:pl-14 pr-4 md:pr-6 text-[#e2e0fc] placeholder:text-slate-500 focus:ring-2 focus:ring-[#ffb599]/40 backdrop-blur-xl transition-all font-mono tracking-widest text-xs md:text-sm uppercase"
-                        placeholder="OR INPUT SYSTEM ID MANUALLY">
-                </div>
-            </div>
-
-            <!-- Action Cluster -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 w-full max-w-2xl mx-auto">
-                <a href="/pages/management/catalog/catalog.html" class="group flex items-center justify-between p-4 md:p-6 bg-[#1e1e32]/50 border border-white/5 rounded-2xl md:rounded-3xl hover:bg-[#28283d] transition-all">
-                    <div class="flex flex-col items-start">
-                        <span class="text-[#ffb599] text-[10px] md:text-xs font-bold uppercase tracking-tighter mb-1">Explore</span>
-                        <span class="text-[#e2e0fc] text-base md:text-xl font-semibold">Browse Catalog</span>
-                    </div>
-                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
-                        <span class="material-symbols-outlined text-xl md:text-2xl">menu_book</span>
-                    </div>
-                </a>
-                <a href="/pages/auth/login.html" class="group flex items-center justify-between p-4 md:p-6 bg-[#1e1e32]/50 border border-white/5 rounded-2xl md:rounded-3xl hover:bg-[#28283d] transition-all">
-                    <div class="flex flex-col items-start">
-                        <span class="text-[#ffb599] text-[10px] md:text-xs font-bold uppercase tracking-tighter mb-1">Secure Access</span>
-                        <span class="text-[#e2e0fc] text-base md:text-xl font-semibold">Manual Login</span>
-                    </div>
-                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#333348] flex items-center justify-center group-hover:bg-[#ffb599] group-hover:text-[#370e00] transition-colors text-[#9b99b8]">
-                        <span class="material-symbols-outlined text-xl md:text-2xl">login</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Register Section -->
-        <div id="register-section" style="display:none">
-            <div class="bg-[#1e1e32]/80 border border-[#3a3a52] rounded-3xl p-5 md:p-8 w-full max-w-[420px] backdrop-blur-xl animate-fade-in">
-                <h4 class="text-xl font-bold mb-1 text-center text-[#ffb599]">System Registration</h4>
-                <p class="text-sm text-[#9b99b8] text-center mb-6">Enter your credentials to gain access</p>
-                <div class="mb-4">
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">person</span>
-                        <input type="text" id="reg-name" placeholder="Full Name" class="astral-input pl-12">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">mail</span>
-                        <input type="email" id="reg-email" placeholder="Email Address" class="astral-input pl-12">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">account_circle</span>
-                        <input type="text" id="reg-username" placeholder="Username" class="astral-input pl-12">
-                    </div>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9b99b8]">lock</span>
-                        <input type="password" id="reg-password" placeholder="Password" class="astral-input pl-12">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <select id="reg-role" class="astral-select">
-                        <option value="">Select Role</option>
-                        <option value="r5">Student</option>
-                        <option value="r4">Faculty</option>
-                        <option value="r6">Student Assistant</option>
-                        <option value="r7">Guest</option>
-                    </select>
-                </div>
-                <div class="faculty-sub mb-4" id="faculty-sub-group">
-                    <select id="reg-faculty-sub" class="astral-select">
-                        <option value="Teaching">Teaching</option>
-                        <option value="Non-Teaching">Non-Teaching</option>
-                        <option value="Department Chair">Department Chair</option>
-                        <option value="Department Head">Department Head</option>
-                    </select>
-                </div>
-                <div id="reg-rfid-display" class="text-center text-xs text-[#9b99b8] mb-3"></div>
-                <button id="btn-register" class="w-full py-4 rounded-full text-[15px] font-bold cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-all">
-                    Register & Enter <span class="material-symbols-outlined text-base">login</span>
-                </button>
-                <button id="btn-reg-cancel" class="w-full py-3 bg-transparent border border-[#3a3a52] rounded-full text-[#9b99b8] text-[13px] cursor-pointer mt-3 hover:border-[#ffb599] hover:text-[#ffb599] transition-all uppercase tracking-wider">
-                    Cancel
-                </button>
-                <p class="text-center text-[10px] text-[#9b99b8]/50 mt-4 font-mono uppercase tracking-widest">AklatBayon Terminal V2.04</p>
+        <!-- Bottom Info -->
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 z-20">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
+                <span class="material-symbols-outlined text-purple-300/60 text-sm">schedule</span>
+                <span class="text-white/40 text-xs font-medium" id="clock">12:00:00 PM</span>
             </div>
         </div>
-    </main>
-
-    <!-- HUD Background Overlays -->
-    <div class="fixed top-20 right-8 pointer-events-none text-slate-700/30 font-mono text-[8px] space-y-1 z-0 hidden md:block">
-        <div>CORE_TEMP: 34°C</div>
-        <div>UPLINK_STABILITY: 99.8%</div>
-        <div>ACTIVE_USERS: 1,204</div>
-        <div>ENCRYPTION: AES-256</div>
     </div>
-    <div class="fixed bottom-24 left-28 pointer-events-none z-0 hidden md:block">
-        <div class="w-32 h-1 bg-[#28283d] rounded-full overflow-hidden">
-            <div class="w-2/3 h-full bg-[#ffb599]/40 rounded-full"></div>
-        </div>
-        <span class="text-[8px] font-mono text-slate-600 uppercase tracking-widest mt-1 block">Storage Matrix Capacity</span>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 z-50 bg-[#1A1A2E]/80 md:bg-[#1A1A2E]/60 backdrop-blur-lg px-3 md:px-6 py-2 md:py-3 rounded-full border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-        <div class="flex flex-col items-center text-slate-400 px-2 md:px-4 py-1 md:py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-xl md:text-2xl">search</span>
-            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Search</span>
-        </div>
-        <div class="flex flex-col items-center bg-gradient-to-br from-[#ffb599] to-[#e17141] text-white rounded-full px-3 md:px-6 py-1 md:py-2 shadow-lg shadow-[#ffb599]/20 cursor-pointer">
-            <span class="material-symbols-outlined text-xl md:text-2xl" style="font-variation-settings: 'FILL' 1;">account_circle</span>
-            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Session</span>
-        </div>
-        <div class="flex flex-col items-center text-slate-400 px-2 md:px-4 py-1 md:py-2 hover:text-[#ffb599] transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-xl md:text-2xl">emergency</span>
-            <span class="text-[8px] md:text-[10px] uppercase tracking-wider">Emergency</span>
-        </div>
-    </nav>
 
     <script src="js/api.js"></script>
     <script src="js/store.js"></script>
@@ -307,8 +266,8 @@
             const m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
             const ampm = h >= 12 ? 'PM' : 'AM';
             h = h % 12 || 12;
-            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-            document.getElementById('clock-ampm').textContent = ampm;
+            document.getElementById('clock').textContent = `${h}:${m}:${s} ${ampm}`;
+            document.getElementById('header-time').textContent = `${h}:${m} ${ampm}`;
         };
         updateClock();
         setInterval(updateClock, 1000);
@@ -316,11 +275,11 @@
         // Particles
         (() => {
             const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 25; i++) {
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.style.left = `${Math.random()*100}%`;
-                p.style.animationDuration = `${8+Math.random()*12}s`;
+                p.style.animationDuration = `${10+Math.random()*15}s`;
                 p.style.animationDelay = `${Math.random()*10}s`;
                 p.style.width = p.style.height = `${1+Math.random()*3}px`;
                 container.appendChild(p);
@@ -329,13 +288,12 @@
 
         let scannedRfid = '';
 
-        // RFID Input
+        // RFID Input (hidden but functional)
         document.getElementById('rfid-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const rfid = e.target.value.trim();
                 if (!rfid) return;
 
-                // Show scanning animation
                 const circle = document.getElementById('rfid-circle');
                 const mainText = document.getElementById('main-text');
                 const subText = document.getElementById('sub-text');
@@ -362,9 +320,6 @@
                         subText.classList.add('text-success-glow');
                         iconContainer.classList.add('success-bg');
                         rfidIcon.innerText = 'verified';
-                        document.getElementById('status-text').innerText = 'USER AUTHENTICATED';
-                        document.getElementById('protocol-status').innerText = 'SESSION SECURED - HANDSHAKE COMPLETE';
-                        document.getElementById('protocol-status').classList.add('text-success-glow');
 
                         Store.create('attendance', {
                             user_id: result.user.id,
@@ -376,71 +331,71 @@
                         setTimeout(() => { window.location.href = '/pages/auth/welcome.html'; }, 1200);
                     } else {
                         circle.classList.add('rfid-idle');
-                        scannedRfid = rfid;
-                        document.getElementById('tap-section').style.display = 'none';
-                        document.getElementById('register-section').style.display = 'block';
-                        document.getElementById('reg-rfid-display').textContent = `RFID: ${rfid}`;
+                        mainText.innerText = 'RFID NOT RECOGNIZED';
+                        mainText.style.color = '#ef4444';
+                        subText.innerText = 'Please use manual login instead';
+                        setTimeout(() => {
+                            mainText.innerText = 'TAP RFID TO ENTER';
+                            mainText.style.color = '';
+                            subText.innerText = 'Awaiting transmission...';
+                        }, 3000);
+                        e.target.value = '';
                     }
                 }, 1500);
             }
         });
 
-        // Faculty subtype toggle
-        document.getElementById('reg-role').addEventListener('change', (e) => {
-            const group = document.getElementById('faculty-sub-group');
-            if (e.target.value === 'r4') { group.classList.add('visible'); }
-            else { group.classList.remove('visible'); }
-        });
+        // Manual Login
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const errorDiv = document.getElementById('login-error');
+            const errorText = document.getElementById('login-error-text');
 
-        // Register
-        document.getElementById('btn-register').addEventListener('click', () => {
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const username = document.getElementById('reg-username').value.trim();
-            const password = document.getElementById('reg-password').value.trim();
-            const roleId = document.getElementById('reg-role').value;
-            if (!name || !email || !username || !password || !roleId) { alert('Please fill in all fields.'); return; }
-            let facultySub = null;
-            if (roleId === 'r4') { facultySub = document.getElementById('reg-faculty-sub').value; }
-            Store.create('users', {
-                name, username, password, email,
-                role_id: roleId, faculty_subtype: facultySub,
-                rfid_id: scannedRfid, status: 'active'
-            });
-            const loginResult = Auth.loginByRfid(scannedRfid);
-            const regUser = loginResult.success ? loginResult.user : Auth.login(username, password).user;
-            if (regUser) {
+            if (!username || !password) {
+                errorDiv.classList.remove('hidden');
+                errorText.textContent = 'Please enter both username and password.';
+                return;
+            }
+
+            const result = Auth.login(username, password);
+            if (result.success) {
+                errorDiv.classList.add('hidden');
                 Store.create('attendance', {
-                    user_id: regUser.id, user_name: regUser.name,
-                    role_name: regUser.role_name, rfid_id: regUser.rfid_id,
+                    user_id: result.user.id,
+                    user_name: result.user.name,
+                    role_name: result.user.role_name,
+                    rfid_id: result.user.rfid_id,
                     tap_time: new Date().toISOString()
                 });
+                window.location.href = '/pages/auth/welcome.html';
+            } else {
+                errorDiv.classList.remove('hidden');
+                errorText.textContent = result.message || 'Invalid credentials or inactive account.';
             }
-            window.location.href = '/pages/auth/welcome.html';
         });
 
-        // Cancel registration
-        document.getElementById('btn-reg-cancel').addEventListener('click', () => {
-            document.getElementById('register-section').style.display = 'none';
-            document.getElementById('tap-section').style.display = 'block';
-            document.getElementById('rfid-input').value = '';
-            document.getElementById('rfid-input').focus();
+        // Toggle password visibility
+        document.getElementById('toggle-password').addEventListener('click', () => {
+            const input = document.getElementById('login-password');
+            const icon = document.getElementById('toggle-password').querySelector('span');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
         });
 
-        // ── Mobile Sidebar Toggle ───────────────────────
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const sidebarNav = document.getElementById('sidebar-nav');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-
-        const toggleSidebar = () => {
-            hamburgerBtn.classList.toggle('active');
-            sidebarNav.classList.toggle('open');
-            sidebarOverlay.classList.toggle('active');
-            document.body.classList.toggle('overflow-hidden');
-        };
-
-        hamburgerBtn.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
+        // Keep RFID input focused when clicking outside form
+        document.addEventListener('click', (e) => {
+            const loginCard = document.querySelector('.welcome-card');
+            if (!loginCard.contains(e.target)) {
+                document.getElementById('rfid-input').focus();
+            }
+        });
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,12 +11,11 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] },  } }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
     }
   </script>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased" style="background:#f1f5f9;color:#1e293b">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -24,84 +23,90 @@
       <div id="alert-container"></div>
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#3a3a52]">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#ffb599]">inventory_2</span>
-            Inventory
+          <h1 class="astral-page-title flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-600" style="font-variation-settings:'FILL' 1">inventory_2</span>
+            Book Inventory
           </h1>
-          <p class="text-sm text-slate-500 mt-1">Track book stock levels, incoming deliveries, and outgoing records</p>
+          <p class="astral-page-subtitle">Track book stock levels, incoming deliveries, and outgoing records</p>
         </div>
         <div class="flex items-center gap-2">
-          <button id="btn-add-incoming" style="display:none" class="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] px-4 py-2.5 text-sm font-semibold transition-colors">
+          <button id="btn-add-incoming" style="display:none" class="astral-btn astral-btn-primary text-sm">
             <span class="material-symbols-outlined text-base">south_west</span> Add Incoming
           </button>
-          <button id="btn-add-outgoing" style="display:none" class="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 text-sm font-semibold transition-colors">
+          <button id="btn-add-outgoing" style="display:none" class="astral-btn astral-btn-danger text-sm">
             <span class="material-symbols-outlined text-base">north_east</span> Add Outgoing
           </button>
         </div>
       </div>
 
       <!-- Tabs -->
-      <div class="flex gap-1 border-b border-[#3a3a52] mb-6">
-        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-[#ffb599] text-[#ffb599]" data-tab="overview">Overview</button>
-        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-[#9b99b8] hover:text-slate-700 dark:hover:text-slate-200" data-tab="incoming">Incoming</button>
-        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-[#9b99b8] hover:text-slate-700 dark:hover:text-slate-200" data-tab="outgoing">Outgoing</button>
+      <div class="flex gap-1 border-b border-gray-200 mb-6">
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-purple-600 text-purple-600" data-tab="overview">Overview</button>
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-gray-400 hover:text-gray-700" data-tab="incoming">Incoming Books</button>
+        <button class="nav-tab px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors border-b-2 border-transparent text-gray-400 hover:text-gray-700" data-tab="outgoing">Outgoing Books</button>
       </div>
 
       <!-- OVERVIEW TAB -->
       <div class="tab-pane active" id="tab-overview">
         <!-- Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-[#ffb599] bg-primary/10 p-2 rounded-lg">menu_book</span></div>
-            <p class="text-sm text-[#9b99b8]">Total Titles</p>
-            <p class="text-2xl font-bold" id="inv-titles">0</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(124,58,237,0.1);color:#7c3aed"><span class="material-symbols-outlined">menu_book</span></div></div>
+            <p class="stat-label">Total Titles</p>
+            <p class="stat-value" id="inv-titles">0</p>
           </div>
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">content_copy</span></div>
-            <p class="text-sm text-[#9b99b8]">Total Copies</p>
-            <p class="text-2xl font-bold" id="inv-copies">0</p>
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981"><span class="material-symbols-outlined">content_copy</span></div></div>
+            <p class="stat-label">Total Copies</p>
+            <p class="stat-value" id="inv-copies">0</p>
           </div>
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-sky-600 bg-sky-100 dark:bg-sky-900/30 p-2 rounded-lg">check_circle</span></div>
-            <p class="text-sm text-[#9b99b8]">Available</p>
-            <p class="text-2xl font-bold" id="inv-avail">0</p>
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(59,130,246,0.1);color:#3b82f6"><span class="material-symbols-outlined">check_circle</span></div></div>
+            <p class="stat-label">Available</p>
+            <p class="stat-value" id="inv-avail">0</p>
           </div>
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-amber-600 bg-amber-100 dark:bg-amber-900/30 p-2 rounded-lg">warning</span></div>
-            <p class="text-sm text-[#9b99b8]">Checked Out</p>
-            <p class="text-2xl font-bold" id="inv-out">0</p>
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b"><span class="material-symbols-outlined">warning</span></div></div>
+            <p class="stat-label">Checked Out</p>
+            <p class="stat-value" id="inv-out">0</p>
           </div>
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg">south_west</span></div>
-            <p class="text-sm text-[#9b99b8]">Incoming (30d)</p>
-            <p class="text-2xl font-bold" id="inv-ingoing">0</p>
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981"><span class="material-symbols-outlined">south_west</span></div></div>
+            <p class="stat-label">Incoming (30d)</p>
+            <p class="stat-value" id="inv-ingoing">0</p>
           </div>
-          <div class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#3a3a52] shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2"><span class="material-symbols-outlined text-rose-600 bg-rose-100 dark:bg-rose-900/30 p-2 rounded-lg">north_east</span></div>
-            <p class="text-sm text-[#9b99b8]">Outgoing (30d)</p>
-            <p class="text-2xl font-bold" id="inv-outgoing">0</p>
+          <div class="astral-stat-card">
+            <div class="flex items-center justify-between mb-3"><div class="stat-icon" style="background:rgba(239,68,68,0.1);color:#ef4444"><span class="material-symbols-outlined">north_east</span></div></div>
+            <p class="stat-label">Outgoing (30d)</p>
+            <p class="stat-value" id="inv-outgoing">0</p>
           </div>
         </div>
         <!-- Book Inventory Table -->
         <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#ffb599] text-lg">list</span>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[#e2e0fc]">Book Inventory</h2>
+          <div class="astral-card-header">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-600 text-lg">list</span>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-gray-700">Book Inventory</h2>
+            </div>
+            <div class="astral-input-icon">
+              <span class="material-symbols-outlined">search</span>
+              <input type="text" placeholder="Search books..." class="astral-input text-sm" style="width:200px;padding-left:40px" id="inv-search">
+            </div>
           </div>
           <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead><tr class="bg-[#1a1a2e] border-b border-[#3a3a52]">
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Title</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Author</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Category</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Total Copies</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Available</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8]">Checked Out</th>
-                <th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#9b99b8] min-w-[160px]">Availability</th>
+            <table class="astral-table">
+              <thead><tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Copies</th>
+                <th>Available</th>
+                <th>Shelf Location</th>
+                <th style="min-width:140px">Availability</th>
               </tr></thead>
-              <tbody id="data-table" class="divide-y divide-[#3a3a52]/50 text-sm"></tbody>
+              <tbody id="data-table" class="text-sm"></tbody>
             </table>
           </div>
         </div>
@@ -336,12 +341,12 @@
     if (canOutgoing) document.getElementById('btn-add-outgoing').style.display = '';
 
     // ── Tab switching ─────────────────────────────────────────
-    const tabActiveClasses = 'border-[#ffb599] text-[#ffb599]';
-    const tabInactiveClasses = 'border-transparent text-[#9b99b8] hover:text-slate-700 dark:hover:text-slate-200';
+    const tabActiveClasses = 'border-purple-600 text-purple-600';
+    const tabInactiveClasses = 'border-transparent text-gray-400 hover:text-gray-700';
     document.querySelectorAll('.nav-tab').forEach((tab) => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.nav-tab').forEach((t) => {
-                t.classList.remove('active', 'border-[#ffb599]', 'text-[#ffb599]');
+                t.classList.remove('active', 'border-purple-600', 'text-purple-600');
                 tabInactiveClasses.split(' ').forEach((c) => { t.classList.add(c); });
             });
             document.querySelectorAll('.tab-pane').forEach((p) => { p.classList.remove('active'); });
@@ -446,12 +451,12 @@
         document.getElementById('inv-outgoing').textContent = outgoing30;
 
         const tbody = document.getElementById('data-table');
-        if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-[#9b99b8]"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; return; }
+        if (!books.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-gray-400"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">inventory_2</span>No books in inventory.</td></tr>'; return; }
         tbody.innerHTML = books.map((b) => {
             const out = b.copies - b.available;
             const pct = b.copies > 0 ? Math.round((b.available / b.copies) * 100) : 0;
-            const color = pct > 50 ? '#22c55e' : (pct > 0 ? '#eab308' : '#ef4444');
-            return `<tr class="hover:bg-[#ffb599]/5 transition-colors"><td class="px-5 py-3 font-semibold">${b.title}</td><td class="px-5 py-3 text-[#9b99b8]">${App.getAuthorName(b.author_id)}</td><td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold " style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)">${App.getCategoryName(b.category_id)}</span></td><td class="px-5 py-3">${b.copies}</td><td class="px-5 py-3">${b.available}</td><td class="px-5 py-3">${out}</td><td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2"><div class="rounded-full h-2" style="width:${pct}%;background:${color}"></div></div><span class="text-xs font-semibold whitespace-nowrap" style="color:${color}">${pct}%</span></div></td></tr>`;
+            const color = pct > 50 ? '#10b981' : (pct > 0 ? '#f59e0b' : '#ef4444');
+            return `<tr><td class="px-5 py-3 font-semibold text-gray-800">${b.title}</td><td class="px-5 py-3 text-gray-500">${App.getAuthorName(b.author_id)}</td><td class="px-5 py-3"><code class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">${b.isbn || '—'}</code></td><td class="px-5 py-3">${b.copies}</td><td class="px-5 py-3">${b.available}</td><td class="px-5 py-3 text-gray-500">${b.call_number || '—'}</td><td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-full bg-gray-100 rounded-full h-2"><div class="rounded-full h-2" style="width:${pct}%;background:${color}"></div></div><span class="text-xs font-semibold whitespace-nowrap" style="color:${color}">${pct}%</span></div></td></tr>`;
         }).join('');
     };
 

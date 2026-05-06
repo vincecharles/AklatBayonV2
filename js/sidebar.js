@@ -15,50 +15,52 @@ const Sidebar = (() => {
 
         let html = '';
 
-        // User info area
+        // ── Logo / Brand ──────────────────────────────────────
+        html += `<div class="px-5 pt-6 pb-4 flex items-center gap-3">
+            <img src="/images/logo.png" alt="AklatBayon" class="w-9 h-9 object-contain drop-shadow-md">
+            <div>
+                <div class="text-base font-bold text-white tracking-tight">AklatBayon</div>
+                <div class="text-[10px] text-purple-300/50 font-medium uppercase tracking-widest">Library System</div>
+            </div>
+        </div>`;
+
+        // ── User Info ─────────────────────────────────────────
         const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        const avatarColors = ['#e17141','#9b87c1','#4ade80','#60a5fa','#fbbf24'];
-        const colorIdx = user.name.charCodeAt(0) % avatarColors.length;
-        html += `<div class="px-5 py-5 border-b border-[#3a3a52]">
+        html += `<div class="px-5 py-4 mx-3 mb-2 rounded-xl bg-white/5 border border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background:${avatarColors[colorIdx]}">${initials}</div>
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-purple-400 to-violet-600 shadow-md shadow-purple-500/20">${initials}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-sm font-bold text-[#e2e0fc] truncate">${user.name}</div>
-                    <div class="text-[10px] font-medium text-[#9b99b8] uppercase tracking-widest">${user.role_name}${user.faculty_subtype ? ' · ' + user.faculty_subtype : ''}</div>
+                    <div class="text-sm font-semibold text-white truncate">${user.name}</div>
+                    <div class="text-[10px] text-purple-300/50 uppercase tracking-wider">${user.role_name}${user.faculty_subtype ? ' · ' + user.faculty_subtype : ''}</div>
                 </div>
             </div>
         </div>`;
 
-        html += '<div class="p-3 space-y-0.5 flex-1">';
+        html += '<div class="px-3 space-y-0.5 flex-1 overflow-y-auto">';
 
-        // General
+        // ── GENERAL ───────────────────────────────────────────
         html += sectionLabel('General');
-        html += navLink('/pages/general/dashboard.html', 'dashboard', 'Dashboard', page);
-        html += navLink('/pages/management/users/profile.html', 'person', 'My Profile', page);
+        html += navLink('/pages/general/dashboard.html', 'grid_view', 'Dashboard', page);
 
-        // User Management
+        // ── MANAGEMENT ────────────────────────────────────────
         if (Auth.hasAnyPermission(['can_manage_users', 'can_manage_students'])) {
             html += sectionLabel('Management');
             const userPages = ['/pages/management/users/users.html', '/pages/management/users/students.html', '/pages/management/users/faculty-profile.html'];
-            html += dropdownToggle('manage_accounts', 'User Management', userPages, page);
+            html += dropdownToggle('people', 'User Management', userPages, page);
             html += `<div class="${submenuClass(userPages, page)}">`;
-            if (Auth.hasPermission('can_manage_users')) html += subNavLink('/pages/management/users/users.html', 'person', 'Users', page);
             if (Auth.hasPermission('can_manage_students')) html += subNavLink('/pages/management/users/students.html', 'school', 'Students', page);
-            html += subNavLink('/pages/management/users/faculty-profile.html', 'school', 'Faculty Portal', page);
+            if (Auth.hasPermission('can_manage_users')) html += subNavLink('/pages/management/users/users.html', 'badge', 'Employees', page);
             html += '</div></div>';
         }
 
-        // Role Management
-        if (Auth.hasPermission('can_manage_roles')) {
-            if (!Auth.hasAnyPermission(['can_manage_users', 'can_manage_students'])) html += sectionLabel('Management');
-            html += navLink('/pages/management/users/roles.html', 'admin_panel_settings', 'Role Management', page);
-        }
-
-        // Book Management
+        // ── INVENTORY (Books Only) ────────────────────────────
+        html += sectionLabel('Inventory');
         const catalogPages = ['/pages/management/catalog/books.html', '/pages/management/catalog/authors.html', '/pages/management/catalog/publishers.html', '/pages/management/catalog/categories.html', '/pages/management/catalog/loc-search.html', '/pages/management/catalog/lcc-browser.html', '/pages/management/catalog/ai-search.html'];
-        html += dropdownToggle('menu_book', 'Book Management', catalogPages, page);
-        html += `<div class="${submenuClass(catalogPages, page)}">`;
-        html += subNavLink('/pages/management/catalog/books.html', 'auto_stories', 'Books', page);
+        html += navLink('/pages/management/catalog/books.html', 'inventory', 'Book Masterfile', page);
+
+        const bookMgmtPages = ['/pages/management/catalog/authors.html', '/pages/management/catalog/publishers.html', '/pages/management/catalog/categories.html', '/pages/management/catalog/loc-search.html', '/pages/management/catalog/lcc-browser.html', '/pages/management/catalog/ai-search.html'];
+        html += dropdownToggle('edit_note', 'Book Management', bookMgmtPages, page);
+        html += `<div class="${submenuClass(bookMgmtPages, page)}">`;
         if (Auth.hasPermission('can_add_categories')) {
             html += subNavLink('/pages/management/catalog/authors.html', 'edit', 'Authors', page);
             html += subNavLink('/pages/management/catalog/publishers.html', 'apartment', 'Publishers', page);
@@ -71,21 +73,39 @@ const Sidebar = (() => {
         html += subNavLink('/pages/management/catalog/ai-search.html', 'auto_awesome', 'AI Search', page);
         html += '</div></div>';
 
-        // Circulation
-        if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
-            html += sectionLabel('Operations');
-            const circPages = ['/pages/operations/circulation.html', '/pages/operations/reservations.html', '/pages/operations/reading-history.html'];
-            html += dropdownToggle('swap_horiz', 'Circulation', circPages, page);
-            html += `<div class="${submenuClass(circPages, page)}">`;
-            html += subNavLink('/pages/operations/circulation.html', 'swap_horiz', 'Transactions', page);
-            if (Auth.hasPermission('can_reserve_books')) html += subNavLink('/pages/operations/reservations.html', 'bookmark', 'Reservations', page);
-            html += subNavLink('/pages/operations/reading-history.html', 'history', 'Reading History', page);
-            html += '</div></div>';
+        if (Auth.hasAnyPermission(['can_view_inventory', 'can_manage_incoming'])) {
+            html += navLink('/pages/admin/inventory.html?tab=incoming', 'south_west', 'Incoming Books', page, ['/pages/admin/inventory.html']);
+        }
+        if (Auth.hasAnyPermission(['can_view_inventory', 'can_manage_outgoing'])) {
+            html += navLink('/pages/admin/inventory.html?tab=outgoing', 'north_east', 'Outgoing Books', page, ['/pages/admin/inventory.html']);
+        }
+        if (Auth.hasAnyPermission(['can_view_inventory'])) {
+            html += navLink('/pages/admin/inventory.html', 'assessment', 'Stock / Circulation Report', page);
         }
 
-        // Finance
+        // ── OPERATIONS ────────────────────────────────────────
+        if (Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
+            html += sectionLabel('Operations');
+
+            // Borrowing Requests with badge
+            const reservations = Store.getAll('reservations');
+            const pendingCount = reservations.filter(r => r.status === 'active' || r.status === 'available').length;
+            html += navLinkWithBadge('/pages/operations/reservations.html', 'handshake', 'Borrowing Requests', page, pendingCount, 'purple');
+
+            html += navLink('/pages/operations/circulation.html', 'assignment_return', 'Returns', page);
+            html += navLink('/pages/operations/reading-history.html', 'history', 'Borrowing History', page);
+
+            // Overdue with alert badge
+            const txns = Store.getAll('transactions');
+            const overdueCount = txns.filter(t => t.status === 'borrowed' && new Date(t.date_due) < new Date()).length;
+            html += navLinkWithBadge('/pages/operations/circulation.html?filter=overdue', 'error_outline', 'Overdue Books', page, overdueCount, 'red');
+        }
+
+        // ── Finance (under Operations) ────────────────────────
         if (Auth.hasPermission('can_manage_fines') || Auth.hasPermission('can_view_own_fines')) {
-            if (!Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) html += sectionLabel('Operations');
+            if (!Auth.hasAnyPermission(['can_issue_books', 'can_return_books', 'can_reserve_books', 'can_renew_books'])) {
+                html += sectionLabel('Operations');
+            }
             const financePages = ['/pages/operations/fines.html', '/pages/operations/my-fines.html'];
             html += dropdownToggle('payments', 'Finance', financePages, page);
             html += `<div class="${submenuClass(financePages, page)}">`;
@@ -97,50 +117,74 @@ const Sidebar = (() => {
                     const allFines = Store.getAll('fines');
                     myFineCount = allFines.filter(f => f.student_id === currentUser.student_id && f.status === 'pending').length;
                 }
-                const badge = myFineCount > 0 ? ` <span class="ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold" style="background:rgba(248,113,113,0.15);color:#f87171">${myFineCount}</span>` : '';
+                const badge = myFineCount > 0 ? ` <span class="ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold bg-red-500/20 text-red-400">${myFineCount}</span>` : '';
                 html += subNavLink('/pages/operations/my-fines.html', 'request_quote', `My Fines${badge}`, page);
             }
             html += '</div></div>';
         }
 
-        // Inventory
-        if (Auth.hasAnyPermission(['can_view_inventory', 'can_manage_incoming', 'can_manage_outgoing'])) {
-            html += sectionLabel('Inventory');
-            html += navLink('/pages/admin/inventory.html', 'inventory_2', 'Inventory', page);
-        }
+        // ── SYSTEMS ADMIN ─────────────────────────────────────
+        if (Auth.hasAnyPermission(['can_view_reports', 'can_view_attendance', 'can_manage_roles', 'can_manage_settings', 'can_manage_backups', 'can_view_audit_logs'])) {
+            html += sectionLabel('Systems Admin');
 
-        // Administration
-        if (Auth.hasAnyPermission(['can_view_reports', 'can_view_attendance'])) {
-            html += sectionLabel('Administration');
-            const adminPages = ['/pages/admin/reports.html', '/pages/admin/attendance.html'];
-            html += dropdownToggle('bar_chart', 'Reports & Data', adminPages, page);
-            html += `<div class="${submenuClass(adminPages, page)}">`;
-            if (Auth.hasPermission('can_view_reports')) html += subNavLink('/pages/admin/reports.html', 'description', 'Reports', page);
-            if (Auth.hasPermission('can_view_attendance')) html += subNavLink('/pages/admin/attendance.html', 'assignment_ind', 'Attendance', page);
-            html += '</div></div>';
-        }
+            if (Auth.hasPermission('can_view_reports')) {
+                html += navLink('/pages/admin/reports.html', 'analytics', 'Reports', page);
+            }
+            if (Auth.hasPermission('can_manage_roles')) {
+                html += navLink('/pages/management/users/roles.html', 'admin_panel_settings', 'Role Management', page);
+            }
+            // Borrowing Policies (links to settings)
+            if (Auth.hasPermission('can_manage_settings')) {
+                html += navLink('/pages/admin/settings.html', 'policy', 'Borrowing Policies', page);
+            }
+            if (Auth.hasPermission('can_view_audit_logs')) {
+                html += navLink('/pages/admin/audit-logs.html', 'receipt_long', 'Audit Logs', page);
+            }
 
-        // System
-        if (Auth.hasAnyPermission(['can_manage_settings', 'can_manage_backups', 'can_view_audit_logs'])) {
-            html += sectionLabel('System');
-            const sysPages = ['/pages/admin/settings.html', '/pages/admin/audit-logs.html'];
-            html += dropdownToggle('settings', 'System Settings', sysPages, page);
-            html += `<div class="${submenuClass(sysPages, page)}">`;
-            if (Auth.hasPermission('can_manage_settings')) html += subNavLink('/pages/admin/settings.html', 'tune', 'Settings', page);
-            if (Auth.hasPermission('can_view_audit_logs')) html += subNavLink('/pages/admin/audit-logs.html', 'checklist', 'Audit Logs', page);
-            html += '</div></div>';
+            // System Setup dropdown
+            if (Auth.hasPermission('can_manage_settings')) {
+                const setupPages = ['/pages/admin/settings.html', '/pages/management/users/faculty-profile.html'];
+                html += dropdownToggle('settings', 'System Setup', setupPages, page);
+                html += `<div class="${submenuClass(setupPages, page)}">`;
+                html += subNavLink('/pages/management/users/faculty-profile.html', 'account_tree', 'Academic Structure', page);
+                html += subNavLink('/pages/management/users/users.html', 'business_center', 'Employee Structure', page);
+                html += subNavLink('/pages/admin/settings.html', 'tune', 'System Configuration', page);
+                html += '</div></div>';
+            }
         }
 
         html += '</div>';
 
-        // Bottom section
-        html += `<div class="mt-auto border-t border-[#3a3a52] p-3 space-y-0.5">
-            <a href="/pages/management/catalog/catalog.html" class="flex items-center gap-3 px-3 py-2 rounded-xl text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#ffb599] text-sm font-medium transition-colors">
+        // ── Bottom Section ────────────────────────────────────
+        html += `<div class="mt-auto border-t border-white/5 px-3 pt-3 pb-2 space-y-1">
+            <a href="/pages/management/catalog/catalog.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:bg-white/5 hover:text-white/80 text-sm font-medium transition-all">
                 <span class="material-symbols-outlined text-lg">search</span><span>Browse Catalog</span>
             </a>
-            <button onclick="Auth.logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[#9b99b8] hover:bg-[rgba(248,113,113,0.08)] hover:text-[#f87171] text-sm font-medium transition-colors">
-                <span class="material-symbols-outlined text-lg">logout</span><span>Logout</span>
+            <button onclick="Auth.logout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400/80 hover:bg-red-500/10 hover:text-red-400 text-sm font-medium transition-all">
+                <span class="material-symbols-outlined text-lg">logout</span><span>Sign Out</span>
             </button>
+        </div>`;
+
+        // ── System Status Card ────────────────────────────────
+        html += `<div class="mx-3 mb-4 mt-2 px-4 py-3.5 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-400/10">
+            <div class="flex items-center gap-2 mb-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10b981]"></span>
+                <span class="text-[11px] font-semibold text-white/70 uppercase tracking-wider">System Status</span>
+            </div>
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-white/40">Academic Year</span>
+                    <span class="text-[11px] text-white/70 font-semibold">25/26</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-white/40">Server status</span>
+                    <span class="text-[11px] text-emerald-400 font-semibold">Operational</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-white/40">Last backup</span>
+                    <span class="text-[11px] text-white/70 font-semibold">2h ago</span>
+                </div>
+            </div>
         </div>`;
 
         nav.innerHTML = html;
@@ -148,35 +192,49 @@ const Sidebar = (() => {
     };
 
     const sectionLabel = (text) =>
-        `<p class="px-3 pt-5 pb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-[#9b99b8]">${text}</p>`;
+        `<p class="px-3 pt-5 pb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-white/25">${text}</p>`;
 
-    const navLink = (href, icon, label, currentPage) => {
+    const navLink = (href, icon, label, currentPage, additionalMatches = []) => {
+        const isActive = currentPage === href || additionalMatches.some(m => currentPage.startsWith(m));
+        const cls = isActive
+            ? 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple-500/20 border-l-[3px] border-purple-400'
+            : 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white/80 transition-all';
+        return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-xl" style="${isActive ? 'font-variation-settings: \'FILL\' 1;' : ''}">${icon}</span><span>${label}</span></a>`;
+    };
+
+    const navLinkWithBadge = (href, icon, label, currentPage, count, color) => {
         const isActive = currentPage === href;
         const cls = isActive
-            ? 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.12)] border-l-[3px] border-[#ffb599]'
-            : 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
-        return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-xl">${icon}</span><span>${label}</span></a>`;
+            ? 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple-500/20 border-l-[3px] border-purple-400'
+            : 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white/80 transition-all';
+        const badgeColor = color === 'red'
+            ? 'bg-red-500 text-white'
+            : 'bg-purple-500 text-white';
+        const badge = count > 0
+            ? `<span class="ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center px-1.5 rounded-full font-bold ${badgeColor}">${count}</span>`
+            : '';
+        return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-xl" style="${isActive ? 'font-variation-settings: \'FILL\' 1;' : ''}">${icon}</span><span class="flex-1">${label}</span>${badge}</a>`;
     };
 
     const subNavLink = (href, icon, label, currentPage) => {
         const isActive = currentPage === href;
         const cls = isActive
-            ? 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.08)]'
-            : 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
+            ? 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-white bg-purple-500/15'
+            : 'flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-all';
         return `<a href="${href}" class="${cls}"><span class="material-symbols-outlined text-lg">${icon}</span><span>${label}</span></a>`;
     };
 
     const dropdownToggle = (icon, label, pages, currentPage) => {
         const isOpen = isActiveGroup(pages, currentPage);
         const cls = isOpen
-            ? 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ffb599] bg-[rgba(225,113,65,0.12)] border-l-[3px] border-[#ffb599]'
-            : 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-[#9b99b8] hover:bg-[rgba(255,181,153,0.05)] hover:text-[#e2e0fc] transition-colors';
-        return `<div class="nav-dropdown"><button type="button" class="${cls}" data-target="menu_${icon}" aria-expanded="${isOpen}"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">${icon}</span><span>${label}</span></div><span class="material-symbols-outlined text-sm menu-arrow transition-transform${isOpen ? ' rotate-180' : ''}">expand_more</span></button>`;
+            ? 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple-500/20 border-l-[3px] border-purple-400'
+            : 'menu-toggle w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white/80 transition-all';
+        return `<div class="nav-dropdown"><button type="button" class="${cls}" data-target="menu_${icon}" aria-expanded="${isOpen}"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-xl" style="${isOpen ? 'font-variation-settings: \'FILL\' 1;' : ''}">${icon}</span><span>${label}</span></div><span class="material-symbols-outlined text-sm menu-arrow transition-transform${isOpen ? ' rotate-180' : ''}" style="font-size:16px">expand_more</span></button>`;
     };
 
     const submenuClass = (pages, currentPage) => {
         const isOpen = isActiveGroup(pages, currentPage);
-        return `${isOpen ? '' : 'hidden '}ml-5 mt-1 space-y-0.5 border-l border-[#3a3a52] pl-3`;
+        return `${isOpen ? '' : 'hidden '}ml-5 mt-1 space-y-0.5 border-l border-white/10 pl-3`;
     };
 
     const isActiveGroup = (pages, currentPage) => pages.includes(currentPage);

@@ -1,18 +1,15 @@
 const App = (() => {
     const THEME_KEY = 'aklatbayon_theme';
-    const LEGACY_THEME_KEY = 'aklatbayon_dark_mode';
 
     const applyStoredTheme = () => {
-        // Force dark mode for Astral theme
-        document.documentElement.classList.add('dark');
-        localStorage.setItem(THEME_KEY, 'dark');
+        // BorrowBox style uses light theme
+        document.documentElement.classList.remove('dark');
     };
 
     const init = () => {
         applyStoredTheme();
         renderHeader();
         Sidebar.render();
-        renderStatusBar();
     };
 
     const renderHeader = () => {
@@ -27,55 +24,50 @@ const App = (() => {
 
         header.innerHTML = `
             <div class="flex items-center gap-3">
-                <button id="mobile-menu-btn" class="md-sidebar-toggle flex flex-col gap-[5px] p-2 rounded-lg hover:bg-white/5 transition-colors" aria-label="Toggle menu" style="display:none">
-                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
-                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
-                    <span style="display:block;width:20px;height:2px;background:#ffb599;border-radius:2px;transition:all 0.3s"></span>
+                <button id="mobile-menu-btn" class="md-sidebar-toggle flex flex-col gap-[5px] p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle menu" style="display:none">
+                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
+                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
+                    <span style="display:block;width:20px;height:2px;background:#7c3aed;border-radius:2px;transition:all 0.3s"></span>
                 </button>
-                <img src="/images/logo.png" alt="AklatBayon" class="w-8 h-8 object-contain">
-                <span class="text-lg font-bold tracking-tight text-[#ffb599]">AklatBayon</span>
+                <div class="hidden lg:block">
+                    <h2 class="text-sm font-bold text-gray-900" id="header-page-title"></h2>
+                </div>
             </div>
-            <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[rgba(255,181,153,0.08)] transition-colors text-[#9b99b8] hover:text-[#ffb599] relative" title="Notifications">
-                    <span class="material-symbols-outlined text-xl">notifications</span>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-400 hover:text-purple-600 relative" title="Notifications" id="header-notif-btn">
+                        <span class="material-symbols-outlined text-xl">notifications</span>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" id="notif-dot" style="display:none"></span>
+                    </button>
+                </div>
+                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-400 hover:text-purple-600" title="Search">
+                    <span class="material-symbols-outlined text-xl">search</span>
                 </button>
-                <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[rgba(255,181,153,0.08)] transition-colors text-[#9b99b8] hover:text-[#ffb599]" title="Settings">
-                    <span class="material-symbols-outlined text-xl">settings</span>
-                </button>
-                <div class="h-8 w-px bg-[#3a3a52] hidden sm:block"></div>
-                <div class="flex items-center gap-3">
+                <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
+                <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-xl px-2 py-1.5 transition-colors">
                     <div class="text-right hidden sm:block">
-                        <div class="text-sm font-semibold text-[#e2e0fc]">${user.name}</div>
-                        <div class="text-[10px] text-[#9b99b8] uppercase tracking-wider">${user.role_name}</div>
+                        <div class="text-sm font-semibold text-gray-900">${user.name}</div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">${user.role_name}</div>
                     </div>
-                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white bg-[#e17141]">${initials}</div>
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-purple-500 to-violet-600 shadow-md shadow-purple-500/20">${initials}</div>
                 </div>
             </div>`;
 
+        // Set page title from document title
+        const pageTitle = document.getElementById('header-page-title');
+        if (pageTitle) {
+            const title = document.title.split(' - ')[0] || 'Dashboard';
+            pageTitle.textContent = title;
+        }
+
+        // Show notification dot if there are pending items
+        const txns = Store.getAll('transactions');
+        const overdue = txns.filter(t => t.status === 'borrowed' && new Date(t.date_due) < new Date()).length;
+        const notifDot = document.getElementById('notif-dot');
+        if (notifDot && overdue > 0) notifDot.style.display = '';
+
         // Mobile sidebar toggle
         setupMobileSidebar();
-    };
-
-    const renderStatusBar = () => {
-        // Add status bar if not already present
-        if (document.getElementById('astral-status-bar')) return;
-        const bar = document.createElement('div');
-        bar.id = 'astral-status-bar';
-        bar.className = 'astral-status-bar';
-        bar.innerHTML = `
-            <div class="flex items-center gap-2">
-                <span class="status-dot"></span>
-                <span>System Online</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">shield</span>
-                <span>Firewall Active</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">speed</span>
-                <span>2.4 TB/s</span>
-            </div>`;
-        document.body.appendChild(bar);
     };
 
     const setupMobileSidebar = () => {
@@ -111,9 +103,9 @@ const App = (() => {
         const container = document.getElementById('alert-container');
         if (!container) return;
         const styles = {
-            success: 'background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
-            danger: 'background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.3)',
-            info: 'background:rgba(96,165,250,0.1);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)'
+            success: 'background:#d1fae5;color:#059669;border:1px solid #a7f3d0',
+            danger: 'background:#fee2e2;color:#dc2626;border:1px solid #fecaca',
+            info: 'background:#dbeafe;color:#2563eb;border:1px solid #bfdbfe'
         };
         const icons = { success: 'check_circle', danger: 'error', info: 'info' };
         const div = document.createElement('div');
@@ -129,11 +121,11 @@ const App = (() => {
         text: `Delete "${itemName}"? This cannot be undone.`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#e17141',
-        cancelButtonColor: '#3a3a52',
+        confirmButtonColor: '#7c3aed',
+        cancelButtonColor: '#e2e8f0',
         confirmButtonText: 'Yes, delete it!',
-        background: '#1e1e32',
-        color: '#e2e0fc'
+        background: '#ffffff',
+        color: '#1e293b'
     });
 
     const formatDate = (isoStr) => {

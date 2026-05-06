@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,76 +8,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] }
-        }
-      }
-    }
-  </script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
   <style>
-    /* Role badge variants (applied dynamically via JS) */
-    .role-admin     { background: rgba(233,69,96,0.2);  border: 1px solid rgba(233,69,96,0.4);  color: #e94560; }
-    .role-librarian { background: rgba(34,197,94,0.2);   border: 1px solid rgba(34,197,94,0.4);  color: #22c55e; }
-    .role-faculty   { background: rgba(6,182,212,0.2);   border: 1px solid rgba(6,182,212,0.4);  color: #06b6d4; }
-    .role-student   { background: rgba(234,179,8,0.2);   border: 1px solid rgba(234,179,8,0.4);  color: #eab308; }
-    .role-assistant { background: rgba(139,92,246,0.2);   border: 1px solid rgba(139,92,246,0.4); color: #8b5cf6; }
-    .role-guest     { background: rgba(107,114,128,0.2);  border: 1px solid rgba(107,114,128,0.4); color: #6b7280; }
-
-    /* Avatar pulse glow */
     @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
-      50%      { box-shadow: 0 0 30px 10px rgba(255,255,255,0.08); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.1); }
+      50%      { box-shadow: 0 0 40px 15px rgba(124,58,237,0.08); }
     }
     .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-
-    /* Particle element (created by JS with className = 'particle') */
-    .particle {
-      position: absolute;
-      border-radius: 9999px;
-      background: rgba(224,230,240,0.15);
-      animation: float-up linear infinite;
-    }
   </style>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
-
-  <!-- Full-screen gradient backdrop -->
-  <div class="fixed inset-0 bg-gradient-to-br from-[#1a1a2e] to-[#0f3460] flex items-center justify-center overflow-hidden">
-
-    <!-- Particles container -->
-    <div class="fixed inset-0 pointer-events-none z-0" id="particles"></div>
-
-    <!-- Welcome card -->
+<body class="font-sans min-h-screen antialiased">
+  <div class="fixed inset-0 bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95] flex items-center justify-center overflow-hidden">
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
     <div class="relative z-10 text-center animate-fade-in">
-
-      <!-- Avatar / Logo -->
-      <div class="w-[120px] h-[120px] rounded-full bg-white/10 border-[3px] border-white/20 flex items-center justify-center mx-auto mb-6 overflow-hidden animate-pulse-glow">
-        <img src="/images/logo.png" alt="AklatBayon" class="w-[90px] h-[90px] object-contain">
+      <div class="w-[100px] h-[100px] rounded-2xl bg-white/10 border-2 border-white/15 flex items-center justify-center mx-auto mb-6 overflow-hidden animate-pulse-glow">
+        <img src="/images/logo.png" alt="AklatBayon" class="w-[70px] h-[70px] object-contain">
       </div>
-
-      <!-- Welcome label -->
-      <p class="text-sm font-semibold uppercase tracking-[3px] text-white/50 mb-2">Welcome Back</p>
-
-      <!-- User name -->
-      <h1 class="text-[42px] font-black tracking-wide text-white mb-3" id="user-name">User</h1>
-
-      <!-- Role badge -->
+      <p class="text-sm font-semibold uppercase tracking-[3px] text-white/40 mb-2">Welcome Back</p>
+      <h1 class="text-[38px] font-black tracking-wide text-white mb-3" id="user-name">User</h1>
       <div class="inline-block px-5 py-1.5 rounded-full text-[13px] font-semibold tracking-wide mb-8" id="user-role">Role</div>
-
-      <!-- Redirect text -->
-      <p class="text-[13px] text-white/40">
+      <p class="text-[13px] text-white/30">
         Redirecting to dashboard<span class="inline-block w-5 text-left" id="dots"></span>
       </p>
-
-      <!-- Progress bar -->
       <div class="w-[200px] h-[3px] bg-white/10 rounded-full mx-auto mt-4 overflow-hidden">
-        <div class="h-full bg-accent rounded-full animate-fill-bar"></div>
+        <div class="h-full bg-gradient-to-r from-purple-400 to-violet-500 rounded-full animate-fill-bar"></div>
       </div>
-
     </div>
   </div>
 
@@ -104,13 +59,11 @@
           };
           roleEl.classList.add(roleClassMap[user.role_name] || 'role-guest');
       }
-
       let dotCount = 0;
       setInterval(() => {
           dotCount = (dotCount + 1) % 4;
           document.getElementById('dots').textContent = '.'.repeat(dotCount);
       }, 500);
-
       (() => {
           const container = document.getElementById('particles');
           for (let i = 0; i < 20; i++) {
@@ -123,7 +76,6 @@
               container.appendChild(p);
           }
       })();
-
       setTimeout(() => { window.location.href = '/pages/general/dashboard.html'; }, 3000);
   </script>
 </body>
