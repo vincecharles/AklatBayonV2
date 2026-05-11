@@ -336,7 +336,7 @@
           </button>
         </form>
 
-        <button type="button" class="guest-link" id="guest-btn" onclick="Auth.loginAsGuest();window.location.href='/pages/auth/welcome.html';">
+        <button type="button" class="guest-link" id="guest-btn" onclick="Auth.loginAsGuest();window.location.href='/pages/general/dashboard.html';">
           <span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:'FILL' 1">person</span>
           Login as Guest
         </button>
@@ -399,7 +399,7 @@
         txt.style.color='#4ade80';sub.textContent='WELCOME, '+r.user.name.toUpperCase();
         icon.textContent='verified';
         Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
-        setTimeout(()=>{window.location.href='/pages/auth/welcome.html';},1200);
+        setTimeout(()=>{window.location.href='/pages/general/dashboard.html';},1200);
       } else {
         txt.textContent='RFID NOT RECOGNIZED';txt.style.color='#f87171';sub.textContent='USE MANUAL LOGIN';
         setTimeout(()=>{txt.textContent='TAP RFID TO ENTER';txt.style.color='';sub.textContent='AWAITING SIGNAL…';},3000);
@@ -419,7 +419,7 @@
     if(r.success){
       err.classList.remove('show');
       Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
-      window.location.href='/pages/auth/welcome.html';
+      window.location.href='/pages/general/dashboard.html';
     } else {
       err.classList.add('show');et.textContent=r.message||'Invalid credentials.';
     }
