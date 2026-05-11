@@ -3,35 +3,258 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome - AklatBayon</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Welcome – AklatBayon</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="/css/custom.css" rel="stylesheet">
-  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
   <style>
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.1); }
-      50%      { box-shadow: 0 0 40px 15px rgba(124,58,237,0.08); }
+    /* ── Reset & Base ───────────────────── */
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;font-family:'Inter',sans-serif;overflow:hidden}
+
+    /* ── Background ─────────────────────── */
+    body{
+      background:#04040e;
+      display:flex;align-items:center;justify-content:center;
+      position:relative
     }
-    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+    /* Deep space radial layers */
+    .bg-aurora{
+      position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 0%,   rgba(0,229,255,.07) 0%,  transparent 55%),
+        radial-gradient(ellipse 80%  80% at 15% 70%,  rgba(124,58,237,.10) 0%, transparent 55%),
+        radial-gradient(ellipse 70%  50% at 85% 30%,  rgba(0,229,255,.05) 0%,  transparent 50%),
+        radial-gradient(ellipse 50%  40% at 50% 50%,  rgba(124,58,237,.06) 0%, transparent 60%)
+    }
+
+    /* Animated gradient ring behind logo */
+    .bg-ring{
+      position:fixed;top:50%;left:50%;width:480px;height:480px;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:conic-gradient(
+        rgba(0,229,255,.05),
+        rgba(124,58,237,.10),
+        rgba(0,229,255,.05),
+        rgba(124,58,237,.08),
+        rgba(0,229,255,.05)
+      );
+      animation:ring-spin 20s linear infinite;
+      filter:blur(28px);
+      pointer-events:none;z-index:0
+    }
+
+    /* Grid overlay */
+    .bg-grid{
+      position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:
+        linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+      background-size:60px 60px
+    }
+
+    /* Particles */
+    #particles{position:fixed;inset:0;pointer-events:none;z-index:1}
+    .p-dot{
+      position:absolute;border-radius:50%;
+      animation:float-p linear infinite
+    }
+    @keyframes float-p{
+      0%{transform:translateY(110vh) scale(0);opacity:0}
+      8%{opacity:1}92%{opacity:.8}
+      100%{transform:translateY(-10vh) scale(1);opacity:0}
+    }
+
+    /* ── Card ───────────────────────────── */
+    .card{
+      position:relative;z-index:10;
+      text-align:center;
+      padding:52px 56px 44px;
+      background:rgba(10,10,28,.65);
+      border:1px solid rgba(0,229,255,.1);
+      border-radius:28px;
+      backdrop-filter:blur(30px);
+      box-shadow:
+        0 0 80px rgba(0,229,255,.06),
+        0 40px 80px rgba(0,0,0,.6),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      animation:card-in .7s cubic-bezier(.22,1,.36,1) both
+    }
+
+    /* ── Logo box ───────────────────────── */
+    .logo-wrap{
+      width:96px;height:96px;border-radius:24px;
+      background:rgba(255,255,255,.06);
+      border:1.5px solid rgba(0,229,255,.15);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 28px;
+      position:relative;
+      animation:logo-pop .6s cubic-bezier(.34,1.56,.64,1) .2s both
+    }
+    .logo-wrap::before{
+      content:'';position:absolute;inset:-6px;border-radius:30px;
+      background:conic-gradient(
+        rgba(0,229,255,.4),rgba(124,58,237,.4),
+        rgba(0,229,255,.4),rgba(124,58,237,.3),
+        rgba(0,229,255,.4)
+      );
+      border-radius:30px;animation:ring-spin 4s linear infinite;
+      filter:blur(4px);opacity:0;
+      transition:opacity .5s
+    }
+    .logo-wrap.ready::before{opacity:1}
+    .logo-wrap img{width:62px;height:62px;object-fit:contain;position:relative;z-index:2}
+
+    /* Scan pulse ring */
+    .scan-ring{
+      position:absolute;inset:-12px;border-radius:50%;
+      border:1.5px solid rgba(0,229,255,.3);
+      animation:scan-ring-anim 2s ease-out infinite;
+      opacity:0
+    }
+    .scan-ring:nth-child(2){animation-delay:.5s}
+    @keyframes scan-ring-anim{
+      0%{transform:scale(.7);opacity:.8}
+      100%{transform:scale(1.6);opacity:0}
+    }
+
+    /* ── Text ───────────────────────────── */
+    .eyebrow{
+      font-family:'JetBrains Mono',monospace;
+      font-size:10px;letter-spacing:4px;
+      text-transform:uppercase;color:rgba(0,229,255,.6);
+      margin-bottom:8px;
+      animation:fade-up .5s .35s both
+    }
+    .user-name{
+      font-size:clamp(28px,5vw,42px);font-weight:900;
+      color:#fff;letter-spacing:-1px;margin-bottom:8px;
+      text-shadow:0 0 40px rgba(255,255,255,.15);
+      animation:fade-up .5s .45s both
+    }
+    .role-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 18px;border-radius:20px;
+      font-size:12px;font-weight:600;letter-spacing:.5px;
+      margin-bottom:32px;
+      animation:badge-pop .5s cubic-bezier(.34,1.56,.64,1) .55s both
+    }
+    /* role badge variants */
+    .role-admin   {background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25);  color:#f87171}
+    .role-librarian{background:rgba(16,185,129,.1);  border:1px solid rgba(16,185,129,.25); color:#34d399}
+    .role-faculty {background:rgba(59,130,246,.1);  border:1px solid rgba(59,130,246,.25); color:#60a5fa}
+    .role-student {background:rgba(245,158,11,.1);  border:1px solid rgba(245,158,11,.25); color:#fbbf24}
+    .role-assistant{background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);  color:#a78bfa}
+    .role-guest   {background:rgba(107,114,128,.1); border:1px solid rgba(107,114,128,.25);color:#9ca3af}
+
+    /* ── Progress ───────────────────────── */
+    .progress-wrap{
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      animation:fade-up .5s .65s both
+    }
+    .redirect-text{
+      font-size:12px;color:rgba(255,255,255,.3);
+      font-family:'JetBrains Mono',monospace;letter-spacing:1px
+    }
+    .bar-track{
+      width:220px;height:3px;background:rgba(255,255,255,.07);
+      border-radius:3px;overflow:hidden
+    }
+    .bar-fill{
+      height:100%;width:0;border-radius:3px;
+      background:linear-gradient(90deg,#00e5ff,#7c3aed);
+      box-shadow:0 0 8px rgba(0,229,255,.5);
+      animation:bar-run 3s cubic-bezier(.4,0,.2,1) .7s forwards
+    }
+
+    /* Dots blinking */
+    .dots{
+      display:inline-block;width:24px;text-align:left;
+      font-family:'JetBrains Mono',monospace
+    }
+
+    /* ── Status row ─────────────────────── */
+    .status-row{
+      display:flex;align-items:center;justify-content:center;gap:20px;
+      margin-bottom:28px;
+      animation:fade-up .5s .58s both
+    }
+    .status-chip{
+      display:flex;align-items:center;gap:5px;
+      font-family:'JetBrains Mono',monospace;font-size:9px;
+      color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase
+    }
+    .status-dot{width:5px;height:5px;border-radius:50%}
+    .dot-green{background:#00e676;box-shadow:0 0 6px #00e676}
+    .dot-cyan {background:#00e5ff;box-shadow:0 0 6px #00e5ff}
+    .dot-purple{background:#7c3aed;box-shadow:0 0 6px #7c3aed}
+
+    /* ── Keyframes ──────────────────────── */
+    @keyframes card-in{
+      from{opacity:0;transform:scale(.88) translateY(40px)}
+      to{opacity:1;transform:scale(1) translateY(0)}
+    }
+    @keyframes logo-pop{
+      from{opacity:0;transform:scale(.5)}
+      to{opacity:1;transform:scale(1)}
+    }
+    @keyframes badge-pop{
+      from{opacity:0;transform:scale(.7) translateY(8px)}
+      to{opacity:1;transform:scale(1) translateY(0)}
+    }
+    @keyframes fade-up{
+      from{opacity:0;transform:translateY(14px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes bar-run{
+      from{width:0}to{width:100%}
+    }
+    @keyframes ring-spin{
+      from{transform:translate(-50%,-50%) rotate(0deg)}
+      to{transform:translate(-50%,-50%) rotate(360deg)}
+    }
   </style>
 </head>
-<body class="font-sans min-h-screen antialiased">
-  <div class="fixed inset-0 bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95] flex items-center justify-center overflow-hidden">
-    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
-    <div class="relative z-10 text-center animate-fade-in">
-      <div class="w-[100px] h-[100px] rounded-2xl bg-white/10 border-2 border-white/15 flex items-center justify-center mx-auto mb-6 overflow-hidden animate-pulse-glow">
-        <img src="/images/logo.png" alt="AklatBayon" class="w-[70px] h-[70px] object-contain">
+<body>
+  <div class="bg-aurora"></div>
+  <div class="bg-ring"></div>
+  <div class="bg-grid"></div>
+  <div id="particles"></div>
+
+  <div class="card">
+    <div class="logo-wrap" id="logo-wrap">
+      <div class="scan-ring"></div>
+      <div class="scan-ring"></div>
+      <img src="/images/logo.png" alt="AklatBayon">
+    </div>
+
+    <div class="eyebrow">ACCESS GRANTED</div>
+    <div class="user-name" id="user-name">—</div>
+    <div class="role-badge role-guest" id="user-role">—</div>
+
+    <div class="status-row">
+      <div class="status-chip">
+        <div class="status-dot dot-green"></div>
+        NODE ACTIVE
       </div>
-      <p class="text-sm font-semibold uppercase tracking-[3px] text-white/40 mb-2">Welcome Back</p>
-      <h1 class="text-[38px] font-black tracking-wide text-white mb-3" id="user-name">User</h1>
-      <div class="inline-block px-5 py-1.5 rounded-full text-[13px] font-semibold tracking-wide mb-8" id="user-role">Role</div>
-      <p class="text-[13px] text-white/30">
-        Redirecting to dashboard<span class="inline-block w-5 text-left" id="dots"></span>
-      </p>
-      <div class="w-[200px] h-[3px] bg-white/10 rounded-full mx-auto mt-4 overflow-hidden">
-        <div class="h-full bg-gradient-to-r from-purple-400 to-violet-500 rounded-full animate-fill-bar"></div>
+      <div class="status-chip">
+        <div class="status-dot dot-cyan"></div>
+        TLS 1.3
+      </div>
+      <div class="status-chip">
+        <div class="status-dot dot-purple"></div>
+        SESSION OK
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="redirect-text">
+        Loading dashboard<span class="dots" id="dots"></span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill"></div>
       </div>
     </div>
   </div>
@@ -40,43 +263,64 @@
   <script src="/js/store.js"></script>
   <script src="/js/auth.js"></script>
   <script>
-      const user = Auth.getCurrentUser();
-      if (!user) { window.location.href = '/pages/auth/login.html'; }
-      else {
-          document.getElementById('user-name').textContent = user.name;
-          let roleText = user.role_name;
-          if (user.faculty_subtype) roleText += ` — ${user.faculty_subtype}`;
-          const roleEl = document.getElementById('user-role');
-          roleEl.textContent = roleText;
-          const roleClassMap = {
-              'System Administrator': 'role-admin',
-              'Head Librarian': 'role-librarian',
-              'Librarian Staff': 'role-librarian',
-              'Faculty': 'role-faculty',
-              'Student': 'role-student',
-              'Student Assistant': 'role-assistant',
-              'Guest': 'role-guest'
-          };
-          roleEl.classList.add(roleClassMap[user.role_name] || 'role-guest');
+    // ── User info ─────────────────────────────────────────
+    const user = Auth.getCurrentUser();
+    if (!user) { window.location.href = '/pages/auth/login.html'; }
+    else {
+      document.getElementById('user-name').textContent = user.name;
+
+      let roleText = user.role_name;
+      if (user.faculty_subtype) roleText += ` — ${user.faculty_subtype}`;
+      const roleEl = document.getElementById('user-role');
+      roleEl.textContent = roleText;
+
+      const roleClassMap = {
+        'System Administrator':'role-admin',
+        'Head Librarian':'role-librarian',
+        'Librarian Staff':'role-librarian',
+        'Faculty':'role-faculty',
+        'Faculty Teaching':'role-faculty',
+        'Faculty Non-Teaching':'role-faculty',
+        'Department Chair':'role-faculty',
+        'Student':'role-student',
+        'Student Assistant':'role-assistant',
+        'Guest':'role-guest'
+      };
+      roleEl.className = 'role-badge ' + (roleClassMap[user.role_name] || 'role-guest');
+
+      // Glow ring on logo after brief delay
+      setTimeout(() => document.getElementById('logo-wrap').classList.add('ready'), 400);
+    }
+
+    // ── Animated dots ─────────────────────────────────────
+    let d = 0;
+    setInterval(() => {
+      d = (d + 1) % 4;
+      document.getElementById('dots').textContent = '.'.repeat(d);
+    }, 500);
+
+    // ── Particles ─────────────────────────────────────────
+    (() => {
+      const c = document.getElementById('particles');
+      const cols = ['rgba(0,229,255,', 'rgba(124,58,237,', 'rgba(255,107,53,'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'p-dot';
+        const sz = 1 + Math.random() * 2.5;
+        const col = cols[Math.floor(Math.random() * cols.length)];
+        p.style.cssText = `
+          width:${sz}px;height:${sz}px;
+          left:${Math.random()*100}%;
+          background:${col}${.12+Math.random()*.15});
+          animation-duration:${12+Math.random()*20}s;
+          animation-delay:${Math.random()*15}s
+        `;
+        c.appendChild(p);
       }
-      let dotCount = 0;
-      setInterval(() => {
-          dotCount = (dotCount + 1) % 4;
-          document.getElementById('dots').textContent = '.'.repeat(dotCount);
-      }, 500);
-      (() => {
-          const container = document.getElementById('particles');
-          for (let i = 0; i < 20; i++) {
-              const p = document.createElement('div');
-              p.className = 'particle';
-              p.style.left = `${Math.random() * 100}%`;
-              p.style.animationDuration = `${8 + Math.random() * 12}s`;
-              p.style.animationDelay = `${Math.random() * 10}s`;
-              p.style.width = p.style.height = `${1 + Math.random() * 3}px`;
-              container.appendChild(p);
-          }
-      })();
-      setTimeout(() => { window.location.href = '/pages/general/dashboard.html'; }, 3000);
+    })();
+
+    // ── Redirect ──────────────────────────────────────────
+    setTimeout(() => { window.location.href = '/pages/general/dashboard.html'; }, 3200);
   </script>
 </body>
 </html>

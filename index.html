@@ -2,265 +2,486 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Aklat Bayon | FEATI University Astral Repository</title>
-  <meta name="description" content="Aklat Bayon — FEATI University's engineering-grade library management terminal. Search catalogs, manage borrowing, and access library services.">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>AklatBayon | FEATI University Library</title>
+  <meta name="description" content="FEATI University Library — AklatBayon digital library management system.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="/css/welcome.css" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --navy:#003087;--gold:#C8A951;--white:#fff;
+      --dark:#0a0a14;--text:#1e293b;--dim:#64748b;
+      --mono:'JetBrains Mono',monospace;
+      --sans:'Inter',sans-serif
+    }
+    html,body{height:100%;font-family:var(--sans)}
+
+    /* ── Background ── */
+    .bg-photo{
+      position:fixed;inset:0;z-index:0;
+      background:url('/images/FEATIUniversity.jpg') center/cover no-repeat;
+      opacity:.12;
+      filter:grayscale(60%)
+    }
+    .bg-overlay{
+      position:fixed;inset:0;z-index:1;
+      background:linear-gradient(
+        160deg,
+        rgba(0,30,87,.82) 0%,
+        rgba(0,20,60,.78) 40%,
+        rgba(10,10,30,.88) 100%
+      )
+    }
+
+    /* ── Layout ── */
+    .page{
+      position:relative;z-index:2;
+      min-height:100vh;
+      display:flex;flex-direction:column
+    }
+
+    /* ── Main ── */
+    main{
+      flex:1;
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:0;
+      padding:60px 64px 40px;
+      align-items:center;
+      max-width:1280px;
+      margin:0 auto;
+      width:100%
+    }
+    @media(max-width:900px){
+      main{grid-template-columns:1fr;padding:40px 24px 32px}
+    }
+
+    /* ── Left: Library Intro ── */
+    .intro{padding-right:64px}
+    @media(max-width:900px){.intro{padding-right:0;margin-bottom:48px}}
+
+    .intro-eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:var(--mono);font-size:10px;letter-spacing:3px;
+      text-transform:uppercase;color:var(--gold);
+      margin-bottom:20px
+    }
+    .intro-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+
+    .intro-logo{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+    .intro-logo img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(200,169,81,.4))}
+    .intro-logo-text h1{font-size:28px;font-weight:900;color:#fff;line-height:1;letter-spacing:-.5px}
+    .intro-logo-text h1 span{color:var(--gold)}
+    .intro-logo-text p{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+
+    .intro-divider{width:48px;height:2px;background:var(--gold);margin-bottom:20px;border-radius:2px}
+
+    .intro-title{
+      font-size:clamp(22px,3vw,32px);font-weight:800;
+      color:#fff;line-height:1.25;margin-bottom:16px
+    }
+    .intro-title span{color:var(--gold)}
+
+    .intro-body{
+      font-size:14px;color:rgba(255,255,255,.65);
+      line-height:1.8;margin-bottom:20px;max-width:520px
+    }
+    .intro-body strong{color:rgba(255,255,255,.85)}
+
+    .intro-body2{
+      font-size:13px;color:rgba(255,255,255,.5);
+      line-height:1.75;max-width:500px;margin-bottom:32px
+    }
+
+    /* Stats row */
+    .intro-stats{
+      display:flex;gap:28px;flex-wrap:wrap;
+      padding:20px 0;
+      border-top:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:0
+    }
+    .stat-item{text-align:left}
+    .stat-num{font-size:22px;font-weight:800;color:var(--gold);line-height:1}
+    .stat-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
+
+    /* ── Right: Auth Panel ── */
+    .auth-panel{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:24px;
+      padding:36px 32px 28px;
+      backdrop-filter:blur(24px);
+      box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);
+      animation:panel-in .8s cubic-bezier(.22,1,.36,1) .2s both
+    }
+    @keyframes panel-in{
+      from{opacity:0;transform:translateY(24px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .auth-label{
+      font-family:var(--mono);font-size:9px;letter-spacing:3px;
+      text-transform:uppercase;color:var(--gold);
+      text-align:center;margin-bottom:24px
+    }
+
+    /* RFID zone */
+    .rfid-zone{text-align:center;margin-bottom:24px}
+    .rfid-ring{
+      width:88px;height:88px;border-radius:50%;
+      border:2px solid rgba(200,169,81,.3);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 12px;position:relative;
+      background:rgba(200,169,81,.04);
+      animation:rfid-breathe 3.5s ease-in-out infinite;
+      cursor:pointer
+    }
+    .rfid-ring-inner{
+      width:54px;height:54px;border-radius:50%;
+      background:linear-gradient(135deg,rgba(200,169,81,.2),rgba(0,48,135,.3));
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);font-size:26px
+    }
+    .rfid-pulse{
+      position:absolute;inset:-8px;border-radius:50%;
+      border:1px solid rgba(200,169,81,.2);
+      animation:rfid-pulse-out 3.5s ease-out infinite
+    }
+    .rfid-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px}
+    .rfid-sub{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.2);margin-top:2px}
+
+    @keyframes rfid-breathe{
+      0%,100%{box-shadow:0 0 12px rgba(200,169,81,.1);transform:scale(1)}
+      50%{box-shadow:0 0 28px rgba(200,169,81,.25);transform:scale(1.04)}
+    }
+    @keyframes rfid-pulse-out{
+      0%{transform:scale(1);opacity:.6}
+      100%{transform:scale(1.5);opacity:0}
+    }
+
+    /* Divider */
+    .divider{
+      display:flex;align-items:center;gap:10px;margin-bottom:20px
+    }
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+    .divider span{font-size:10px;color:rgba(255,255,255,.25);font-family:var(--mono);letter-spacing:2px;text-transform:uppercase}
+
+    /* Form */
+    .form{display:flex;flex-direction:column;gap:10px}
+    .field{position:relative}
+    .field .mat{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:rgba(255,255,255,.3)}
+    .field input,.field select{
+      width:100%;padding:11px 12px 11px 40px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;color:#fff;font-size:13px;
+      font-family:var(--sans);outline:none;
+      transition:border-color .2s,box-shadow .2s
+    }
+    .field input:focus,.field select:focus{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(200,169,81,.12)
+    }
+    .field input::placeholder{color:rgba(255,255,255,.25)}
+    .field select{cursor:pointer;-webkit-appearance:none}
+    .field select option{background:#0d1a3a}
+
+    .login-error{
+      font-size:12px;color:#f87171;
+      background:rgba(248,113,113,.08);
+      border:1px solid rgba(248,113,113,.2);
+      border-radius:8px;padding:8px 12px;
+      display:none;align-items:center;gap:6px
+    }
+    .login-error.show{display:flex}
+
+    .btn-auth{
+      padding:13px;border-radius:12px;font-size:14px;font-weight:700;
+      border:none;cursor:pointer;
+      background:linear-gradient(135deg,var(--gold),#a8852d);
+      color:#1a0f00;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      transition:all .3s;margin-top:4px;
+      letter-spacing:.03em
+    }
+    .btn-auth:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(200,169,81,.35)
+    }
+
+    .browse-link{
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      margin-top:10px;padding:10px;
+      border-radius:10px;border:1px solid rgba(255,255,255,.08);
+      color:rgba(255,255,255,.5);text-decoration:none;
+      font-size:12px;font-weight:500;transition:all .2s
+    }
+    .browse-link:hover{border-color:rgba(200,169,81,.3);color:var(--gold)}
+
+    /* hidden rfid input */
+    #rfid-input{position:absolute;opacity:0;pointer-events:none;top:-9999px}
+
+    /* ── Footer ── */
+    footer{
+      position:relative;z-index:2;
+      border-top:1px solid rgba(255,255,255,.07);
+      background:rgba(0,0,0,.35);
+      backdrop-filter:blur(12px)
+    }
+    .footer-inner{
+      max-width:1280px;margin:0 auto;
+      padding:28px 64px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;gap:24px
+    }
+    @media(max-width:900px){
+      .footer-inner{grid-template-columns:1fr;text-align:center;padding:24px}
+    }
+    .footer-brand{display:flex;align-items:center;gap:10px}
+    .footer-brand img{width:32px;height:32px;object-fit:contain;opacity:.8}
+    .footer-brand-text .name{font-size:14px;font-weight:700;color:#fff}
+    .footer-brand-text .sub{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+
+    .footer-center{text-align:center}
+    .footer-center .address{font-size:11px;color:rgba(255,255,255,.3);line-height:1.6}
+    .footer-center .hours{font-size:10px;color:rgba(200,169,81,.5);margin-top:4px;font-family:var(--mono)}
+
+    .footer-right{text-align:right}
+    @media(max-width:900px){.footer-right{text-align:center}}
+    .footer-right .copy{font-size:10px;color:rgba(255,255,255,.2);line-height:1.6}
+    .footer-right .status{
+      display:inline-flex;align-items:center;gap:6px;
+      font-family:var(--mono);font-size:10px;color:rgba(100,220,100,.7);
+      margin-top:4px
+    }
+    .status-dot-sm{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+    /* ── Animations ── */
+    .anim-left{animation:fade-left .8s cubic-bezier(.22,1,.36,1) both}
+    @keyframes fade-left{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+    .d1{animation-delay:.05s}
+    .d2{animation-delay:.18s}
+    .d3{animation-delay:.3s}
+    .d4{animation-delay:.42s}
+    .d5{animation-delay:.55s}
+
+    /* scan FX */
+    .scan-fx{position:absolute;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 8px var(--gold);display:none;animation:scan 1.5s linear infinite;top:0}
+    @keyframes scan{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+    .rfid-scanning .rfid-ring{animation:none!important;box-shadow:0 0 36px rgba(200,169,81,.5);transform:scale(1.06);border-color:var(--gold)}
+    .rfid-success .rfid-ring{border-color:#4ade80!important;box-shadow:0 0 28px rgba(74,222,128,.3)!important}
+  </style>
 </head>
 <body>
-<!-- Particles -->
-<div id="particles"></div>
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
 
-<!-- Header -->
-<header class="w-header">
-  <div class="w-logo">
-    <img src="/images/logo.png" alt="Aklat Bayon">
-    <span class="w-logo-text">Aklat Bayon</span>
-    <span class="w-logo-ver">v2.4</span>
-  </div>
-  <div class="w-header-right">
-    <div class="w-status"><span class="w-status-dot"></span>SYSTEM ONLINE</div>
-    <div style="text-align:right">
-      <div class="w-clock" id="pht-clock">--:--:--</div>
-      <div class="w-clock-label">Philippine Standard Time</div>
-    </div>
-  </div>
-</header>
+  <div class="page">
+    <main>
+      <!-- LEFT: Library Introduction -->
+      <section class="intro">
+        <div class="intro-eyebrow anim-left d1">FEATI University · Sta. Cruz, Manila</div>
 
-<div class="welcome-wrap">
-  <!-- LEFT: Hero + OPAC + Metrics + Features -->
-  <div class="w-left">
-
-    <div class="w-hero-label">FEATI University · Astral Repository</div>
-    <h1 class="w-hero-title">Aklat<span>Bayon</span></h1>
-    <p class="w-hero-sub">Engineering-grade library terminal. Search the entire FEATI collection, manage borrowing, view real-time availability, and access specialized aeronautical thesis archives.</p>
-    <div class="w-meaning">
-      <span class="material-symbols-outlined" style="font-size:16px">translate</span>
-      <span><strong>Aklat</strong> (book) + <strong>Bayon</strong> (woven basket) — carrying collective knowledge into the digital age</span>
-    </div>
-
-    <!-- OPAC Search -->
-    <div class="w-opac">
-      <div class="w-opac-label">// ONLINE PUBLIC ACCESS CATALOG</div>
-      <div class="w-opac-bar">
-        <select id="opac-filter">
-          <option value="all">ALL FIELDS</option>
-          <option value="title">TITLE</option>
-          <option value="author">AUTHOR</option>
-          <option value="isbn">ISBN</option>
-          <option value="thesis">THESIS</option>
-        </select>
-        <input type="text" id="opac-input" placeholder="Search books, authors, ISBNs, thesis papers...">
-        <button type="button" id="opac-btn"><span class="material-symbols-outlined" style="font-size:16px">search</span>Search</button>
-      </div>
-      <div class="w-opac-hint">
-        <span class="material-symbols-outlined">lock</span>
-        Guest access: view abstracts only. Log in to download full PDFs and reserve books.
-      </div>
-    </div>
-
-    <!-- Terminal Metrics -->
-    <div class="w-metrics">
-      <div class="w-metric">
-        <div class="w-metric-label">CORE_TEMP</div>
-        <div class="w-metric-val" id="m-temp">42.7°C</div>
-        <div class="w-metric-bar"><div class="w-metric-fill" id="m-temp-bar" style="width:43%;background:var(--t-success)"></div></div>
-      </div>
-      <div class="w-metric">
-        <div class="w-metric-label">UPLINK_STABILITY</div>
-        <div class="w-metric-val" id="m-uplink">99.2%</div>
-        <div class="w-metric-bar"><div class="w-metric-fill" id="m-uplink-bar" style="width:99%;background:var(--t-glow)"></div></div>
-      </div>
-      <div class="w-metric">
-        <div class="w-metric-label">ACTIVE_USERS</div>
-        <div class="w-metric-val" id="m-users">0</div>
-        <div class="w-metric-bar"><div class="w-metric-fill" id="m-users-bar" style="width:0%;background:var(--t-glow2)"></div></div>
-      </div>
-      <div class="w-metric">
-        <div class="w-metric-label">STORAGE_MATRIX</div>
-        <div class="w-metric-val" id="m-storage">0 / 0</div>
-        <div class="w-metric-bar"><div class="w-metric-fill" id="m-storage-bar" style="width:0%;background:var(--t-accent)"></div></div>
-      </div>
-    </div>
-
-    <!-- Features -->
-    <div class="w-features">
-      <div class="w-feat">
-        <div class="w-feat-icon" style="background:rgba(0,229,255,.08);color:var(--t-glow)">
-          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">cloud</span>
+        <div class="intro-logo anim-left d2">
+          <img src="/images/logo.png" alt="AklatBayon">
+          <div class="intro-logo-text">
+            <h1>Aklat<span>Bayon</span></h1>
+            <p>University Library System</p>
+          </div>
         </div>
-        <h4>24/7 Cloud Access</h4>
-        <p>Serverless Jamstack architecture. Mobile-responsive access from any device, anywhere.</p>
-      </div>
-      <div class="w-feat">
-        <div class="w-feat-icon" style="background:rgba(255,214,0,.08);color:var(--t-warn)">
-          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">timer</span>
+
+        <div class="intro-divider anim-left d2"></div>
+
+        <h2 class="intro-title anim-left d3">
+          Your Gateway to <span>Knowledge</span><br>and Scholarly Resources
+        </h2>
+
+        <p class="intro-body anim-left d4">
+          FEATI University is a <strong>leading institution in the Philippines</strong>, renowned for its pioneering role in aviation education and excellence across engineering, science, education, architecture, business, arts, maritime studies, and information technology. Established in <strong>1946</strong> in Sta. Cruz, Manila — formerly the Far Eastern School of Aeronautics — FEATI fosters an environment that empowers students to become socially responsible, lifelong learners and innovators.
+        </p>
+
+        <p class="intro-body2 anim-left d4">
+          The FEATI University Library supports the academic mission by providing access to a comprehensive collection of books, periodicals, thesis archives, aeronautical references, and digital resources. As a provider of higher education for nearly eight decades, FEATI is committed to every individual student — where highly skilled instructors provide access to one-on-one learning, mentorship, and strong industry linkages.
+        </p>
+
+        <div class="intro-stats anim-left d5">
+          <div class="stat-item">
+            <div class="stat-num" id="m-storage">— / —</div>
+            <div class="stat-label">Books Available</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" id="m-users">—</div>
+            <div class="stat-label">Active Members</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">1946</div>
+            <div class="stat-label">Est. Year</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">24/7</div>
+            <div class="stat-label">Digital Access</div>
+          </div>
         </div>
-        <h4>Automated Fines & Availability</h4>
-        <p>Real-time fine computation, overdue tracking, and live stock availability at a glance.</p>
-      </div>
-      <div class="w-feat">
-        <div class="w-feat-icon" style="background:rgba(124,58,237,.08);color:var(--t-glow2)">
-          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">queue</span>
+      </section>
+
+      <!-- RIGHT: Auth Panel -->
+      <aside class="auth-panel">
+        <div class="auth-label">// Library Access Terminal</div>
+
+        <!-- RFID -->
+        <div class="rfid-zone" id="rfid-area">
+          <input type="text" id="rfid-input" autofocus tabindex="-1" autocomplete="off">
+          <div class="rfid-ring" id="rfid-ring">
+            <div class="rfid-pulse"></div>
+            <div class="scan-fx" id="scan-line"></div>
+            <div class="rfid-ring-inner">
+              <span class="material-symbols-outlined" id="rfid-icon" style="font-variation-settings:'FILL' 1">contactless</span>
+            </div>
+          </div>
+          <div class="rfid-label" id="rfid-text">TAP RFID TO ENTER</div>
+          <div class="rfid-sub" id="rfid-sub">AWAITING SIGNAL…</div>
         </div>
-        <h4>Fair FIFO Reservations</h4>
-        <p>First-in, first-out queue with 48-hour claiming window ensures equitable access for all.</p>
+
+        <div class="divider"><span>or sign in manually</span></div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="form">
+          <div class="field">
+            <span class="material-symbols-outlined mat">person</span>
+            <input type="text" id="login-user" placeholder="Username" required autocomplete="username">
+          </div>
+          <div class="field">
+            <span class="material-symbols-outlined mat">lock</span>
+            <input type="password" id="login-pass" placeholder="Password" required autocomplete="current-password">
+          </div>
+          <div class="field">
+            <span class="material-symbols-outlined mat">badge</span>
+            <select id="login-role">
+              <option value="">Select Role (optional)</option>
+              <option>System Administrator</option>
+              <option>Head Librarian</option>
+              <option>Librarian Staff</option>
+              <option>Faculty Teaching</option>
+              <option>Faculty Non-Teaching</option>
+              <option>Department Chair</option>
+              <option>Student</option>
+            </select>
+          </div>
+          <div class="login-error" id="login-error">
+            <span class="material-symbols-outlined" style="font-size:16px">error</span>
+            <span id="login-error-text"></span>
+          </div>
+          <button type="submit" class="btn-auth">
+            <span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:'FILL' 1">login</span>
+            Authenticate
+          </button>
+        </form>
+
+        <a href="/pages/management/catalog/catalog.html" class="browse-link">
+          <span class="material-symbols-outlined" style="font-size:16px">menu_book</span>
+          Browse Public Catalog
+        </a>
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="/images/logo.png" alt="AklatBayon">
+          <div class="footer-brand-text">
+            <div class="name">AklatBayon Library System</div>
+            <div class="sub">FEATI University · Manila, Philippines</div>
+          </div>
+        </div>
+        <div class="footer-center">
+          <div class="address">Helios St., Sta. Cruz, Manila, Philippines 1003<br>Tel: (02) 8736-0031 · library@feati.edu.ph</div>
+          <div class="hours">MON – SAT · 7:30 AM – 8:00 PM</div>
+        </div>
+        <div class="footer-right">
+          <div class="copy">© 2026 FEATI University. All rights reserved.<br>AklatBayon v2 · Astral Repository</div>
+          <div class="status"><span class="status-dot-sm"></span>SYSTEM ONLINE · <span id="pht-clock">--:--:--</span> PHT</div>
+        </div>
       </div>
-    </div>
+    </footer>
   </div>
 
-  <!-- RIGHT: Auth Panel -->
-  <div class="w-right">
-    <div class="w-auth-label">// AUTHENTICATION TERMINAL</div>
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+  // Clock
+  (function(){
+    const el=document.getElementById('pht-clock');
+    const tick=()=>{
+      const n=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Manila'}));
+      el.textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+    };
+    tick();setInterval(tick,1000);
+  })();
 
-    <!-- RFID -->
-    <div class="w-rfid" id="rfid-area">
-      <input type="text" id="rfid-input" class="sr-only" style="position:absolute;opacity:0;pointer-events:none" autofocus tabindex="-1">
-      <div class="w-rfid-circle" id="rfid-circle">
-        <div class="scan-fx" id="scan-line"></div>
-        <div class="w-rfid-inner" id="rfid-inner">
-          <span class="material-symbols-outlined" id="rfid-icon" style="font-size:24px;font-variation-settings:'FILL' 1">contactless</span>
-        </div>
-      </div>
-      <div class="w-rfid-text" id="rfid-text">TAP RFID TO ENTER</div>
-      <div class="w-rfid-sub" id="rfid-sub">AWAITING SIGNAL...</div>
-    </div>
+  // Stats
+  (function(){
+    const books=Store.getAll('books'),users=Store.getAll('users'),students=Store.getAll('students');
+    let tot=0,avail=0;books.forEach(b=>{tot+=b.copies||0;avail+=b.available||0;});
+    document.getElementById('m-storage').textContent=`${avail} / ${tot}`;
+    const active=users.filter(u=>u.status==='active').length+students.length;
+    document.getElementById('m-users').textContent=active;
+  })();
 
-    <div class="w-divider"><span>Manual Login</span></div>
-
-    <!-- Login Form -->
-    <form id="login-form" class="w-form">
-      <div class="w-field">
-        <span class="material-symbols-outlined">person</span>
-        <input type="text" id="login-user" placeholder="Username" required autocomplete="username">
-      </div>
-      <div class="w-field">
-        <span class="material-symbols-outlined">lock</span>
-        <input type="password" id="login-pass" placeholder="Password" required autocomplete="current-password">
-      </div>
-      <div class="w-field">
-        <span class="material-symbols-outlined">badge</span>
-        <select id="login-role">
-          <option value="">Select Role (optional)</option>
-          <option>System Administrator</option>
-          <option>Head Librarian</option>
-          <option>Librarian Staff</option>
-          <option>Faculty Teaching</option>
-          <option>Faculty Non-Teaching</option>
-          <option>Department Chair</option>
-          <option>Student</option>
-        </select>
-      </div>
-      <div class="w-login-error" id="login-error">
-        <span class="material-symbols-outlined" style="font-size:16px">error</span>
-        <span id="login-error-text"></span>
-      </div>
-      <button type="submit" class="w-login-btn">
-        <span class="material-symbols-outlined" style="font-size:18px">login</span> AUTHENTICATE
-      </button>
-    </form>
-
-    <a href="/pages/management/catalog/catalog.html" class="w-catalog-link">
-      <span class="material-symbols-outlined" style="font-size:16px">menu_book</span> Browse Public Catalog
-    </a>
-
-    <div class="w-auth-footer">AKLAT BAYON v2.4 · FEATI UNIVERSITY<br>© 2026 ALL RIGHTS RESERVED</div>
-  </div>
-</div>
-
-<script src="/js/api.js"></script>
-<script src="/js/store.js"></script>
-<script src="/js/auth.js"></script>
-<script>
-// ── PHT Clock ─────────────────────────────────────────────
-(function clock(){
-  const el=document.getElementById('pht-clock');
-  const tick=()=>{const n=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Manila'}));
-    const h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');
-    el.textContent=`${h}:${m}:${s}`;};
-  tick();setInterval(tick,1000);
-})();
-
-// ── Particles ─────────────────────────────────────────────
-(function(){const c=document.getElementById('particles');
-  for(let i=0;i<25;i++){const p=document.createElement('div');p.className='w-particle';
-    const sz=1+Math.random()*2;p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:rgba(0,229,255,${.1+Math.random()*.2});animation:float-up ${12+Math.random()*18}s linear ${Math.random()*15}s infinite`;
-    c.appendChild(p);}
-})();
-
-// ── Terminal Metrics ──────────────────────────────────────
-(function(){
-  const books=Store.getAll('books'),users=Store.getAll('users'),students=Store.getAll('students');
-  let totalCopies=0,totalAvail=0;books.forEach(b=>{totalCopies+=b.copies||0;totalAvail+=b.available||0;});
-  const activeUsers=users.filter(u=>u.status==='active').length+students.length;
-  document.getElementById('m-users').textContent=activeUsers;
-  document.getElementById('m-users-bar').style.width=Math.min(activeUsers*2,100)+'%';
-  document.getElementById('m-storage').textContent=`${totalAvail} / ${totalCopies}`;
-  const pct=totalCopies>0?Math.round(totalAvail/totalCopies*100):0;
-  document.getElementById('m-storage-bar').style.width=pct+'%';
-
-  // Simulate fluctuating metrics
-  setInterval(()=>{
-    const temp=(41+Math.random()*4).toFixed(1);
-    document.getElementById('m-temp').textContent=temp+'°C';
-    document.getElementById('m-temp-bar').style.width=temp+'%';
-    document.getElementById('m-temp-bar').style.background=parseFloat(temp)>44?'var(--t-warn)':'var(--t-success)';
-    const up=(98.5+Math.random()*1.5).toFixed(1);
-    document.getElementById('m-uplink').textContent=up+'%';
-    document.getElementById('m-uplink-bar').style.width=up+'%';
-  },3000);
-})();
-
-// ── OPAC Search ───────────────────────────────────────────
-document.getElementById('opac-btn').addEventListener('click',function(){
-  const q=document.getElementById('opac-input').value.trim();
-  if(!q)return;
-  const filter=document.getElementById('opac-filter').value;
-  const books=Store.getAll('books');
-  const results=books.filter(b=>{
-    const ql=q.toLowerCase();
-    if(filter==='title')return b.title.toLowerCase().includes(ql);
-    if(filter==='author'){const a=Store.getById('authors',b.author_id);return a&&a.name.toLowerCase().includes(ql);}
-    if(filter==='isbn')return(b.isbn||'').toLowerCase().includes(ql);
-    return b.title.toLowerCase().includes(ql)||(b.isbn||'').toLowerCase().includes(ql);
+  // RFID
+  document.getElementById('rfid-input').addEventListener('keydown',function(e){
+    if(e.key!=='Enter')return;
+    const rfid=this.value.trim();if(!rfid)return;
+    const area=document.getElementById('rfid-area'),
+          txt=document.getElementById('rfid-text'),
+          sub=document.getElementById('rfid-sub'),
+          line=document.getElementById('scan-line'),
+          icon=document.getElementById('rfid-icon');
+    area.classList.add('rfid-scanning');
+    txt.textContent='AUTHENTICATING…';sub.textContent='READING SIGNAL…';line.style.display='block';
+    setTimeout(()=>{
+      const r=Auth.loginByRfid(rfid);
+      line.style.display='none';area.classList.remove('rfid-scanning');
+      if(r.success){
+        area.classList.add('rfid-success');txt.textContent='ACCESS GRANTED';
+        txt.style.color='#4ade80';sub.textContent='WELCOME, '+r.user.name.toUpperCase();
+        icon.textContent='verified';
+        Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
+        setTimeout(()=>{window.location.href='/pages/auth/welcome.html';},1200);
+      } else {
+        txt.textContent='RFID NOT RECOGNIZED';txt.style.color='#f87171';sub.textContent='USE MANUAL LOGIN';
+        setTimeout(()=>{txt.textContent='TAP RFID TO ENTER';txt.style.color='';sub.textContent='AWAITING SIGNAL…';},3000);
+        this.value='';
+      }
+    },1500);
   });
-  if(results.length){alert(`Found ${results.length} result(s):\n\n${results.slice(0,5).map(b=>`• ${b.title} (${b.available}/${b.copies} available)`).join('\n')}${results.length>5?'\n...and more':''}`);}
-  else{alert('No results found for "'+q+'"');}
-});
-document.getElementById('opac-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('opac-btn').click();}});
 
-// ── RFID Auth ─────────────────────────────────────────────
-document.getElementById('rfid-input').addEventListener('keydown',function(e){
-  if(e.key!=='Enter')return;
-  const rfid=this.value.trim();if(!rfid)return;
-  const area=document.getElementById('rfid-area'),txt=document.getElementById('rfid-text'),sub=document.getElementById('rfid-sub'),line=document.getElementById('scan-line'),icon=document.getElementById('rfid-icon');
-  area.classList.add('rfid-scanning');txt.textContent='AUTHENTICATING...';sub.textContent='READING SIGNAL...';line.style.display='block';
-  setTimeout(()=>{
-    const r=Auth.loginByRfid(rfid);line.style.display='none';area.classList.remove('rfid-scanning');
-    if(r.success){area.classList.add('rfid-success');txt.textContent='ACCESS GRANTED';txt.style.color='var(--t-success)';sub.textContent='WELCOME, '+r.user.name.toUpperCase();icon.textContent='verified';
+  // Manual Login
+  document.getElementById('login-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    const u=document.getElementById('login-user').value.trim(),
+          p=document.getElementById('login-pass').value.trim();
+    const err=document.getElementById('login-error'),et=document.getElementById('login-error-text');
+    if(!u||!p){err.classList.add('show');et.textContent='Enter both username and password.';return;}
+    const r=Auth.login(u,p);
+    if(r.success){
+      err.classList.remove('show');
       Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
-      setTimeout(()=>{window.location.href='/pages/auth/welcome.html';},1200);
-    }else{txt.textContent='RFID NOT RECOGNIZED';txt.style.color='#ef4444';sub.textContent='USE MANUAL LOGIN';
-      setTimeout(()=>{txt.textContent='TAP RFID TO ENTER';txt.style.color='';sub.textContent='AWAITING SIGNAL...';},3000);this.value='';}
-  },1500);
-});
+      window.location.href='/pages/auth/welcome.html';
+    } else {
+      err.classList.add('show');et.textContent=r.message||'Invalid credentials.';
+    }
+  });
 
-// ── Manual Login ──────────────────────────────────────────
-document.getElementById('login-form').addEventListener('submit',function(e){
-  e.preventDefault();
-  const u=document.getElementById('login-user').value.trim(),p=document.getElementById('login-pass').value.trim();
-  const err=document.getElementById('login-error'),et=document.getElementById('login-error-text');
-  if(!u||!p){err.classList.add('show');et.textContent='Enter both username and password.';return;}
-  const r=Auth.login(u,p);
-  if(r.success){err.classList.remove('show');
-    Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
-    window.location.href='/pages/auth/welcome.html';
-  }else{err.classList.add('show');et.textContent=r.message||'Invalid credentials.';}
-});
-
-// Keep RFID input focused when clicking outside form
-document.addEventListener('click',e=>{if(!e.target.closest('.w-form')&&!e.target.closest('.w-opac'))document.getElementById('rfid-input').focus();});
-</script>
+  // Keep RFID focused
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.form')&&!e.target.closest('.browse-link'))
+      document.getElementById('rfid-input').focus();
+  });
+  </script>
 </body>
 </html>
