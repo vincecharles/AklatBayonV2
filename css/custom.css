@@ -46,10 +46,10 @@ body { font-family:'Inter',sans-serif; background:var(--ab-bg); color:var(--ab-o
 
 /* ── Header (BorrowBox style) ─────────────────────────────── */
 .astral-header {
-  position:fixed; top:0; left:var(--ab-sidebar-w); right:0; height:var(--ab-header-h);
+  position:fixed; top:0; left:0; right:0; height:var(--ab-header-h);
   background:var(--ab-surface); border-bottom:1px solid var(--ab-outline);
   display:flex; align-items:center; justify-content:space-between;
-  padding:0 20px; z-index:35; transition:left var(--ab-transition);
+  padding:0 24px; z-index:45; transition:left var(--ab-transition);
 }
 .header-brand { display:flex; align-items:center; gap:8px; }
 .header-logo { width:28px; height:28px; object-fit:contain; }

@@ -88,7 +88,18 @@ const Sidebar = (() => {
             }
         }
 
-        nav.innerHTML = `<div class="sidebar-nav-items">${html}</div>`;
+        nav.innerHTML = `
+            <div class="sidebar-nav-items" style="flex:1; overflow-y:auto;">${html}</div>
+            <div class="mt-auto space-y-3 pt-4 px-3 pb-4 border-t" style="border-color:var(--ab-outline)">
+                <button onclick="Auth.logout()" class="flex items-center justify-center gap-2 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-100 transition-colors dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
+                    <span class="material-symbols-outlined text-lg">logout</span>
+                    <span>Sign Out</span>
+                </button>
+                <div class="p-4 rounded-xl border" style="background:var(--ab-primary-container);border-color:var(--ab-outline-dim)">
+                    <p class="text-xs font-semibold mb-1" style="color:var(--ab-primary)">AklatBayon System</p>
+                    <p class="text-[10px] leading-tight" style="color:var(--ab-on-surface-dim)">Session Active<br>${user.role_name}</p>
+                </div>
+            </div>`;
         bindDropdowns();
     };
 
