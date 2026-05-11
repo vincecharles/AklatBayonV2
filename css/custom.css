@@ -21,6 +21,18 @@ html.dark {
   --ab-error-light:rgba(239,68,68,.15); --ab-info-light:rgba(59,130,246,.15);
 }
 
+/* ── Tailwind Dark Mode Overrides ── */
+html.dark .bg-white { background-color: var(--ab-surface) !important; }
+html.dark .bg-gray-50, html.dark .bg-slate-50 { background-color: var(--ab-surface-low) !important; }
+html.dark .text-gray-800, html.dark .text-gray-900, html.dark .text-slate-800 { color: var(--ab-on-surface) !important; }
+html.dark .text-gray-700, html.dark .text-slate-700 { color: var(--ab-on-surface) !important; }
+html.dark .text-gray-600, html.dark .text-gray-500, html.dark .text-slate-500 { color: var(--ab-on-surface-dim) !important; }
+html.dark .text-gray-400, html.dark .text-slate-400 { color: var(--ab-on-surface-faint) !important; }
+html.dark .border-gray-200, html.dark .border-gray-100, html.dark .border-slate-200 { border-color: var(--ab-outline) !important; }
+html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]), html.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--ab-outline) !important; }
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: var(--ab-outline) !important; }
+
+
 /* ── Base ─────────────────────────────────────────────────── */
 html { background:var(--ab-bg); }
 body { font-family:'Inter',sans-serif; background:var(--ab-bg); color:var(--ab-on-surface); min-height:100vh; -webkit-font-smoothing:antialiased; }
