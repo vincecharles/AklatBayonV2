@@ -14,7 +14,7 @@
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
   <style>.lcc-spinner{width:24px;height:24px;border:3px solid #3a3a52;border-top-color:#ffb599;border-radius:50%;animation:spin 0.8s linear infinite;margin:20px auto;display:block}</style>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -24,7 +24,7 @@
       <!-- Page Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <h1 class="astral-page-title flex items-center gap-3">
-          <span class="material-symbols-outlined text-[#ffb599]" style="font-size:28px">auto_stories</span> Book Catalog
+          <span class="material-symbols-outlined" style="font-size:28px;color:var(--ab-primary)">auto_stories</span> Book Catalog
         </h1>
         <button id="btn-add" style="display:none" class="astral-btn astral-btn-primary">
           <span class="material-symbols-outlined text-base">add_circle</span> Add Volume
@@ -167,24 +167,24 @@
             case 'oldest': items.sort((a,b) => a.year - b.year); break;
         }
         const tbody = document.getElementById('data-table');
-        if (!items.length) { tbody.innerHTML='<tr><td colspan="11" class="px-5 py-10 text-center text-[#9b99b8]">No volumes found in the archive.</td></tr>'; return; }
+        if (!items.length) { tbody.innerHTML='<tr><td colspan="11" class="px-5 py-10 text-center" style="color:var(--ab-on-surface-dim)">No volumes found in the archive.</td></tr>'; return; }
         const canEdit = Auth.hasPermission('can_edit_books'), canDel = Auth.hasPermission('can_delete_books');
         tbody.innerHTML = items.map((b,i) => {
             let acts = '<div class="flex items-center gap-1">';
-            if (canEdit) acts += `<button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg text-[#ffb599] hover:bg-[#ffb599]/10 transition-colors" data-id="${b.id}" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button>`;
-            if (canDel) acts += `<button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg text-[#f87171] hover:bg-[#f87171]/10 transition-colors" data-id="${b.id}" data-name="${b.title.replace(/"/g,'&quot;')}" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button>`;
-            acts += `<button class="btn-barcode flex h-8 w-8 items-center justify-center rounded-lg text-[#9b99b8] hover:bg-[#ffb599]/10 hover:text-[#ffb599] transition-colors" data-id="${b.id}" data-title="${b.title.replace(/"/g,'&quot;')}" data-isbn="${b.isbn}" title="Barcode"><span class="material-symbols-outlined text-[19px]">barcode</span></button>`;
+            if (canEdit) acts += `<button class="btn-edit flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[var(--ab-surface-low)] transition-colors" style="color:var(--ab-primary)" data-id="${b.id}" title="Edit"><span class="material-symbols-outlined text-[19px]">edit</span></button>`;
+            if (canDel) acts += `<button class="btn-del flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[var(--ab-error-light)] transition-colors" style="color:var(--ab-error)" data-id="${b.id}" data-name="${b.title.replace(/"/g,'&quot;')}" title="Delete"><span class="material-symbols-outlined text-[19px]">delete</span></button>`;
+            acts += `<button class="btn-barcode flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[var(--ab-surface-low)] transition-colors" style="color:var(--ab-on-surface-dim)" data-id="${b.id}" data-title="${b.title.replace(/"/g,'&quot;')}" data-isbn="${b.isbn}" title="Barcode"><span class="material-symbols-outlined text-[19px]">barcode</span></button>`;
             acts += '</div>';
-            if (!canEdit && !canDel) acts = '<span class="text-[#9b99b8] text-xs">View only</span>';
+            if (!canEdit && !canDel) acts = '<span class="text-xs" style="color:var(--ab-on-surface-dim)">View only</span>';
             const cn = b.call_number || '';
             return `<tr>
-<td class="text-[#9b99b8]">${i+1}</td>
-<td class="font-semibold text-[#e2e0fc]">${b.title}</td>
-<td class="text-[#9b99b8]">${App.getAuthorName(b.author_id)}</td>
-<td class="text-[#9b99b8]">${App.getPublisherName(b.publisher_id)}</td>
+<td>${i+1}</td>
+<td class="font-semibold">${b.title}</td>
+<td>${App.getAuthorName(b.author_id)}</td>
+<td>${App.getPublisherName(b.publisher_id)}</td>
 <td><span class="astral-badge astral-badge-primary">${App.getCategoryName(b.category_id)}</span></td>
-<td><code class="text-xs bg-[#333348] px-1.5 py-0.5 rounded font-mono text-[#9b99b8]">${b.isbn}</code></td>
-<td>${cn ? `<code class="text-[11px] bg-[#333348] px-1.5 py-0.5 rounded font-mono text-[#ffb599]">${cn}</code>` : '<span class="text-[#9b99b8]">\u2014</span>'}</td>
+<td><code class="text-xs px-1.5 py-0.5 rounded font-mono" style="background:var(--ab-surface-high);color:var(--ab-on-surface-dim)">${b.isbn}</code></td>
+<td>${cn ? `<code class="text-[11px] px-1.5 py-0.5 rounded font-mono" style="background:var(--ab-surface-high);color:var(--ab-primary)">${cn}</code>` : '\u2014'}</td>
 <td>${b.year}</td>
 <td>${b.copies}</td>
 <td><span class="astral-badge ${b.available>0 ? 'astral-badge-available' : 'astral-badge-overdue'}">${b.available}</span></td>
