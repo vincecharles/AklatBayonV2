@@ -1,6 +1,6 @@
 /* ── AklatBayon Design System ─────────────────────────────── */
 :root {
-  --ab-bg:#f1f5f9; --ab-surface:#fff; --ab-surface-low:#f8fafc; --ab-surface-high:#e2e8f0;
+  --ab-bg:#f6f6f8; --ab-surface:#fff; --ab-surface-card:#fff; --ab-surface-low:#f8fafc; --ab-surface-high:#e2e8f0;
   --ab-primary:#7c3aed; --ab-primary-light:#a78bfa; --ab-primary-container:#ede9fe; --ab-primary-dark:#5b21b6;
   --ab-on-surface:#1e293b; --ab-on-surface-dim:#64748b; --ab-on-surface-faint:#94a3b8;
   --ab-outline:#e2e8f0; --ab-outline-dim:#f1f5f9;
@@ -13,16 +13,16 @@
   --ab-transition:.2s cubic-bezier(.4,0,.2,1);
 }
 html.dark {
-  --ab-bg:#0f172a; --ab-surface:#1e293b; --ab-surface-low:#1a2332; --ab-surface-high:#334155;
-  --ab-on-surface:#e2e8f0; --ab-on-surface-dim:#94a3b8; --ab-on-surface-faint:#64748b;
-  --ab-outline:#334155; --ab-outline-dim:#1e293b;
-  --ab-primary-container:rgba(124,58,237,.15);
+  --ab-bg:#131022; --ab-surface:#131022; --ab-surface-card:#0f172a; --ab-surface-low:#1e293b; --ab-surface-high:#334155;
+  --ab-on-surface:#f8fafc; --ab-on-surface-dim:#94a3b8; --ab-on-surface-faint:#64748b;
+  --ab-outline:#1e293b; --ab-outline-dim:#0f172a;
+  --ab-primary-container:rgba(124,58,237,.2);
   --ab-success-light:rgba(16,185,129,.15); --ab-warning-light:rgba(245,158,11,.15);
   --ab-error-light:rgba(239,68,68,.15); --ab-info-light:rgba(59,130,246,.15);
 }
 
 /* ── Tailwind Dark Mode Overrides ── */
-html.dark .bg-white { background-color: var(--ab-surface) !important; }
+html.dark .bg-white { background-color: var(--ab-surface-card) !important; }
 html.dark .bg-gray-50, html.dark .bg-slate-50 { background-color: var(--ab-surface-low) !important; }
 html.dark .text-gray-800, html.dark .text-gray-900, html.dark .text-slate-800 { color: var(--ab-on-surface) !important; }
 html.dark .text-gray-700, html.dark .text-slate-700 { color: var(--ab-on-surface) !important; }
@@ -118,11 +118,11 @@ body { font-family:'Inter',sans-serif; background:var(--ab-bg); color:var(--ab-o
 .sidebar-sublink-icon { font-size:16px; }
 
 /* ── Cards ────────────────────────────────────────────────── */
-.astral-card { background:var(--ab-surface); border:1px solid var(--ab-outline); border-radius:var(--ab-radius-lg); overflow:hidden; box-shadow:var(--ab-shadow-sm); transition:box-shadow var(--ab-transition); }
+.astral-card { background:var(--ab-surface-card); border:1px solid var(--ab-outline); border-radius:var(--ab-radius-lg); overflow:hidden; box-shadow:var(--ab-shadow-sm); transition:box-shadow var(--ab-transition); }
 .astral-card:hover { box-shadow:var(--ab-shadow-md); }
 .astral-card-header { padding:14px 20px; border-bottom:1px solid var(--ab-outline); display:flex; align-items:center; justify-content:space-between; background:var(--ab-surface-low); }
 .astral-card-body { padding:20px; }
-.astral-stat-card { background:var(--ab-surface); border:1px solid var(--ab-outline); border-radius:var(--ab-radius-lg); padding:18px; position:relative; overflow:hidden; transition:transform var(--ab-transition),box-shadow var(--ab-transition); box-shadow:var(--ab-shadow-sm); }
+.astral-stat-card { background:var(--ab-surface-card); border:1px solid var(--ab-outline); border-radius:var(--ab-radius-lg); padding:18px; position:relative; overflow:hidden; transition:transform var(--ab-transition),box-shadow var(--ab-transition); box-shadow:var(--ab-shadow-sm); }
 .astral-stat-card:hover { transform:translateY(-2px); box-shadow:var(--ab-shadow-lg); }
 .astral-stat-card .stat-icon { width:40px; height:40px; border-radius:var(--ab-radius); display:flex; align-items:center; justify-content:center; font-size:20px; }
 .astral-stat-card .stat-label { font-size:12px; font-weight:500; color:var(--ab-on-surface-dim); margin-bottom:2px; }
