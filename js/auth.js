@@ -33,6 +33,16 @@ const Auth = (() => {
         return { success: true, user: sessionData };
     };
 
+    const loginAsGuest = () => {
+        const guestSession = {
+            id: 'guest', name: 'Guest', username: 'guest', email: '',
+            role_id: 'r_guest', role_name: 'Guest',
+            faculty_subtype: null, rfid_id: null, student_id: null
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(guestSession));
+        return { success: true, user: guestSession };
+    };
+
     const logout = () => {
         const user = getCurrentUser();
         if (user) Store.logActivity('LOGOUT', 'auth', user.name);
@@ -78,7 +88,7 @@ const Auth = (() => {
     const hasAnyPermission = (perms) => perms.some(p => hasPermission(p));
 
     return {
-        login, loginByRfid, logout, getCurrentUser, isLoggedIn,
+        login, loginByRfid, loginAsGuest, logout, getCurrentUser, isLoggedIn,
         requireAuth, getUserPermissions, hasPermission, hasAnyPermission
     };
 })();
