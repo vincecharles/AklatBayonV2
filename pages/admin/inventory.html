@@ -115,9 +115,14 @@
       <!-- INCOMING TAB -->
       <div class="tab-pane" id="tab-incoming">
         <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2">
-            <span class="material-symbols-outlined text-emerald-600 text-lg">south_west</span>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[#e2e0fc]">Incoming Deliveries</h2>
+          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-600 text-lg">south_west</span>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-[#e2e0fc]">Incoming Deliveries</h2>
+            </div>
+            <button id="btn-export-incoming" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+              <span class="material-symbols-outlined text-sm">download</span> Export CSV
+            </button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -141,9 +146,14 @@
       <!-- OUTGOING TAB -->
       <div class="tab-pane" id="tab-outgoing">
         <div class="astral-card overflow-hidden">
-          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center gap-2">
-            <span class="material-symbols-outlined text-rose-600 text-lg">north_east</span>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[#e2e0fc]">Outgoing Records</h2>
+          <div class="px-5 py-4 border-b border-[#3a3a52] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-rose-600 text-lg">north_east</span>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-[#e2e0fc]">Outgoing Records</h2>
+            </div>
+            <button id="btn-export-outgoing" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
+              <span class="material-symbols-outlined text-sm">download</span> Export CSV
+            </button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -234,7 +244,8 @@
       </div>
       <div class="flex justify-end gap-2 px-6 py-4 border-t border-[#3a3a52]">
         <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-[#3a3a52] text-[#e2e0fc] hover:bg-[#ffb599]/5 transition-colors">Cancel</button>
-        <button id="btn-save-incoming" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-colors"><span class="material-symbols-outlined text-base">save</span> Save Incoming</button>
+        <button id="btn-save-incoming-draft" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg border border-amber-500/50 text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="material-symbols-outlined text-base">edit_note</span> Save as Draft</button>
+        <button id="btn-save-incoming" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#ffb599] to-[#e17141] text-[#370e00] hover:shadow-[0_4px_20px_rgba(255,181,153,0.3)] transition-colors"><span class="material-symbols-outlined text-base">task_alt</span> Save &amp; Post</button>
       </div>
     </div>
   </div>
@@ -306,7 +317,8 @@
       </div>
       <div class="flex justify-end gap-2 px-6 py-4 border-t border-[#3a3a52]">
         <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-[#3a3a52] text-[#e2e0fc] hover:bg-[#ffb599]/5 transition-colors">Cancel</button>
-        <button id="btn-save-outgoing" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors"><span class="material-symbols-outlined text-base">save</span> Save Outgoing</button>
+        <button id="btn-save-outgoing-draft" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg border border-amber-500/50 text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="material-symbols-outlined text-base">edit_note</span> Save as Draft</button>
+        <button id="btn-save-outgoing" class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors"><span class="material-symbols-outlined text-base">task_alt</span> Save &amp; Post</button>
       </div>
     </div>
   </div>
@@ -319,7 +331,8 @@
         <button class="modal-close flex h-8 w-8 items-center justify-center rounded-lg bg-[#333348] hover:bg-[#3a3a52] transition-colors"><span class="material-symbols-outlined text-base">close</span></button>
       </div>
       <div id="view-body" class="p-6"></div>
-      <div class="flex justify-end px-6 py-4 border-t border-[#3a3a52]">
+      <div class="flex justify-between px-6 py-4 border-t border-[#3a3a52]">
+        <button id="btn-view-print" class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 transition-colors"><span class="material-symbols-outlined text-base">print</span> Print Slip</button>
         <button class="modal-close px-4 py-2.5 text-sm rounded-lg border border-[#3a3a52] text-[#e2e0fc] hover:bg-[#ffb599]/5 transition-colors">Close</button>
       </div>
     </div>
@@ -466,37 +479,48 @@
         return u ? u.name : 'Unknown';
     };
 
+    // ── Status badge helper ───────────────────────────────────
+    const statusBadgeHtml = (status) => {
+        const styles = {
+            completed: 'background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)',
+            draft:     'background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)',
+            voided:    'background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)'
+        };
+        const label = status === 'completed' ? 'Posted' : status.charAt(0).toUpperCase() + status.slice(1);
+        return `<span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold" style="${styles[status] || styles.voided}">${label}</span>`;
+    };
+
     // ── Incoming table ────────────────────────────────────────
     const loadIncoming = () => {
         const items = Store.getAll('inventory_incoming').sort((a, b) => new Date(b.date) - new Date(a.date));
         const tbody = document.getElementById('incoming-table');
         if (!items.length) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-8 text-center text-[#9b99b8]"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">south_west</span>No incoming records.</td></tr>'; return; }
         tbody.innerHTML = items.map((r) => {
-            const statusBadge = r.status === 'completed'
-                ? 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)'
-                : '" style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)';
-            const voidBtn = canIncoming && r.status === 'completed' ? `<button class="btn-void-inc inline-flex items-center gap-1 rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-[#f87171]/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            const postBtn   = canIncoming && r.status === 'draft'     ? `<button class="btn-post-inc inline-flex items-center gap-1 rounded-lg border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">task_alt</span>Post</button>` : '';
+            const voidBtn   = canIncoming && r.status === 'completed' ? `<button class="btn-void-inc inline-flex items-center gap-1 rounded-lg border border-red-300/40 text-red-400 hover:bg-[#f87171]/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            const printBtn  = `<button class="btn-print-inc inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">print</span></button>`;
             return `<tr class="hover:bg-[#ffb599]/5 transition-colors">
                 <td class="px-5 py-3 font-semibold">${r.incoming_number}</td>
                 <td class="px-5 py-3 text-[#9b99b8]">${App.formatDate(r.date)}</td>
                 <td class="px-5 py-3"><code class="text-xs bg-[#333348] px-2 py-0.5 rounded">${r.reference_number}</code></td>
-                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold " style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)">${r.purpose}</span></td>
+                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)">${r.purpose}</span></td>
                 <td class="px-5 py-3">${r.supplier || '\u2014'}</td>
                 <td class="px-5 py-3">${r.items.length}</td>
-                <td class="px-5 py-3 font-semibold">\u20B1${r.grand_total.toFixed(2)}</td>
-                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadge}">${r.status}</span></td>
-                <td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-view-inc inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>${voidBtn}</div></td></tr>`;
+                <td class="px-5 py-3 font-semibold">&#8369;${parseFloat(r.grand_total).toFixed(2)}</td>
+                <td class="px-5 py-3">${statusBadgeHtml(r.status)}</td>
+                <td class="px-5 py-3"><div class="flex items-center gap-1">
+                  <button class="btn-view-inc inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>
+                  ${postBtn}${voidBtn}${printBtn}
+                </div></td></tr>`;
         }).join('');
         bindIncomingActions();
     };
 
     const bindIncomingActions = () => {
-        document.querySelectorAll('.btn-view-inc').forEach((btn) => {
-            btn.addEventListener('click', () => viewRecord('inventory_incoming', btn.dataset.id));
-        });
-        document.querySelectorAll('.btn-void-inc').forEach((btn) => {
-            btn.addEventListener('click', () => voidRecord('inventory_incoming', btn.dataset.id));
-        });
+        document.querySelectorAll('.btn-view-inc').forEach((btn) => btn.addEventListener('click', () => viewRecord('inventory_incoming', btn.dataset.id)));
+        document.querySelectorAll('.btn-void-inc').forEach((btn) => btn.addEventListener('click', () => voidRecord('inventory_incoming', btn.dataset.id)));
+        document.querySelectorAll('.btn-post-inc').forEach((btn) => btn.addEventListener('click', () => postRecord('inventory_incoming', btn.dataset.id)));
+        document.querySelectorAll('.btn-print-inc').forEach((btn) => btn.addEventListener('click', () => printSlip('inventory_incoming', btn.dataset.id)));
     };
 
     // ── Outgoing table ────────────────────────────────────────
@@ -505,10 +529,9 @@
         const tbody = document.getElementById('outgoing-table');
         if (!items.length) { tbody.innerHTML = '<tr><td colspan="9" class="px-5 py-8 text-center text-[#9b99b8]"><span class="material-symbols-outlined block mb-2 text-3xl opacity-30">north_east</span>No outgoing records.</td></tr>'; return; }
         tbody.innerHTML = items.map((r) => {
-            const statusBadge = r.status === 'completed'
-                ? 'astral-badge-active" style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)'
-                : '" style="background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)';
-            const voidBtn = canOutgoing && r.status === 'completed' ? `<button class="btn-void-out inline-flex items-center gap-1 rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-[#f87171]/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            const postBtn  = canOutgoing && r.status === 'draft'     ? `<button class="btn-post-out inline-flex items-center gap-1 rounded-lg border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">task_alt</span>Post</button>` : '';
+            const voidBtn  = canOutgoing && r.status === 'completed' ? `<button class="btn-void-out inline-flex items-center gap-1 rounded-lg border border-red-300/40 text-red-400 hover:bg-[#f87171]/10 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">block</span>Void</button>` : '';
+            const printBtn = `<button class="btn-print-out inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">print</span></button>`;
             return `<tr class="hover:bg-[#ffb599]/5 transition-colors">
                 <td class="px-5 py-3 font-semibold">${r.outgoing_number}</td>
                 <td class="px-5 py-3 text-[#9b99b8]">${App.formatDate(r.date)}</td>
@@ -516,20 +539,21 @@
                 <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">${r.purpose}</span></td>
                 <td class="px-5 py-3">${r.supplier || '\u2014'}</td>
                 <td class="px-5 py-3">${r.items.length}</td>
-                <td class="px-5 py-3 font-semibold">\u20B1${r.grand_total.toFixed(2)}</td>
-                <td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadge}">${r.status}</span></td>
-                <td class="px-5 py-3"><div class="flex items-center gap-1"><button class="btn-view-out inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>${voidBtn}</div></td></tr>`;
+                <td class="px-5 py-3 font-semibold">&#8369;${parseFloat(r.grand_total).toFixed(2)}</td>
+                <td class="px-5 py-3">${statusBadgeHtml(r.status)}</td>
+                <td class="px-5 py-3"><div class="flex items-center gap-1">
+                  <button class="btn-view-out inline-flex items-center gap-1 rounded-lg border border-[#3a3a52] text-[#9b99b8] hover:bg-[#ffb599]/5 px-2.5 py-1 text-xs font-semibold transition-colors" data-id="${r.id}"><span class="material-symbols-outlined text-sm">visibility</span>View</button>
+                  ${postBtn}${voidBtn}${printBtn}
+                </div></td></tr>`;
         }).join('');
         bindOutgoingActions();
     };
 
     const bindOutgoingActions = () => {
-        document.querySelectorAll('.btn-view-out').forEach((btn) => {
-            btn.addEventListener('click', () => viewRecord('inventory_outgoing', btn.dataset.id));
-        });
-        document.querySelectorAll('.btn-void-out').forEach((btn) => {
-            btn.addEventListener('click', () => voidRecord('inventory_outgoing', btn.dataset.id));
-        });
+        document.querySelectorAll('.btn-view-out').forEach((btn) => btn.addEventListener('click', () => viewRecord('inventory_outgoing', btn.dataset.id)));
+        document.querySelectorAll('.btn-void-out').forEach((btn) => btn.addEventListener('click', () => voidRecord('inventory_outgoing', btn.dataset.id)));
+        document.querySelectorAll('.btn-post-out').forEach((btn) => btn.addEventListener('click', () => postRecord('inventory_outgoing', btn.dataset.id)));
+        document.querySelectorAll('.btn-print-out').forEach((btn) => btn.addEventListener('click', () => printSlip('inventory_outgoing', btn.dataset.id)));
     };
 
     // ── View record modal ─────────────────────────────────────
@@ -561,7 +585,165 @@
                 </table>
             </div>`;
         App.openModal('modal-view');
+        // attach current record reference for the print button inside view modal
+        document.getElementById('btn-view-print')._recCollection = collection;
+        document.getElementById('btn-view-print')._recId = id;
     };
+
+    // ── Print Slip ────────────────────────────────────────────
+    const printSlip = (collection, id) => {
+        const rec = Store.getById(collection, id);
+        if (!rec) return;
+        const isInc = collection === 'inventory_incoming';
+        const num = isInc ? rec.incoming_number : rec.outgoing_number;
+        const direction = isInc ? 'INCOMING DELIVERY SLIP' : 'OUTGOING REMOVAL SLIP';
+        const preparedByName = getUserName(rec.prepared_by);
+        const itemRows = rec.items.map((item, i) => `
+            <tr>
+                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb">${i + 1}</td>
+                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-weight:600">${App.getBookTitle(item.book_id)}</td>
+                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center">${item.quantity}</td>
+                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right">&#8369;${item.unit_price.toFixed(2)}</td>
+                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:600">&#8369;${item.total.toFixed(2)}</td>
+            </tr>`).join('');
+        const statusLabel = rec.status === 'completed' ? 'POSTED' : rec.status.toUpperCase();
+        const win = window.open('', '_blank', 'width=720,height=900');
+        win.document.write(`<!DOCTYPE html><html><head><title>${num}</title>
+        <style>
+            *{box-sizing:border-box;margin:0;padding:0}
+            body{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#111;padding:32px;background:#fff}
+            .header{border-bottom:3px solid #7c3aed;padding-bottom:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start}
+            .logo{font-size:22px;font-weight:900;color:#7c3aed;letter-spacing:-0.5px}
+            .logo span{font-size:11px;font-weight:600;color:#6b7280;display:block;margin-top:2px}
+            .direction-badge{background:${isInc ? '#dcfce7' : '#fee2e2'};color:${isInc ? '#16a34a' : '#dc2626'};padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.05em}
+            .doc-number{font-size:20px;font-weight:800;color:#111;margin-bottom:4px}
+            .meta-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;padding:14px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb}
+            .meta-item label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;display:block;margin-bottom:3px}
+            .meta-item span{font-size:13px;font-weight:600;color:#111}
+            table{width:100%;border-collapse:collapse;margin-bottom:16px}
+            thead tr{background:#f3f4f6}
+            thead th{padding:8px 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#374151;text-align:left}
+            thead th:last-child,thead th:nth-child(3),thead th:nth-child(4){text-align:right}
+            thead th:nth-child(3){text-align:center}
+            .grand-total{text-align:right;font-size:15px;font-weight:800;padding:10px 10px 0}
+            .status-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:2px dashed #e5e7eb;font-size:11px;color:#6b7280}
+            .status-badge{padding:4px 14px;border-radius:20px;font-weight:700;font-size:12px;background:${rec.status === 'completed' ? '#dcfce7' : rec.status === 'draft' ? '#fef3c7' : '#fee2e2'};color:${rec.status === 'completed' ? '#16a34a' : rec.status === 'draft' ? '#d97706' : '#dc2626'}}
+            .footer{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+            .sig-line{border-top:1px solid #9ca3af;padding-top:8px;font-size:11px;color:#6b7280;text-align:center}
+            @media print{body{padding:20px}}
+        </style></head><body>
+        <div class="header">
+            <div>
+                <div class="logo">AklatBayon <span>FEATI University Library</span></div>
+                <div style="margin-top:12px">
+                    <div class="doc-number">${num}</div>
+                    <div class="direction-badge">${direction}</div>
+                </div>
+            </div>
+            <div style="text-align:right;font-size:11px;color:#6b7280">
+                <div>Printed: ${new Date().toLocaleString('en-PH')}</div>
+                <div style="margin-top:4px">Status: <span class="status-badge">${statusLabel}</span></div>
+            </div>
+        </div>
+        <div class="meta-grid">
+            <div class="meta-item"><label>Date</label><span>${App.formatDate(rec.date)}</span></div>
+            <div class="meta-item"><label>Reference #</label><span>${rec.reference_number || '\u2014'}</span></div>
+            <div class="meta-item"><label>Purpose</label><span>${rec.purpose}</span></div>
+            <div class="meta-item"><label>Supplier / Source</label><span>${rec.supplier || '\u2014'}</span></div>
+            <div class="meta-item"><label>Prepared By</label><span>${preparedByName}</span></div>
+            <div class="meta-item"><label>Total Items</label><span>${rec.items.length} line(s)</span></div>
+        </div>
+        <table>
+            <thead><tr><th>#</th><th>Book Title</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+            <tbody>${itemRows}</tbody>
+        </table>
+        <div class="grand-total">Grand Total: &#8369;${parseFloat(rec.grand_total).toFixed(2)}</div>
+        <div class="footer">
+            <div class="sig-line">Prepared By / ${preparedByName}</div>
+            <div class="sig-line">Received By / Approved By</div>
+        </div>
+        <script>window.onload=()=>{window.print();}<\/script>
+        </body></html>`);
+        win.document.close();
+    };
+
+    // Wire print button inside view modal
+    document.getElementById('btn-view-print').addEventListener('click', function() {
+        if (this._recCollection && this._recId) printSlip(this._recCollection, this._recId);
+    });
+
+    // ── Post Record (Draft → Posted) ─────────────────────────
+    const postRecord = (collection, id) => {
+        const rec = Store.getById(collection, id);
+        if (!rec || rec.status !== 'draft') return;
+        const isInc = collection === 'inventory_incoming';
+        const num = isInc ? rec.incoming_number : rec.outgoing_number;
+        // Validate stock for outgoing before posting
+        if (!isInc) {
+            for (const item of rec.items) {
+                const book = Store.getById('books', item.book_id);
+                if (!book || book.available < item.quantity) {
+                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                    return;
+                }
+            }
+        }
+        Swal.fire({
+            title: `Post ${num}?`,
+            html: `This will <strong>${isInc ? 'ADD' : 'DEDUCT'}</strong> the book quantities from stock and lock this record. Continue?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            background: '#1e1e32', color: '#e2e0fc',
+            confirmButtonText: 'Yes, Post it!'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            rec.items.forEach((item) => {
+                const book = Store.getById('books', item.book_id);
+                if (!book) return;
+                if (isInc) {
+                    Store.update('books', item.book_id, { copies: book.copies + item.quantity, available: book.available + item.quantity });
+                } else {
+                    Store.update('books', item.book_id, { copies: Math.max(0, book.copies - item.quantity), available: Math.max(0, book.available - item.quantity) });
+                }
+            });
+            Store.update(collection, id, { status: 'completed' });
+            Store.logActivity('UPDATE', collection, `Posted ${num}: stock committed`);
+            Swal.fire({ icon: 'success', title: 'Posted!', text: `${num} has been posted and stock updated.`, timer: 2000, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            if (isInc) loadIncoming(); else loadOutgoing();
+            loadOverview();
+        });
+    };
+
+    // ── Export CSV ────────────────────────────────────────────
+    const exportCSV = (collection) => {
+        const isInc = collection === 'inventory_incoming';
+        const records = Store.getAll(collection).sort((a, b) => new Date(b.date) - new Date(a.date));
+        if (!records.length) { App.showAlert('danger', 'No records to export.'); return; }
+        const numField = isInc ? 'incoming_number' : 'outgoing_number';
+        const headers = [isInc ? 'Incoming #' : 'Outgoing #', 'Date', 'Reference #', 'Purpose', 'Supplier', 'Total Items', 'Grand Total (PHP)', 'Status', 'Prepared By'];
+        const rows = records.map(r => [
+            r[numField],
+            r.date,
+            r.reference_number || '',
+            r.purpose,
+            r.supplier || '',
+            r.items.length,
+            parseFloat(r.grand_total).toFixed(2),
+            r.status === 'completed' ? 'Posted' : r.status.charAt(0).toUpperCase() + r.status.slice(1),
+            getUserName(r.prepared_by)
+        ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${isInc ? 'incoming' : 'outgoing'}_inventory_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    };
+
+    document.getElementById('btn-export-incoming').addEventListener('click', () => exportCSV('inventory_incoming'));
+    document.getElementById('btn-export-outgoing').addEventListener('click', () => exportCSV('inventory_outgoing'));
 
     // ── Void record ───────────────────────────────────────────
     const voidRecord = (collection, id) => {
@@ -611,8 +793,8 @@
 
     document.getElementById('btn-add-inc-row').addEventListener('click', () => addItemRow('inc-items-body'));
 
-    // ── Save Incoming ─────────────────────────────────────────
-    document.getElementById('btn-save-incoming').addEventListener('click', () => {
+    // ── Save Incoming (shared logic) ──────────────────────────
+    const saveIncoming = (asDraft) => {
         const reference = document.getElementById('inc-reference').value.trim();
         const purpose = document.getElementById('inc-purpose').value;
         const supplier = document.getElementById('inc-supplier').value.trim();
@@ -627,26 +809,27 @@
             date: document.getElementById('inc-date').value,
             prepared_by: Auth.getCurrentUser().id,
             reference_number: reference,
-            purpose: purpose,
-            supplier: supplier,
-            items: items,
+            purpose, supplier, items,
             grand_total: grandTotal,
-            status: 'completed'
+            status: asDraft ? 'draft' : 'completed'
         };
         Store.create('inventory_incoming', record).then(() => {
-            items.forEach((item) => {
-                const book = Store.getById('books', item.book_id);
-                if (book) Store.update('books', item.book_id, { copies: book.copies + item.quantity, available: book.available + item.quantity });
-            });
+            if (!asDraft) {
+                items.forEach((item) => {
+                    const book = Store.getById('books', item.book_id);
+                    if (book) Store.update('books', item.book_id, { copies: book.copies + item.quantity, available: book.available + item.quantity });
+                });
+            }
             App.closeModal('modal-incoming');
-            Store.logActivity('CREATE', 'inventory_incoming', `Incoming ${record.incoming_number}: ${items.length} items, \u20B1${grandTotal.toFixed(2)}`);
-            Swal.fire({ icon: 'success', title: 'Incoming Saved!', text: `${record.incoming_number} recorded successfully.`, timer: 2000, showConfirmButton: false });
-            loadIncoming();
-            loadOverview();
+            Store.logActivity('CREATE', 'inventory_incoming', `${asDraft ? 'Draft' : 'Posted'} ${record.incoming_number}: ${items.length} items`);
+            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Incoming Posted!', text: `${record.incoming_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock updated.'}`, timer: 2500, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            loadIncoming(); loadOverview();
         }).catch((err) => {
             Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
         });
-    });
+    };
+    document.getElementById('btn-save-incoming-draft').addEventListener('click', () => saveIncoming(true));
+    document.getElementById('btn-save-incoming').addEventListener('click', () => saveIncoming(false));
 
     // ── Open Outgoing Modal ───────────────────────────────────
     document.getElementById('btn-add-outgoing').addEventListener('click', () => {
@@ -664,8 +847,8 @@
 
     document.getElementById('btn-add-out-row').addEventListener('click', () => addItemRow('out-items-body'));
 
-    // ── Save Outgoing ─────────────────────────────────────────
-    document.getElementById('btn-save-outgoing').addEventListener('click', () => {
+    // ── Save Outgoing (shared logic) ──────────────────────────
+    const saveOutgoing = (asDraft) => {
         const reference = document.getElementById('out-reference').value.trim();
         const purpose = document.getElementById('out-purpose').value;
         const supplier = document.getElementById('out-supplier').value.trim();
@@ -673,12 +856,14 @@
         const items = collectItems('out-items-body');
         if (!items) { App.showAlert('danger', 'Each row must have a selected book and quantity > 0.'); return; }
         if (!items.length) { App.showAlert('danger', 'Add at least one book item.'); return; }
-        // Validate stock
-        for (const item of items) {
-            const book = Store.getById('books', item.book_id);
-            if (!book || book.available < item.quantity) {
-                Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies. Cannot remove ${item.quantity}.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
-                return;
+        // Validate stock only when posting immediately
+        if (!asDraft) {
+            for (const item of items) {
+                const book = Store.getById('books', item.book_id);
+                if (!book || book.available < item.quantity) {
+                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                    return;
+                }
             }
         }
         const grandTotal = items.reduce((s, i) => s + i.total, 0);
@@ -687,26 +872,27 @@
             date: document.getElementById('out-date').value,
             prepared_by: Auth.getCurrentUser().id,
             reference_number: reference,
-            purpose: purpose,
-            supplier: supplier,
-            items: items,
+            purpose, supplier, items,
             grand_total: grandTotal,
-            status: 'completed'
+            status: asDraft ? 'draft' : 'completed'
         };
         Store.create('inventory_outgoing', record).then(() => {
-            items.forEach((item) => {
-                const book = Store.getById('books', item.book_id);
-                if (book) Store.update('books', item.book_id, { copies: Math.max(0, book.copies - item.quantity), available: Math.max(0, book.available - item.quantity) });
-            });
+            if (!asDraft) {
+                items.forEach((item) => {
+                    const book = Store.getById('books', item.book_id);
+                    if (book) Store.update('books', item.book_id, { copies: Math.max(0, book.copies - item.quantity), available: Math.max(0, book.available - item.quantity) });
+                });
+            }
             App.closeModal('modal-outgoing');
-            Store.logActivity('CREATE', 'inventory_outgoing', `Outgoing ${record.outgoing_number}: ${items.length} items, \u20B1${grandTotal.toFixed(2)}`);
-            Swal.fire({ icon: 'success', title: 'Outgoing Saved!', text: `${record.outgoing_number} recorded successfully.`, timer: 2000, showConfirmButton: false });
-            loadOutgoing();
-            loadOverview();
+            Store.logActivity('CREATE', 'inventory_outgoing', `${asDraft ? 'Draft' : 'Posted'} ${record.outgoing_number}: ${items.length} items`);
+            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Outgoing Posted!', text: `${record.outgoing_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock deducted.'}`, timer: 2500, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            loadOutgoing(); loadOverview();
         }).catch((err) => {
             Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
         });
-    });
+    };
+    document.getElementById('btn-save-outgoing-draft').addEventListener('click', () => saveOutgoing(true));
+    document.getElementById('btn-save-outgoing').addEventListener('click', () => saveOutgoing(false));
 
     // ── Initial load ──────────────────────────────────────────
     loadOverview();
