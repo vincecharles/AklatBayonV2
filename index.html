@@ -371,13 +371,15 @@
     tick();setInterval(tick,1000);
   })();
 
-  // Stats
+  // Stats (safe – elements may not exist after UI redesign)
   (function(){
     const books=Store.getAll('books'),users=Store.getAll('users'),students=Store.getAll('students');
     let tot=0,avail=0;books.forEach(b=>{tot+=b.copies||0;avail+=b.available||0;});
-    document.getElementById('m-storage').textContent=`${avail} / ${tot}`;
+    const storageEl=document.getElementById('m-storage');
+    if(storageEl) storageEl.textContent=`${avail} / ${tot}`;
     const active=users.filter(u=>u.status==='active').length+students.length;
-    document.getElementById('m-users').textContent=active;
+    const usersEl=document.getElementById('m-users');
+    if(usersEl) usersEl.textContent=active;
   })();
 
   // RFID
