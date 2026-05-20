@@ -211,9 +211,9 @@ const App = (() => {
         const container = document.getElementById('alert-container');
         if (!container) return;
         const styles = {
-            success: 'background:#d1fae5;color:#059669;border:1px solid #a7f3d0',
-            danger: 'background:#fee2e2;color:#dc2626;border:1px solid #fecaca',
-            info: 'background:#dbeafe;color:#2563eb;border:1px solid #bfdbfe'
+            success: 'background:var(--ab-success-light);color:var(--ab-success);border:1px solid rgba(16,185,129,0.3)',
+            danger:  'background:var(--ab-error-light);color:var(--ab-error);border:1px solid rgba(239,68,68,0.3)',
+            info:    'background:var(--ab-info-light);color:var(--ab-info);border:1px solid rgba(59,130,246,0.3)'
         };
         const icons = { success: 'check_circle', danger: 'error', info: 'info' };
         const div = document.createElement('div');

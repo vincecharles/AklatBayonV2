@@ -67,6 +67,12 @@ const Sidebar = (() => {
             const txns = Store.getAll('transactions');
             const overdueCount = txns.filter(t => t.status === 'borrowed' && new Date(t.date_due) < new Date()).length;
             html += navLinkWithBadge('/pages/operations/circulation.html?filter=overdue', 'error_outline', 'Overdue Books', page, overdueCount, 'red');
+            if (Auth.hasAnyPermission(['can_manage_fines', 'can_view_reports']))
+                html += navLink('/pages/operations/fines.html', 'payments', 'Fines Management', page);
+            if (!Auth.hasAnyPermission(['can_manage_users', 'can_manage_students']))
+                html += navLink('/pages/operations/my-fines.html', 'receipt_long', 'My Fines', page);
+            if (Auth.hasPermission('can_view_audit_logs'))
+                html += navLink('/pages/admin/attendance.html', 'how_to_reg', 'Attendance Logs', page);
         }
 
         // ── SYSTEMS ADMIN ─────────────────────────────────────
@@ -86,6 +92,8 @@ const Sidebar = (() => {
                 html += subNavLink('/pages/admin/settings.html', 'tune', 'System Configuration', page);
                 html += '</div></div>';
             }
+            if (Auth.hasPermission('can_view_audit_logs'))
+                html += navLink('/pages/admin/api-docs.html', 'api', 'API Documentation', page);
         }
 
         nav.innerHTML = `
