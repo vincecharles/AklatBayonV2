@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,7 +85,7 @@
         text: 'This will reset all data to the initial seed state. This cannot be undone.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
+        confirmButtonColor: '#e17141', ...App.swalTheme(),
         confirmButtonText: 'Yes, reset!'
       }).then((r) => {
         if (r.isConfirmed) {

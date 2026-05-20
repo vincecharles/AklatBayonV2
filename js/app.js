@@ -224,10 +224,15 @@ const App = (() => {
         setTimeout(() => div.remove(), 4000);
     };
 
+    const swalTheme = () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        return { background: isDark ? '#1e1e32' : '#ffffff', color: isDark ? '#e2e0fc' : '#1e293b' };
+    };
+
     const confirmDelete = (itemName) => Swal.fire({
         title: 'Are you sure?', text: `Delete "${itemName}"? This cannot be undone.`, icon: 'warning',
         showCancelButton: true, confirmButtonColor: '#7c3aed', cancelButtonColor: '#e2e8f0',
-        confirmButtonText: 'Yes, delete it!', background: '#ffffff', color: '#1e293b'
+        confirmButtonText: 'Yes, delete it!', ...swalTheme()
     });
 
     const formatDate = (isoStr) => {
@@ -260,7 +265,7 @@ const App = (() => {
     const getBookTitle = (bookId) => { const b = Store.getById('books', bookId); return b ? b.title : 'Unknown'; };
 
     return {
-        init, showAlert, confirmDelete, formatDate, formatDateTime, toggleTheme,
+        init, showAlert, confirmDelete, swalTheme, formatDate, formatDateTime, toggleTheme,
         openModal, closeModal, bindModalCloses,
         getRoleName, getAuthorName, getPublisherName, getCategoryName, getStudentName, getBookTitle
     };

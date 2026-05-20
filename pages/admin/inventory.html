@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
@@ -683,7 +685,7 @@
             for (const item of rec.items) {
                 const book = Store.getById('books', item.book_id);
                 if (!book || book.available < item.quantity) {
-                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                     return;
                 }
             }
@@ -694,7 +696,7 @@
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
-            background: '#1e1e32', color: '#e2e0fc',
+            ...App.swalTheme(),
             confirmButtonText: 'Yes, Post it!'
         }).then((result) => {
             if (!result.isConfirmed) return;
@@ -709,7 +711,7 @@
             });
             Store.update(collection, id, { status: 'completed' });
             Store.logActivity('UPDATE', collection, `Posted ${num}: stock committed`);
-            Swal.fire({ icon: 'success', title: 'Posted!', text: `${num} has been posted and stock updated.`, timer: 2000, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            Swal.fire({ icon: 'success', title: 'Posted!', text: `${num} has been posted and stock updated.`, timer: 2000, showConfirmButton: false, ...App.swalTheme() });
             if (isInc) loadIncoming(); else loadOutgoing();
             loadOverview();
         });
@@ -756,7 +758,7 @@
             text: `This will reverse the stock changes. This cannot be undone.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
+            confirmButtonColor: '#e17141', ...App.swalTheme(),
             confirmButtonText: 'Yes, void it!'
         }).then((result) => {
             if (!result.isConfirmed) return;
@@ -822,10 +824,10 @@
             }
             App.closeModal('modal-incoming');
             Store.logActivity('CREATE', 'inventory_incoming', `${asDraft ? 'Draft' : 'Posted'} ${record.incoming_number}: ${items.length} items`);
-            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Incoming Posted!', text: `${record.incoming_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock updated.'}`, timer: 2500, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Incoming Posted!', text: `${record.incoming_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock updated.'}`, timer: 2500, showConfirmButton: false, ...App.swalTheme() });
             loadIncoming(); loadOverview();
         }).catch((err) => {
-            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', ...App.swalTheme() });
         });
     };
     document.getElementById('btn-save-incoming-draft').addEventListener('click', () => saveIncoming(true));
@@ -861,7 +863,7 @@
             for (const item of items) {
                 const book = Store.getById('books', item.book_id);
                 if (!book || book.available < item.quantity) {
-                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                    Swal.fire({ icon: 'error', title: 'Insufficient Stock', text: `"${book ? book.title : 'Unknown'}" only has ${book ? book.available : 0} available copies.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                     return;
                 }
             }
@@ -885,10 +887,10 @@
             }
             App.closeModal('modal-outgoing');
             Store.logActivity('CREATE', 'inventory_outgoing', `${asDraft ? 'Draft' : 'Posted'} ${record.outgoing_number}: ${items.length} items`);
-            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Outgoing Posted!', text: `${record.outgoing_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock deducted.'}`, timer: 2500, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+            Swal.fire({ icon: 'success', title: asDraft ? 'Draft Saved!' : 'Outgoing Posted!', text: `${record.outgoing_number} ${asDraft ? 'saved as draft. No stock changes yet.' : 'posted and stock deducted.'}`, timer: 2500, showConfirmButton: false, ...App.swalTheme() });
             loadOutgoing(); loadOverview();
         }).catch((err) => {
-            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Could not save.', confirmButtonColor: '#e17141', ...App.swalTheme() });
         });
     };
     document.getElementById('btn-save-outgoing-draft').addEventListener('click', () => saveOutgoing(true));

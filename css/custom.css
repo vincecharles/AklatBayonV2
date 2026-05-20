@@ -11,6 +11,28 @@
   --ab-shadow-sm:0 1px 2px rgba(0,0,0,.05); --ab-shadow-md:0 4px 6px -1px rgba(0,0,0,.07);
   --ab-shadow-lg:0 10px 15px -3px rgba(0,0,0,.08); --ab-shadow-xl:0 20px 25px -5px rgba(0,0,0,.1);
   --ab-transition:.2s cubic-bezier(.4,0,.2,1);
+
+  /* ── Astral Palette (modal/table/form components) ── */
+  /* These replace the hardcoded dark hex values so they flip correctly in light mode */
+  --ab-modal-bg:#ffffff;           /* was #1a1a2e in dark pages */
+  --ab-modal-deep:#f8fafc;         /* was #0f0f1a */
+  --ab-modal-surface:#f1f5f9;      /* was #1e1e32 */
+  --ab-modal-border:#e2e8f0;       /* was #3a3a52 */
+  --ab-modal-border-strong:#cbd5e1;/* was #3a3a52 strong */
+  --ab-modal-close-bg:#f1f5f9;     /* was #333348 */
+  --ab-modal-close-hover:#e2e8f0;  /* was #3a3a52 */
+  --ab-modal-label:#1e293b;        /* was #e2e0fc */
+  --ab-modal-muted:#64748b;        /* was #9b99b8 */
+  --ab-modal-text:#1e293b;         /* was #e2e0fc */
+  --ab-modal-row-hover:rgba(124,58,237,.04); /* was rgba(255,181,153,.05) */
+  --ab-accent:#e17141;             /* ffb599/e17141 accent stays */
+  --ab-accent-light:#ffb599;
+  --ab-input-bg:#ffffff;           /* was #1e1e32 */
+  --ab-input-border:#e2e8f0;       /* was #3a3a52 */
+  --ab-input-focus:#7c3aed;
+  --ab-table-head-bg:#f8fafc;      /* was #1a1a2e */
+  --ab-tbody-divide:#f1f5f9;       /* was #3a3a52/50 */
+  --ab-code-bg:#f1f5f9;            /* was #333348 */
 }
 html.dark {
   --ab-bg:#131022; --ab-surface:#131022; --ab-surface-card:#0f172a; --ab-surface-low:#1e293b; --ab-surface-high:#334155;
@@ -19,6 +41,24 @@ html.dark {
   --ab-primary-container:rgba(124,58,237,.2);
   --ab-success-light:rgba(16,185,129,.15); --ab-warning-light:rgba(245,158,11,.15);
   --ab-error-light:rgba(239,68,68,.15); --ab-info-light:rgba(59,130,246,.15);
+
+  /* ── Astral Palette (dark mode) ── */
+  --ab-modal-bg:#1a1a2e;
+  --ab-modal-deep:#0f0f1a;
+  --ab-modal-surface:#1e1e32;
+  --ab-modal-border:#3a3a52;
+  --ab-modal-border-strong:#3a3a52;
+  --ab-modal-close-bg:#333348;
+  --ab-modal-close-hover:#3a3a52;
+  --ab-modal-label:#e2e0fc;
+  --ab-modal-muted:#9b99b8;
+  --ab-modal-text:#e2e0fc;
+  --ab-modal-row-hover:rgba(255,181,153,.05);
+  --ab-input-bg:#1e1e32;
+  --ab-input-border:#3a3a52;
+  --ab-table-head-bg:#1a1a2e;
+  --ab-tbody-divide:#3a3a52;
+  --ab-code-bg:#333348;
 }
 
 /* ── Tailwind Dark Mode Overrides ── */
@@ -32,10 +72,73 @@ html.dark .border-gray-200, html.dark .border-gray-100, html.dark .border-slate-
 html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]), html.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--ab-outline) !important; }
 html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: var(--ab-outline) !important; }
 
+/* ── Astral Hex Overrides (light + dark, applied globally) ── */
+/* Background: hardcoded dark panel colors → token */
+.bg-\[\#1a1a2e\]  { background-color: var(--ab-table-head-bg) !important; }
+.bg-\[\#1e1e32\]  { background-color: var(--ab-input-bg) !important; }
+.bg-\[\#0f0f1a\]  { background-color: var(--ab-modal-deep) !important; }
+.bg-\[\#28283d\]  { background-color: var(--ab-modal-surface) !important; }
+.bg-\[\#333348\]  { background-color: var(--ab-modal-close-bg) !important; }
+
+/* Border: hardcoded dark border colors → token */
+.border-\[\#3a3a52\]      { border-color: var(--ab-modal-border) !important; }
+.divide-\[\#3a3a52\]\/50 > :not([hidden]) ~ :not([hidden]) { border-color: var(--ab-modal-border) !important; }
+
+/* Text: hardcoded light-on-dark text → token */
+.text-\[\#e2e0fc\] { color: var(--ab-modal-label) !important; }
+.text-\[\#9b99b8\] { color: var(--ab-modal-muted) !important; }
+
+/* Hover on hardcoded dark close button */
+.hover\:bg-\[\#3a3a52\]:hover { background-color: var(--ab-modal-close-hover) !important; }
+.hover\:bg-\[\#ffb599\]\/5:hover { background-color: var(--ab-modal-row-hover) !important; }
+
+/* Input/form backgrounds */
+input.bg-\[\#1e1e32\], select.bg-\[\#1e1e32\], textarea.bg-\[\#1e1e32\] {
+  background-color: var(--ab-input-bg) !important;
+  border-color: var(--ab-input-border) !important;
+  color: var(--ab-on-surface) !important;
+}
+/* Focus borders on form elements */
+.focus\:border-\[\#ffb599\]:focus { border-color: var(--ab-accent-light) !important; }
+
+/* Code/badge chip backgrounds */
+.bg-\[\#333348\] { background-color: var(--ab-code-bg) !important; }
+
+/* Row hover on astral tables */
+.hover\:bg-\[\#ffb599\]\/5:hover { background-color: var(--ab-modal-row-hover) !important; }
+
+/* Readonly inputs: only override in dark mode */
+html.dark .dark\:bg-slate-800 { background-color: var(--ab-modal-surface) !important; }
 
 /* ── Base ─────────────────────────────────────────────────── */
 html { background:var(--ab-bg); }
 body { font-family:'Inter',sans-serif; background:var(--ab-bg); color:var(--ab-on-surface); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+/* ab-body-themed: replaces the removed inline style="background:#111125;color:#e2e0fc" on body tags.
+   In light mode → light bg + dark text. In dark mode → deep dark bg + light text. */
+.ab-body-themed { background:var(--ab-bg) !important; color:var(--ab-on-surface) !important; }
+
+/* ab-hero-dark: intentional always-dark decorative hero gradients.
+   These are design elements (cover art banners, profile headers) that stay dark regardless of theme. */
+.ab-hero-dark { background:linear-gradient(135deg,#1a1a2e 0%,#28283d 40%,#1e1e32 100%) !important; }
+html:not(.dark) .ab-hero-dark { background:linear-gradient(135deg,#e8e4ff 0%,#ddd6fe 40%,#ede9fe 100%) !important; color:var(--ab-on-surface); }
+
+/* glass-panel: global override for page-level definitions. Light=frosted white, Dark=frosted navy */
+.glass-panel { background:var(--ab-surface-card) !important; backdrop-filter:blur(16px); border:1px solid var(--ab-outline) !important; }
+html.dark .glass-panel { background:rgba(30,30,50,0.5) !important; border-color:rgba(255,181,153,0.08) !important; }
+
+/* Refined text-white overrides in light mode:
+   Convert hardcoded text-white on headings/labels to dark on-surface text for contrast on light backgrounds.
+   Preserve white text on elements with colored backgrounds (buttons, badges, chips, icons) and always-dark hero blocks. */
+html:not(.dark) :not(.ab-hero-dark):not([class*="bg-"]) > .text-white:not(button):not(a):not([class*="bg-"]):not([class*="btn"]):not([class*="badge"]):not([class*="chip"]):not(.material-symbols-outlined),
+html:not(.dark) :not(.ab-hero-dark) .text-white:not(button):not(a):not([class*="bg-"]):not([class*="btn"]):not([class*="badge"]):not([class*="chip"]):not(.material-symbols-outlined) {
+  color: var(--ab-on-surface) !important;
+}
+
+/* border-slate-800 → use outline token for theme-awareness */
+.border-slate-800 { border-color:var(--ab-outline) !important; }
+.border-slate-800\/50 { border-color:var(--ab-outline) !important; }
+
 ::-webkit-scrollbar { width:6px; height:6px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--ab-on-surface-faint); border-radius:3px; }

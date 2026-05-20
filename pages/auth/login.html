@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']}}}}</script>
   <style>
     /* ── Background ─────────────────────── */
@@ -143,7 +145,7 @@
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
       border-radius:14px;
-      color:#e2e0fc;font-size:14px;
+      color:var(--ab-modal-label);font-size:14px;
       font-family:'Inter',sans-serif;
       outline:none;transition:border-color .25s,box-shadow .25s;
       letter-spacing:.05em

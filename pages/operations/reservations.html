@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
@@ -25,7 +27,7 @@
     .tab-pane.active { display: block; }
   </style>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -182,7 +184,7 @@
                   const studentName = App.getStudentName(studentId);
                   const bookTitle = App.getBookTitle(bookId);
                   const queue = Store.getReservationQueue(bookId);
-                  Swal.fire({ icon: 'success', title: 'Reservation Placed!', text: `${bookTitle} reserved for ${studentName}. Position in queue: #${queue.length}`, timer: 3000, showConfirmButton: false, background: '#1e1e32', color: '#e2e0fc' });
+                  Swal.fire({ icon: 'success', title: 'Reservation Placed!', text: `${bookTitle} reserved for ${studentName}. Position in queue: #${queue.length}`, timer: 3000, showConfirmButton: false, ...App.swalTheme() });
                   refreshBookDropdown();
                   updateStats();
               }).catch((err) => { App.showAlert('danger', err.message || 'Failed to create reservation.'); });
@@ -243,7 +245,7 @@
           // Bind cancel buttons
           document.querySelectorAll('.btn-cancel-my').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
+                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', ...App.swalTheme(), cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
                       if (result.isConfirmed) {
                           Store.update('reservations', btn.dataset.id, { status: 'cancelled' }).then(() => { App.showAlert('success', 'Reservation cancelled.'); loadMyReservations(); updateStats(); });
                       }
@@ -349,14 +351,14 @@
           });
           document.querySelectorAll('.btn-claim').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  Swal.fire({ title: 'Mark as Claimed?', text: 'Confirm this reservation has been claimed.', icon: 'question', showCancelButton: true, confirmButtonColor: '#17a2b8', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, mark claimed', background: '#1e1e32', color: '#e2e0fc' }).then((result) => {
+                  Swal.fire({ title: 'Mark as Claimed?', text: 'Confirm this reservation has been claimed.', icon: 'question', showCancelButton: true, confirmButtonColor: '#17a2b8', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, mark claimed', ...App.swalTheme() }).then((result) => {
                       if (result.isConfirmed) { Store.update('reservations', btn.dataset.id, { status: 'claimed' }).then(() => { App.showAlert('success', 'Reservation marked as claimed.'); loadQueue(); updateStats(); }); }
                   });
               });
           });
           document.querySelectorAll('.btn-cancel-queue').forEach((btn) => {
               btn.addEventListener('click', () => {
-                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
+                  Swal.fire({ title: 'Cancel Reservation?', text: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e17141', ...App.swalTheme(), cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, cancel it' }).then((result) => {
                       if (result.isConfirmed) { Store.update('reservations', btn.dataset.id, { status: 'cancelled' }).then(() => { App.showAlert('success', 'Reservation cancelled.'); loadQueue(); updateStats(); }); }
                   });
               });

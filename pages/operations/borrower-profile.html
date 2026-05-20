@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
@@ -22,7 +24,7 @@
     }
   </script>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -266,7 +268,7 @@
                 const qrImg = qrContainer.querySelector('img');
                 const imgData = qrImg ? qrImg.src : qrContainer.querySelector('canvas').toDataURL();
                 const w = window.open('', '_blank', 'width=400,height=500');
-                w.document.write('<html><head><title>Library Card</title><style>body{font-family:Arial,sans-serif;text-align:center;padding:30px 20px;margin:0}h2{color:#1a1a2e;margin:0 0 4px}p{color:#555;margin:4px 0}img{margin:16px auto;display:block}.id-badge{display:inline-block;background:#3211d4;color:#fff;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:600;margin:8px 0 12px}.label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;margin-top:16px}hr{border:none;border-top:1px dashed #ccc;margin:16px 0}</style></head><body>');
+                w.document.write('<html><head><title>Library Card</title><style>body{font-family:Arial,sans-serif;text-align:center;padding:30px 20px;margin:0}h2{color:#1e293b;margin:0 0 4px}p{color:#555;margin:4px 0}img{margin:16px auto;display:block}.id-badge{display:inline-block;background:#3211d4;color:#fff;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:600;margin:8px 0 12px}.label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;margin-top:16px}hr{border:none;border-top:1px dashed #ccc;margin:16px 0}</style></head><body>');
                 w.document.write('<div class="label">AklatBayon Library</div>');
                 w.document.write(`<h2>${student.name}</h2>`);
                 w.document.write(`<div class="id-badge">${student.student_id}</div>`);

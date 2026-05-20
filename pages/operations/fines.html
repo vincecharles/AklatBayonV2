@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
@@ -21,7 +23,7 @@
     }
   </script>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -81,7 +83,7 @@
   <script src="/js/sidebar.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
+    if (!Auth.requireAuth() || (!Auth.hasPermission('can_manage_fines') && !Auth.hasPermission('can_view_reports'))) { window.location.href = '/pages/auth/login.html'; throw ''; }
     App.init();
 
     const load = () => {

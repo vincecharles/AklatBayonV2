@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
     tailwind.config = {
       darkMode: 'class',
       theme: { extend: {
         fontFamily: { sans: ['Inter', 'sans-serif'] },
-        colors: {
-          "surface-container-low": "#1a1a2e",
-          "surface-container": "#1e1e32",
-          "surface-container-high": "#28283d",
-          "surface-container-highest": "#333348",
-          "outline-variant": "#56423b",
-          "primary": "#ffb599",
-          "primary-container": "#e17141",
-          "on-surface": "#e2e0fc",
-          "on-surface-variant": "#ddc0b6",
-          "tertiary": "#d2bcfa"
-        }
       }}
     }
   </script>
@@ -33,9 +22,26 @@
     .glass-panel { background: rgba(30,30,50,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,181,153,0.1); }
     .chart-glow { filter: drop-shadow(0 0 8px rgba(255,149,0,0.3)); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
+    .bg-surface-container-low { background: var(--ab-surface-card); }
+    .bg-surface-container { background: var(--ab-surface-low); }
+    .bg-surface-container-high { background: var(--ab-surface-high); }
+    .text-on-surface { color: var(--ab-on-surface); }
+    .text-on-surface-variant { color: var(--ab-on-surface-dim); }
+    .text-primary { color: var(--ab-accent-light); }
+    html.dark .text-primary { color: var(--ab-accent-light); }
+    html:not(.dark) .text-primary { color: var(--ab-accent); }
+    .text-tertiary { color: #d2bcfa; }
+    html:not(.dark) .text-tertiary { color: #7c3aed; }
+    .border-outline-variant\/20 { border-color: var(--ab-outline); }
+    .border-outline-variant\/10 { border-color: var(--ab-outline-dim); }
+    .border-outline-variant\/5 { border-color: var(--ab-outline-dim); }
+    .border-primary\/10 { border-color: rgba(124,58,237,.1); }
+    .border-primary\/5 { border-color: rgba(124,58,237,.05); }
+    .bg-primary-container\/10 { background: rgba(124,58,237,.1); }
+    .hover\:bg-surface-container-high:hover { background: var(--ab-surface-high) !important; }
   </style>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -214,8 +220,8 @@
         responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1, color: '#9b99b8' }, grid: { color: '#333348' } },
-          x: { ticks: { color: '#9b99b8' }, grid: { display: false } }
+          y: { beginAtZero: true, ticks: { stepSize: 1, color: getComputedStyle(document.documentElement).getPropertyValue('--ab-on-surface-faint').trim() || '#94a3b8' }, grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--ab-outline').trim() || '#e2e8f0' } },
+          x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--ab-on-surface-faint').trim() || '#94a3b8' }, grid: { display: false } }
         }
       }
     });
@@ -231,7 +237,7 @@
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { color: '#e2e0fc', padding: 20 } } },
+        plugins: { legend: { position: 'bottom', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--ab-on-surface').trim() || '#1e293b', padding: 20 } } },
         cutout: '65%'
       }
     });

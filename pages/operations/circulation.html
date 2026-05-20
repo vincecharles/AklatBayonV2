@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
     <script>
     tailwind.config = {
         darkMode: 'class',
@@ -21,7 +23,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
 <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -264,7 +266,7 @@
             const fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
             const totalFines = Store.getStudentFinesTotal(studentId);
             if (totalFines >= fineThreshold) {
-                Swal.fire({ icon: 'error', title: 'Borrowing Blocked', text: `This student has \u20B1${totalFines.toFixed(2)} in unpaid fines (limit: \u20B1${fineThreshold}). Fines must be settled first.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                Swal.fire({ icon: 'error', title: 'Borrowing Blocked', text: `This student has \u20B1${totalFines.toFixed(2)} in unpaid fines (limit: \u20B1${fineThreshold}). Fines must be settled first.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                 return;
             }
 
@@ -331,7 +333,7 @@
                             icon: 'info',
                             title: 'Reservation Triggered',
                             html: `Book returned successfully.<br><br><strong>${studentName}</strong> has a reservation for <strong>${App.getBookTitle(bookId)}</strong>.<br>They have <strong>${expiryHours} hours</strong> to claim it.`,
-                            confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc'
+                            confirmButtonColor: '#e17141', ...App.swalTheme()
                         });
                     } else {
                         App.showAlert('success', 'Book returned successfully.');
@@ -356,14 +358,14 @@
 
                     // Check: max renewals reached?
                     if (currentRenewals >= maxRenewals) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Maximum renewals (${maxRenewals}) reached for this borrower role.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Maximum renewals (${maxRenewals}) reached for this borrower role.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                         return;
                     }
 
                     // Check: book has active reservations?
                     const queue = Store.getReservationQueue(bookId);
                     if (queue.length > 0) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `This book has ${queue.length} pending reservation(s). Cannot renew.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `This book has ${queue.length} pending reservation(s). Cannot renew.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                         return;
                     }
 
@@ -371,7 +373,7 @@
                     const fineThreshold = parseFloat(Store.getSetting('fine_block_threshold')) || 100;
                     const totalFines = Store.getStudentFinesTotal(studentId);
                     if (totalFines >= fineThreshold) {
-                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Outstanding fines of \u20B1${totalFines.toFixed(2)} exceed the \u20B1${fineThreshold} limit.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                        Swal.fire({ icon: 'error', title: 'Renewal Denied', text: `Outstanding fines of \u20B1${totalFines.toFixed(2)} exceed the \u20B1${fineThreshold} limit.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                         return;
                     }
 
@@ -386,7 +388,7 @@
                         html: `Renew <strong>${App.getBookTitle(bookId)}</strong>?<br>New due date: <strong>${newDue.toISOString().split('T')[0]}</strong><br>Renewal ${currentRenewals + 1} of ${maxRenewals}`,
                         icon: 'question',
                         showCancelButton: true,
-                        confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc',
+                        confirmButtonColor: '#e17141', ...App.swalTheme(),
                         confirmButtonText: 'Renew'
                     }).then((result) => {
                         if (result.isConfirmed) {

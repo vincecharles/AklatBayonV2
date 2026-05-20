@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+
     <script>
     tailwind.config = {
         darkMode: 'class',
@@ -31,7 +33,7 @@
         .lcc-tile.active { ring: 2px; box-shadow: 0 0 0 2px #e94560; }
     </style>
 </head>
-<body class="font-sans min-h-screen antialiased" style="background:#111125;color:#e2e0fc">
+<body class="font-sans min-h-screen antialiased ab-body-themed">
 <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -270,7 +272,7 @@
             const existing = Store.getAll('books');
             const dup = existing.find((b) => b.title.toLowerCase() === title.toLowerCase());
             if (dup) {
-                Swal.fire({ icon: 'warning', title: 'Book Already Exists', text: `"${title}" is already in your local catalog.`, confirmButtonColor: '#e17141', background: '#1e1e32', color: '#e2e0fc' });
+                Swal.fire({ icon: 'warning', title: 'Book Already Exists', text: `"${title}" is already in your local catalog.`, confirmButtonColor: '#e17141', ...App.swalTheme() });
                 return;
             }
 
