@@ -3,7 +3,7 @@ import { db } from "../../db/index.js";
 import {
     roles, permissions, rolePermissions, users, students, authors,
     publishers, categories, books, transactions, fines,
-    auditLogs, settings, lccClasses
+    auditLogs, settings, lccClasses, inventoryIncoming, inventoryOutgoing
 } from "../../db/schema.js";
 import { sql } from "drizzle-orm";
 
@@ -41,7 +41,9 @@ const seedData = {
         { id: 'p18', name: 'can_view_dashboard', label: 'View Dashboard', group: 'General', description: 'Access the dashboard overview page' },
         { id: 'p19', name: 'can_view_own_profile', label: 'View Own Profile', group: 'General', description: 'View own user profile and loan history' },
         { id: 'p22', name: 'can_recommend_books', label: 'Recommend Books', group: 'Catalog', description: 'Recommend books for acquisition' },
-        { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' }
+        { id: 'p23', name: 'can_view_own_fines', label: 'View Own Fines', group: 'Finance', description: 'View fines assigned to own account' },
+        { id: 'p24', name: 'can_manage_incoming', label: 'Manage Incoming Inventory', group: 'Inventory', description: 'Create and manage incoming stock deliveries' },
+        { id: 'p25', name: 'can_manage_outgoing', label: 'Manage Outgoing Inventory', group: 'Inventory', description: 'Create and manage outgoing stock removals' }
     ],
     rolePerms: {
         'r1': ['p1','p2','p12','p13','p14','p15','p18','p19'],
@@ -53,7 +55,10 @@ const seedData = {
         'r7': ['p15']
     },
     users: [
-        { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', roleId: 'r1', facultySubtype: null, rfidId: 'RFID-ADMIN-001', studentId: null, status: 'active' }
+        { id: 'u1', name: 'Admin User',        username: 'admin',     password: 'admin123', email: 'admin@feati.edu.ph',     roleId: 'r1', facultySubtype: null,       rfidId: 'RFID-ADMIN-001', studentId: null, status: 'active' },
+        { id: 'u2', name: 'Head Librarian',    username: 'librarian', password: 'lib123',   email: 'librarian@feati.edu.ph', roleId: 'r2', facultySubtype: null,       rfidId: 'RFID-LIB-001',   studentId: null, status: 'active' },
+        { id: 'u3', name: 'Faculty Member',    username: 'faculty1',  password: 'fac123',   email: 'faculty1@feati.edu.ph',  roleId: 'r4', facultySubtype: 'Teaching', rfidId: 'RFID-FAC-001',   studentId: null, status: 'active' },
+        { id: 'u4', name: 'Student User',      username: 'student1',  password: 'stud123',  email: 'student1@feati.edu.ph',  roleId: 'r5', facultySubtype: null,       rfidId: 'RFID-STU-001',   studentId: 's1', status: 'active' }
     ],
     students: [
         { id: 's1', studentId: '2024-0001', name: 'Carlo Mendoza', email: 'carlo@aklatbayon.edu', gradeLevel: 'College', section: 'BSIT-3A', contact: '09171234567', status: 'active' },
@@ -149,6 +154,31 @@ const seedData = {
         { id: 'lcc-u', letter: 'U', name: 'Military Science', icon: 'fa-shield-halved', subclasses: ['UA - Armies', 'UB - Military Administration', 'UC - Maintenance & Transportation', 'UD - Infantry'] },
         { id: 'lcc-v', letter: 'V', name: 'Naval Science', icon: 'fa-anchor', subclasses: ['VA - Navies', 'VB - Naval Administration', 'VC - Naval Maintenance', 'VK - Navigation'] },
         { id: 'lcc-z', letter: 'Z', name: 'Bibliography & Library Science', icon: 'fa-bookmark', subclasses: ['ZA - Information Resources', 'Z4 - Books (General)', 'Z657 - Library Science', 'Z695 - Cataloging'] }
+    ],
+    inventoryIncoming: [
+        {
+            id: 'inc1', incomingNumber: 'IN-2026-0001', date: '2026-03-01',
+            preparedBy: 'u1', referenceNumber: 'DR-2026-0100', purpose: 'New Purchase',
+            supplier: 'National Book Store',
+            items: [{ book_id: 'b1', quantity: 3, unit_price: 280.00, total: 840.00 }, { book_id: 'b3', quantity: 2, unit_price: 1200.00, total: 2400.00 }],
+            grandTotal: '3240.00', status: 'completed'
+        },
+        {
+            id: 'inc2', incomingNumber: 'IN-2026-0002', date: '2026-03-10',
+            preparedBy: 'u1', referenceNumber: 'DR-2026-0145', purpose: 'Donation',
+            supplier: 'Philippine Library Association',
+            items: [{ book_id: 'b4', quantity: 5, unit_price: 0.00, total: 0.00 }],
+            grandTotal: '0.00', status: 'completed'
+        }
+    ],
+    inventoryOutgoing: [
+        {
+            id: 'out1', outgoingNumber: 'OUT-2026-0001', date: '2026-03-05',
+            preparedBy: 'u1', referenceNumber: 'RR-2026-0010', purpose: 'Book Retirement',
+            supplier: '',
+            items: [{ book_id: 'b2', quantity: 1, unit_price: 250.00, total: 250.00 }],
+            grandTotal: '250.00', status: 'completed'
+        }
     ]
 };
 
@@ -223,7 +253,13 @@ export default async (req: Request, context: Context) => {
         // 13. LCC Classes
         await db.insert(lccClasses).values(seedData.lccClasses);
 
-        // 14. Initial audit log
+        // 14. Inventory Incoming
+        await db.insert(inventoryIncoming).values(seedData.inventoryIncoming);
+
+        // 15. Inventory Outgoing
+        await db.insert(inventoryOutgoing).values(seedData.inventoryOutgoing);
+
+        // 16. Initial audit log
         await db.insert(auditLogs).values({
             id: 'log1',
             user: 'System',

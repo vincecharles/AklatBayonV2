@@ -183,11 +183,16 @@ export const attendance = pgTable('attendance', {
     name: varchar('name', { length: 200 }).notNull(),
     rfidId: varchar('rfid_id', { length: 100 }),
     role: varchar('role', { length: 100 }),
-    tapTime: timestamp('tap_time').defaultNow().notNull(),
+    tapTime: timestamp('tap_time').defaultNow(),
+    // Extended columns to match frontend seed data structure
+    studentId: varchar('student_id', { length: 50 }),
+    date: varchar('date', { length: 20 }),
+    timeIn: varchar('time_in', { length: 10 }),
+    timeOut: varchar('time_out', { length: 10 }),
     createdAt: timestamp('created_at').defaultNow().notNull()
 }, (table) => [
     index('att_user_idx').on(table.userId),
-    index('att_date_idx').on(table.tapTime)
+    index('att_date_idx').on(table.createdAt)
 ]);
 
 // ── Audit Logs ───────────────────────────────────────────
@@ -219,3 +224,41 @@ export const lccClasses = pgTable('lcc_classes', {
     icon: varchar('icon', { length: 50 }),
     subclasses: jsonb('subclasses')
 });
+
+// ── Inventory — Incoming Deliveries ──────────────────────────
+export const inventoryIncoming = pgTable('inventory_incoming', {
+    id: varchar('id', { length: 50 }).primaryKey(),
+    incomingNumber: varchar('incoming_number', { length: 50 }).notNull(),
+    date: varchar('date', { length: 20 }).notNull(),
+    preparedBy: varchar('prepared_by', { length: 50 }).references(() => users.id),
+    referenceNumber: varchar('reference_number', { length: 100 }),
+    purpose: varchar('purpose', { length: 100 }),
+    supplier: varchar('supplier', { length: 200 }),
+    items: jsonb('items').notNull().default([]),
+    grandTotal: numeric('grand_total', { precision: 12, scale: 2 }).notNull().default('0'),
+    status: varchar('status', { length: 20 }).notNull().default('completed'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => [
+    index('inv_inc_date_idx').on(table.date),
+    index('inv_inc_status_idx').on(table.status)
+]);
+
+// ── Inventory — Outgoing Records ─────────────────────────────
+export const inventoryOutgoing = pgTable('inventory_outgoing', {
+    id: varchar('id', { length: 50 }).primaryKey(),
+    outgoingNumber: varchar('outgoing_number', { length: 50 }).notNull(),
+    date: varchar('date', { length: 20 }).notNull(),
+    preparedBy: varchar('prepared_by', { length: 50 }).references(() => users.id),
+    referenceNumber: varchar('reference_number', { length: 100 }),
+    purpose: varchar('purpose', { length: 100 }),
+    supplier: varchar('supplier', { length: 200 }),
+    items: jsonb('items').notNull().default([]),
+    grandTotal: numeric('grand_total', { precision: 12, scale: 2 }).notNull().default('0'),
+    status: varchar('status', { length: 20 }).notNull().default('completed'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => [
+    index('inv_out_date_idx').on(table.date),
+    index('inv_out_status_idx').on(table.status)
+]);

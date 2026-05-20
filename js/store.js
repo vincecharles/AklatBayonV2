@@ -301,7 +301,7 @@ const Store = (() => {
     };
 
     // ── Seed (localStorage fallback only) ───────────────────────
-    const SEED_VERSION = 7;
+    const SEED_VERSION = 8;
     const isSeeded = () => localStorage.getItem('aklatbayon_seed_version') === String(SEED_VERSION);
 
     const seed = () => {
@@ -312,6 +312,8 @@ const Store = (() => {
         keys.forEach((k) => localStorage.removeItem(k));
 
         const now = () => new Date().toISOString();
+        const _today = new Date();
+        const todayStr = `${_today.getFullYear()}-${String(_today.getMonth() + 1).padStart(2, '0')}-${String(_today.getDate()).padStart(2, '0')}`;
         const seedIfEmpty = (collection, data) => {
             if (!localStorage.getItem(_key(collection))) {
                 _lsSet(collection, data);
@@ -368,7 +370,10 @@ const Store = (() => {
         });
 
         seedIfEmpty('users', [
-            { id: 'u1', name: 'Admin User', username: 'admin', password: 'admin123', email: 'admin@feati.edu.ph', role_id: 'r1', faculty_subtype: null, rfid_id: 'RFID-ADMIN-001', student_id: null, status: 'active', created_at: now(), updated_at: now() }
+            { id: 'u1', name: 'Admin User',     username: 'admin',     password: 'admin123', email: 'admin@feati.edu.ph',     role_id: 'r1', faculty_subtype: null,       rfid_id: 'RFID-ADMIN-001', student_id: null, status: 'active', created_at: now(), updated_at: now() },
+            { id: 'u2', name: 'Head Librarian', username: 'librarian', password: 'lib123',   email: 'librarian@feati.edu.ph', role_id: 'r2', faculty_subtype: null,       rfid_id: 'RFID-LIB-001',   student_id: null, status: 'active', created_at: now(), updated_at: now() },
+            { id: 'u3', name: 'Faculty Member', username: 'faculty1',  password: 'fac123',   email: 'faculty1@feati.edu.ph',  role_id: 'r4', faculty_subtype: 'Teaching', rfid_id: 'RFID-FAC-001',   student_id: null, status: 'active', created_at: now(), updated_at: now() },
+            { id: 'u4', name: 'Student User',   username: 'student1',  password: 'stud123',  email: 'student1@feati.edu.ph',  role_id: 'r5', faculty_subtype: null,       rfid_id: 'RFID-STU-001',   student_id: 's1', status: 'active', created_at: now(), updated_at: now() }
         ]);
 
         seedIfEmpty('students', [

@@ -3,7 +3,8 @@ import { db } from "../../db/index.js";
 import {
     roles, permissions, rolePermissions, users, students, authors,
     publishers, categories, books, transactions, fines, reservations,
-    attendance, auditLogs, settings, lccClasses
+    attendance, auditLogs, settings, lccClasses,
+    inventoryIncoming, inventoryOutgoing
 } from "../../db/schema.js";
 import { eq, and, like, sql, desc, asc, ilike, or } from "drizzle-orm";
 
@@ -11,7 +12,8 @@ import { eq, and, like, sql, desc, asc, ilike, or } from "drizzle-orm";
 const tables: Record<string, any> = {
     roles, permissions, role_permissions: rolePermissions, users, students,
     authors, publishers, categories, books, transactions, fines,
-    reservations, attendance, audit_logs: auditLogs, settings, lcc_classes: lccClasses
+    reservations, attendance, audit_logs: auditLogs, settings, lcc_classes: lccClasses,
+    inventory_incoming: inventoryIncoming, inventory_outgoing: inventoryOutgoing
 };
 
 // Column name mappings: frontend snake_case → Drizzle schema camelCase
@@ -22,8 +24,23 @@ const columnMaps: Record<string, Record<string, string>> = {
     transactions: { student_id: 'studentId', book_id: 'bookId', date_issued: 'dateIssued', date_due: 'dateDue', date_returned: 'dateReturned', renewal_count: 'renewalCount', created_at: 'createdAt', updated_at: 'updatedAt' },
     fines: { student_id: 'studentId', transaction_id: 'transactionId', created_at: 'createdAt', updated_at: 'updatedAt' },
     reservations: { student_id: 'studentId', book_id: 'bookId', notified_at: 'notifiedAt', expires_at: 'expiresAt', created_at: 'createdAt', updated_at: 'updatedAt' },
-    attendance: { user_id: 'userId', rfid_id: 'rfidId', tap_time: 'tapTime', created_at: 'createdAt' },
+    attendance: {
+        user_id: 'userId', rfid_id: 'rfidId', tap_time: 'tapTime',
+        user_name: 'name', role_name: 'role',
+        student_id: 'studentId', time_in: 'timeIn', time_out: 'timeOut',
+        created_at: 'createdAt'
+    },
     audit_logs: { created_at: 'createdAt' },
+    inventory_incoming: {
+        incoming_number: 'incomingNumber', prepared_by: 'preparedBy',
+        reference_number: 'referenceNumber', grand_total: 'grandTotal',
+        created_at: 'createdAt', updated_at: 'updatedAt'
+    },
+    inventory_outgoing: {
+        outgoing_number: 'outgoingNumber', prepared_by: 'preparedBy',
+        reference_number: 'referenceNumber', grand_total: 'grandTotal',
+        created_at: 'createdAt', updated_at: 'updatedAt'
+    },
     role_permissions: { role_id: 'roleId', permission_id: 'permissionId' },
     categories: { parent_id: 'parentId', created_at: 'createdAt', updated_at: 'updatedAt' },
     authors: { created_at: 'createdAt', updated_at: 'updatedAt' },
