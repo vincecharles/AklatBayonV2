@@ -258,6 +258,36 @@
     @keyframes scan{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
     .rfid-scanning .rfid-ring{animation:none!important;box-shadow:0 0 36px rgba(200,169,81,.5);transform:scale(1.06);border-color:var(--gold)}
     .rfid-success .rfid-ring{border-color:#4ade80!important;box-shadow:0 0 28px rgba(74,222,128,.3)!important}
+
+    /* ── RFID Modal ── */
+    .scan-modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0, 10, 30, 0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .scan-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .scan-modal-content {
+      background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(200,169,81,0.2);
+      border-radius: 24px; padding: 32px; width: 90%; max-width: 400px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      transform: translateY(20px); transition: transform 0.3s;
+    }
+    .scan-modal-overlay.active .scan-modal-content { transform: translateY(0); }
+    .scan-modal-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(200,169,81,0.1); color: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 32px;
+    }
+    #scan-modal-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    #scan-modal-desc { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 24px; line-height: 1.5; }
+    .scan-spinner {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 3px solid rgba(200,169,81,0.2); border-top-color: var(--gold);
+      animation: spin 1s linear infinite; margin: 0 auto 24px;
+    }
+    .scan-modal-actions { display: flex; justify-content: center; gap: 12px; }
   </style>
 </head>
 <body>
@@ -343,6 +373,20 @@
       </aside>
     </main>
 
+    <!-- RFID Scanning Modal -->
+    <div id="scan-modal" class="scan-modal-overlay">
+      <div class="scan-modal-content">
+        <div class="scan-modal-icon"><span class="material-symbols-outlined" id="scan-modal-icon-symbol">contactless</span></div>
+        <h3 id="scan-modal-title">Ready to Scan</h3>
+        <p id="scan-modal-desc">Please tap your ID.</p>
+        <div id="scan-modal-spinner" class="scan-spinner"></div>
+        <div class="scan-modal-actions">
+          <button type="button" id="scan-modal-close" class="guest-link" style="border:1px solid rgba(255,255,255,0.1); width:auto; padding:8px 16px;">Cancel</button>
+          <button type="button" id="scan-modal-retry" class="btn-auth" style="display:none; margin:0; padding:8px 16px;">Try Again</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer>
       <div class="footer-inner">
@@ -382,33 +426,148 @@
     if(usersEl) usersEl.textContent=active;
   })();
 
-  // RFID
-  document.getElementById('rfid-input').addEventListener('keydown',function(e){
-    if(e.key!=='Enter')return;
-    const rfid=this.value.trim();if(!rfid)return;
-    const area=document.getElementById('rfid-area'),
-          txt=document.getElementById('rfid-text'),
-          sub=document.getElementById('rfid-sub'),
-          line=document.getElementById('scan-line'),
-          icon=document.getElementById('rfid-icon');
-    area.classList.add('rfid-scanning');
-    txt.textContent='AUTHENTICATING…';sub.textContent='READING SIGNAL…';line.style.display='block';
-    setTimeout(()=>{
-      const r=Auth.loginByRfid(rfid);
-      line.style.display='none';area.classList.remove('rfid-scanning');
-      if(r.success){
-        area.classList.add('rfid-success');txt.textContent='ACCESS GRANTED';
-        txt.style.color='#4ade80';sub.textContent='WELCOME, '+r.user.name.toUpperCase();
-        icon.textContent='verified';
-        Store.create('attendance',{user_id:r.user.id,user_name:r.user.name,role_name:r.user.role_name,rfid_id:r.user.rfid_id,tap_time:new Date().toISOString()});
-        setTimeout(()=>{window.location.href='/pages/general/dashboard.html';},1200);
-      } else {
-        txt.textContent='RFID NOT RECOGNIZED';txt.style.color='#f87171';sub.textContent='USE MANUAL LOGIN';
-        setTimeout(()=>{txt.textContent='TAP RFID TO ENTER';txt.style.color='';sub.textContent='AWAITING SIGNAL…';},3000);
-        this.value='';
-      }
-    },1500);
+  // ── Smart Device-Aware RFID Module ────────────────────────────────────
+  const rfidArea = document.getElementById('rfid-area');
+  const rfidInput = document.getElementById('rfid-input');
+  
+  // Modal Elements
+  const scanModal = document.getElementById('scan-modal');
+  const smTitle = document.getElementById('scan-modal-title');
+  const smDesc = document.getElementById('scan-modal-desc');
+  const smSpinner = document.getElementById('scan-modal-spinner');
+  const smIcon = document.getElementById('scan-modal-icon-symbol');
+  const smRetry = document.getElementById('scan-modal-retry');
+  const smClose = document.getElementById('scan-modal-close');
+
+  let activeNfcController = null; // Used to abort mobile NFC scan
+
+  // Utility to update modal state
+  function showModal(title, desc, showSpinner, showRetryIcon = false) {
+    smTitle.textContent = title;
+    smDesc.textContent = desc;
+    smSpinner.style.display = showSpinner ? 'block' : 'none';
+    smRetry.style.display = showRetryIcon ? 'flex' : 'none';
+    smIcon.textContent = showRetryIcon ? 'error' : (showSpinner ? 'contactless' : 'verified');
+    
+    if (showRetryIcon) {
+      smIcon.parentElement.style.color = '#f87171';
+      smIcon.parentElement.style.background = 'rgba(248,113,113,0.1)';
+    } else if (title === 'Access Granted') {
+      smIcon.parentElement.style.color = '#4ade80';
+      smIcon.parentElement.style.background = 'rgba(74,222,128,0.1)';
+    } else {
+      smIcon.parentElement.style.color = 'var(--gold)';
+      smIcon.parentElement.style.background = 'rgba(200,169,81,0.1)';
+    }
+    scanModal.classList.add('active');
+  }
+
+  function hideModal() {
+    scanModal.classList.remove('active');
+    if (activeNfcController) {
+      activeNfcController.abort(); // Cancel NFC scan promise
+      activeNfcController = null;
+    }
+    rfidInput.blur();
+  }
+
+  smClose.addEventListener('click', hideModal);
+  smRetry.addEventListener('click', () => {
+    hideModal();
+    setTimeout(() => rfidArea.click(), 300); // Retry logic
   });
+
+  // Trigger: User interacts with the RFID zone
+  rfidArea.addEventListener('click', () => {
+    // Basic User-Agent mobile detection
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Flow B: Mobile Device
+      if ('NDEFReader' in window) {
+        startMobileNFC();
+      } else {
+        // Fallback: Web NFC not supported
+        showModal("NFC Not Supported", "NFC scanning is not supported on this browser/device. Please use the physical kiosk or manually enter your ID number.", false, true);
+      }
+    } else {
+      // Flow A: Desktop / Physical Kiosk
+      startDesktopScanner();
+    }
+  });
+
+  // Flow A: Setup Desktop Scanner (USB Keyboard Wedge)
+  function startDesktopScanner() {
+    showModal("USB Scanner Ready", "Please tap your FEATI ID on the USB scanner.", true);
+    rfidInput.value = '';
+    
+    // Slight timeout ensures focus takes hold after modal render
+    setTimeout(() => { rfidInput.focus(); }, 50);
+
+    // Maintain focus on the input if the modal is active (prevents losing focus if user clicks the modal)
+    const keepFocus = () => { if (scanModal.classList.contains('active')) rfidInput.focus(); };
+    document.addEventListener('click', keepFocus);
+  }
+
+  // Flow A: Capture 'Enter' from the wedge
+  rfidInput.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const rfid = this.value.trim();
+    if (!rfid) return;
+    this.value = '';
+    processRFID(rfid);
+  });
+
+  // Flow B: Setup Mobile Scanner (Web NFC API)
+  async function startMobileNFC() {
+    showModal("NFC Scanner Ready", "Hold your FEATI ID to the back of your phone to scan.", true);
+    
+    try {
+      activeNfcController = new AbortController();
+      const ndef = new NDEFReader();
+      
+      // Request permissions and start scanning
+      await ndef.scan({ signal: activeNfcController.signal });
+      
+      ndef.onreadingerror = () => {
+        showModal("Scan Error", "Failed to read the card. Please try again.", false, true);
+      };
+      
+      ndef.onreading = event => {
+        // Stop scanning after successful read
+        if (activeNfcController) {
+          activeNfcController.abort();
+          activeNfcController = null;
+        }
+        // Extract raw serial number, strip colons (common in hex serial representations)
+        const serialNumber = event.serialNumber.replace(/:/g, '');
+        processRFID(serialNumber);
+      };
+    } catch (error) {
+      showModal("NFC Error", "Could not start NFC scanner. " + error.message, false, true);
+    }
+  }
+
+  // Common authentication flow
+  function processRFID(rfidId) {
+    showModal("Authenticating...", "Verifying your FEATI ID...", true);
+    
+    setTimeout(() => { // Simulate brief network/processing delay for UI UX
+      const r = Auth.loginByRfid(rfidId);
+      if (r.success) {
+        showModal("Access Granted", "Welcome, " + r.user.name.toUpperCase(), false, false);
+        Store.create('attendance', {
+          user_id: r.user.id, user_name: r.user.name, 
+          role_name: r.user.role_name, rfid_id: r.user.rfid_id, 
+          tap_time: new Date().toISOString()
+        });
+        setTimeout(() => { window.location.href = '/pages/general/dashboard.html'; }, 1200);
+      } else {
+        showModal("Access Denied", "RFID not recognized. Please use manual login.", false, true);
+      }
+    }, 800);
+  }
+
 
   // Manual Login
   document.getElementById('login-form').addEventListener('submit',function(e){
@@ -425,12 +584,6 @@
     } else {
       err.classList.add('show');et.textContent=r.message||'Invalid credentials.';
     }
-  });
-
-  // Keep RFID focused
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('.form')&&!e.target.closest('.browse-link'))
-      document.getElementById('rfid-input').focus();
   });
   </script>
 </body>
