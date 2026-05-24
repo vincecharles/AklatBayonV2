@@ -27,7 +27,7 @@
     .tab-pane.active { display: block; }
   </style>
 </head>
-<body class="font-sans min-h-screen antialiased ab-body-themed">
+<body class="font-sans min-h-screen antialiased">
   <div class="astral-layout">
     <header id="top-header"></header>
     <nav id="sidebar-nav"></nav>
@@ -193,7 +193,6 @@
                   updateStats();
               }).catch((err) => { App.showAlert('danger', err.message || 'Failed to create reservation.'); });
           });
-      }
 
       const refreshBookDropdown = () => {
           const bsel = document.getElementById('reserve-book');
