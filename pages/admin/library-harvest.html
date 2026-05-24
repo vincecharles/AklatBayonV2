@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Harvest — AklatBayon Admin</title>
+  <meta name="description" content="Connect to Philippine academic library OPACs and harvest catalog data into AklatBayon using OAI-PMH, REST, and SRU protocols.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('aklatbayon_theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');})()</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }</script>
+  <style>
+    :root {
+      --harvest-accent: #fb923c;
+      --harvest-accent-dim: rgba(251,146,60,0.12);
+      --harvest-green: #4ade80;
+      --harvest-red: #f87171;
+      --harvest-blue: #60a5fa;
+      --harvest-yellow: #fbbf24;
+      --surface: rgba(15,15,30,0.95);
+      --border: rgba(255,255,255,0.06);
+    }
+
+    .glass { background: rgba(20,20,40,0.6); backdrop-filter: blur(20px); border: 1px solid var(--border); }
+    .glass-deep { background: rgba(10,10,25,0.85); backdrop-filter: blur(24px); border: 1px solid rgba(251,146,60,0.08); }
+
+    /* Tab system */
+    .tab-btn { position: relative; transition: all 0.2s; }
+    .tab-btn::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:transparent; transition: background 0.2s; }
+    .tab-btn.active { color: var(--harvest-accent); }
+    .tab-btn.active::after { background: var(--harvest-accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Status badges */
+    .badge-active   { background:rgba(74,222,128,0.1);  color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
+    .badge-inactive { background:rgba(248,113,113,0.1); color:#f87171; border:1px solid rgba(248,113,113,0.25); }
+    .badge-pending  { background:rgba(251,191,36,0.1);  color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
+    .badge-resolved { background:rgba(74,222,128,0.1);  color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
+    .badge-dismissed{ background:rgba(100,100,120,0.1); color:#94a3b8; border:1px solid rgba(100,100,120,0.25); }
+    .badge-oai-pmh  { background:rgba(96,165,250,0.1);  color:#60a5fa; border:1px solid rgba(96,165,250,0.25); }
+    .badge-rest     { background:rgba(167,139,250,0.1); color:#a78bfa; border:1px solid rgba(167,139,250,0.25); }
+    .badge-sru      { background:rgba(251,146,60,0.1);  color:#fb923c; border:1px solid rgba(251,146,60,0.25); }
+
+    /* Log stream */
+    #harvest-log { font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.7; }
+    .log-info    { color: #94a3b8; }
+    .log-success { color: #4ade80; }
+    .log-warn    { color: #fbbf24; }
+    .log-error   { color: #f87171; }
+    .log-accent  { color: #fb923c; }
+
+    /* Animated spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinning { animation: spin 0.8s linear infinite; display: inline-block; }
+
+    /* Pulse dot */
+    @keyframes pulse-ring { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.15)} }
+    .pulse-dot { animation: pulse-ring 2s ease-in-out infinite; }
+
+    /* Slide-in modal */
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-anim { animation: slideUp 0.25s ease; }
+
+    /* Card hover */
+    .source-card { transition: border-color 0.2s, box-shadow 0.2s; }
+    .source-card:hover { border-color: rgba(251,146,60,0.3); box-shadow: 0 0 0 1px rgba(251,146,60,0.1); }
+
+    /* Preview table */
+    .preview-table th { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; }
+    .preview-table td { font-size: 11px; border-top: 1px solid rgba(255,255,255,0.04); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(251,146,60,0.3); border-radius: 4px; }
+  </style>
+</head>
+<body class="font-sans min-h-screen antialiased ab-body-themed">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar-mount"></div>
+
+    <!-- Main -->
+    <main class="flex-1 min-h-screen overflow-y-auto">
+      <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-orange-400 text-lg">hub</span>
+              <span class="text-[10px] font-bold text-orange-400 uppercase tracking-[0.15em]">Data Integration</span>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-white">Library Harvest</h1>
+            <p class="text-sm text-slate-400 mt-1">Connect to Philippine library OPACs and ingest catalog data via OAI-PMH, REST, and SRU protocols.</p>
+          </div>
+          <button onclick="openAddModal()" id="btn-add-source"
+            class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-orange-500/20 transition-all">
+            <span class="material-symbols-outlined text-sm">add</span>
+            Add Source
+          </button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats-row">
+          <div class="glass rounded-2xl p-4">
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Sources</div>
+            <div class="text-2xl font-bold text-white" id="stat-sources">—</div>
+          </div>
+          <div class="glass rounded-2xl p-4">
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Last Harvest</div>
+            <div class="text-2xl font-bold text-white" id="stat-last">—</div>
+          </div>
+          <div class="glass rounded-2xl p-4">
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Copy Records</div>
+            <div class="text-2xl font-bold text-white" id="stat-copies">—</div>
+          </div>
+          <div class="glass rounded-2xl p-4">
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Error Queue</div>
+            <div class="text-2xl font-bold text-white" id="stat-errors">—</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="glass rounded-2xl overflow-hidden">
+          <div class="flex gap-0 border-b border-white/5 px-6">
+            <button class="tab-btn active text-sm font-semibold text-slate-400 px-4 py-4 focus:outline-none" onclick="switchTab('sources', this)" id="tab-sources">
+              <span class="material-symbols-outlined text-sm align-middle mr-1">lan</span>Sources
+            </button>
+            <button class="tab-btn text-sm font-semibold text-slate-400 px-4 py-4 focus:outline-none" onclick="switchTab('run', this)" id="tab-run">
+              <span class="material-symbols-outlined text-sm align-middle mr-1">play_circle</span>Run Harvest
+            </button>
+            <button class="tab-btn text-sm font-semibold text-slate-400 px-4 py-4 focus:outline-none" onclick="switchTab('errors', this)" id="tab-errors">
+              <span class="material-symbols-outlined text-sm align-middle mr-1">error_outline</span>Error Queue
+              <span id="error-badge" class="hidden ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">0</span>
+            </button>
+            <button class="tab-btn text-sm font-semibold text-slate-400 px-4 py-4 focus:outline-none" onclick="switchTab('copies', this)" id="tab-copies">
+              <span class="material-symbols-outlined text-sm align-middle mr-1">library_books</span>Copy Registry
+            </button>
+          </div>
+
+          <!-- ── Tab: Sources ───────────────────────────────────────── -->
+          <div class="tab-panel active p-6" id="panel-sources">
+            <div id="sources-list" class="space-y-3">
+              <div class="text-center py-12 text-slate-500 text-sm">
+                <span class="material-symbols-outlined text-3xl mb-2 block text-slate-600">lan</span>
+                Loading sources…
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Tab: Run Harvest ───────────────────────────────────── -->
+          <div class="tab-panel p-6" id="panel-run">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Config panel -->
+              <div class="space-y-4">
+                <h3 class="text-sm font-bold text-white">Harvest Configuration</h3>
+
+                <div>
+                  <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Source Library</label>
+                  <select id="run-source" class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+                    <option value="">— Select a source —</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">From Date <span class="text-slate-600">(optional)</span></label>
+                    <input type="date" id="run-from" class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Mode</label>
+                    <div class="flex gap-2 mt-0.5">
+                      <label class="flex items-center gap-2 cursor-pointer px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 flex-1 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-500/5 transition-all">
+                        <input type="radio" name="run-mode" value="live" checked class="accent-orange-500">
+                        <span class="text-xs text-white font-medium">Live</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 flex-1 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-500/5 transition-all">
+                        <input type="radio" name="run-mode" value="dry" class="accent-orange-500">
+                        <span class="text-xs text-white font-medium">Dry Run</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <button id="btn-run-harvest" onclick="runHarvest()"
+                  class="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-orange-500/20 transition-all flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                  Run Harvest
+                </button>
+
+                <!-- Result summary card (hidden until run) -->
+                <div id="harvest-summary" class="hidden glass-deep rounded-2xl p-4">
+                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Harvest Result</h4>
+                  <div class="grid grid-cols-2 gap-3" id="harvest-summary-grid"></div>
+                </div>
+              </div>
+
+              <!-- Live log panel -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-sm font-bold text-white">Live Log</h3>
+                  <button onclick="clearLog()" class="text-[11px] text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+                </div>
+                <div class="glass-deep rounded-2xl p-4 h-80 overflow-y-auto" id="harvest-log">
+                  <div class="log-info">Awaiting harvest run…</div>
+                </div>
+
+                <!-- Dry-run preview table -->
+                <div id="preview-section" class="hidden mt-4">
+                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Preview — First 10 Records</h4>
+                  <div class="overflow-x-auto rounded-xl border border-white/5">
+                    <table class="preview-table w-full">
+                      <thead><tr class="bg-slate-900/60">
+                        <th class="px-3 py-2 text-left">Title</th>
+                        <th class="px-3 py-2 text-left">Author</th>
+                        <th class="px-3 py-2 text-left">ISBN</th>
+                        <th class="px-3 py-2 text-left">Year</th>
+                        <th class="px-3 py-2 text-right">Copies</th>
+                      </tr></thead>
+                      <tbody id="preview-tbody" class="text-slate-300"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Tab: Error Queue ──────────────────────────────────── -->
+          <div class="tab-panel p-6" id="panel-errors">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex gap-2">
+                <button onclick="loadErrors('pending')" id="err-filter-pending"
+                  class="text-xs px-3 py-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 font-bold">Pending</button>
+                <button onclick="loadErrors('resolved')" id="err-filter-resolved"
+                  class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-600 font-medium transition-colors">Resolved</button>
+                <button onclick="loadErrors('dismissed')" id="err-filter-dismissed"
+                  class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-600 font-medium transition-colors">Dismissed</button>
+              </div>
+              <span id="error-count-label" class="text-xs text-slate-500">—</span>
+            </div>
+            <div id="errors-list" class="space-y-3">
+              <div class="text-center py-12 text-slate-500 text-sm">
+                <span class="material-symbols-outlined text-3xl mb-2 block text-slate-600">check_circle</span>
+                Loading…
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Tab: Copy Registry ─────────────────────────────────── -->
+          <div class="tab-panel p-6" id="panel-copies">
+            <div class="flex items-center gap-3 mb-4">
+              <input type="text" id="copy-search" placeholder="Search accession ID or title…"
+                oninput="filterCopies()"
+                class="flex-1 max-w-xs bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors">
+              <select id="copy-status-filter" onchange="filterCopies()"
+                class="bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+                <option value="">All statuses</option>
+                <option>available</option><option>borrowed</option><option>reserved</option><option>withdrawn</option>
+              </select>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-white/5">
+              <table class="w-full text-sm">
+                <thead><tr class="bg-slate-900/60 text-[10px] text-slate-500 uppercase tracking-widest">
+                  <th class="px-4 py-3 text-left">Accession ID</th>
+                  <th class="px-4 py-3 text-left">Book Title</th>
+                  <th class="px-4 py-3 text-left">Source Library</th>
+                  <th class="px-4 py-3 text-left">Location</th>
+                  <th class="px-4 py-3 text-left">Condition</th>
+                  <th class="px-4 py-3 text-left">Status</th>
+                </tr></thead>
+                <tbody id="copies-tbody" class="divide-y divide-white/[0.03]"></tbody>
+              </table>
+            </div>
+            <p id="copies-empty" class="hidden text-center py-12 text-slate-500 text-sm">No copy records found.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── Add Source Modal ─────────────────────────────────────────── -->
+  <div id="add-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(0,0,10,0.75);backdrop-filter:blur(8px)">
+    <div class="glass-deep rounded-3xl p-8 w-full max-w-lg modal-anim">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-white">Add Library Source</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Register an external OPAC or repository endpoint</p>
+        </div>
+        <button onclick="closeAddModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined text-sm text-slate-400">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="col-span-2">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Library Name *</label>
+            <input type="text" id="modal-name" placeholder="e.g. UP Diliman University Library"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors">
+          </div>
+          <div class="col-span-2">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Endpoint URL *</label>
+            <input type="url" id="modal-url" placeholder="https://library.example.edu.ph/oai2"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors font-mono">
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Protocol *</label>
+            <select id="modal-protocol" onchange="toggleProtocolFields()"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+              <option value="oai-pmh">OAI-PMH</option>
+              <option value="rest">REST / Koha JSON</option>
+              <option value="sru">SRU (Z39.50 over HTTP)</option>
+            </select>
+          </div>
+          <div id="field-prefix">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Metadata Prefix</label>
+            <select id="modal-prefix"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+              <option value="oai_dc">oai_dc (Dublin Core)</option>
+              <option value="marc21">marc21 (MARC21 XML)</option>
+              <option value="marcxml">marcxml</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Institution</label>
+            <input type="text" id="modal-institution" placeholder="e.g. University of the Philippines"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors">
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Region</label>
+            <select id="modal-region"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
+              <option value="">— Select —</option>
+              <option>NCR</option><option>CAR</option><option>Region I</option><option>Region II</option>
+              <option>Region III</option><option>Region IV-A</option><option>Region IV-B</option>
+              <option>Region V</option><option>Region VI</option><option>Region VII</option>
+              <option>Region VIII</option><option>Region IX</option><option>Region X</option>
+              <option>Region XI</option><option>Region XII</option><option>Region XIII</option>
+              <option>BARMM</option>
+            </select>
+          </div>
+          <div id="field-setspec">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">OAI Set Spec <span class="text-slate-600">(optional)</span></label>
+            <input type="text" id="modal-setspec" placeholder="e.g. col_123_books"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors font-mono">
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Auth Token <span class="text-slate-600">(optional)</span></label>
+            <input type="password" id="modal-token" placeholder="Bearer token or API key"
+              class="w-full bg-slate-900 border border-slate-700 text-sm text-white px-3 py-2.5 rounded-xl focus:outline-none focus:border-orange-500 placeholder-slate-600 transition-colors font-mono">
+          </div>
+        </div>
+
+        <div id="modal-err" class="hidden text-xs text-red-400 px-1"></div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="closeAddModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-sm font-medium hover:border-slate-600 transition-colors">Cancel</button>
+          <button onclick="saveSource()" id="btn-save-source"
+            class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold hover:shadow-lg hover:shadow-orange-500/20 transition-all">
+            Add Source
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script>
+    if (!Auth.requireAuth() || !Auth.hasPermission('can_manage_settings')) {
+      window.location.href = '/pages/auth/login.html';
+      throw '';
+    }
+
+    // ── State ────────────────────────────────────────────────────────
+    let sourcesData = [];
+    let copiesData  = [];
+    let errorsData  = [];
+    let errFilterStatus = 'pending';
+
+    // ── Tab system ───────────────────────────────────────────────────
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+      if (name === 'errors')  loadErrors(errFilterStatus);
+      if (name === 'copies')  loadCopies();
+      if (name === 'sources') loadSources();
+    }
+
+    // ── Load stats ───────────────────────────────────────────────────
+    async function loadStats() {
+      try {
+        const [srcs, copies, errs] = await Promise.all([
+          fetch('/api/library_sources').then(r=>r.json()).catch(()=>({data:[]})),
+          fetch('/api/book_copies').then(r=>r.json()).catch(()=>({data:[]})),
+          fetch('/api/harvest/errors?status=pending').then(r=>r.json()).catch(()=>({data:[]}))
+        ]);
+        sourcesData = srcs.data || [];
+        copiesData  = copies.data || [];
+        errorsData  = errs.data || [];
+
+        document.getElementById('stat-sources').textContent = sourcesData.length;
+        document.getElementById('stat-copies').textContent  = copiesData.length;
+
+        const pendingCount = errorsData.length;
+        document.getElementById('stat-errors').textContent  = pendingCount;
+        if (pendingCount > 0) {
+          document.getElementById('error-badge').textContent = pendingCount;
+          document.getElementById('error-badge').classList.remove('hidden');
+        }
+
+        // Last harvest date
+        const harvested = sourcesData
+          .filter(s => s.last_harvested_at)
+          .map(s => new Date(s.last_harvested_at))
+          .sort((a,b) => b-a);
+        document.getElementById('stat-last').textContent = harvested.length
+          ? harvested[0].toLocaleDateString('en-PH', {month:'short',day:'numeric'})
+          : 'Never';
+
+        // Populate run-source dropdown
+        const sel = document.getElementById('run-source');
+        sel.innerHTML = '<option value="">— Select a source —</option>';
+        sourcesData.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.name;
+          sel.appendChild(opt);
+        });
+      } catch(e) { console.error(e); }
+    }
+
+    // ── Sources tab ───────────────────────────────────────────────────
+    async function loadSources() {
+      const list = document.getElementById('sources-list');
+      try {
+        const res = await fetch('/api/library_sources');
+        const body = await res.json();
+        sourcesData = body.data || [];
+
+        if (!sourcesData.length) {
+          list.innerHTML = `<div class="text-center py-16 text-slate-500">
+            <span class="material-symbols-outlined text-4xl block mb-3 text-slate-700">lan</span>
+            <p class="text-sm font-medium text-slate-400">No library sources registered yet.</p>
+            <p class="text-xs text-slate-600 mt-1">Click "Add Source" to connect your first Philippine library OPAC.</p>
+          </div>`;
+          return;
+        }
+
+        list.innerHTML = sourcesData.map(s => `
+          <div class="source-card glass rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                <span class="text-sm font-bold text-white">${esc(s.name)}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full badge-${(s.protocol||'').replace('-','')}">${s.protocol}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full badge-${s.status}">${s.status}</span>
+              </div>
+              <div class="text-xs text-slate-500 font-mono truncate mb-1">${esc(s.url)}</div>
+              <div class="flex items-center gap-3 text-[11px] text-slate-600 flex-wrap">
+                ${s.institution ? `<span><span class="material-symbols-outlined text-[11px] align-text-bottom mr-0.5">school</span>${esc(s.institution)}</span>` : ''}
+                ${s.region ? `<span><span class="material-symbols-outlined text-[11px] align-text-bottom mr-0.5">location_on</span>${esc(s.region)}</span>` : ''}
+                ${s.last_harvest_count ? `<span><span class="material-symbols-outlined text-[11px] align-text-bottom mr-0.5">download</span>${s.last_harvest_count} records</span>` : ''}
+                ${s.last_harvested_at ? `<span>Last: ${new Date(s.last_harvested_at).toLocaleDateString('en-PH')}</span>` : '<span class="text-slate-700">Never harvested</span>'}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <button onclick="quickRun('${esc(s.id)}')"
+                class="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-colors">
+                <span class="material-symbols-outlined text-sm">play_arrow</span>Harvest
+              </button>
+              <button onclick="deleteSource('${esc(s.id)}', '${esc(s.name)}')"
+                class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/5 text-red-400 border border-red-500/10 hover:bg-red-500/15 transition-colors">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>`).join('');
+      } catch(e) {
+        list.innerHTML = `<div class="text-center py-12 text-red-400 text-sm">Failed to load sources: ${e.message}</div>`;
+      }
+    }
+
+    // ── Error Queue tab ───────────────────────────────────────────────
+    async function loadErrors(status) {
+      errFilterStatus = status;
+      ['pending','resolved','dismissed'].forEach(s => {
+        const btn = document.getElementById(`err-filter-${s}`);
+        if (s === status) {
+          btn.className = 'text-xs px-3 py-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 font-bold';
+        } else {
+          btn.className = 'text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-600 font-medium transition-colors';
+        }
+      });
+
+      const list = document.getElementById('errors-list');
+      list.innerHTML = '<div class="text-center py-8 text-slate-500 text-sm">Loading…</div>';
+      try {
+        const res = await fetch(`/api/harvest/errors?status=${status}`);
+        const body = await res.json();
+        errorsData = body.data || [];
+        document.getElementById('error-count-label').textContent = `${errorsData.length} record${errorsData.length !== 1 ? 's' : ''}`;
+
+        if (!errorsData.length) {
+          list.innerHTML = `<div class="text-center py-16 text-slate-500">
+            <span class="material-symbols-outlined text-4xl block mb-3 text-green-700">check_circle</span>
+            <p class="text-sm font-medium text-slate-400">No ${status} errors.</p>
+          </div>`;
+          return;
+        }
+
+        list.innerHTML = errorsData.map(e => `
+          <div class="glass rounded-2xl p-4">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full badge-pending">${esc(e.error_type)}</span>
+                  ${e.isbn ? `<span class="text-[10px] font-mono text-slate-400">${esc(e.isbn)}</span>` : ''}
+                  ${e.source_library_name ? `<span class="text-[10px] text-slate-500">${esc(e.source_library_name)}</span>` : ''}
+                </div>
+                <p class="text-sm text-slate-300 mb-1">${esc(e.error_message)}</p>
+                <p class="text-[11px] text-slate-600">${new Date(e.created_at).toLocaleString('en-PH')}</p>
+                ${e.raw_payload ? `<details class="mt-2"><summary class="text-[10px] text-slate-500 cursor-pointer hover:text-slate-400">View payload</summary>
+                  <pre class="text-[10px] text-slate-500 mt-1 overflow-x-auto bg-slate-900 rounded-lg p-2 max-h-24">${esc(e.raw_payload)}</pre></details>` : ''}
+              </div>
+              <div class="flex gap-2 flex-shrink-0">
+                ${status === 'pending' ? `
+                <button onclick="resolveError('${esc(e.id)}')"
+                  class="text-xs px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors font-medium">Resolve</button>
+                <button onclick="dismissError('${esc(e.id)}')"
+                  class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-colors font-medium">Dismiss</button>` : ''}
+              </div>
+            </div>
+          </div>`).join('');
+      } catch(e) {
+        list.innerHTML = `<div class="text-center py-8 text-red-400 text-sm">Failed: ${e.message}</div>`;
+      }
+    }
+
+    // ── Copy Registry tab ─────────────────────────────────────────────
+    async function loadCopies() {
+      try {
+        const [copiesRes, booksRes] = await Promise.all([
+          fetch('/api/book_copies').then(r=>r.json()),
+          fetch('/api/books').then(r=>r.json())
+        ]);
+        copiesData = copiesRes.data || [];
+        const booksMap = {};
+        (booksRes.data || []).forEach(b => { booksMap[b.id] = b.title; });
+
+        // Attach title
+        copiesData = copiesData.map(c => ({ ...c, _title: booksMap[c.book_id] || c.book_id }));
+        renderCopies();
+      } catch(e) { console.error(e); }
+    }
+
+    function filterCopies() { renderCopies(); }
+
+    function renderCopies() {
+      const search = (document.getElementById('copy-search').value || '').toLowerCase();
+      const statusF = document.getElementById('copy-status-filter').value;
+      const tbody = document.getElementById('copies-tbody');
+      const empty = document.getElementById('copies-empty');
+
+      let filtered = copiesData.filter(c => {
+        const matchSearch = !search || (c.accession_id||'').toLowerCase().includes(search) || (c._title||'').toLowerCase().includes(search);
+        const matchStatus = !statusF || c.status === statusF;
+        return matchSearch && matchStatus;
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      const conditionColor = { good:'text-green-400', fair:'text-yellow-400', poor:'text-red-400', withdrawn:'text-slate-500' };
+      const statusColor = { available:'badge-active', borrowed:'badge-pending', reserved:'badge-pending', withdrawn:'badge-dismissed' };
+
+      tbody.innerHTML = filtered.map(c => `
+        <tr class="hover:bg-white/[0.02] transition-colors">
+          <td class="px-4 py-3 font-mono text-[11px] text-orange-400">${esc(c.accession_id)}</td>
+          <td class="px-4 py-3 text-white">${esc(c._title)}</td>
+          <td class="px-4 py-3 text-slate-400 text-xs">${esc(c.source_library_name||'—')}</td>
+          <td class="px-4 py-3 text-slate-400 text-xs">${esc(c.location||'—')}</td>
+          <td class="px-4 py-3 text-xs ${conditionColor[c.condition]||'text-slate-400'}">${c.condition||'—'}</td>
+          <td class="px-4 py-3"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusColor[c.status]||'badge-dismissed'}">${c.status}</span></td>
+        </tr>`).join('');
+    }
+
+    // ── Harvest run ───────────────────────────────────────────────────
+    async function runHarvest() {
+      const sourceId = document.getElementById('run-source').value;
+      if (!sourceId) { addLog('error', '✖ Please select a source library.'); return; }
+
+      const fromDate = document.getElementById('run-from').value;
+      const isDry = document.querySelector('input[name="run-mode"]:checked').value === 'dry';
+      const btn = document.getElementById('btn-run-harvest');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinning material-symbols-outlined text-sm">autorenew</span> Harvesting…';
+
+      clearLog();
+      document.getElementById('harvest-summary').classList.add('hidden');
+      document.getElementById('preview-section').classList.add('hidden');
+
+      const source = sourcesData.find(s => s.id === sourceId);
+      addLog('accent', `▶ Starting ${isDry ? 'dry-run' : 'live'} harvest from ${source?.name || sourceId}`);
+      if (fromDate) addLog('info', `  From date filter: ${fromDate}`);
+      addLog('info', `  Protocol: ${source?.protocol || '?'} · Prefix: ${source?.metadata_prefix || 'oai_dc'}`);
+
+      try {
+        const res = await fetch('/api/harvest/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source_id: sourceId, from_date: fromDate || undefined, dry_run: isDry })
+        });
+        const body = await res.json();
+
+        if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`);
+
+        if (body.fetchError) {
+          addLog('error', `✖ Fetch error: ${body.fetchError}`);
+        }
+
+        addLog('info', `  Records fetched: ${body.fetched}`);
+
+        if (body.result) {
+          const r = body.result;
+          addLog(r.inserted > 0 ? 'success' : 'info', `  ✔ New books: ${r.inserted}`);
+          addLog(r.updated > 0 ? 'success' : 'info', `  ✔ Updated (copies++): ${r.updated}`);
+          addLog(r.copiesAdded > 0 ? 'success' : 'info', `  ✔ Copy records added: ${r.copiesAdded}`);
+          if (r.errors > 0) addLog('warn', `  ⚠ Errors queued: ${r.errors}`);
+          addLog(isDry ? 'accent' : 'success', isDry ? '✦ Dry run complete — no data written.' : '✔ Harvest complete!');
+
+          // Summary cards
+          const grid = document.getElementById('harvest-summary-grid');
+          grid.innerHTML = [
+            ['Records Fetched', body.fetched, ''],
+            ['New Books', r.inserted, 'text-green-400'],
+            ['Copies Added', r.copiesAdded, 'text-green-400'],
+            ['Errors', r.errors, r.errors > 0 ? 'text-red-400' : '']
+          ].map(([label, val, cls]) => `
+            <div class="bg-slate-900/60 rounded-xl p-3">
+              <div class="text-[10px] text-slate-500 uppercase tracking-widest">${label}</div>
+              <div class="text-xl font-bold ${cls || 'text-white'} mt-0.5">${val}</div>
+            </div>`).join('');
+          document.getElementById('harvest-summary').classList.remove('hidden');
+        }
+
+        // Dry-run preview
+        if (isDry && body.preview?.length) {
+          const tbody = document.getElementById('preview-tbody');
+          tbody.innerHTML = body.preview.map(p => `
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-3 py-2 text-white">${esc(p.title||'—')}</td>
+              <td class="px-3 py-2 text-slate-400">${esc(p.author||'—')}</td>
+              <td class="px-3 py-2 font-mono text-orange-400">${esc(p.isbn||'—')}</td>
+              <td class="px-3 py-2 text-slate-400">${p.year||'—'}</td>
+              <td class="px-3 py-2 text-right text-slate-400">${p.copies||1}</td>
+            </tr>`).join('');
+          document.getElementById('preview-section').classList.remove('hidden');
+        }
+
+        // Refresh stats after live run
+        if (!isDry) { loadStats(); loadSources(); }
+
+      } catch(err) {
+        addLog('error', `✖ ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm">rocket_launch</span> Run Harvest';
+      }
+    }
+
+    function quickRun(sourceId) {
+      document.getElementById('run-source').value = sourceId;
+      switchTab('run', document.getElementById('tab-run'));
+    }
+
+    // ── Error actions ─────────────────────────────────────────────────
+    async function resolveError(id) {
+      try {
+        await fetch(`/api/harvest/errors/${id}/resolve`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ resolved_by: Auth.getUser()?.name || 'Admin' })
+        });
+        loadErrors('pending'); loadStats();
+      } catch(e) { alert(e.message); }
+    }
+
+    async function dismissError(id) {
+      try {
+        await fetch(`/api/harvest/errors/${id}`, { method: 'DELETE' });
+        loadErrors('pending'); loadStats();
+      } catch(e) { alert(e.message); }
+    }
+
+    // ── Delete source ─────────────────────────────────────────────────
+    async function deleteSource(id, name) {
+      if (!confirm(`Remove "${name}" from registered sources?\n\nThis will not delete any harvested books.`)) return;
+      try {
+        await fetch(`/api/harvest/sources/${id}`, { method: 'DELETE' });
+        loadSources(); loadStats();
+      } catch(e) { alert(e.message); }
+    }
+
+    // ── Add source modal ───────────────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('add-modal').classList.remove('hidden');
+      document.getElementById('modal-name').focus();
+    }
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.add('hidden');
+      document.getElementById('modal-err').classList.add('hidden');
+    }
+    function toggleProtocolFields() {
+      const isOAI = document.getElementById('modal-protocol').value === 'oai-pmh';
+      document.getElementById('field-prefix').style.opacity = isOAI ? '1' : '0.4';
+      document.getElementById('field-setspec').style.opacity = isOAI ? '1' : '0.4';
+    }
+
+    async function saveSource() {
+      const errDiv = document.getElementById('modal-err');
+      errDiv.classList.add('hidden');
+      const name = document.getElementById('modal-name').value.trim();
+      const url  = document.getElementById('modal-url').value.trim();
+      const protocol = document.getElementById('modal-protocol').value;
+      if (!name || !url) {
+        errDiv.textContent = 'Name and URL are required.';
+        errDiv.classList.remove('hidden');
+        return;
+      }
+      const btn = document.getElementById('btn-save-source');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+      try {
+        const res = await fetch('/api/harvest/sources', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, url, protocol,
+            metadata_prefix: document.getElementById('modal-prefix').value,
+            institution: document.getElementById('modal-institution').value.trim(),
+            region: document.getElementById('modal-region').value,
+            set_spec: document.getElementById('modal-setspec').value.trim() || null,
+            auth_token: document.getElementById('modal-token').value.trim() || null
+          })
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`);
+        closeAddModal();
+        loadSources(); loadStats();
+        // Clear fields
+        ['modal-name','modal-url','modal-institution','modal-setspec','modal-token'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+      } catch(e) {
+        errDiv.textContent = e.message;
+        errDiv.classList.remove('hidden');
+      } finally {
+        btn.textContent = 'Add Source'; btn.disabled = false;
+      }
+    }
+
+    // ── Log helpers ───────────────────────────────────────────────────
+    function addLog(type, msg) {
+      const log = document.getElementById('harvest-log');
+      const line = document.createElement('div');
+      line.className = `log-${type}`;
+      line.textContent = msg;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+    function clearLog() {
+      document.getElementById('harvest-log').innerHTML = '';
+    }
+
+    // ── Utility ───────────────────────────────────────────────────────
+    function esc(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStats();
+      loadSources();
+    });
+
+    // Close modal on backdrop click
+    document.getElementById('add-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
+  </script>
+</body>
+</html>

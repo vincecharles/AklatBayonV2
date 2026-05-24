@@ -262,3 +262,63 @@ export const inventoryOutgoing = pgTable('inventory_outgoing', {
     index('inv_out_date_idx').on(table.date),
     index('inv_out_status_idx').on(table.status)
 ]);
+
+// ── Library Sources (external OPAC/OAI-PMH registry) ─────────────
+export const librarySources = pgTable('library_sources', {
+    id: varchar('id', { length: 50 }).primaryKey(),
+    name: varchar('name', { length: 300 }).notNull(),
+    url: varchar('url', { length: 1000 }).notNull(),
+    protocol: varchar('protocol', { length: 20 }).notNull().default('oai-pmh'), // oai-pmh | rest | sru
+    authToken: varchar('auth_token', { length: 500 }),
+    metadataPrefix: varchar('metadata_prefix', { length: 50 }).default('oai_dc'), // oai_dc | marc21
+    setSpec: varchar('set_spec', { length: 200 }),   // OAI-PMH selective harvest set
+    institution: varchar('institution', { length: 300 }),
+    region: varchar('region', { length: 100 }),
+    lastHarvestedAt: timestamp('last_harvested_at'),
+    lastHarvestCount: integer('last_harvest_count').default(0),
+    status: varchar('status', { length: 20 }).notNull().default('active'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => [
+    index('lib_src_protocol_idx').on(table.protocol),
+    index('lib_src_status_idx').on(table.status)
+]);
+
+// ── Book Copies (physical accession items per ISBN) ───────────────
+export const bookCopies = pgTable('book_copies', {
+    id: varchar('id', { length: 50 }).primaryKey(),
+    bookId: varchar('book_id', { length: 50 }).notNull().references(() => books.id, { onDelete: 'cascade' }),
+    accessionId: varchar('accession_id', { length: 200 }).notNull(), // local barcode / accession number
+    sourceLibraryId: varchar('source_library_id', { length: 50 }).references(() => librarySources.id),
+    sourceLibraryName: varchar('source_library_name', { length: 300 }),
+    location: varchar('location', { length: 200 }), // shelf / branch
+    condition: varchar('condition', { length: 50 }).default('good'), // good | fair | poor | withdrawn
+    status: varchar('status', { length: 30 }).notNull().default('available'), // available | borrowed | reserved | withdrawn
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => [
+    index('bc_book_idx').on(table.bookId),
+    index('bc_source_idx').on(table.sourceLibraryId),
+    index('bc_status_idx').on(table.status),
+    index('bc_accession_idx').on(table.accessionId)
+]);
+
+// ── Harvest Errors (dead-letter queue) ───────────────────────────
+export const harvestErrors = pgTable('harvest_errors', {
+    id: varchar('id', { length: 50 }).primaryKey(),
+    sourceLibraryId: varchar('source_library_id', { length: 50 }).references(() => librarySources.id),
+    sourceLibraryName: varchar('source_library_name', { length: 300 }),
+    isbn: varchar('isbn', { length: 30 }),
+    errorType: varchar('error_type', { length: 100 }).notNull(), // missing_isbn | invalid_isbn | duplicate | parse_error | network_error
+    errorMessage: text('error_message').notNull(),
+    rawPayload: text('raw_payload'),      // truncated raw XML / JSON for debugging
+    resolvedAt: timestamp('resolved_at'),
+    resolvedBy: varchar('resolved_by', { length: 200 }),
+    status: varchar('status', { length: 20 }).notNull().default('pending'), // pending | resolved | dismissed
+    createdAt: timestamp('created_at').defaultNow().notNull()
+}, (table) => [
+    index('he_source_idx').on(table.sourceLibraryId),
+    index('he_status_idx').on(table.status),
+    index('he_date_idx').on(table.createdAt)
+]);

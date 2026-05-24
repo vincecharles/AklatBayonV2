@@ -3,7 +3,8 @@ import { db } from "../../db/index.js";
 import {
     roles, permissions, rolePermissions, users, students, authors,
     publishers, categories, books, transactions, fines,
-    auditLogs, settings, lccClasses, inventoryIncoming, inventoryOutgoing
+    auditLogs, settings, lccClasses, inventoryIncoming, inventoryOutgoing,
+    librarySources, bookCopies, harvestErrors
 } from "../../db/schema.js";
 import { sql } from "drizzle-orm";
 
@@ -179,6 +180,60 @@ const seedData = {
             items: [{ book_id: 'b2', quantity: 1, unit_price: 250.00, total: 250.00 }],
             grandTotal: '250.00', status: 'completed'
         }
+    ],
+    librarySources: [
+        {
+            id: 'ls1',
+            name: 'UP Diliman University Library',
+            url: 'https://library.upd.edu.ph/cgi-bin/koha/oai.pl',
+            protocol: 'oai-pmh',
+            metadataPrefix: 'oai_dc',
+            setSpec: null,
+            institution: 'University of the Philippines Diliman',
+            region: 'NCR',
+            status: 'active',
+            lastHarvestCount: 0
+        },
+        {
+            id: 'ls2',
+            name: 'De La Salle University Libraries',
+            url: 'https://animorepository.dlsu.edu.ph/cgi/oai2',
+            protocol: 'oai-pmh',
+            metadataPrefix: 'oai_dc',
+            setSpec: 'publication:books',
+            institution: 'De La Salle University',
+            region: 'NCR',
+            status: 'active',
+            lastHarvestCount: 0
+        },
+        {
+            id: 'ls3',
+            name: 'Ateneo de Manila University – Rizal Library',
+            url: 'https://archium.ateneo.edu/cgi/oai2',
+            protocol: 'oai-pmh',
+            metadataPrefix: 'oai_dc',
+            setSpec: null,
+            institution: 'Ateneo de Manila University',
+            region: 'NCR',
+            status: 'active',
+            lastHarvestCount: 0
+        }
+    ],
+    bookCopies: [
+        // Noli Me Tangere — 5 copies (matches books.copies)
+        { id: 'bc-b1-1', bookId: 'b1', accessionId: 'FEATI-2024-00001', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Stacks A', condition: 'good', status: 'available' },
+        { id: 'bc-b1-2', bookId: 'b1', accessionId: 'FEATI-2024-00002', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Stacks A', condition: 'good', status: 'borrowed' },
+        { id: 'bc-b1-3', bookId: 'b1', accessionId: 'FEATI-2024-00003', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Stacks A', condition: 'fair', status: 'available' },
+        { id: 'bc-b1-4', bookId: 'b1', accessionId: 'FEATI-2024-00004', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Reserve Shelf', condition: 'good', status: 'available' },
+        { id: 'bc-b1-5', bookId: 'b1', accessionId: 'FEATI-2024-00005', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Reserve Shelf', condition: 'poor', status: 'available' },
+        // Clean Code — 2 copies
+        { id: 'bc-b3-1', bookId: 'b3', accessionId: 'FEATI-2024-00010', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Tech Section', condition: 'good', status: 'borrowed' },
+        { id: 'bc-b3-2', bookId: 'b3', accessionId: 'FEATI-2024-00011', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Tech Section', condition: 'good', status: 'available' },
+        // Clean Architecture — 4 copies
+        { id: 'bc-b5-1', bookId: 'b5', accessionId: 'FEATI-2024-00020', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Tech Section', condition: 'good', status: 'available' },
+        { id: 'bc-b5-2', bookId: 'b5', accessionId: 'FEATI-2024-00021', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Tech Section', condition: 'good', status: 'available' },
+        { id: 'bc-b5-3', bookId: 'b5', accessionId: 'FEATI-2024-00022', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Tech Section', condition: 'good', status: 'borrowed' },
+        { id: 'bc-b5-4', bookId: 'b5', accessionId: 'FEATI-2024-00023', sourceLibraryId: null, sourceLibraryName: 'FEATI University Library', location: 'Reserve Shelf', condition: 'good', status: 'available' }
     ]
 };
 
@@ -259,7 +314,13 @@ export default async (req: Request, context: Context) => {
         // 15. Inventory Outgoing
         await db.insert(inventoryOutgoing).values(seedData.inventoryOutgoing);
 
-        // 16. Initial audit log
+        // 16. Library Sources
+        await db.insert(librarySources).values(seedData.librarySources);
+
+        // 17. Book Copies
+        await db.insert(bookCopies).values(seedData.bookCopies);
+
+        // 18. Initial audit log
         await db.insert(auditLogs).values({
             id: 'log1',
             user: 'System',
@@ -283,7 +344,9 @@ export default async (req: Request, context: Context) => {
                 transactions: seedData.transactions.length,
                 fines: seedData.fines.length,
                 settings: seedData.settings.length,
-                lccClasses: seedData.lccClasses.length
+                lccClasses: seedData.lccClasses.length,
+                librarySources: seedData.librarySources.length,
+                bookCopies: seedData.bookCopies.length
             }
         }, 201);
     } catch (err: any) {

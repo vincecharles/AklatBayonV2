@@ -94,6 +94,8 @@ const Sidebar = (() => {
             }
             if (Auth.hasPermission('can_view_audit_logs'))
                 html += navLink('/pages/admin/api-docs.html', 'api', 'API Documentation', page);
+            if (Auth.hasPermission('can_manage_settings'))
+                html += navLink('/pages/admin/library-harvest.html', 'hub', 'Library Harvest', page);
         }
 
         nav.innerHTML = `

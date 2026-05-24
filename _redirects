@@ -22,3 +22,4 @@
 /audit-logs.html         /pages/admin/audit-logs.html           301
 /login.html              /pages/auth/login.html                 301
 /welcome.html            /pages/auth/welcome.html               301
+/library-harvest.html    /pages/admin/library-harvest.html      301

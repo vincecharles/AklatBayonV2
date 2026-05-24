@@ -4,7 +4,8 @@ import {
     roles, permissions, rolePermissions, users, students, authors,
     publishers, categories, books, transactions, fines, reservations,
     attendance, auditLogs, settings, lccClasses,
-    inventoryIncoming, inventoryOutgoing
+    inventoryIncoming, inventoryOutgoing,
+    librarySources, bookCopies, harvestErrors
 } from "../../db/schema.js";
 import { eq, and, like, sql, desc, asc, ilike, or } from "drizzle-orm";
 
@@ -13,7 +14,8 @@ const tables: Record<string, any> = {
     roles, permissions, role_permissions: rolePermissions, users, students,
     authors, publishers, categories, books, transactions, fines,
     reservations, attendance, audit_logs: auditLogs, settings, lcc_classes: lccClasses,
-    inventory_incoming: inventoryIncoming, inventory_outgoing: inventoryOutgoing
+    inventory_incoming: inventoryIncoming, inventory_outgoing: inventoryOutgoing,
+    library_sources: librarySources, book_copies: bookCopies, harvest_errors: harvestErrors
 };
 
 // Column name mappings: frontend snake_case → Drizzle schema camelCase
@@ -46,7 +48,23 @@ const columnMaps: Record<string, Record<string, string>> = {
     authors: { created_at: 'createdAt', updated_at: 'updatedAt' },
     publishers: { created_at: 'createdAt', updated_at: 'updatedAt' },
     roles: { created_at: 'createdAt', updated_at: 'updatedAt' },
-    permissions: { created_at: 'createdAt' }
+    permissions: { created_at: 'createdAt' },
+    library_sources: {
+        auth_token: 'authToken', metadata_prefix: 'metadataPrefix', set_spec: 'setSpec',
+        last_harvested_at: 'lastHarvestedAt', last_harvest_count: 'lastHarvestCount',
+        created_at: 'createdAt', updated_at: 'updatedAt'
+    },
+    book_copies: {
+        book_id: 'bookId', accession_id: 'accessionId',
+        source_library_id: 'sourceLibraryId', source_library_name: 'sourceLibraryName',
+        created_at: 'createdAt', updated_at: 'updatedAt'
+    },
+    harvest_errors: {
+        source_library_id: 'sourceLibraryId', source_library_name: 'sourceLibraryName',
+        error_type: 'errorType', error_message: 'errorMessage',
+        raw_payload: 'rawPayload', resolved_at: 'resolvedAt', resolved_by: 'resolvedBy',
+        created_at: 'createdAt'
+    }
 };
 
 // Convert frontend snake_case data to Drizzle camelCase
