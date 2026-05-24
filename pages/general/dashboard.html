@@ -232,9 +232,21 @@
 <script>
   if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; }
   else { (() => {
+  const user = Auth.getCurrentUser();
+  if (user) {
+    const roleName = user.role_name || 'User';
+    const dashboardTitle = `${roleName} Dashboard`;
+    document.title = `${dashboardTitle} - AklatBayon`;
+  }
   App.init().then(() => {
   const user = Auth.getCurrentUser();
   document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}!`;
+
+  // Update dynamic body title
+  const pageTitleEl = document.querySelector('.astral-page-title');
+  if (pageTitleEl) {
+    pageTitleEl.innerHTML = `<span class="material-symbols-outlined text-purple-600" style="font-size:26px;font-variation-settings:'FILL' 1">grid_view</span> ${user.role_name || 'User'} Dashboard`;
+  }
 
   const isAdmin = Auth.hasAnyPermission(['can_view_reports', 'can_manage_users', 'can_view_attendance']);
   

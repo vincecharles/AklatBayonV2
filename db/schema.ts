@@ -10,6 +10,7 @@ import {
     index,
     jsonb
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 // ── Roles ────────────────────────────────────────────────
 export const roles = pgTable('roles', {
