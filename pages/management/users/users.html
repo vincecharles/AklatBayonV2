@@ -146,26 +146,9 @@
 <script src="/js/app.js"></script>
 <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
     App.bindModalCloses();
 
-    const roles = Store.getAll('roles');
-    const roleSelect = document.getElementById('f-role');
-    const filterRole = document.getElementById('filter-role');
-    roles.forEach((r) => {
-        roleSelect.innerHTML += `<option value="${r.id}">${r.name}</option>`;
-        filterRole.innerHTML += `<option value="${r.id}">${r.name}</option>`;
-    });
-
-    const students = Store.getAll('students');
-    const studentSelect = document.getElementById('f-student');
-    students.forEach((s) => {
-        studentSelect.innerHTML += `<option value="${s.id}">${s.name} (${s.student_id})</option>`;
-    });
-
-    document.getElementById('f-role').addEventListener('change', (e) => {
-        document.getElementById('f-subtype-group').style.display = e.target.value === 'r4' ? 'block' : 'none';
-    });
+    let _roles = [];
 
     const loadUsers = () => {
         let users = Store.getAll('users');
@@ -222,7 +205,7 @@
         document.getElementById('f-username').value = '';
         document.getElementById('f-email').value = '';
         document.getElementById('f-password').value = '';
-        document.getElementById('f-role').value = roles[0] ? roles[0].id : '';
+        document.getElementById('f-role').value = _roles[0] ? _roles[0].id : '';
         document.getElementById('f-subtype-group').style.display = 'none';
         document.getElementById('f-rfid').value = '';
         document.getElementById('f-student').value = '';
@@ -261,7 +244,32 @@
 
     document.getElementById('search-input').addEventListener('input', loadUsers);
     document.getElementById('filter-role').addEventListener('change', loadUsers);
-    loadUsers();
+
+    // Wait for live DB data before first render
+    App.init().then(() => {
+        _roles = Store.getAll('roles');
+        const roleSelect = document.getElementById('f-role');
+        const filterRole = document.getElementById('filter-role');
+        _roles.forEach((r) => {
+            roleSelect.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+            filterRole.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+        });
+
+        const students = Store.getAll('students');
+        const studentSelect = document.getElementById('f-student');
+        students.forEach((s) => {
+            studentSelect.innerHTML += `<option value="${s.id}">${s.name} (${s.student_id})</option>`;
+        });
+
+        document.getElementById('f-role').addEventListener('change', (e) => {
+            document.getElementById('f-subtype-group').style.display = e.target.value === 'r4' ? 'block' : 'none';
+        });
+
+        loadUsers();
+    });
+
+    // Auto-refresh when tab becomes active again (e.g. after switching devices)
+    document.addEventListener('aklatbayon:refreshed', loadUsers);
 </script>
 </body>
 </html>

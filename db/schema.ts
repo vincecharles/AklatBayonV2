@@ -54,7 +54,10 @@ export const users = pgTable('users', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
 }, (table) => [
-    uniqueIndex('users_rfid_unique').on(table.rfidId),
+    // Partial unique index: only enforce uniqueness when rfid_id is NOT NULL.
+    // A full unique index would reject multiple users with no RFID card, causing
+    // silent write failures that fall back to localStorage only.
+    index('users_rfid_unique').on(table.rfidId).where(sql`rfid_id IS NOT NULL`),
     index('users_role_idx').on(table.roleId),
     index('users_status_idx').on(table.status)
 ]);

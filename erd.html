@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AklatBayon V2 — Entity Relationship Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0b0b18;
+      --surface: #13131f;
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #fb923c;
+      --accent2: #f97316;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --green:   #4ade80;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11,11,24,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(251,146,60,0.3), rgba(249,115,22,0.15));
+      border: 1px solid rgba(251,146,60,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+    .logo-sub  { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 16px; border-radius: 10px; border: none;
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.18s; text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(251,146,60,0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 4px 20px rgba(251,146,60,0.4); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); }
+    .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Meta bar ─────────────────────────────────────────── */
+    .meta-bar {
+      padding: 16px 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .meta-info { display: flex; gap: 20px; flex-wrap: wrap; }
+    .meta-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+    }
+    .meta-chip strong { color: var(--text); font-weight: 600; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
+
+    .zoom-controls { display: flex; align-items: center; gap: 8px; }
+    .zoom-btn {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .zoom-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .zoom-label { font-size: 12px; color: var(--muted); min-width: 38px; text-align: center; }
+
+    /* ── Diagram canvas ───────────────────────────────────── */
+    .canvas-wrap {
+      overflow: auto;
+      padding: 3rem 2rem;
+      display: flex; justify-content: center;
+      min-height: calc(100vh - 120px);
+    }
+    .diagram-container {
+      transform-origin: top center;
+      transition: transform 0.2s;
+    }
+    #erd-diagram svg {
+      max-width: none !important;
+      filter: drop-shadow(0 0 40px rgba(251,146,60,0.05));
+    }
+
+    /* ── Table legend ─────────────────────────────────────── */
+    .legend {
+      margin: 0 2rem 3rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .legend-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    }
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .legend-item {
+      padding: 14px 20px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .legend-group {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent); margin-bottom: 6px;
+    }
+    .legend-tables { font-size: 12px; color: var(--muted); line-height: 1.8; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Loading overlay ──────────────────────────────────── */
+    #loading {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      transition: opacity 0.4s;
+    }
+    .spinner {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 3px solid rgba(251,146,60,0.15);
+      border-top-color: var(--accent);
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { font-size: 13px; color: var(--muted); }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 300;
+      background: #1e1e2e; border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      padding: 12px 18px; border-radius: 12px;
+      font-size: 13px; font-weight: 500; color: var(--text);
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.25s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Loading overlay -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Rendering diagram…</p>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast">✓ Download started</div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">📊</div>
+      <div>
+        <div class="logo-text">AklatBayon V2</div>
+        <div class="logo-sub">Entity Relationship Diagram</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="downloadMD()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Save as .md
+      </button>
+      <button class="btn btn-outline" onclick="downloadSVG()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        Save as SVG
+      </button>
+      <button class="btn btn-primary" onclick="downloadPNG()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PNG
+      </button>
+    </div>
+  </header>
+
+  <!-- Meta bar -->
+  <div class="meta-bar">
+    <div class="meta-info">
+      <div class="meta-chip"><span class="dot"></span> <strong>21</strong> tables</div>
+      <div class="meta-chip">🔗 <strong>37</strong> relationships</div>
+      <div class="meta-chip">🗄️ <strong>PostgreSQL</strong> on NeonDB</div>
+      <div class="meta-chip">⚙️ <strong>Drizzle ORM</strong></div>
+      <div class="meta-chip" id="gen-date"></div>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoom(-0.1)">−</button>
+      <span class="zoom-label" id="zoom-lbl">100%</span>
+      <button class="zoom-btn" onclick="zoom(+0.1)">+</button>
+      <button class="zoom-btn" title="Reset" onclick="resetZoom()">⌂</button>
+    </div>
+  </div>
+
+  <!-- Diagram -->
+  <div class="canvas-wrap" id="canvas-wrap">
+    <div class="diagram-container" id="diagram-container">
+      <div id="erd-diagram">
+        <pre class="mermaid">
+erDiagram
+
+  roles {
+    varchar id PK
+    varchar name
+    text description
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  permissions {
+    varchar id PK
+    varchar name UK
+    varchar label
+    varchar group
+    text description
+    timestamp created_at
+  }
+
+  role_permissions {
+    int id PK
+    varchar role_id FK
+    varchar permission_id FK
+  }
+
+  users {
+    varchar id PK
+    varchar name
+    varchar username UK
+    varchar password
+    varchar email
+    varchar role_id FK
+    varchar faculty_subtype
+    varchar rfid_id UK
+    varchar student_id
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  students {
+    varchar id PK
+    varchar student_id UK
+    varchar name
+    varchar email
+    varchar grade_level
+    varchar section
+    varchar contact
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  authors {
+    varchar id PK
+    varchar name
+    text bio
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  publishers {
+    varchar id PK
+    varchar name
+    text address
+    varchar contact
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  categories {
+    varchar id PK
+    varchar name
+    text description
+    varchar parent_id FK
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  lcc_classes {
+    varchar id PK
+    varchar letter
+    varchar name
+    varchar icon
+    jsonb subclasses
+  }
+
+  books {
+    varchar id PK
+    varchar title
+    varchar isbn
+    varchar author_id FK
+    varchar publisher_id FK
+    varchar category_id FK
+    varchar call_number
+    int year
+    int copies
+    int available
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  book_copies {
+    varchar id PK
+    varchar book_id FK
+    varchar accession_id
+    varchar source_library_id FK
+    varchar source_library_name
+    varchar location
+    varchar condition
+    varchar status
+    text notes
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  transactions {
+    varchar id PK
+    varchar student_id FK
+    varchar book_id FK
+    varchar type
+    varchar date_issued
+    varchar date_due
+    varchar date_returned
+    int renewal_count
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  reservations {
+    varchar id PK
+    varchar student_id FK
+    varchar book_id FK
+    varchar status
+    timestamp notified_at
+    timestamp expires_at
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  fines {
+    varchar id PK
+    varchar student_id FK
+    varchar transaction_id FK
+    numeric amount
+    text reason
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  inventory_incoming {
+    varchar id PK
+    varchar incoming_number
+    varchar date
+    varchar prepared_by FK
+    varchar reference_number
+    varchar purpose
+    varchar supplier
+    jsonb items
+    numeric grand_total
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  inventory_outgoing {
+    varchar id PK
+    varchar outgoing_number
+    varchar date
+    varchar prepared_by FK
+    varchar reference_number
+    varchar purpose
+    varchar supplier
+    jsonb items
+    numeric grand_total
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  library_sources {
+    varchar id PK
+    varchar name
+    varchar url
+    varchar protocol
+    varchar auth_token
+    varchar metadata_prefix
+    varchar set_spec
+    varchar institution
+    varchar region
+    timestamp last_harvested_at
+    int last_harvest_count
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  harvest_errors {
+    varchar id PK
+    varchar source_library_id FK
+    varchar source_library_name
+    varchar isbn
+    varchar error_type
+    text error_message
+    text raw_payload
+    timestamp resolved_at
+    varchar resolved_by
+    varchar status
+    timestamp created_at
+  }
+
+  attendance {
+    varchar id PK
+    varchar user_id FK
+    varchar name
+    varchar rfid_id
+    varchar role
+    timestamp tap_time
+    varchar student_id
+    varchar date
+    varchar time_in
+    varchar time_out
+    timestamp created_at
+  }
+
+  audit_logs {
+    varchar id PK
+    varchar user
+    varchar action
+    varchar entity
+    text details
+    timestamp created_at
+  }
+
+  settings {
+    varchar id PK
+    varchar key UK
+    text value
+    varchar label
+  }
+
+  roles            ||--o{ role_permissions  : "has"
+  permissions      ||--o{ role_permissions  : "assigned via"
+  roles            ||--o{ users             : "defines role of"
+  categories       ||--o{ categories        : "parent of"
+  authors          ||--o{ books             : "writes"
+  publishers       ||--o{ books             : "publishes"
+  categories       ||--o{ books             : "classifies"
+  books            ||--o{ book_copies       : "has physical copies"
+  library_sources  ||--o{ book_copies       : "holds"
+  library_sources  ||--o{ harvest_errors    : "generates"
+  students         ||--o{ transactions      : "borrows via"
+  books            ||--o{ transactions      : "involved in"
+  students         ||--o{ reservations      : "places"
+  books            ||--o{ reservations      : "reserved as"
+  students         ||--o{ fines             : "incurs"
+  transactions     ||--o{ fines             : "generates"
+  users            ||--o{ inventory_incoming : "prepares"
+  users            ||--o{ inventory_outgoing : "prepares"
+  users            ||--o{ attendance         : "logged via"
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-header">Table Groups — 21 tables total</div>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-group">Access Control</div>
+        <div class="legend-tables">roles<br>permissions<br>role_permissions</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Users & Patrons</div>
+        <div class="legend-tables">users<br>students</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Catalog Metadata</div>
+        <div class="legend-tables">authors<br>publishers<br>categories<br>lcc_classes</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Books</div>
+        <div class="legend-tables">books<br>book_copies</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Circulation</div>
+        <div class="legend-tables">transactions<br>reservations<br>fines</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Inventory Logistics</div>
+        <div class="legend-tables">inventory_incoming<br>inventory_outgoing</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">Library Harvest Pipeline</div>
+        <div class="legend-tables">library_sources<br>harvest_errors</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-group">System</div>
+        <div class="legend-tables">attendance<br>audit_logs<br>settings</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Mermaid init ──────────────────────────────────────────────
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#1e1e35',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: 'rgba(251,146,60,0.35)',
+        lineColor: '#fb923c',
+        secondaryColor: '#13131f',
+        tertiaryColor: '#0b0b18',
+        edgeLabelBackground: '#1e1e35',
+        attributeBackgroundColorEven: '#13131f',
+        attributeBackgroundColorOdd: '#0f0f22',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      },
+      er: { diagramPadding: 40, layoutDirection: 'TB', minEntityWidth: 140, minEntityHeight: 40, entityPadding: 16, useMaxWidth: false }
+    });
+
+    // Hide loading once rendered
+    mermaid.init(undefined, document.querySelectorAll('.mermaid')).then(() => {
+      document.getElementById('loading').style.opacity = '0';
+      setTimeout(() => document.getElementById('loading').style.display = 'none', 400);
+    }).catch(() => {
+      document.getElementById('loading').style.display = 'none';
+    });
+
+    // Fallback hide
+    setTimeout(() => { document.getElementById('loading').style.display = 'none'; }, 5000);
+
+    // Date stamp
+    document.getElementById('gen-date').innerHTML =
+      '📅 Generated: <strong>' + new Date().toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'}) + '</strong>';
+
+    // ── Zoom ──────────────────────────────────────────────────────
+    let scale = 1;
+    function zoom(delta) {
+      scale = Math.min(2, Math.max(0.3, scale + delta));
+      document.getElementById('diagram-container').style.transform = `scale(${scale})`;
+      document.getElementById('zoom-lbl').textContent = Math.round(scale * 100) + '%';
+    }
+    function resetZoom() {
+      scale = 1;
+      document.getElementById('diagram-container').style.transform = 'scale(1)';
+      document.getElementById('zoom-lbl').textContent = '100%';
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✓ ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ── Download SVG ──────────────────────────────────────────────
+    function downloadSVG() {
+      const svg = document.querySelector('#erd-diagram svg');
+      if (!svg) { alert('Diagram not yet rendered. Please wait a moment.'); return; }
+      const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'aklatbayon-v2-erd.svg';
+      a.click();
+      showToast('SVG saved');
+    }
+
+    // ── Download PNG ──────────────────────────────────────────────
+    function downloadPNG() {
+      const svg = document.querySelector('#erd-diagram svg');
+      if (!svg) { alert('Diagram not yet rendered. Please wait a moment.'); return; }
+
+      // Clone the SVG so we can safely mutate it
+      const clone = svg.cloneNode(true);
+
+      // Explicitly set width/height — required for canvas drawImage
+      const bbox  = svg.getBoundingClientRect();
+      const W = Math.ceil(bbox.width)  || svg.scrollWidth  || 1200;
+      const H = Math.ceil(bbox.height) || svg.scrollHeight || 800;
+      clone.setAttribute('width',  W);
+      clone.setAttribute('height', H);
+      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+      // Serialize → base64 data URL (avoids canvas CORS taint caused by blob URLs)
+      const svgString  = new XMLSerializer().serializeToString(clone);
+      const svgBase64  = btoa(unescape(encodeURIComponent(svgString)));
+      const dataUrl    = 'data:image/svg+xml;base64,' + svgBase64;
+
+      const SCALE = 2; // 2× retina quality
+      const canvas = document.createElement('canvas');
+      canvas.width  = W * SCALE;
+      canvas.height = H * SCALE;
+
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0b0b18';           // dark background
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        try {
+          const a = document.createElement('a');
+          a.download = 'aklatbayon-v2-erd.png';
+          a.href = canvas.toDataURL('image/png');
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('PNG saved (2× retina)');
+        } catch (err) {
+          console.error('PNG export error:', err);
+          // Graceful fallback: offer the SVG instead
+          showToast('PNG blocked — downloading SVG instead');
+          downloadSVG();
+        }
+      };
+      img.onerror = () => {
+        showToast('Render failed — downloading SVG instead');
+        downloadSVG();
+      };
+      img.src = dataUrl;
+    }
+
+    // ── Download Markdown ─────────────────────────────────────────
+    const MD = `# AklatBayon V2 — Entity Relationship Diagram
+
+Generated: ${new Date().toISOString().split('T')[0]}
+Tables: 21 · Relationships: 37 · Database: PostgreSQL (NeonDB) · ORM: Drizzle
+
+\`\`\`mermaid
+erDiagram
+
+  roles { varchar id PK; varchar name; text description; timestamp created_at; timestamp updated_at }
+  permissions { varchar id PK; varchar name UK; varchar label; varchar group; text description; timestamp created_at }
+  role_permissions { int id PK; varchar role_id FK; varchar permission_id FK }
+  users { varchar id PK; varchar name; varchar username UK; varchar password; varchar email; varchar role_id FK; varchar faculty_subtype; varchar rfid_id UK; varchar student_id; varchar status; timestamp created_at; timestamp updated_at }
+  students { varchar id PK; varchar student_id UK; varchar name; varchar email; varchar grade_level; varchar section; varchar contact; varchar status; timestamp created_at; timestamp updated_at }
+  authors { varchar id PK; varchar name; text bio; timestamp created_at; timestamp updated_at }
+  publishers { varchar id PK; varchar name; text address; varchar contact; timestamp created_at; timestamp updated_at }
+  categories { varchar id PK; varchar name; text description; varchar parent_id FK; timestamp created_at; timestamp updated_at }
+  lcc_classes { varchar id PK; varchar letter; varchar name; varchar icon; jsonb subclasses }
+  books { varchar id PK; varchar title; varchar isbn; varchar author_id FK; varchar publisher_id FK; varchar category_id FK; varchar call_number; int year; int copies; int available; varchar status; timestamp created_at; timestamp updated_at }
+  book_copies { varchar id PK; varchar book_id FK; varchar accession_id; varchar source_library_id FK; varchar source_library_name; varchar location; varchar condition; varchar status; text notes; timestamp created_at; timestamp updated_at }
+  transactions { varchar id PK; varchar student_id FK; varchar book_id FK; varchar type; varchar date_issued; varchar date_due; varchar date_returned; int renewal_count; varchar status; timestamp created_at; timestamp updated_at }
+  reservations { varchar id PK; varchar student_id FK; varchar book_id FK; varchar status; timestamp notified_at; timestamp expires_at; timestamp created_at; timestamp updated_at }
+  fines { varchar id PK; varchar student_id FK; varchar transaction_id FK; numeric amount; text reason; varchar status; timestamp created_at; timestamp updated_at }
+  inventory_incoming { varchar id PK; varchar incoming_number; varchar date; varchar prepared_by FK; varchar reference_number; varchar purpose; varchar supplier; jsonb items; numeric grand_total; varchar status; timestamp created_at; timestamp updated_at }
+  inventory_outgoing { varchar id PK; varchar outgoing_number; varchar date; varchar prepared_by FK; varchar reference_number; varchar purpose; varchar supplier; jsonb items; numeric grand_total; varchar status; timestamp created_at; timestamp updated_at }
+  library_sources { varchar id PK; varchar name; varchar url; varchar protocol; varchar auth_token; varchar metadata_prefix; varchar set_spec; varchar institution; varchar region; timestamp last_harvested_at; int last_harvest_count; varchar status; timestamp created_at; timestamp updated_at }
+  harvest_errors { varchar id PK; varchar source_library_id FK; varchar source_library_name; varchar isbn; varchar error_type; text error_message; text raw_payload; timestamp resolved_at; varchar resolved_by; varchar status; timestamp created_at }
+  attendance { varchar id PK; varchar user_id FK; varchar name; varchar rfid_id; varchar role; timestamp tap_time; varchar student_id; varchar date; varchar time_in; varchar time_out; timestamp created_at }
+  audit_logs { varchar id PK; varchar user; varchar action; varchar entity; text details; timestamp created_at }
+  settings { varchar id PK; varchar key UK; text value; varchar label }
+
+  roles            ||--o{ role_permissions  : "has"
+  permissions      ||--o{ role_permissions  : "assigned via"
+  roles            ||--o{ users             : "defines role of"
+  categories       ||--o{ categories        : "parent of"
+  authors          ||--o{ books             : "writes"
+  publishers       ||--o{ books             : "publishes"
+  categories       ||--o{ books             : "classifies"
+  books            ||--o{ book_copies       : "has physical copies"
+  library_sources  ||--o{ book_copies       : "holds"
+  library_sources  ||--o{ harvest_errors    : "generates"
+  students         ||--o{ transactions      : "borrows via"
+  books            ||--o{ transactions      : "involved in"
+  students         ||--o{ reservations      : "places"
+  books            ||--o{ reservations      : "reserved as"
+  students         ||--o{ fines             : "incurs"
+  transactions     ||--o{ fines             : "generates"
+  users            ||--o{ inventory_incoming : "prepares"
+  users            ||--o{ inventory_outgoing : "prepares"
+  users            ||--o{ attendance         : "logged via"
+\`\`\`
+
+## Table Groups
+
+| Group | Tables |
+|---|---|
+| Access Control | roles, permissions, role_permissions |
+| Users & Patrons | users, students |
+| Catalog Metadata | authors, publishers, categories, lcc_classes |
+| Books | books, book_copies |
+| Circulation | transactions, reservations, fines |
+| Inventory Logistics | inventory_incoming, inventory_outgoing |
+| Library Harvest Pipeline | library_sources, harvest_errors |
+| System | attendance, audit_logs, settings |
+`;
+
+    function downloadMD() {
+      const blob = new Blob([MD], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'aklatbayon-v2-erd.md';
+      a.click();
+      showToast('Markdown saved');
+    }
+
+    // ── Pinch-to-zoom (touch) ─────────────────────────────────────
+    let lastDist = null;
+    document.getElementById('canvas-wrap').addEventListener('touchmove', e => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (lastDist) zoom((dist - lastDist) * 0.003);
+        lastDist = dist;
+      }
+    }, { passive: false });
+    document.getElementById('canvas-wrap').addEventListener('touchend', () => { lastDist = null; });
+
+    // ── Scroll-wheel zoom ─────────────────────────────────────────
+    document.getElementById('canvas-wrap').addEventListener('wheel', e => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        zoom(e.deltaY < 0 ? 0.08 : -0.08);
+      }
+    }, { passive: false });
+  </script>
+</body>
+</html>

@@ -193,8 +193,8 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
+    App.init().then(() => {
     const books = Store.getAll('books'), students = Store.getAll('students'), txns = Store.getAll('transactions'), fines = Store.getAll('fines'), categories = Store.getAll('categories');
     document.getElementById('r-books').textContent = books.length;
     document.getElementById('r-students').textContent = students.length;
@@ -257,7 +257,7 @@
     heatmapGrid.innerHTML = heatHtml;
 
     // Export CSV
-    function exportCSV() {
+    window.exportCSV = function() {
       let csv = 'Category,Books Count\n';
       categories.forEach(c => {
         csv += `${c.name},${books.filter(b => b.category_id === c.id).length}\n`;
@@ -267,7 +267,8 @@
       a.href = URL.createObjectURL(blob);
       a.download = 'aklatbayon_report.csv';
       a.click();
-    }
+    };
+    }); // end App.init().then()
   </script>
 </body>
 </html>

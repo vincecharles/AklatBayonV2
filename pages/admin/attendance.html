@@ -153,7 +153,6 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth() || !Auth.hasPermission('can_view_audit_logs')) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
     let hourlyChart = null;
     let rolesChart = null;
@@ -427,7 +426,8 @@
     });
 
     // Initial render
-    renderAttendance();
+    App.init().then(renderAttendance);
+    document.addEventListener('aklatbayon:refreshed', renderAttendance);
   </script>
 </body>
 </html>

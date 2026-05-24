@@ -110,7 +110,6 @@
   <script src="/js/app.js"></script>
   <script>
       if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-      App.init();
 
       const user = Auth.getCurrentUser();
       const canReserve = Auth.hasPermission('can_reserve_books');
@@ -148,10 +147,11 @@
         document.getElementById('stat-active').textContent = allRes.filter(r => r.status === 'active').length;
         document.getElementById('stat-ready').textContent = allRes.filter(r => r.status === 'available').length;
       };
-      updateStats();
 
       // Tab 1: Reserve a Book
-      if (canReserve) {
+      App.init().then(() => {
+        updateStats();
+        if (canReserve) {
           const students = Store.getAll('students');
           const books = Store.getAll('books');
           const ssel = document.getElementById('reserve-student');
@@ -161,6 +161,10 @@
               const label = b.available > 0 ? `${b.title} (Available: ${b.available})` : `${b.title} (All copies out \u2014 reservable)`;
               bsel.innerHTML += `<option value="${b.id}" data-available="${b.available}">${label}</option>`;
           });
+        }
+        if (!canReserve) { loadMyReservations(); }
+      });
+      document.addEventListener('aklatbayon:refreshed', updateStats);
 
           document.getElementById('btn-reserve').addEventListener('click', () => {
               const studentId = document.getElementById('reserve-student').value;

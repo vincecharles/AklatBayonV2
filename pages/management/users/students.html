@@ -222,7 +222,6 @@
         window.location.href = '/pages/auth/login.html';
     } else {
         (() => {
-            App.init();
             App.bindModalCloses();
 
             let activeCategory = '';
@@ -509,7 +508,8 @@
             });
 
             document.getElementById('filter-status').addEventListener('change', load);
-            load();
+            App.init().then(load);
+            document.addEventListener('aklatbayon:refreshed', load);
         })();
     }
   </script>

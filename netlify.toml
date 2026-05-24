@@ -1,9 +1,19 @@
 [build]
   publish = "."
 
+# ── Security headers for all routes ──────────────────────────────────
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ── Prevent CDN caching of API routes ────────────────────────────────
+# Without this, Netlify edge nodes can serve stale GET /api/* responses
+# across devices, causing cross-device data sync failures.
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate"
+    Pragma = "no-cache"

@@ -228,8 +228,8 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
+    App.init().then(() => {
     const studentId = new URLSearchParams(window.location.search).get('id');
     if (!studentId) {
         document.querySelector('main').innerHTML = `<div id="alert-container"></div>
@@ -388,6 +388,7 @@
             })();
         }
     }
-  </script>
+    }); // end App.init().then()
+    document.addEventListener('aklatbayon:refreshed', () => window.location.reload());</script>
 </body>
 </html>

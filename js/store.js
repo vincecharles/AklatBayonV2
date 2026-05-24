@@ -586,9 +586,20 @@ const Store = (() => {
         localStorage.setItem('aklatbayon_seed_version', String(SEED_VERSION));
     };
 
+    // ── Refresh a single collection from the API ─────────────────
+    // Forces a live fetch from Neon and updates both _cache and localStorage.
+    // Call this after a write to ensure all clients see consistent data.
+    const refreshFromApi = (collection) => {
+        if (!_useApi) return Promise.resolve(_getCached(collection));
+        return Api.getAll(collection).then((data) => {
+            _setCached(collection, data);
+            return data;
+        }).catch(() => _getCached(collection));
+    };
+
     return {
         getAll, getById, create, update, remove, search, count,
-        seed, preload, logActivity, getSetting,
+        seed, preload, logActivity, getSetting, refreshFromApi,
         getStudentFinesTotal, getReservationQueue, getActiveReservationCount,
         getBorrowerRoleKey, processOverdueFines, expireReservations
     };
@@ -596,3 +607,20 @@ const Store = (() => {
 
 // Auto-seed localStorage fallback (when API is unavailable)
 Store.seed();
+
+// ── Visibility-change auto-refresh ──────────────────────────────────
+// When a user returns to a tab that was in the background (e.g. switching
+// from mobile to PC browser), silently re-fetch core collections so the
+// view is always in sync with Neon without requiring a manual reload.
+(function () {
+    const _coreCollections = ['users', 'students', 'books', 'transactions', 'reservations', 'fines'];
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            // Silently refresh cache; individual pages listen for the custom event
+            // and re-render if they choose to.
+            Store.preload(_coreCollections).then(() => {
+                document.dispatchEvent(new CustomEvent('aklatbayon:refreshed'));
+            }).catch(() => {/* network error, skip */});
+        }
+    });
+}());

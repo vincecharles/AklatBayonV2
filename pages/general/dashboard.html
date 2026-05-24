@@ -232,7 +232,7 @@
 <script>
   if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; }
   else { (() => {
-  App.init();
+  App.init().then(() => {
   const user = Auth.getCurrentUser();
   document.getElementById('welcome-text').textContent = `Welcome back, ${user.name}!`;
 
@@ -435,6 +435,8 @@
 
   } // end if isAdmin
 
+  }); // end App.init().then()
+  document.addEventListener('aklatbayon:refreshed', () => window.location.reload());
   })(); }
 </script>
 </body>

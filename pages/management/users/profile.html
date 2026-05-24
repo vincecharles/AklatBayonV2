@@ -186,12 +186,8 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
     const user = Auth.getCurrentUser();
-    const users = Store.getAll('users');
-    const currentUser = users.find(u => u.username === user.username);
-
     document.getElementById('profile-name').textContent = user.name || user.username;
     document.getElementById('profile-role').textContent = user.role_name || 'Student';
     document.getElementById('profile-id').textContent = `ID: ${user.student_id || user.username}`;
@@ -199,6 +195,10 @@
     document.getElementById('edit-email').value = user.email || '';
     document.getElementById('edit-student-id').value = user.student_id || user.username;
 
+    let currentUser = null;
+    App.init().then(() => {
+    const users = Store.getAll('users');
+    currentUser = users.find(u => u.username === user.username);
     // Stats
     const txns = Store.getAll('transactions');
     const reservations = Store.getAll('reservations');
@@ -206,10 +206,10 @@
     const myBorrowed = txns.filter(t => t.student_id === user.student_id && t.status === 'borrowed').length;
     const myReserved = reservations.filter(r => r.student_id === user.student_id && (r.status === 'active' || r.status === 'available')).length;
     const myFines = fines.filter(f => f.student_id === user.student_id && f.status === 'pending').reduce((sum, f) => sum + f.amount, 0);
-
     document.getElementById('stat-borrowed').textContent = myBorrowed;
     document.getElementById('stat-reserved').textContent = myReserved;
     document.getElementById('stat-fines').textContent = `₱${myFines}`;
+    }); // end App.init().then()
 
     // Avatar upload preview
     document.getElementById('avatar-upload').addEventListener('change', (e) => {

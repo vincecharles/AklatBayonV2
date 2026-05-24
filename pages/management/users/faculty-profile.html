@@ -203,12 +203,12 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
     const user = Auth.getCurrentUser();
     document.getElementById('faculty-name').textContent = user.name || user.username;
 
-    // Load real stats from Store
+    // Load real stats from Store after live fetch
+    App.init().then(() => {
     const txns = Store.getAll('transactions');
     const books = Store.getAll('books');
     const categories = Store.getAll('categories');
@@ -237,6 +237,7 @@
       </div>`;
       courseReservesContainer.innerHTML += courseHtml;
     });
+    }); // end App.init().then()
   </script>
 </body>
 </html>

@@ -165,7 +165,6 @@
     <script src="/js/app.js"></script>
     <script>
         if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-        App.init();
 
         // ── Tab switching ─────────────────────────────────────────
         const tabActiveClasses = 'border-[#ffb599] text-[#ffb599]';
@@ -187,10 +186,9 @@
             });
         });
 
-        // ── Populate dropdowns ────────────────────────────────────
-        const students = Store.getAll('students'), books = Store.getAll('books');
+        // ── Populate dropdowns (after live data loaded) ───────────
+        let students = [], books = [];
         const ssel = document.getElementById('issue-student'), bsel = document.getElementById('issue-book');
-        students.forEach((s) => { ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`; });
         const refreshBookDropdown = () => {
             const bks = Store.getAll('books');
             bsel.innerHTML = '';
@@ -198,7 +196,13 @@
                 bsel.innerHTML += `<option value="${b.id}" data-isbn="${b.isbn}">${b.title} (${b.available} avail.)</option>`;
             });
         };
-        refreshBookDropdown();
+        App.init().then(() => {
+            students = Store.getAll('students');
+            books = Store.getAll('books');
+            students.forEach((s) => { ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`; });
+            refreshBookDropdown();
+        });
+        document.addEventListener('aklatbayon:refreshed', () => { ssel.innerHTML = ''; Store.getAll('students').forEach((s) => { ssel.innerHTML += `<option value="${s.id}">${s.student_id} \u2014 ${s.name}</option>`; }); refreshBookDropdown(); });
 
         const today = new Date().toISOString().split('T')[0];
         const due = new Date(); due.setDate(due.getDate() + 14);

@@ -142,14 +142,11 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init(); App.bindModalCloses();
+    App.bindModalCloses();
     if (Auth.hasPermission('can_add_books')) document.getElementById('btn-add').style.display='';
-    const authors = Store.getAll('authors'), publishers = Store.getAll('publishers'), categories = Store.getAll('categories');
+    let authors = [], publishers = [], categories = [];
     const asel=document.getElementById('f-author'), psel=document.getElementById('f-publisher'), csel=document.getElementById('f-category'), fcat=document.getElementById('filter-cat');
     const fAuthor=document.getElementById('filter-author'), fPub=document.getElementById('filter-pub');
-    authors.forEach((a) => {asel.innerHTML+=`<option value="${a.id}">${a.name}</option>`; fAuthor.innerHTML+=`<option value="${a.id}">${a.name}</option>`;});
-    publishers.forEach((p) => {psel.innerHTML+=`<option value="${p.id}">${p.name}</option>`; fPub.innerHTML+=`<option value="${p.id}">${p.name}</option>`;});
-    categories.forEach((c) => {csel.innerHTML+=`<option value="${c.id}">${c.name}</option>`; fcat.innerHTML+=`<option value="${c.id}">${c.name}</option>`;});
 
     const load = () => {
         let items = Store.getAll('books');
@@ -295,7 +292,16 @@
         }).catch(() => { loading.style.display='none'; empty.style.display=''; empty.textContent='Error connecting to LOC API.'; });
     };
 
-    load();
+    App.init().then(() => {
+        authors = Store.getAll('authors');
+        publishers = Store.getAll('publishers');
+        categories = Store.getAll('categories');
+        authors.forEach((a) =>{asel.innerHTML+=`<option value="${a.id}">${a.name}</option>`; fAuthor.innerHTML+=`<option value="${a.id}">${a.name}</option>`;});
+        publishers.forEach((p) =>{psel.innerHTML+=`<option value="${p.id}">${p.name}</option>`; fPub.innerHTML+=`<option value="${p.id}">${p.name}</option>`;});
+        categories.forEach((c) =>{csel.innerHTML+=`<option value="${c.id}">${c.name}</option>`; fcat.innerHTML+=`<option value="${c.id}">${c.name}</option>`;});
+        load();
+    });
+    document.addEventListener('aklatbayon:refreshed', load);
   </script>
 </body>
 </html>

@@ -21,6 +21,10 @@ const App = (() => {
         applyStoredTheme();
         renderHeader();
         Sidebar.render();
+        // Preload all collections from the API (Neon) and return the Promise.
+        // Pages MUST chain .then() off this to ensure they render from live DB data,
+        // not stale localStorage. This is the core fix for cross-device sync.
+        return Store.preload();
     };
 
     const renderHeader = () => {

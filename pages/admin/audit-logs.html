@@ -136,7 +136,6 @@
   <script src="/js/app.js"></script>
   <script>
     if (!Auth.requireAuth()) { window.location.href = '/pages/auth/login.html'; throw ''; }
-    App.init();
 
     let activeFilter = '';
 
@@ -192,18 +191,19 @@
 
     document.getElementById('search-input').addEventListener('input', load);
 
-    // System Health
-    const allLogs = Store.getAll('audit_logs');
-    const allBooks = Store.getAll('books');
-    const allUsers = Store.getAll('users');
-    document.getElementById('health-logs').textContent = allLogs.length;
-    document.getElementById('health-books').textContent = allBooks.length;
-    document.getElementById('health-users').textContent = allUsers.length;
-    document.getElementById('health-bar-logs').style.width = Math.min(100, allLogs.length / 5) + '%';
-    document.getElementById('health-bar-books').style.width = Math.min(100, allBooks.length * 10) + '%';
-    document.getElementById('health-bar-users').style.width = Math.min(100, allUsers.length * 15) + '%';
-
-    load();
+    App.init().then(() => {
+      const allLogs = Store.getAll('audit_logs');
+      const allBooks = Store.getAll('books');
+      const allUsers = Store.getAll('users');
+      document.getElementById('health-logs').textContent = allLogs.length;
+      document.getElementById('health-books').textContent = allBooks.length;
+      document.getElementById('health-users').textContent = allUsers.length;
+      document.getElementById('health-bar-logs').style.width = Math.min(100, allLogs.length / 5) + '%';
+      document.getElementById('health-bar-books').style.width = Math.min(100, allBooks.length * 10) + '%';
+      document.getElementById('health-bar-users').style.width = Math.min(100, allUsers.length * 15) + '%';
+      load();
+    });
+    document.addEventListener('aklatbayon:refreshed', load);
   </script>
 </body>
 </html>
