@@ -274,19 +274,27 @@
       transform: translateY(20px); transition: transform 0.3s;
     }
     .scan-modal-overlay.active .scan-modal-content { transform: translateY(0); }
-    .scan-modal-icon {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: rgba(200,169,81,0.1); color: var(--gold);
+    .scan-modal-ring {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid rgba(200,169,81,0.3);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px; font-size: 32px;
+      margin: 0 auto 24px; position: relative;
+      background: rgba(200,169,81,0.04);
+      animation: rfid-breathe 3.5s ease-in-out infinite;
+    }
+    .scan-modal-ring-inner {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(200,169,81,0.2), rgba(0,48,135,0.3));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold); font-size: 24px;
+    }
+    .scan-modal-pulse {
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 1px solid rgba(200,169,81,0.2);
+      animation: rfid-pulse-out 3.5s ease-out infinite;
     }
     #scan-modal-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
     #scan-modal-desc { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 24px; line-height: 1.5; }
-    .scan-spinner {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 3px solid rgba(200,169,81,0.2); border-top-color: var(--gold);
-      animation: spin 1s linear infinite; margin: 0 auto 24px;
-    }
     .scan-modal-actions { display: flex; justify-content: center; gap: 12px; }
   </style>
 </head>
@@ -376,10 +384,14 @@
     <!-- RFID Scanning Modal -->
     <div id="scan-modal" class="scan-modal-overlay">
       <div class="scan-modal-content">
-        <div class="scan-modal-icon"><span class="material-symbols-outlined" id="scan-modal-icon-symbol">contactless</span></div>
+        <div class="scan-modal-ring" id="scan-modal-ring">
+          <div class="scan-modal-pulse" id="scan-modal-pulse"></div>
+          <div class="scan-modal-ring-inner">
+            <span class="material-symbols-outlined" id="scan-modal-icon-symbol">contactless</span>
+          </div>
+        </div>
         <h3 id="scan-modal-title">Ready to Scan</h3>
         <p id="scan-modal-desc">Please tap your ID.</p>
-        <div id="scan-modal-spinner" class="scan-spinner"></div>
         <div class="scan-modal-actions">
           <button type="button" id="scan-modal-close" class="guest-link" style="border:1px solid rgba(255,255,255,0.1); width:auto; padding:8px 16px;">Cancel</button>
           <button type="button" id="scan-modal-retry" class="btn-auth" style="display:none; margin:0; padding:8px 16px;">Try Again</button>
@@ -434,7 +446,8 @@
   const scanModal = document.getElementById('scan-modal');
   const smTitle = document.getElementById('scan-modal-title');
   const smDesc = document.getElementById('scan-modal-desc');
-  const smSpinner = document.getElementById('scan-modal-spinner');
+  const smRing = document.getElementById('scan-modal-ring');
+  const smPulse = document.getElementById('scan-modal-pulse');
   const smIcon = document.getElementById('scan-modal-icon-symbol');
   const smRetry = document.getElementById('scan-modal-retry');
   const smClose = document.getElementById('scan-modal-close');
@@ -442,22 +455,35 @@
   let activeNfcController = null; // Used to abort mobile NFC scan
 
   // Utility to update modal state
-  function showModal(title, desc, showSpinner, showRetryIcon = false) {
+  function showModal(title, desc, isScanning, showRetryIcon = false) {
     smTitle.textContent = title;
     smDesc.textContent = desc;
-    smSpinner.style.display = showSpinner ? 'block' : 'none';
     smRetry.style.display = showRetryIcon ? 'flex' : 'none';
-    smIcon.textContent = showRetryIcon ? 'error' : (showSpinner ? 'contactless' : 'verified');
+    smIcon.textContent = showRetryIcon ? 'error' : (title === 'Access Granted' ? 'verified' : 'contactless');
     
-    if (showRetryIcon) {
-      smIcon.parentElement.style.color = '#f87171';
-      smIcon.parentElement.style.background = 'rgba(248,113,113,0.1)';
-    } else if (title === 'Access Granted') {
-      smIcon.parentElement.style.color = '#4ade80';
-      smIcon.parentElement.style.background = 'rgba(74,222,128,0.1)';
+    if (isScanning) {
+      smRing.style.animation = 'rfid-breathe 3.5s ease-in-out infinite';
+      smPulse.style.display = 'block';
     } else {
+      smRing.style.animation = 'none';
+      smPulse.style.display = 'none';
+    }
+
+    if (showRetryIcon) {
+      smRing.style.borderColor = '#f87171';
+      smRing.style.boxShadow = '0 0 28px rgba(248,113,113,0.3)';
+      smIcon.parentElement.style.background = 'rgba(248,113,113,0.1)';
+      smIcon.parentElement.style.color = '#f87171';
+    } else if (title === 'Access Granted') {
+      smRing.style.borderColor = '#4ade80';
+      smRing.style.boxShadow = '0 0 28px rgba(74,222,128,0.3)';
+      smIcon.parentElement.style.background = 'rgba(74,222,128,0.1)';
+      smIcon.parentElement.style.color = '#4ade80';
+    } else {
+      smRing.style.borderColor = 'rgba(200,169,81,0.3)';
+      smRing.style.boxShadow = 'none';
+      smIcon.parentElement.style.background = 'linear-gradient(135deg, rgba(200,169,81,0.2), rgba(0,48,135,0.3))';
       smIcon.parentElement.style.color = 'var(--gold)';
-      smIcon.parentElement.style.background = 'rgba(200,169,81,0.1)';
     }
     scanModal.classList.add('active');
   }
@@ -498,7 +524,7 @@
 
   // Flow A: Setup Desktop Scanner (USB Keyboard Wedge)
   function startDesktopScanner() {
-    showModal("USB Scanner Ready", "Please tap your FEATI ID on the USB scanner.", true);
+    showModal("Scanner Ready", "Please tap your FEATI ID on the scanner.", true);
     rfidInput.value = '';
     
     // Slight timeout ensures focus takes hold after modal render
